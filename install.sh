@@ -1,3 +1,3 @@
 #!/bin/sh
 
-stow bash
+stow emacs -t ~/
