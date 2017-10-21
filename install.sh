@@ -6,6 +6,8 @@
 
 stow emacs -t ~/
 
+stow zsh -t ~/
+
 # Install reveal.js....
 
 revealdir=~/.emacs.d/reveal.js
