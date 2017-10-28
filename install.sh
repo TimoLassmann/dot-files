@@ -1,13 +1,5 @@
 #!/bin/sh
 
-
-
-
-
-stow emacs -t ~/
-
-stow zsh -t ~/
-
 # Install reveal.js....
 
 revealdir=~/.emacs.d/reveal.js
@@ -20,6 +12,21 @@ if [ ! -d $revealdir ]; then
     cd ~/
 fi
 
+# look for oh-myzsh ...
+
+ohmyzsh=~/.oh-my-zsh
+if [ ! -d $revealdir ]; then
+    printf "\n Installing oh-my-zsh to: %s !\n\n" $ohmyzsh;
+    git clone git://github.com/robbyrussell/oh-my-zsh.git ~/.oh-my-zsh
+fi
+
+
+stow emacs -t ~/
+
+stow zsh -t ~/
+
+
+chsh -s /bin/zsh
 
 # make init.el
 printf "\n Writing init.el \n\n";
