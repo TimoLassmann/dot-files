@@ -26,8 +26,6 @@ stow emacs -t ~/
 stow zsh -t ~/
 
 
-chsh -s /bin/zsh
-
 # make init.el
 printf "\n Writing init.el \n\n";
 
