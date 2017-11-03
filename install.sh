@@ -14,18 +14,16 @@ fi
 
 # look for oh-myzsh ...
 
-ohmyzsh=~/.oh-my-zsh
-if [ ! -d $revealdir ]; then
-    printf "\n Installing oh-my-zsh to: %s !\n\n" $ohmyzsh;
-    git clone git://github.com/robbyrussell/oh-my-zsh.git ~/.oh-my-zsh
+ohmyzshdir=~/.oh-my-zsh
+if [ ! -d $ohmyzshdir ]; then
+    printf "\n Installing oh-my-zsh to: %s !\n\n" $ohmyzshdir;
+    git clone https://github.com/robbyrussell/oh-my-zsh.git ~/.oh-my-zsh
 fi
 
 
 stow emacs -t ~/
 
 stow zsh -t ~/
-
-
 # make init.el
 printf "\n Writing init.el \n\n";
 
