@@ -17,8 +17,18 @@ fi
 ohmyzshdir=~/.oh-my-zsh
 if [ ! -d $ohmyzshdir ]; then
     printf "\n Installing oh-my-zsh to: %s !\n\n" $ohmyzshdir;
-    git clone https://github.com/robbyrussell/oh-my-zsh.git ~/.oh-my-zsh
+    git clone https://github.com/robbyrussell/oh-my-zsh.git $ohmyzshdir
 fi
+
+
+# look for offlineimap
+
+offlineimapdir=~/programs/offlineimap
+if [ ! -d $offlineimapdir ]; then
+    printf "\n Installing oh-my-zsh to: %s !\n\n" $offlineimapdir;
+    git clone https://github.com/OfflineIMAP/offlineimap.git $offlineimapdir
+fi
+
 
 
 stow emacs -t ~/
