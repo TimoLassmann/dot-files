@@ -1,16 +1,22 @@
 [general]
-ui = quiet
+ui = TTYUI
 accounts = office365
 pythonfile = ~/code/dot-files/email/getpass.py
-
+status_backend = sqlite
 
 [Account office365]
 localrepository = Local-office365
 remoterepository = Remote-office365
+postsynchook = mu index --maildir ~/Maildir
+
 
 [Repository Local-office365]
+maxconnections = 1
 type = Maildir
 localfolders = ~/Maildir/office365
+nametrans = lambda folder: {'sent' : 'Sent Items' , 'trash' : 'Deleted Items',
+                            }.get(folder, folder)
+
 
 [Repository Remote-office365]
 type = IMAP
@@ -21,4 +27,6 @@ remoteport = 993
 realdelete = no
 ssl = yes
 sslcacertfile = /etc/ssl/certs/ca-bundle.trust.crt
-folderfilter = lambda folder: folder in ['INBOX', 'Sent', 'Drafts', 'Sent Items', 'Junk E-Mail']
+nametrans = lambda folder: { 'Sent Items':'sent', 'Deleted Items' : 'trash' ,
+                            }.get(folder, folder)
+folderfilter = lambda folder: folder in ['INBOX','Sent Items','Deleted Items', 'Drafts', 'Junk E-Mail','Archive']
