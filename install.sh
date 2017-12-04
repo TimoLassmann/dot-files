@@ -1,11 +1,5 @@
 #!/bin/sh
 
-
-
-
-
-stow emacs -t ~/
-
 # Install reveal.js....
 
 revealdir=~/.emacs.d/reveal.js
@@ -18,11 +12,22 @@ if [ ! -d $revealdir ]; then
     cd ~/
 fi
 
+# look for oh-myzsh ...
 
+ohmyzshdir=~/.oh-my-zsh
+if [ ! -d $ohmyzshdir ]; then
+    printf "\n Installing oh-my-zsh to: %s !\n\n" $ohmyzshdir;
+    git clone https://github.com/robbyrussell/oh-my-zsh.git ~/.oh-my-zsh
+fi
+
+
+stow emacs -t ~/
+
+stow zsh -t ~/
 # make init.el
 printf "\n Writing init.el \n\n";
 
-cat > ~/.emacs.d/init.el <<- EOM
+cat > ~/.emacs.d/init_test.el <<- EOM
 ;; printed by install.sh
 (defvar init.org-message-depth 3
   "What depth of init.org headings to message at startup.")
