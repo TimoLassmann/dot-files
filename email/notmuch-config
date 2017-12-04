@@ -1,0 +1,10 @@
+[database]
+path=/home/user/Maildir
+
+[new]
+tags=unread;inbox
+ignore=
+
+[search]
+exclude_tags=deleted;spam
+

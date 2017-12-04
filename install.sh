@@ -2,6 +2,8 @@
 
 # Install reveal.js....
 
+pwd=$(pwd)
+
 revealdir=~/.emacs.d/reveal.js
 
 if [ ! -d $revealdir ]; then
@@ -9,7 +11,7 @@ if [ ! -d $revealdir ]; then
     printf "\n Installing reveal to: %s !\n\n" $revealdir;
     cd ~/.emacs.d/
     git clone https://github.com/hakimel/reveal.js.git
-    cd ~/
+    cd $pwd 
 fi
 
 # look for oh-myzsh ...
@@ -17,9 +19,28 @@ fi
 ohmyzshdir=~/.oh-my-zsh
 if [ ! -d $ohmyzshdir ]; then
     printf "\n Installing oh-my-zsh to: %s !\n\n" $ohmyzshdir;
-    git clone https://github.com/robbyrussell/oh-my-zsh.git ~/.oh-my-zsh
+    git clone https://github.com/robbyrussell/oh-my-zsh.git $ohmyzshdir
 fi
 
+
+# look for offlineimap
+
+offlineimapdir=~/programs/offlineimap
+if [ ! -d $offlineimapdir ]; then
+    printf "\n Installing offlineimap to: %s !\n\n" $offlineimapdir;
+    git clone https://github.com/OfflineIMAP/offlineimap.git $offlineimapdir
+fi
+
+mudir=~/programs/mu
+
+if [ ! -d $mudir ]; then
+    printf "\n Installing mu to: %s !\n\n" $mudir;
+    git clone https://github.com/djcb/mu.git $mudir
+    cd $mudir
+    ./autogen.sh
+    make
+    cd $pwd 
+fi
 
 stow emacs -t ~/
 
