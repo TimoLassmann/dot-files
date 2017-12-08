@@ -14,6 +14,15 @@ if [ ! -d $revealdir ]; then
     cd $pwd 
 fi
 
+powerlinedir=~/programs/powerlinefonts
+if [ ! -d $powerlinedir ]; then
+    printf "\n Installing powerline to: %s !\n\n" $powerlinedir;
+    git clone https://github.com/powerline/fonts.git $powerlinedir
+    cd $powerlinedir
+    ./install.sh
+    cd $pwd
+fi
+
 # look for oh-myzsh ...
 
 ohmyzshdir=~/.oh-my-zsh
