@@ -1,0 +1,307 @@
+\ProvidesPackage{ARC_discovery}
+
+\def\grantname#1{\def\@grantname{#1}}
+
+\def\ApplicationID#1{\def\@ApplicationID{#1}}
+\def\CIASurname#1{\def\@CIASurname{#1}}
+
+
+\def\DocumentID#1{\def\@DocumentID{#1}}
+
+
+\usepackage{geometry}
+ \geometry{
+ a4paper,
+ total={210mm,297mm},
+ left=5mm,
+ right=5mm,
+ top=5mm,
+ bottom=5mm,
+ headheight=5mm
+ %hmargin=14mm,
+ %vmargin=20mm,
+% head=0ex,foot=05ex
+ }
+ 
+\usepackage{import}
+\usepackage{fontspec}
+\setmainfont{Times New Roman}
+%\usepackage[utf8]{inputenc}
+\usepackage{graphicx}
+\usepackage{longtable}
+\usepackage{booktabs}
+\usepackage{enumitem}
+\usepackage{tcolorbox}
+
+\setlist[enumerate]{labelwidth=20pt,labelindent=0pt,leftmargin=*,labelsep=5pt,align=left,topsep=2pt, parsep=2pt, itemsep=2pt}
+\setlist[itemize]{labelwidth=20pt,labelindent=0pt,leftmargin=*,labelsep=5pt,align=left,topsep=2pt, parsep=2pt, itemsep=0pt}
+
+\usepackage{setspace}
+
+\usepackage{hyperref}
+\usepackage{textcomp}
+\usepackage{verbatim}
+\usepackage{color}
+%\usepackage[usenames,dvipsnames,svgnames,table]{xcolor}
+\usepackage{tikz}
+\usepackage{lipsum}
+\usepackage{calc}
+\usepackage{booktabs}
+\usepackage{float}
+\usepackage{tkz-euclide}
+\usetikzlibrary{decorations.text}
+\usetikzlibrary{shapes,arrows}
+\usetikzlibrary{backgrounds}
+
+\usepackage[symbol]{footmisc}
+
+\makeatletter
+\renewcommand*{\@makefnmark}
+    {\hbox{\@textsuperscript{\scalebox{\fnmarkscale}{\normalfont\@thefnmark}}}}
+\makeatother
+
+\usepackage{lipsum}
+\usepackage{wrapfig}
+\usepackage{etaremune}
+\usepackage[natbib=true,style=nature,maxnames=1, minnames=1,hyperref=auto,backref=true,sorting=none]{biblatex}
+
+
+\definecolor{grantblue}{RGB}{5,99,193}
+
+\hypersetup{
+  colorlinks   = true,
+  linkcolor    = grantblue,   
+  citecolor    = grantblue,
+  urlcolor     = grantblue
+}
+
+\DefineBibliographyStrings{english}{%
+  backrefpage = {page},% originally "cited on page"
+  backrefpages = {pages},% originally "cited on pages"
+}
+
+
+
+\addbibresource{~/org/bibliography/references.bib}
+
+
+\DeclareBibliographyCategory{important}
+
+\AtEveryBibitem{%
+  \ifcategory{important}%
+    {\bfseries}%
+    {}%
+  }
+
+% Add books to 'important' category in preamble
+\addtocategory{important}{%
+  lassmann-2007-autom,
+andersson-2014,
+forrest-2014,
+arner-2015-trans,
+djebali-2012-lands-trans,
+baynam-2016-rare-undiag,
+dunham-2012-dna,
+harrow-2012-gencod,
+ravasi-2010-atlas-combin,
+itoh2012automated,
+suzuki2009transcriptional,
+schmidl-2014-trans-enhan,
+takahashi20125,
+}
+
+
+\renewcommand*{\bibfont}{\normalsize}
+\SetLabelAlign{parright}{\parbox[t]{\labelwidth}{\raggedleft#1}}
+
+
+\graphicspath{{../images/}{../../images/}}
+
+
+\linespread{1.25}
+
+
+%\geometry{a4paper,
+%,
+%}
+
+
+
+\usepackage[hang]{caption}
+\DeclareCaptionFormat{upper}{#1#2\uppercase{#3}\par}
+\captionsetup{format=plain,labelfont={bf},textfont={normalsize},figurename=Figure,tablename=TABLE,singlelinecheck=off,justification=raggedright} %format = upper
+
+%%% fancy sections
+\usepackage{titlesec}
+\usepackage[normalem]{ulem}
+%\titleformat{\chapter}{\headingfont\LARGE\bfseries\scshape\color{color1}}{\thechapter}{1em}{}[\titlerule]
+
+%\renewcommand{\thesection}{\Alph{section}.}
+
+%\titleformat{\section}[hang]{\sffamily\color{IndianRed3}\bfseries\scshape\filleft\lsstyle}{}{2em}{#1\quad\rule[-0.25cm]{1.5pt}{1cm}\rlap{\qquad\Huge \thesection}}%
+
+%\titleformat{\section}{\large\bfseries}{\Alph{section}.}{1em}{}
+%\titleformat{\subsection}[wrap]{\normalfont\bfseries}{}{1em}{}
+
+%\titleformat{\subsection}{\color{red}\normalsize\bfseries}{\thesubsection}{1em}{}
+%\titleformat{\subsubsection}{\normalsize\itshape}{\thesubsubsection}{1em}{}
+\setcounter{secnumdepth}{4}
+%\renewcommand\thesubsection{\arabic{subsection}.}
+%\renewcommand\thesubsubsection{\arabic{subsection}.\arabic{subsubsection}.} 
+%\renewcommand\thesubsubsubsection{\arabic{subsection}.\arabic{subsubsection}.\arabic{subsubsubsection}.}
+
+
+\titleformat{\section}{\bfseries\uppercase}{}{0.0em}{}
+\titleformat{\subsection}{\bfseries\itshape\uppercase}{}{0.0em}{}
+\titleformat{\subsubsection}{\itshape}{}{0em}{\uline}
+%\titleformat{\subsubsubsection}{\normalfont\normalsize\selectfont\itshape}{\thesubsubsubsection}{0.5em}{}
+\titleformat{\paragraph}[runin]{\itshape}{}{0em}{\uline}[:\enspace] 
+
+
+
+% {left spacing}{before spacing} { after spacing} [right]
+
+%\titlespacing*{\section}{0pt}{12pt plus 4pt minus 2pt}{12pt plus 4pt minus 2pt }
+%\titlespacing*{\subsection}{0pt}{12pt plus 4pt minus 2pt}{0pt plus 4pt minus 2pt }
+\titlespacing*{\section}{0pt}{0pt}{0pt}
+\titlespacing*{\subsection}{0pt}{0pt}{0pt}
+\titlespacing*{\subsubsection}{0pt}{0pt}{0pt}
+%\titlespacing*{\subsubsection}{0pt}{0.1cm}{0.1cm}
+%\titlespacing*{\subsubsubsection}{0pt}{*0}{0.1cm}
+\titlespacing*{\paragraph}{0pt}{*0}{*0}
+
+
+\renewcommand{\footnotesize}{\normalzise}
+
+\setlength{\parindent}{0cm}
+
+
+
+\renewcommand{\maketitle}{
+
+\begin{center}
+\begin{tikzpicture}
+    \node[draw=none,%color1,line width=0.4pt,
+      fill=white,
+      inner ysep = 0pt,
+      text width=\textwidth,
+     % text centered
+    ]{\Large\bfseries\@title};
+\end{tikzpicture}
+\end{center}
+}
+
+%%%
+\newcolumntype{L}[1]{>{\raggedright\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+\newcolumntype{C}[1]{>{\centering\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+\newcolumntype{R}[1]{>{\raggedleft\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+
+
+% head and foot
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+%\setlength{\headheight}{5.0pt}
+
+%\setlength{\footskip}{50.99991pt}
+
+\renewcommand{\thefootnote}{\alph{footnote}}
+\lhead{}
+\chead{}
+\rhead{}
+
+
+
+
+%\makeatother
+%\newlength{\myheight}
+\lfoot{}
+\cfoot{}
+\rfoot{}%\footnotesize Page \thepage}
+\renewcommand\headrulewidth{0pt}
+\renewcommand\footrulewidth{0pt}
+%%%
+
+
+
+\newcommand{\boldintro}[1]{
+\noindent{\textbf{#1:}}
+}
+
+\newenvironment{grayblock}{ \begin{tcolorbox}[width=\textwidth,colback={black!10!white}]}{\end{tcolorbox}} 
+
+\newenvironment{notes}{ \begin{tcolorbox}[colback=red!5!white,colframe=red!75!black,title=Notes, width=\textwidth,colback={red!10!white},arc=2pt,
+                  boxrule=2pt]}{\end{tcolorbox}} 
+
+
+\tikzstyle{fancyframe} = [draw=gray, 
+    rectangle, rounded corners=2pt, inner sep=5pt, inner ysep=5pt]
+
+\newcommand{\rightimage}[4][Title of the box]{%
+\vspace{0.25cm}
+\setlength{\intextsep}{0pt}
+\begin{wrapfigure}{r}{#3}
+
+\begin{tikzpicture}
+\node [fancyframe] (box){%
+    \begin{minipage}{#3-1cm}
+    #2
+    \end{minipage}
+};
+%\node[fancytitle, right=10pt] at (box.north west) {#1};
+%\node[fancytitle, rounded corners] at (box.east) {$\clubsuit$};
+\end{tikzpicture}%
+\caption{#1}
+\label{#4}
+\end{wrapfigure}
+\vspace{0.25cm}
+}
+
+\newcommand{\horizimageleft}[4][Title of the box]{
+\vspace{0.25cm}
+\begin{figure}[H]
+   \begin{minipage}[c]{#3}
+   \begin{tikzpicture}
+   \node [fancyframe] (box){#2} ;
+          %\fill [blue] (0,0) rectangle (6,4);
+       \end{tikzpicture}
+      \end{minipage}%
+   \begin{minipage}[c]{\textwidth-#3}
+    \caption{#1}
+ \label{#4}
+     
+   \end{minipage}
+   
+  
+  \end{figure}
+  \vspace{0.25cm}
+}
+
+\newcommand{\horizimageright}[4][Title of the box]{
+
+\vspace{0.25cm}
+\begin{figure}[H]
+\begin{minipage}[c]{\textwidth-#3}
+    \caption{#1}
+         \label{#4}
+ \end{minipage}
+   \begin{minipage}[c]{#3}
+   \raggedleft
+   \begin{tikzpicture}
+   \node [fancyframe] (box){#2} ;
+          %\fill [blue] (0,0) rectangle (6,4);
+       \end{tikzpicture}
+      \end{minipage}%
+  
+
+  
+  \end{figure}
+\vspace{0.25cm}
+}
+
+%\newcommand{\beginsupplement}{%
+  %      \setcounter{table}{0}
+  %      \renewcommand{\thetable}{S\arabic{table}}%
+  %      \setcounter{figure}{0}
+  %      \renewcommand{\thefigure}{S\arabic{figure}}%
+  %   }
+

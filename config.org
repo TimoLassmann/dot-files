@@ -1,0 +1,1125 @@
+#+TITLE:  Emacs Configuration File
+#+AUTHOR: Timo Lassmann 
+#+LATEX_CLASS: report
+#+OPTIONS:  toc:nil
+#+OPTIONS: H:4
+#+LATEX_CMD: xelatex
+
+#+PROPERTY:    header-args:emacs-lisp  :tangle elisp/config-main.el
+#+PROPERTY:    header-args:shell       :tangle no
+#+PROPERTY:    header-args             :results silent   :eval no-export   :comments org
+
+\Author{Timo La\ss mann}
+\DocumentID{src_sh[:value verbatim]{shasum -a 256 config.org | awk '{print $1}' }}
+* General Settings
+** Whoami 
+
+   #+BEGIN_SRC emacs-lisp
+     (setq user-full-name "Timo Lassmann"
+           user-mail-address "timo.lassmann@telethonkids.org.au")
+   #+END_SRC
+
+** Emacs directory
+
+   #+BEGIN_SRC emacs-lisp
+     (defconst tl/emacs-directory (concat (getenv "HOME") "/.emacs.d/"))
+     (defun tl/emacs-subdirectory (d) (expand-file-name d tl/emacs-directory))
+   #+END_SRC
+   
+   #+BEGIN_SRC emacs-lisp
+     (message "%s" (tl/emacs-subdirectory "elisp"))
+     (add-to-list 'load-path (tl/emacs-subdirectory "elisp"))
+   #+END_SRC
+
+** Sensible setting
+
+   #+BEGIN_SRC emacs-lisp
+     (load-file "~/.emacs.d/elisp/sensible-defaults.el")
+     (sensible-defaults/increase-gc-threshold)
+     (sensible-defaults/use-all-settings)
+     (sensible-defaults/use-all-keybindings)
+   #+END_SRC
+
+** Very general
+
+   #+BEGIN_SRC emacs-lisp
+
+     (setq scroll-conservatively 10000
+           scroll-preserve-screen-position t)
+
+   #+END_SRC
+
+
+   #+BEGIN_SRC emacs-lisp
+       (let ((path-from-shell (shell-command-to-string "/bin/bash -l -c 'echo $PATH'")))
+         (setenv "PATH" path-from-shell)
+         (setq exec-path (split-string path-from-shell path-separator)))
+
+   #+END_SRC
+
+** Modernizing Emacs
+
+   Found [[https://github.com/wasamasa/dotemacs/blob/master/init.org#init][here]] how to remove the warnings from the GnuTLS library when
+   using HTTPS... increase the minimum prime bits size:
+   #+BEGIN_SRC emacs-lisp
+     (setq gnutls-min-prime-bits 4096)
+   #+END_SRC
+
+** misc
+   Assume that I always want to kill the current buffer when hitting C-x k.
+   #+BEGIN_SRC emacs-lisp
+     (defun tl/kill-current-buffer ()
+       "Kill the current buffer without prompting."
+       (interactive)
+       (kill-buffer (current-buffer)))
+     (global-set-key (kbd "C-x k") 'tl/kill-current-buffer)
+   #+END_SRC
+
+
+
+   Never use tabs. Tabs are the devil’s whitespace.
+
+   #+BEGIN_SRC emacs-lisp
+     (setq-default indent-tabs-mode nil)
+   #+END_SRC
+
+   Tell emacs about the mactex installation...
+
+   #+BEGIN_SRC emacs-lisp
+     (setenv "PATH" (concat "/Library/TeX/texbin" ":" (getenv "PATH")))
+   #+END_SRC
+
+   This should do it...
+
+** Start in fullscreen
+
+   Start in fullscreen mode
+
+   #+BEGIN_SRC emacs-lisp
+     (custom-set-variables '(initial-frame-alist (quote ((fullscreen . maximized)))))
+   #+END_SRC
+
+* Package Initialization
+** Package Manager
+
+   Emacs has become like every other operating system, and now has a
+   [[http://tromey.com/elpa/][package manager]] with its own collection repository, but since it is
+   so conservative, we need to add more repositories to get all the
+   sweet goodness, I demand.
+
+   #+BEGIN_SRC emacs-lisp
+
+     (require 'package)
+
+     (setq package-archives '(("org" . "http://orgmode.org/elpa/")
+                              ("gnu" . "http://elpa.gnu.org/packages/")
+                              ("melpa"     . "http://melpa.org/packages/")))
+
+     (package-initialize)
+     (package-refresh-contents)
+   #+END_SRC
+
+** Use-Package
+
+   Using [[https://github.com/jwiegley/use-package][use-package]] to automatically install certain packages, as
+   well as the ease of lazily loading them.
+
+   #+BEGIN_SRC emacs-lisp
+     (unless (package-installed-p 'use-package)
+       (package-refresh-contents)
+       (package-install 'use-package))
+
+     (require 'use-package)
+   #+END_SRC
+
+** Init File Support
+
+   Load up a collection of enhancements to Emacs Lisp, including [[https://github.com/magnars/dash.el][dash]],
+   [[https://github.com/magnars/s.el][s]] for string manipulation, and [[https://github.com/rejeep/f.el][f]] for file manipulation.
+
+   #+BEGIN_SRC emacs-lisp
+     (require 'cl)
+
+     (use-package dash
+       :ensure t
+       :config (eval-after-load "dash" '(dash-enable-font-lock)))
+
+     (use-package s
+       :ensure t)
+
+     (use-package f
+       :ensure t)
+   #+END_SRC
+
+** Fill Mode
+   Automatically wrapping when you get to the end of a line (or the fill-region):
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package fill
+       :bind (("C-c T f" . auto-fill-mode)
+              ("C-c T t" . toggle-truncate-lines))
+       :init (add-hook 'org-mode-hook 'turn-on-auto-fill)
+       :diminish auto-fill-mode)
+   #+END_SRC
+
+** Undo / redo
+   According to this article, I get better functionality than the redo+ plugin (which I can’t seem to get working well).
+   #+BEGIN_SRC emacs-lisp
+     (use-package undo-tree
+       :ensure t
+       :diminish undo-tree-mode
+       :init
+       (global-undo-tree-mode 1)
+       :config
+       (defalias 'redo 'undo-tree-redo)
+       :bind (("C-z" . undo)     ; Zap to character isn't helpful
+              ("C-S-z" . redo)))
+
+   #+END_SRC
+
+End. 
+* Movement
+** SMEX
+
+   #+BEGIN_SRC emacs-lisp
+
+     (use-package smex
+       :ensure t
+       :init (smex-initialize)
+       :bind ("M-x" . smex)
+       ("M-X" . smex-major-mode-commands))
+   #+END_SRC
+
+** Helm
+
+   #+BEGIN_SRC example
+     (use-package helm
+       :ensure t
+       :init
+       (use-package helm-config))   ;; Binds C-x c to the helm bidness.
+
+     (global-set-key (kbd "C-c h") 'helm-command-prefix)
+     (global-unset-key (kbd "C-x c"))
+     (global-set-key (kbd "M-x") 'helm-M-x)
+     (global-set-key (kbd "M-y") 'helm-show-kill-ring)
+     (global-set-key (kbd "C-x b") 'helm-mini)
+     (global-set-key (kbd "C-x C-f") 'helm-find-files)
+     (global-set-key (kbd "C-c h o") 'helm-occur)
+     (define-key helm-map (kbd "<tab>") 'helm-execute-persistent-action) ; rebind tab to run persistent action
+     (define-key helm-map (kbd "C-i") 'helm-execute-persistent-action) ; make TAB work in terminal
+     (define-key helm-map (kbd "C-z")  'helm-select-action) ; list actions using C-z
+
+     (when (executable-find "curl")
+       (setq helm-google-suggest-use-curl-p t))
+
+     (setq helm-split-window-in-side-p           t ; open helm buffer inside current window, not occupy whole other window
+           helm-move-to-line-cycle-in-source     t ; move to end or beginning of source when reaching top or bottom of source.
+           helm-ff-search-library-in-sexp        t ; search for library in `require' and `declare-function' sexp.
+           helm-scroll-amount                    8 ; scroll 8 lines other window using M-<next>/M-<prior>
+           helm-ff-file-name-history-use-recentf t
+           helm-echo-input-in-header-line t)
+
+     (defun spacemacs//helm-hide-minibuffer-maybe ()
+       "Hide minibuffer in Helm session if we use the header line as input field."
+       (when (with-helm-buffer helm-echo-input-in-header-line)
+         (let ((ov (make-overlay (point-min) (point-max) nil nil t)))
+           (overlay-put ov 'window (selected-window))
+           (overlay-put ov 'face
+                        (let ((bg-color (face-background 'default nil)))
+                          `(:background ,bg-color :foreground ,bg-color)))
+           (setq-local cursor-type nil))))
+
+
+     (add-hook 'helm-minibuffer-set-up-hook
+               'spacemacs//helm-hide-minibuffer-maybe)
+
+     (setq helm-autoresize-max-height 0)
+     (setq helm-autoresize-min-height 20)
+     (helm-autoresize-mode 1)
+
+     (helm-mode 1)
+
+   #+END_SRC
+
+   #+RESULTS:
+   : t
+
+   Re-read this essay on Helm.
+
+   The helm-swoop project has a nice DWIM replacement for
+   isearch-forward-symbol-at-point (bound to M-s .):
+   #+BEGIN_SRC example
+     (use-package helm-swoop
+       :ensure t
+       :init
+       ;; If this value is t, split window inside the current window
+       (setq helm-swoop-split-with-multiple-windows t
+             ;; If you prefer fuzzy matching
+             helm-swoop-use-fuzzy-match t)
+       :bind
+       (("M-s s" . helm-swoop)  ;; overbind M-i ?
+        ("M-s S" . helm-multi-swoop)))
+   #+END_SRC
+
+** IDO
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package ido
+       :ensure t
+       :init  (setq ido-enable-flex-matching t
+                    ido-ignore-extensions t
+                    ido-use-virtual-buffers t
+                    ido-everywhere t)
+       :config
+       (ido-mode 1)
+       (ido-everywhere 1)
+       (add-to-list 'completion-ignored-extensions ".pyc"))
+
+   #+END_SRC
+
+   FLX package:
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package flx-ido
+       :ensure t
+       :init (setq ido-enable-flex-matching t
+                   ido-use-faces nil)
+       :config (flx-ido-mode 1))
+   #+END_SRC
+
+   According to Ryan Neufeld, we could make IDO work vertically, which is much easier to read. For this, I use ido-vertically:
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package ido-vertical-mode
+       :ensure t
+       :init               ; I like up and down arrow keys:
+       (setq ido-vertical-define-keys 'C-n-C-p-up-and-down)
+       :config
+       (ido-vertical-mode 1))
+
+   #+END_SRC
+
+   This sorts an IDO filelist by mtime instead of alphabetically.
+
+   #+BEGIN_SRC emacs-lisp
+     (defun ido-sort-mtime ()
+       "Reorder the IDO file list to sort from most recently modified."
+       (setq ido-temp-list
+             (sort ido-temp-list
+                   (lambda (a b)
+                     (ignore-errors
+                       (time-less-p
+                        (sixth (file-attributes (concat ido-current-directory b)))
+                        (sixth (file-attributes (concat ido-current-directory a))))))))
+       (ido-to-end  ;; move . files to end (again)
+        (delq nil (mapcar
+                   (lambda (x) (and (char-equal (string-to-char x) ?.) x))
+                   ido-temp-list))))
+
+     (add-hook 'ido-make-file-list-hook 'ido-sort-mtime)
+     (add-hook 'ido-make-dir-list-hook 'ido-sort-mtime)
+   #+END_SRC
+
+** Ace-window
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package ace-window
+       :ensure t
+       :init
+       (setq aw-keys '(?1 ?2 ?3 ?4 ?5 ?6 ?7 ?8))
+       :diminish ace-window-mode)
+     (global-set-key (kbd "C-x o") 'ace-window)
+
+   #+END_SRC
+
+** Avy 
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package avy
+       :ensure t
+       :init (setq avy-background t))
+     (global-set-key (kbd "M-s") 'avy-goto-char-timer)
+
+   #+END_SRC
+
+
+** Line Numbers
+
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package linum
+       :ensure t
+       :init
+       (add-hook 'prog-mode-hook 'linum-mode)
+       (add-hook 'linum-mode-hook (lambda () (set-face-attribute 'linum nil :height 110)))
+
+       :config
+       (defun linum-fringe-toggle ()
+         "Toggles the line numbers as well as the fringe."    (interactive)
+         (cond (linum-mode (fringe-mode '(0 . 0))
+                           (linum-mode -1))
+               (t          (fringe-mode '(8 . 0))
+                           (linum-mode 1))))
+
+       :bind (("A-C-k"   . linum-mode)
+              ("s-C-k"   . linum-mode)
+              ("A-C-M-k" . linum-fringe-toggle)
+              ("s-C-M-k" . linum-fringe-toggle)))
+
+   #+END_SRC
+
+
+   relative
+   #+BEGIN_SRC emacs-lisp
+     (use-package linum-relative
+       :ensure t
+       :config
+       (defun linum-new-mode ()
+         "If line numbers aren't displayed, then display them.
+          Otherwise, toggle between absolute and relative numbers."
+         (interactive)
+         (if linum-mode
+             (linum-relative-toggle)
+           (linum-mode 1)))
+
+       :bind ("A-k" . linum-new-mode)
+       ("s-k" . linum-new-mode))   ;; For Linux
+   #+END_SRC
+
+** Turn off mouse FIXME - why here
+
+   #+BEGIN_SRC emacs-lisp
+     (mouse-wheel-mode -1)
+     (global-set-key [wheel-up] 'ignore)
+     (global-set-key [wheel-down] 'ignore)
+     (global-set-key [double-wheel-up] 'ignore)
+     (global-set-key [double-wheel-down] 'ignore)
+     (global-set-key [triple-wheel-up] 'ignore)
+     (global-set-key [triple-wheel-down] 'ignore)
+
+   #+END_SRC
+
+* Org-mode
+  
+** General setup
+
+   load org mode
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package org
+       :init
+       (setq org-use-speed-commands t
+             org-return-follows-link t
+             org-completion-use-ido t
+             org-outline-path-complete-in-steps nil))
+
+
+
+   #+END_SRC
+ 
+   Directory, inbox ..
+
+   #+BEGIN_SRC emacs-lisp
+     (setq org-directory "~/org")
+     (defun org-file-path (filename)
+       "Return the absolute address of an org file, given its relative name."
+       (concat (file-name-as-directory org-directory) filename))
+     (setq org-index-file (org-file-path "index.org"))
+     (setq org-archive-location
+           (concat (org-file-path "archive.org") "::* From %s"))
+   #+END_SRC
+
+   Set index.org as agenda source ...
+
+   #+BEGIN_SRC emacs-lisp
+     (setq org-agenda-files (list org-index-file))
+   #+END_SRC
+
+   Hitting C-c C-x C-s will mark a todo as done and move it to an appropriate place
+   in the archive.
+
+   #+BEGIN_SRC emacs-lisp
+     (defun tl/mark-done-and-archive ()
+       "Mark the state of an org-mode item as DONE and archive it."
+       (interactive)
+       (org-todo 'done)
+       (org-archive-subtree))
+
+     ;;    (define-key org-mode-map (kbd "C-c C-x C-s") 'tl/mark-done-and-archive)
+
+
+
+   #+END_SRC
+
+   Record the time that a todo was archived.
+
+   #+BEGIN_SRC emacs-lisp
+     (setq org-log-done 'time)
+   #+END_SRC
+
+** Coding
+
+   Allow babel to evaluate C ...
+
+   #+BEGIN_SRC emacs-lisp
+     (org-babel-do-load-languages
+      'org-babel-load-languages
+      '((C . t)
+        (R . t)
+        (emacs-lisp . t)
+        (sh . t) 
+        (makefile . t)
+        (latex .t)
+        ))
+
+   #+END_SRC
+
+   Don’t ask before evaluating code blocks.
+   #+BEGIN_SRC emacs-lisp
+
+     (setq org-confirm-babel-evaluate nil)
+
+   #+END_SRC
+
+   smart brackets in export
+
+   #+BEGIN_SRC emacs-lisp
+     (setq org-export-with-smart-quotes t)
+   #+END_SRC
+
+   Done.
+** Export
+
+   Export packages...
+
+   #+BEGIN_SRC emacs-lisp
+     (require 'ox-latex)
+     (require 'ox-beamer)
+   #+END_SRC
+
+   Htmlize required for reveal...
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package htmlize
+       :ensure t)
+   #+END_SRC
+
+** Flyspell
+   Enable spell-checking in Org-mode.
+   #+BEGIN_SRC emacs-lisp
+     (add-hook 'org-mode-hook 'flyspell-mode)
+   #+END_SRC
+
+** Color and display
+   
+   Use syntax highlighting in source blocks while editing.
+   #+BEGIN_SRC emacs-lisp
+     (setq org-src-fontify-natively t)
+   #+END_SRC
+
+   Make TAB act as if it were issued in a buffer of the language’s major mode.
+   #+BEGIN_SRC emacs-lisp
+     (setq org-src-tab-acts-natively t)
+   #+END_SRC
+
+   When editing a code snippet, use the current window rather than popping open a
+   new one (which shows the same information).
+   #+BEGIN_SRC emacs-lisp
+     (setq org-src-window-setup 'current-window)
+   #+END_SRC
+
+** Image preview 
+
+   Inline images support:
+
+   #+BEGIN_SRC emacs-lisp
+     (setq org-latex-create-formula-image-program 'imagemagick)
+
+     (add-to-list 'org-latex-packages-alist
+                  '("" "tikz" t))
+
+     (eval-after-load "preview"
+       '(add-to-list 'preview-default-preamble "\\PreviewEnvironment{tikzpicture}" t))
+     (setq org-latex-create-formula-image-program 'imagemagick)
+
+
+     (setq org-confirm-babel-evaluate nil)
+     (add-hook 'org-babel-after-execute-hook 'org-display-inline-images)   
+     (add-hook 'org-mode-hook 'org-display-inline-images)
+   #+END_SRC
+
+** Capture
+   Capture templates..
+   #+BEGIN_SRC emacs-lisp
+     (setq org-capture-templates
+           (quote (("t" "todo" entry (file+headline org-index-file "Inbox")
+                    "* TODO %?\nSCHEDULED: %(org-insert-time-stamp (org-read-date nil t \"+0d\"))\n%a\n")
+                   ("r" "respond" entry (file+headline org-index-file "Inbox")
+                    "* TODO Respond to %:from on %:subject\nSCHEDULED: %(org-insert-time-stamp (org-read-date nil t \"+0d\"))\n%a\n")
+                   ("m" "Mail" entry (file+headline "~/inbox.org" "Mail")
+                    "* TODO %?\n%a   %:from %:fromname %:fromaddress" :prepend t :jump-to-captured t)
+                   )))
+
+
+
+
+   #+END_SRC
+
+   #+RESULTS:
+   | t | todo | entry | (file+headline org-index-file Inbox) | * TODO %? |
+
+** Keybindings
+
+
+   Standard bindings
+
+   #+BEGIN_SRC emacs-lisp
+     (define-key global-map "\C-cl" 'org-store-link)
+     (define-key global-map "\C-ca" 'org-agenda)
+     (define-key global-map "\C-cc" 'org-capture)
+   #+END_SRC
+
+   Quickly open index file
+   #+BEGIN_SRC emacs-lisp
+     (defun open-index-file ()
+       "Open the master org TODO list."
+       (interactive)
+       (find-file org-index-file)
+       (flycheck-mode -1)
+       (end-of-buffer))
+
+     (global-set-key (kbd "C-c i") 'open-index-file)
+   #+END_SRC
+
+
+   undef a key
+
+   #+BEGIN_SRC emacs-lisp
+     (add-hook 'org-mode-hook
+               '(lambda ()
+                  ;; Undefine C-c [ and C-c ] since this breaks my
+                  ;; org-agenda files when directories are include It
+                  ;; expands the files in the directories individually
+                  (org-defkey org-mode-map "\C-c[" 'undefined))
+               'append)
+
+   #+END_SRC
+
+** Org-ref
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package org-ref
+       :ensure t)
+   #+END_SRC
+
+   Define format for bibtex entries
+
+
+   #+BEGIN_SRC emacs-lisp
+
+     ;; variables that control bibtex key format for auto-generation
+     ;; I want firstauthor-year-title-words
+     ;; this usually makes a legitimate filename to store pdfs under.
+     (setq bibtex-autokey-year-length 4
+           bibtex-autokey-name-year-separator "-"
+           bibtex-autokey-year-title-separator "-"
+           bibtex-autokey-titleword-separator "-"
+           bibtex-autokey-titlewords 2
+           bibtex-autokey-titlewords-stretch 1
+           bibtex-autokey-titleword-length 5)
+   #+END_SRC
+
+   Where are the refs?
+
+   #+BEGIN_SRC emacs-lisp
+     (setq reftex-default-bibliography '("~/org/bibliography/references.bib"))
+
+     ;; see org-ref for use of these variables
+     (setq org-ref-bibliography-notes "~/org/bibliography/notes.org"
+           org-ref-default-bibliography '("~/org/bibliography/references.bib")
+           org-ref-pdf-directory "~/org/bibliography/bibtex-pdfs/")
+
+
+
+   #+END_SRC
+
+** Latex templates
+   Latex templates
+   #+BEGIN_SRC emacs-lisp
+
+     (setq org-latex-listings t)
+
+     ;;(setq org-latex-to-pdf-process '("xelatex %f && bibtex %f && xelatex %f && xelatex %f"))
+     (defun sk-latexmk-cmd (backend)
+       "When exporting from .org with latex, automatically run latex,
+          pdflatex, or xelatex as appropriate, using latexmk."
+       (when (org-export-derived-backend-p backend 'latex)
+         (let ((texcmd)))
+         ;; default command: xelatex
+         (setq texcmd "jobname=$(basename %f | sed 's/\.tex//');latexmk -xelatex -shell-escape -quiet %f && mkdir -p latex.d && mv ${jobname}.* latex.d/. && mv latex.d/${jobname}.{org,pdf,fdb_latexmk,aux} .")
+         ;; pdflatex -> .pdf
+         (if (string-match "LATEX_CMD: pdflatex" (buffer-string))
+             (setq texcmd "latexmk -pdflatex='pdflatex -interaction nonstopmode' -pdf -bibtex %f"))
+         ;; xelatex -> .pdf
+         (if (string-match "LATEX_CMD: xelatex" (buffer-string))
+             (setq texcmd "latexmk -pdflatex='xelatex -interaction nonstopmode' -pdf -bibtex -f  %f"))
+         ;; LaTeX compilation command
+         (setq org-latex-pdf-process (list texcmd))))
+
+     (org-add-hook 'org-export-before-processing-hook 'sk-latexmk-cmd)
+
+     (unless (boundp 'org-latex-classes)
+       (setq org-latex-classes nil))
+   #+END_SRC
+
+** NHMRC project grant
+
+   #+BEGIN_SRC emacs-lisp
+     (add-to-list 'org-latex-classes
+                  '("NHMRC_project_grant"
+                    "\\documentclass[12pt,table,names]{article}
+     \\usepackage{\\string~\"/.emacs.d/latex_templates/NHMRC_grant\"}
+     [NO-DEFAULT-PACKAGES]
+     [NO-PACKAGES]"
+                    ("\\section{%s}" . "\\section*{%s}")
+                    ("\\subsection{%s}" . "\\subsection*{%s}")
+                    ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+                    ("\\paragraph{%s}" . "\\paragraph*{%s}")
+                    ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
+   #+END_SRC
+
+** ARC Discovery Grant
+
+   #+BEGIN_SRC emacs-lisp
+     (add-to-list 'org-latex-classes
+                  '("ARC_discovery_grant"
+                    "\\documentclass[12pt]{article}
+     \\usepackage{\\string~\"/.emacs.d/latex_templates/ARC_discovery\"}
+     [NO-DEFAULT-PACKAGES]
+     [NO-PACKAGES]"
+                    ("\\section{%s}" . "\\section*{%s}")
+                    ("\\subsection{%s}" . "\\subsection*{%s}")
+                    ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+                    ("\\paragraph{%s}" . "\\paragraph*{%s}")))
+   #+END_SRC
+
+** Internal report
+   #+BEGIN_SRC emacs-lisp
+     (add-to-list 'org-latex-classes
+                  '("report"
+                    "\\documentclass[12pt]{article}
+     \\usepackage{\\string~\"/.emacs.d/latex_templates/report\"}
+     [NO-DEFAULT-PACKAGES]
+     [NO-PACKAGES]"
+                    ("\\section{%s}" . "\\section*{%s}")
+                    ("\\subsection{%s}" . "\\subsection*{%s}")
+                    ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+                    ("\\paragraph{%s}" . "\\paragraph*{%s}")
+                    ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
+   #+END_SRC
+
+** Simple presentation
+
+   #+BEGIN_SRC emacs-lisp
+     (add-to-list 'org-latex-classes
+                  '("simplepresentation"
+                    "\\documentclass[aspectratio=169,18pt,t]{beamer}
+     \\usepackage{\\string~\"/.emacs.d/latex_templates/simple\"}
+     [NO-DEFAULT-PACKAGES]
+     [NO-PACKAGES]"
+                    ("\\section{%s}" . "\\section*{%s}")
+                    ("\\begin{frame}[fragile]\\frametitle{%s}"
+                     "\\end{frame}"
+                     "\\begin{frame}[fragile]\\frametitle{%s}"
+                     "\\end{frame}")))
+   #+END_SRC
+
+end. 
+
+* Word Smithing
+** Auto Complete
+   #+BEGIN_SRC emacs-lisp
+     
+     (use-package company
+       :ensure t
+       :bind ("C-:" . company-complete)  ; In case I don't want to wait
+       :init
+       (global-company-mode)
+        :config 
+        (setq company-dabbrev-ignore-case t)
+        (setq company-show-numbers t)
+        (add-to-list 'company-backends 'company-gtags)
+        (add-to-list 'company-backends 'company-math-symbols-unicode)
+       :diminish company-mode)
+
+
+     (use-package company-math
+       :ensure t)
+
+(use-package company-c-headers
+  :ensure t
+  :config
+(add-to-list 'company-c-headers-path-system "/usr/include/"))
+
+        #+END_SRC
+
+
+
+   Take advantage of idle time by displaying some documentation using
+   company-quickhelp project.
+   #+BEGIN_SRC emacs-lisp
+     (use-package company-quickhelp
+       :ensure t
+       :config
+       (company-quickhelp-mode 1))
+     
+   #+END_SRC
+
+
+
+
+
+
+
+   #+BEGIN_SRC emacs-lisp
+     (setq-local imenu-create-index-function #'ggtags-build-imenu-index)
+
+   #+END_SRC
+   #+RESULTS:
+   : ggtags-build-imenu-index
+
+   Word Smithing
+* Programming
+
+  General programming settings..
+
+** General
+
+   I like shallow indentation, but tabs are displayed as 8 characters by default. This reduces that.
+
+   #+BEGIN_SRC emacs-lisp
+     (setq-default tab-width 2)
+   #+END_SRC
+
+   Treating terms in CamelCase symbols as separate words makes editing a little
+   easier for me, so I like to use subword-mode everywhere.
+   #+BEGIN_SRC emacs-lisp
+     (global-subword-mode 1)
+   #+END_SRC
+
+   Compilation output goes to the *compilation* buffer. I rarely have that window
+   selected, so the compilation output disappears past the bottom of the window.
+   This automatically scrolls the compilation window so I can always see the
+   output.
+
+   #+BEGIN_SRC emacs-lisp
+     (setq compilation-scroll-output t)
+   #+END_SRC
+
+** Yasnippet
+
+
+   #+BEGIN_SRC emacs-lisp
+     (global-set-key (kbd "M-/") 'hippie-expand)
+
+     (setq hippie-expand-try-functions-list
+           '(try-expand-dabbrev
+             try-expand-dabbrev-all-buffers
+             try-expand-dabbrev-from-kill
+             try-complete-file-name-partially
+             try-complete-file-name
+             try-expand-all-abbrevs
+             try-expand-list
+             try-expand-line))
+   #+END_SRC
+
+   Yasnippet
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package yasnippet
+       :ensure t
+       :init
+       (yas-global-mode 1)
+       (company-mode)
+       :config
+       (add-to-list 'yas-snippet-dirs (tl/emacs-subdirectory "snippets")))
+
+   #+END_SRC
+
+** Comments
+   #+BEGIN_SRC emacs-lisp
+     (use-package smart-comment
+       :ensure t
+       :bind ("M-;" . smart-comment))
+   #+End_SRC
+
+** Tags:
+
+   #+BEGIN_SRC example 
+     (use-package etags
+       :init (setq tags-revert-without-query 1))
+   #+END_SRC
+
+   #+BEGIN_SRC example
+     (use-package ctags-update
+       :ensure t
+       :config
+       (add-hook 'prog-mode-hook  'turn-on-ctags-auto-update-mode)
+       :diminish ctags-auto-update-mode)
+   #+END_SRC
+
+
+
+
+
+** C
+   ggtags
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package ggtags
+       :ensure t
+       :commands (
+                  ggtags-mode
+                  ggtags-find-reference
+                  ggtags-idutils-query
+                  pop-tag-mark
+                  ) ; end :commands
+       :init
+       (add-hook 'c-mode-common-hook
+                 (lambda ()
+                   (when (derived-mode-p 'c-mode)
+                     (ggtags-mode 1))))
+       :config
+
+                                             ; This must be set to the location of gtags (global)
+       ;;(setq ggtags-executable-directory "~/global-6.5.6/bin/")
+                                             ; Allow very large database files
+       (setq ggtags-oversize-limit 104857600)
+       (setq ggtags-sort-by-nearness t)
+       (setq ggtags-use-idutils t)
+       (setq ggtags-use-project-gtagsconf nil)
+
+       :bind (
+              ("M-," . pop-tag-mark)
+              ;; ("M-/" . ggtags-find-reference)
+              ("M-]" . ggtags-idutils-query)
+
+              :map ggtags-navigation-map
+                                             ;Ergo
+              ("M-u" . ggtags-navigation-previous-file)
+              ("M-o" . ggtags-navigation-next-file)
+              ("M-l" . ggtags-navigation-visible-mode)
+              ("M-j" . ggtags-navigation-visible-mode)
+              ("M-k" . next-error)
+              ("M-i" . previous-error)
+              ) ; end :bind
+       )
+
+   #+END_SRC
+   Smartparens
+   #+BEGIN_SRC emacs-lisp
+     (use-package smartparens
+       :ensure t
+       :init (add-hook 'C-mode-hook 'smartparens-mode))
+   #+END_SRC
+
+Autocomplete 
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package auto-complete
+       :ensure t)
+     (use-package auto-complete-c-headers
+       :ensure t)
+                                             ; do default config for auto-complete
+     (require 'auto-complete-config)
+     (ac-config-default)
+                                             ; start yasnippet with emacs
+                                             ; let's define a function which initializes auto-complete-c-headers and gets called for c/c++ hooks
+     (defun my:ac-c-header-init ()
+       (require 'auto-complete-c-headers)
+       (add-to-list 'ac-sources 'ac-source-c-headers)
+       (add-to-list 'achead:include-directories '"/usr/include")
+       )
+     (add-hook 'c-mode-hook 'my:ac-c-header-init)
+
+                                             ; turn on Semantic
+     (semantic-mode 1)
+                                             ; let's define a function which adds semantic as a suggestion backend to auto complete
+                                             ; and hook this function to c-mode-common-hook
+     (defun my:add-semantic-to-autocomplete()
+       (add-to-list 'ac-sources 'ac-source-semantic)
+       )
+     (add-hook 'c-mode-common-hook 'my:add-semantic-to-autocomplete)
+                                             ; turn on automatic reparsing of open buffers in semantic
+     (global-semantic-idle-scheduler-mode 1)
+
+     (global-semanticdb-minor-mode 1)
+   #+END_SRC
+
+
+   SET BSD indent style
+
+   #+BEGIN_SRC emacs-lisp
+
+     (add-hook 'c-mode-hook
+               '(lambda()
+                  (c-set-style "bsd")
+                  ))
+   #+END_SRC
+   Don't ask with make command to run... 
+
+   #+BEGIN_SRC emacs-lisp
+     (setq compilation-read-command nil)
+   #+END_SRC
+
+** ESS (emacs speaks statistics... ).
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package ess
+       :ensure t
+       :init (require 'ess-site))
+   #+END_SRC
+
+* Email 
+
+
+  #+BEGIN_SRC emacs-lisp
+    (require 'starttls)
+    (setq starttls-use-gnutls t)
+
+    (require 'smtpmail)
+    (setq send-mail-function  'smtpmail-send-it
+          message-send-mail-function    'smtpmail-send-it
+          starttls-use-gnutls t
+          smtpmail-starttls-credentials  '(("smtp.office365.com" 587 nil nil))
+          smtpmail-auth-credentials (expand-file-name "~/.authinfo.gpg")
+          smtpmail-smtp-server  "smtp.office365.com"
+          smtpmail-stream-type  'starttls
+          smtpmail-smtp-service 587)
+
+  #+END_SRC
+
+** Mu4e 
+
+   #+BEGIN_SRC emacs-lisp
+     (add-to-list 'load-path "~/programs/mu/mu4e")
+     (require 'mu4e)
+     (require 'org-mu4e)
+
+
+     (setq mu4e-mu-binary "~/programs/mu/mu/mu")
+
+     (setq mu4e-maildir (expand-file-name "~/Maildir"))
+
+     (setq mu4e-sent-folder "/office365/sent")
+     (setq mu4e-drafts-folder "/drafts")
+     (setq mu4e-refile-folder "/office365/Archive")   ;; saved messages
+     (setq mu4e-trash-folder "/office365/trash")
+
+
+     (setq message-kill-buffer-on-exit t)
+     (setq mu4e-change-filenames-when-moving t)
+     (setq mu4e-confirm-quit nil)
+     (setq mail-user-agent 'mu4e-user-agent)
+
+     (setq mu4e-sent-messages-behavior 'sent)
+
+     (setq mu4e-view-show-addresses t)
+
+     (setq mu4e-attachment-dir "~/Downloads")
+
+
+
+
+     (setq mu4e-get-mail-command "~/programs/offlineimap/offlineimap.py")
+
+     (setq mu4e-compose-signature
+           "
+     Associate Professor Timo Lassmann
+     Academic Head of Computational Biology, Telethon Kids Institute
+     Adjunct Asssociate Professor, Center for Child Health Research
+     University of Western Australia
+
+     Telethon Kids Institute
+     100 Roberts Road, Subiaco, Western Australia, 6008
+     PO Box 855, West Perth, Western Australia, 6872
+
+     https://scholar.google.com.au/citations?user=7fZs_tEAAAAJ&hl=en
+
+     Visiting Scientist, RIKEN Yokohama Institute, Japan
+     Division of Genomic Technology,
+     RIKEN Center for Life Science Technologies,
+     Yokohama Institute,1-7-22 Suehiro-cho,
+     Tsurumi-ku, Yokohama, 230-0045 JAPAN
+                       ")
+
+   #+END_SRC
+
+   #+BEGIN_SRC emacs-lisp
+     (define-key mu4e-headers-mode-map (kbd "C-c c") 'org-mu4e-store-and-capture)
+     (define-key mu4e-view-mode-map (kbd "C-c c") 'org-mu4e-store-and-capture)
+   #+END_SRC
+
+
+   Spell check 
+
+   #+BEGIN_SRC emacs-lisp
+     (add-hook 'mu4e-compose-mode-hook
+               'flyspell-mode)
+     (add-hook 'message-mode-hook 'turn-on-orgtbl)
+     (add-hook 'message-mode-hook 'turn-on-orgstruct++)
+
+   #+END_SRC
+ 
+* Errors
+
+  Sometimes there is a problem with org "org-header function is void..
+
+  In this case delete the *elc files in the org dir:
+
+  #+BEGIN_EXAMPLE
+  cd .emacs.d/elpa/org-ZXXX/
+
+  rm -rf *elc
+  #+END_EXAMPLE
+
+
+  End. 
+
+* Done 
+
+  #+BEGIN_SRC emacs-lisp
+
+    ;;(if (window-system)
+    ;;(require 'init-client) 
+   ;; (if (daemonp)
+     ;;   (add-hook 'after-make-frame-functions
+     ;;             (lambda (frame)
+    ;;                (tl/change-theme 'gotham 'org-src-color-blocks-dark)))
+    ;;  (tl/change-theme 'gotham 'org-src-color-blocks-dark))
+    ;;(require 'init-client)
+    ;;((message "nada"))) 
+
+
+(if (daemonp)
+(add-hook 'after-make-frame-functions
+          '(lambda (f)
+             (with-selected-frame f
+               (when (window-system f) (require 'init-client) ))))
+(require 'init-client) )
+
+
+
+  #+END_SRC
+  
+  #+BEGIN_SRC   emacs-lisp
+ (require 'init-local nil t)
+  #+END_SRC
+  
+  
+  #+BEGIN_SRC emacs-lisp
+    (provide 'config-main)
+  #+END_SRC
+  
+  All good.
+  
