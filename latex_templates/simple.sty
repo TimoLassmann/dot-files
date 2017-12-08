@@ -1,0 +1,316 @@
+
+\usetheme{default}
+\usepackage[utf8]{inputenc} 
+\usepackage{graphicx}
+\usepackage{pgfpages}
+
+%\usepackage[default]{sourcesanspro}
+%\usepackage[T1]{fontenc}
+\beamertemplatenavigationsymbolsempty
+
+%\setbeamerfont{page number in head/foot}{size=\small}
+%\setbeamertemplate{footline}[frame number]
+\definecolor{offwhite}{RGB}{249,242,215}
+\definecolor{foreground}{RGB}{255,255,255}
+\definecolor{background}{RGB}{0,0,0}
+\definecolor{blue}{RGB}{107,174,214} % blue...
+\definecolor{gray}{RGB}{155,155,155}
+\definecolor{grey}{RGB}{155,155,155}
+
+\definecolor{subtitle}{RGB}{102,255,204}
+\definecolor{green}{RGB}{102,255,204} % green 
+\definecolor{red}{RGB}{255,111,207} % red 
+
+
+
+%\definecolor{foreground}{RGB}{239,239,239}
+%\definecolor{background}{RGB}{11,11,11}
+%\definecolor{blue}{RGB}{10,87,206}
+\definecolor{darkgrey}{RGB}{108,108,108}
+%\definecolor{red}{RGB}{176,0,4}
+
+\usepackage{amsmath}
+
+%\usepackage{ccfonts}
+\usepackage[T1]{fontenc}
+\usepackage{microtype}
+\DisableLigatures[f]{encoding = *, family = * }
+\usepackage[]{algorithm2e}
+
+
+\graphicspath{{../images/}{../../images/}}
+%\usepackage{concmath}
+
+
+\usepackage{listings}
+\usepackage[many]{tcolorbox}
+\usepackage{pgf}
+\usepackage{pgfplots}
+\usepgfplotslibrary{groupplots}
+
+\usepackage[thicklines]{cancel} 
+
+
+\usepackage{tikz}
+\usepackage{tkz-euclide}
+\usetikzlibrary{backgrounds}
+\usetikzlibrary{positioning,calc,shadings}
+\usetikzlibrary{arrows,automata} 
+\usetikzlibrary{decorations.text}
+\usetikzlibrary{shapes}
+\usetikzlibrary{decorations.pathmorphing}
+
+\usetikzlibrary{calc}
+\usepackage{cmbright}
+\newcommand{\aln}[2]{\shortstack{\tt #1\\ \tt #2}}
+\tikzset{onslide/.code args={<#1>#2}{%
+  \only<#1>{\pgfkeysalso{#2}}%
+}}
+
+\tikzstyle{every picture}+=[remember picture]
+\tikzstyle{na} = [baseline=-.5ex]
+
+\usepackage[backend=bibtex,hyperref=true,
+            url=false,
+            isbn=false,
+            style=numeric,
+            maxcitenames=3,
+            maxbibnames=1,
+            block=none]{biblatex}
+\addbibresource{~/org/bibliography/references}
+%\addbibresource{~/org/bibliography references/ref}
+%\renewcommand{\footnotesize}{\tiny}
+
+
+ 
+%\tikzstyle{every picture}+=[remember picture]
+%\tikzstyle{na} = [baseline=-.5ex]
+
+\usepackage{verbatim}
+%\usetikzlibrary{shapes,arrows}
+\usepackage{pdfrender}
+\usepackage{contour}
+\usepackage[outline]{contour}
+\contourlength{1pt}
+
+
+%\input{template/colors}
+
+\lstdefinestyle{customc}{
+ % belowcaptionskip=1\baselineskip,
+ % xleftmargin=\parindent,
+  language=C,
+  showstringspaces=false,
+  basicstyle=\footnotesize\ttfamily,
+  keywordstyle=\bfseries,
+  commentstyle=\itshape,
+  identifierstyle=\normalfont\bfseries,
+  stringstyle=\color{red},
+}
+
+\renewcommand\CancelColor{\color{red}}
+
+\makeatletter
+\newtcolorbox{tcbexample}[1][]{
+  %skin=beamer,
+  enhanced,
+  title=#1,
+  width=\paperwidth,
+  left=\Gm@lmargin,
+  right=\Gm@rmargin,
+  enlarge left by=-\Gm@lmargin,
+  enlarge right by=-\Gm@rmargin,
+  arc=0pt,
+  outer arc=0pt,
+  colback=grey,
+  boxrule=0pt,
+  colupper=foreground,
+  colbacktitle=grey!30!black
+}
+\makeatother
+
+%Blocks...
+
+%Blocks...
+%\setbeameroption{show notes on second screen}
+
+\setbeamertemplate{blocks}[rounded][shadow=true]
+%\setbeamercolor{structure}{fg=background}
+\setbeamercolor{structure}{fg=foreground}
+
+\setbeamercolor*{block title}{fg=background,bg= blue}
+\setbeamercolor*{block body}{fg= structure,bg= blue!25!background}
+
+\setbeamercolor*{block title alerted}{fg=background,bg= red!75!background}
+\setbeamercolor*{block body alerted}{fg= structure,bg= red!25!background}
+
+\setbeamercolor*{block title example}{fg=background,bg= green!75!background}
+\setbeamercolor*{block body example}{fg= structure,bg= green!25!background}
+
+
+% use those colors
+\setbeamercolor{titlelike}{fg=blue} %foreground}
+%\setbeamercolor{subtitle}{fg=green}
+\setbeamercolor{institute}{fg=grey}
+\setbeamercolor{author}{fg=grey}
+
+
+\setbeamercolor{normal text}{fg=foreground,bg=background}
+\setbeamercolor{item}{fg=foreground} % color of bullets
+\setbeamercolor{subitem}{fg=foreground}
+\setbeamercolor{itemize/enumerate subbody}{fg=foreground}
+\setbeamertemplate{itemize subitem}{{\textendash}}
+\setbeamerfont{itemize/enumerate subbody}{size=\footnotesize}
+\setbeamerfont{itemize/enumerate subitem}{size=\footnotesize}
+\setbeamerfont{bibliography}{size=\tiny}
+%\setbeamercolor{background}{background}
+
+\setbeamercolor*{bibliography entry title}{fg=darkgrey}
+\setbeamercolor*{bibliography entry author}{fg=darkgrey}
+\setbeamercolor*{bibliography entry location}{fg=darkgrey}
+\setbeamercolor*{bibliography entry note}{fg=darkgrey}
+
+\setbeamertemplate{bibliography item}[text]
+\setbeamercolor{bibliography item}{fg=darkgrey}
+\setbeamercolor{footnote}{fg=darkgrey}
+
+\setbeamertemplate{frametitle}[default][center]
+%\setbeamerfont{frametitle}{size=\large\bfseries }
+\setbeamerfont{footnote}{size=\tiny}
+
+\makeatletter
+\def\parsecomma#1,#2\endparsecomma{\def\page@x{#1}\def\page@y{#2}}
+\tikzdeclarecoordinatesystem{page}{
+    \parsecomma#1\endparsecomma
+    \pgfpointanchor{current page}{north east}
+    % Save the upper right corner
+    \pgf@xc=\pgf@x%
+    \pgf@yc=\pgf@y%
+    % save the lower left corner
+    \pgfpointanchor{current page}{south west}
+    \pgf@xb=\pgf@x%
+    \pgf@yb=\pgf@y%
+    % Transform to the correct placement
+    \pgfmathparse{(\pgf@xc-\pgf@xb)/2.*\page@x+(\pgf@xc+\pgf@xb)/2.}
+    \expandafter\pgf@x\expandafter=\pgfmathresult pt
+    \pgfmathparse{(\pgf@yc-\pgf@yb)/2.*\page@y+(\pgf@yc+\pgf@yb)/2.}
+    \expandafter\pgf@y\expandafter=\pgfmathresult pt
+}
+
+\makeatother
+
+
+
+\definecolor{rosso}{RGB}{220,57,18}
+\definecolor{giallo}{RGB}{255,153,0}
+\definecolor{blu}{RGB}{102,140,217}
+\definecolor{verde}{RGB}{16,150,24}
+\definecolor{viola}{RGB}{153,0,153}
+
+\makeatletter
+
+\tikzstyle{chart}=[
+    legend label/.style={font={\scriptsize},anchor=west,align=left},
+    legend box/.style={rectangle, draw, minimum size=5pt},
+    axis/.style={black,semithick,->},
+    axis label/.style={anchor=east,font={\tiny}},
+]
+
+\tikzstyle{bar chart}=[
+    chart,
+    bar width/.code={
+        \pgfmathparse{##1/2}
+        \global\let\bar@w\pgfmathresult
+    },
+    bar/.style={very thick, draw=white},
+    bar label/.style={font={\bf\small},anchor=north},
+    bar value/.style={font={\footnotesize}},
+    bar width=.75,
+]
+
+\tikzstyle{pie chart}=[
+    chart,
+    slice/.style={line cap=round, line join=round, very thick,draw=background},
+    pie title/.style={font={\bf}},
+    slice type/.style 2 args={
+        ##1/.style={fill=##2},
+        values of ##1/.style={}
+    }
+]
+
+\pgfdeclarelayer{background}
+\pgfdeclarelayer{foreground}
+\pgfsetlayers{background,main,foreground}
+
+
+\newcommand{\pie}[3][]{
+    \begin{scope}[#1]
+    \pgfmathsetmacro{\curA}{90}
+    \pgfmathsetmacro{\r}{1.25}
+    \def\c{(0,0)}
+    \node[pie title] at (90:1.3) {#2};
+    \foreach \v/\s in{#3}{
+        \pgfmathsetmacro{\deltaA}{\v/100*360}
+        \pgfmathsetmacro{\nextA}{\curA + \deltaA}
+        \pgfmathsetmacro{\midA}{(\curA+\nextA)/2}
+
+        \path[slice,\s] \c
+            -- +(\curA:\r)
+            arc (\curA:\nextA:\r)
+            -- cycle;
+        \pgfmathsetmacro{\d}{max((\deltaA * -(.5/50) + 1) , .5)}
+
+        \begin{pgfonlayer}{foreground}
+        \path \c -- node[pos=\d,pie values,values of \s]{\large $\v\%$} +(\midA:\r);
+        \end{pgfonlayer}
+
+        \global\let\curA\nextA
+    }
+    \end{scope}
+}
+
+\newcommand{\legend}[2][]{
+    \begin{scope}[#1]
+    \path
+        \foreach \n/\s in {#2}
+            {
+                  ++(0,-10pt) node[\s,legend box] {} +(5pt,0) node[legend label] {\n}
+            }
+    ;
+    \end{scope}
+}
+
+\tikzset{
+  dot hidden/.style={},
+  line hidden/.style={},
+  dot colour/.style={dot hidden/.append style={color=#1}},
+  dot colour/.default=black,
+  line colour/.style={line hidden/.append style={color=#1}},
+  line colour/.default=black
+}
+
+\usepackage{xparse}
+\NewDocumentCommand{\drawdie}{O{}m}{
+\begin{tikzpicture}[x=1em,y=1em,radius=0.1,#1]
+  \draw[rounded corners=1,line hidden] (0,0) rectangle (1,1);
+  \ifodd#2
+    \fill[dot hidden] (0.5,0.5) circle;
+  \fi
+  \ifnum#2>1
+    \fill[dot hidden] (0.2,0.2) circle;
+    \fill[dot hidden] (0.8,0.8) circle;
+   \ifnum#2>3
+     \fill[dot hidden] (0.2,0.8) circle;
+     \fill[dot hidden] (0.8,0.2) circle;
+    \ifnum#2>5
+      \fill[dot hidden] (0.8,0.5) circle;
+      \fill[dot hidden] (0.2,0.5) circle;
+     \ifnum#2>7
+       \fill[dot hidden] (0.5,0.8) circle;
+       \fill[dot hidden] (0.5,0.2) circle;
+      \fi
+    \fi
+  \fi
+\fi
+\end{tikzpicture}}
+

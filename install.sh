@@ -1,6 +1,17 @@
 #!/bin/sh
 
+
+/usr/bin/emacs --debug-init --load "build.el" 
+
+cat > ~/.emacs <<- EOM
+(load-file "~/.emacs.d/elisp/config-main.el")
+EOM
+
+
+exit;
 # Install reveal.js....
+
+
 
 pwd=$(pwd)
 
