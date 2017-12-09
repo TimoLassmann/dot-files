@@ -1,7 +1,6 @@
 #!/bin/sh
 
-
-/usr/bin/emacs --debug-init --load "build.el" 
+emacs --debug-init --load "build.el" 
 
 cat > ~/.emacs <<- EOM
 (load-file "~/.emacs.d/elisp/config-main.el")

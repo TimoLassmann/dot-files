@@ -34,17 +34,19 @@
 
   ;; Initially create some of the destination directories
   ;;(ha/mkdir "$HOME/.oh-my-zsh/themes")
-  (tl/mkdir "${tl/emacs-directory}/elisp")
-  (tl/mkdir "${tl/emacs-directory}/latex_templates") 
+  ;;(tl/mkdir "${tl/emacs-directory}/elisp")
+  ;;(tl/mkdir "${tl/emacs-directory}/latex_templates") 
 
   (tl/tangle-files "${dot-files-src}/*.org")
 
   ;; Some Elisp files are just symlinked instead of tangled...
-  (tl/mksymlinks "${dot-files-src}/elisp/*.el"
+  (message "Make links to el files.")
+  (tl/mksymlinks "${dot-files-src}/elisp"
                  "${tl/emacs-directory}/elisp")
-
+ (message "done Make links to el files.")
+ 
   ;; copy my latex templates
-  (tl/mksymlinks "${dot-files-src}/latex_templates/*.sty"
+  (tl/mksymlinks "${dot-files-src}/latex_templates"
                  "${tl/emacs-directory}/latex_templates")
   
 
