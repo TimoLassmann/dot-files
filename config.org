@@ -9,11 +9,11 @@
 #+PROPERTY:    header-args:shell       :tangle no
 #+PROPERTY:    header-args             :results silent   :eval no-export   :comments org
 
-\Author{Timo La\ss mann}
-\DocumentID{src_sh[:value verbatim]{shasum -a 256 config.org | awk '{print $1}' }}
+# \Author{Timo La\ss mann}
+# \DocumentID{src_sh[:value verbatim]{shasum -a 256 config.org | awk '{print $1}' }}
 * General Settings
 ** Whoami 
-
+   
    #+BEGIN_SRC emacs-lisp
      (setq user-full-name "Timo Lassmann"
            user-mail-address "timo.lassmann@telethonkids.org.au")
@@ -189,78 +189,7 @@ End.
        :bind ("M-x" . smex)
        ("M-X" . smex-major-mode-commands))
    #+END_SRC
-
-** Helm
-
-   #+BEGIN_SRC example
-     (use-package helm
-       :ensure t
-       :init
-       (use-package helm-config))   ;; Binds C-x c to the helm bidness.
-
-     (global-set-key (kbd "C-c h") 'helm-command-prefix)
-     (global-unset-key (kbd "C-x c"))
-     (global-set-key (kbd "M-x") 'helm-M-x)
-     (global-set-key (kbd "M-y") 'helm-show-kill-ring)
-     (global-set-key (kbd "C-x b") 'helm-mini)
-     (global-set-key (kbd "C-x C-f") 'helm-find-files)
-     (global-set-key (kbd "C-c h o") 'helm-occur)
-     (define-key helm-map (kbd "<tab>") 'helm-execute-persistent-action) ; rebind tab to run persistent action
-     (define-key helm-map (kbd "C-i") 'helm-execute-persistent-action) ; make TAB work in terminal
-     (define-key helm-map (kbd "C-z")  'helm-select-action) ; list actions using C-z
-
-     (when (executable-find "curl")
-       (setq helm-google-suggest-use-curl-p t))
-
-     (setq helm-split-window-in-side-p           t ; open helm buffer inside current window, not occupy whole other window
-           helm-move-to-line-cycle-in-source     t ; move to end or beginning of source when reaching top or bottom of source.
-           helm-ff-search-library-in-sexp        t ; search for library in `require' and `declare-function' sexp.
-           helm-scroll-amount                    8 ; scroll 8 lines other window using M-<next>/M-<prior>
-           helm-ff-file-name-history-use-recentf t
-           helm-echo-input-in-header-line t)
-
-     (defun spacemacs//helm-hide-minibuffer-maybe ()
-       "Hide minibuffer in Helm session if we use the header line as input field."
-       (when (with-helm-buffer helm-echo-input-in-header-line)
-         (let ((ov (make-overlay (point-min) (point-max) nil nil t)))
-           (overlay-put ov 'window (selected-window))
-           (overlay-put ov 'face
-                        (let ((bg-color (face-background 'default nil)))
-                          `(:background ,bg-color :foreground ,bg-color)))
-           (setq-local cursor-type nil))))
-
-
-     (add-hook 'helm-minibuffer-set-up-hook
-               'spacemacs//helm-hide-minibuffer-maybe)
-
-     (setq helm-autoresize-max-height 0)
-     (setq helm-autoresize-min-height 20)
-     (helm-autoresize-mode 1)
-
-     (helm-mode 1)
-
-   #+END_SRC
-
-   #+RESULTS:
-   : t
-
-   Re-read this essay on Helm.
-
-   The helm-swoop project has a nice DWIM replacement for
-   isearch-forward-symbol-at-point (bound to M-s .):
-   #+BEGIN_SRC example
-     (use-package helm-swoop
-       :ensure t
-       :init
-       ;; If this value is t, split window inside the current window
-       (setq helm-swoop-split-with-multiple-windows t
-             ;; If you prefer fuzzy matching
-             helm-swoop-use-fuzzy-match t)
-       :bind
-       (("M-s s" . helm-swoop)  ;; overbind M-i ?
-        ("M-s S" . helm-multi-swoop)))
-   #+END_SRC
-
+   
 ** IDO
 
    #+BEGIN_SRC emacs-lisp
@@ -273,7 +202,45 @@ End.
        :config
        (ido-mode 1)
        (ido-everywhere 1)
-       (add-to-list 'completion-ignored-extensions ".pyc"))
+       (add-to-list 'completion-ignored-extensions ".o")
+       (add-to-list 'completion-ignored-extensions ".elc")
+       (add-to-list 'completion-ignored-extensions "~")
+       (add-to-list 'completion-ignored-extensions ".bin")
+       (add-to-list 'completion-ignored-extensions ".bak")
+       (add-to-list 'completion-ignored-extensions ".obj")
+       (add-to-list 'completion-ignored-extensions ".map")
+       (add-to-list 'completion-ignored-extensions ".a")
+       (add-to-list 'completion-ignored-extensions ".ln")
+       (add-to-list 'completion-ignored-extensions ".mod")
+       (add-to-list 'completion-ignored-extensions ".gz")
+       (add-to-list 'completion-ignored-extensions ".aux")
+       (add-to-list 'completion-ignored-extensions ".tdo")
+       (add-to-list 'completion-ignored-extensions ".fmt")
+       (add-to-list 'completion-ignored-extensions ".swp")
+       (add-to-list 'completion-ignored-extensions ".pdfsync")
+       (add-to-list 'completion-ignored-extensions ".pdf")
+       (add-to-list 'completion-ignored-extensions ".vrb")
+       (add-to-list 'completion-ignored-extensions ".idx")
+       (add-to-list 'completion-ignored-extensions ".ind")
+       (add-to-list 'completion-ignored-extensions ".bbl")
+       (add-to-list 'completion-ignored-extensions ".toc")
+       (add-to-list 'completion-ignored-extensions ".blg")
+       (add-to-list 'completion-ignored-extensions ".snm")
+       (add-to-list 'completion-ignored-extensions ".ilg")
+       (add-to-list 'completion-ignored-extensions ".log")
+       (add-to-list 'completion-ignored-extensions ".out")
+       (add-to-list 'completion-ignored-extensions ".pyc")
+       (add-to-list 'completion-ignored-extensions ".DS_Store")
+       (add-to-list 'completion-ignored-extensions "-blx.bib")
+       (add-to-list 'completion-ignored-extensions ".run.xml")
+       (add-to-list 'completion-ignored-extensions ".fls")
+       (add-to-list 'completion-ignored-extensions ".fdb_latexmk")
+       (add-to-list 'completion-ignored-extensions ".bcf")
+       (add-to-list 'completion-ignored-extensions ".rel")
+       (add-to-list 'completion-ignored-extensions ".epub")
+
+
+       )
 
    #+END_SRC
 
@@ -283,7 +250,7 @@ End.
      (use-package flx-ido
        :ensure t
        :init (setq ido-enable-flex-matching t
-                   ido-use-faces nil)
+                   ido-use-faces t)
        :config (flx-ido-mode 1))
    #+END_SRC
 
@@ -737,58 +704,6 @@ End.
 end. 
 
 * Word Smithing
-** Auto Complete
-   #+BEGIN_SRC emacs-lisp
-     
-     (use-package company
-       :ensure t
-       :bind ("C-:" . company-complete)  ; In case I don't want to wait
-       :init
-       (global-company-mode)
-        :config 
-        (setq company-dabbrev-ignore-case t)
-        (setq company-show-numbers t)
-        (add-to-list 'company-backends 'company-gtags)
-        (add-to-list 'company-backends 'company-math-symbols-unicode)
-       :diminish company-mode)
-
-
-     (use-package company-math
-       :ensure t)
-
-(use-package company-c-headers
-  :ensure t
-  :config
-(add-to-list 'company-c-headers-path-system "/usr/include/"))
-
-        #+END_SRC
-
-
-
-   Take advantage of idle time by displaying some documentation using
-   company-quickhelp project.
-   #+BEGIN_SRC emacs-lisp
-     (use-package company-quickhelp
-       :ensure t
-       :config
-       (company-quickhelp-mode 1))
-     
-   #+END_SRC
-
-
-
-
-
-
-
-   #+BEGIN_SRC emacs-lisp
-     (setq-local imenu-create-index-function #'ggtags-build-imenu-index)
-
-   #+END_SRC
-   #+RESULTS:
-   : ggtags-build-imenu-index
-
-   Word Smithing
 * Programming
 
   General programming settings..
@@ -815,6 +730,56 @@ end.
    #+BEGIN_SRC emacs-lisp
      (setq compilation-scroll-output t)
    #+END_SRC
+
+** Auto Complete
+   #+BEGIN_SRC emacs-lisp
+     
+     (use-package company
+       :ensure t
+       :bind ("C-:" . company-complete)  ; In case I don't want to wait
+       :init
+       (global-company-mode)
+        :config 
+        (setq company-dabbrev-ignore-case t)
+        (setq company-show-numbers t)
+        (add-to-list 'company-backends 'company-gtags)
+        (add-to-list 'company-backends 'company-math-symbols-unicode)
+       :diminish company-mode)
+
+
+     (use-package company-math
+       :ensure t)
+
+(use-package company-c-headers
+  :ensure t
+  :config
+(add-to-list 'company-c-headers-path-system "/usr/include/")
+(add-to-list 'company-c-headers-path-system "~/code/libraries/libtldevel/"))
+        #+END_SRC
+
+
+
+   Take advantage of idle time by displaying some documentation using
+   company-quickhelp project.
+   #+BEGIN_SRC emacs-lisp
+     (use-package company-quickhelp
+       :ensure t
+       :config
+       (company-quickhelp-mode 1))
+     
+   #+END_SRC
+
+
+
+   #+BEGIN_SRC emacs-lisp
+     (setq-local imenu-create-index-function #'ggtags-build-imenu-index)
+
+   #+END_SRC
+   #+RESULTS:
+   : ggtags-build-imenu-index
+
+   Word Smithing
+
 
 ** Yasnippet
 
@@ -925,7 +890,7 @@ end.
 
 Autocomplete 
 
-   #+BEGIN_SRC emacs-lisp
+  
      (use-package auto-complete
        :ensure t)
      (use-package auto-complete-c-headers
@@ -954,7 +919,7 @@ Autocomplete
      (global-semantic-idle-scheduler-mode 1)
 
      (global-semanticdb-minor-mode 1)
-   #+END_SRC
+  
 
 
    SET BSD indent style
@@ -1008,7 +973,7 @@ Autocomplete
          (message "Microsoft Windows")))
       ((string-equal system-type "darwin") ; Mac OS X
        (progn
-         (add-to-list 'load-path "/usr/local/share/emacs/site-lisp/mu4e")
+         (add-to-list 'load-path "/usr/local/Cellar/mu/HEAD-0d9d8d2_1/share/emacs/site-lisp/mu/mu4e")
          (setq mu4e-mu-binary "/usr/local/bin/mu")
          ))
       ((string-equal system-type "gnu/linux") ; linux

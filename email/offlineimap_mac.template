@@ -1,7 +1,7 @@
 [general]
 ui = TTYUI
 accounts = office365
-pythonfile = ~/code/dot-files/email/getpass.py
+pythonfile = ~/code/dot-files/email/getpass_mac.py
 status_backend = sqlite
 
 [Account office365]

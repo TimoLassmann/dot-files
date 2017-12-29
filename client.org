@@ -107,8 +107,23 @@
     (use-package gotham-theme
       :ensure t
       )
+
+(set-face-attribute 'ido-virtual  nil :foreground "#00003f")
+
+
   #+END_SRC
   
+add some missing fonts.. 
+
+#+BEGIN_SRC emacs-lisp
+ (defun tl-color-scheme-additions ()
+          "Some extra colors I added..."
+          (interactive)
+          (custom-set-faces
+           '(ido-virtual
+             ((t (:foreground "#008ED1" :background "#000000"))))))
+#+END_SRC
+
   Make dark blocks... 
 
   #+BEGIN_SRC emacs-lisp
@@ -133,10 +148,12 @@
   #+END_SRC
 
   #+BEGIN_SRC emacs-lisp
-        (defun tl/change-theme (theme org-block-style)
+        (defun tl/change-theme (theme org-block-style additional)
           "Changes the color scheme and reset the mode line."
           (load-theme theme t)
           (funcall org-block-style)
+          (funcall additional)
+
           (let* ((tl/fixed-font-tuple (list :font tl/fixed-font-family))
                                             ; (ha/varible-font-tuple (list :font ha/variable-font-family))
                  (base-font-color     (face-foreground 'default nil 'default))
@@ -178,7 +195,7 @@
   And the default startup goes to…night…
 
   #+BEGIN_SRC emacs-lisp
-       (tl/change-theme 'gotham 'org-src-color-blocks-dark)
+       (tl/change-theme 'gotham 'org-src-color-blocks-dark 'tl-color-scheme-additions)
   #+END_SRC
 
 
