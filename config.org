@@ -238,8 +238,6 @@ End.
        (add-to-list 'completion-ignored-extensions ".bcf")
        (add-to-list 'completion-ignored-extensions ".rel")
        (add-to-list 'completion-ignored-extensions ".epub")
-
-
        )
 
    #+END_SRC
@@ -309,7 +307,6 @@ End.
 
    #+END_SRC
 
-
 ** Line Numbers
 
 
@@ -367,7 +364,6 @@ End.
    #+END_SRC
 
 * Org-mode
-  
 ** General setup
 
    load org mode
@@ -379,28 +375,49 @@ End.
              org-return-follows-link t
              org-completion-use-ido t
              org-outline-path-complete-in-steps nil))
-
-
-
    #+END_SRC
  
    Directory, inbox ..
 
    #+BEGIN_SRC emacs-lisp
-     (setq org-directory "~/org")
+     (setq org-directory "~/Dropbox")
      (defun org-file-path (filename)
        "Return the absolute address of an org file, given its relative name."
        (concat (file-name-as-directory org-directory) filename))
-     (setq org-index-file (org-file-path "index.org"))
+     (setq org-index-file (org-file-path "/capture/inbox.org"))
      (setq org-archive-location
            (concat (org-file-path "archive.org") "::* From %s"))
    #+END_SRC
 
-   Set index.org as agenda source ...
+   Multiple files for agenda source:
 
    #+BEGIN_SRC emacs-lisp
-     (setq org-agenda-files (list org-index-file))
+     ;;   (setq org-agenda-files (list org-index-file))
+     (setq org-agenda-files '("~/Dropbox/capture"
+                              "~/Dropbox/work"
+                              "~/Dropbox/planning"
+                              "~/Dropbox/life"))
    #+END_SRC
+
+Refile targets / create new targets if necessary
+
+#+BEGIN_SRC emacs-lisp
+;;(setq org-refile-targets '((org-agenda-files :maxlevel . 3)))
+ (setq org-refile-targets '(("~/Dropbox/work/work-todo.org" :maxlevel . 1)
+                             ("~/Dropbox/life/life-todo.org" :maxlevel . 1)
+                             ("~/Dropbox/org/gtd/tickler.org" :maxlevel . 1)))
+  (setq org-refile-use-outline-path 'file)
+  (setq org-refile-allow-creating-parent-nodes 'confirm)
+(setq org-refile-allow-creating-parent-nodes 'confirm)
+#+END_SRC
+
+Drawers 
+#+BEGIN_SRC emacs-lisp
+(setq org-log-into-drawer t)
+
+;; Add the REPORT drawer
+(setq org-drawers '("PROPERTIES" "CLOCK" "LOGBOOK" "REPORT"))
+#+END_SRC
 
    Hitting C-c C-x C-s will mark a todo as done and move it to an appropriate place
    in the archive.
@@ -423,6 +440,35 @@ End.
    #+BEGIN_SRC emacs-lisp
      (setq org-log-done 'time)
    #+END_SRC
+
+** Capture
+   Capture templates..
+   #+BEGIN_SRC emacs-lisp
+     (setq org-capture-templates
+           (quote (("t" "todo" entry (file+headline org-index-file "Inbox")
+                    "* TODO %?\nSCHEDULED: %(org-insert-time-stamp (org-read-date nil t \"+0d\"))\n%a\n")
+                   ("r" "respond" entry (file+headline org-index-file "Inbox")
+                    "* TODO Respond to %:from on %:subject\nSCHEDULED: %(org-insert-time-stamp (org-read-date nil t \"+0d\"))\n%a\n")
+                   ("m" "Mail" entry (file+headline "~/inbox.org" "Mail")
+                    "* TODO %?\n%a   %:from %:fromname %:fromaddress" :prepend t :jump-to-captured t)
+                   ("p" "Daily Plan" plain (file+datetree "~/Dropbox/planning/daily-plan.org")
+                    "+ [ ] The 3 most important tasks [/]
+           - [ ] 
+           - [ ] 
+           - [ ] 
+         + [ ] Other tasks that are in the system [/]
+           - [ ] 
+         + [ ] ToDos which are not tracked by my system [/]
+           - [ ] " :immediate-finish t)
+                   )))
+
+
+
+
+   #+END_SRC
+
+   #+RESULTS:
+   | t | todo | entry | (file+headline org-index-file Inbox) | * TODO %? |
 
 ** Coding
 
@@ -514,26 +560,6 @@ End.
      (add-hook 'org-babel-after-execute-hook 'org-display-inline-images)   
      (add-hook 'org-mode-hook 'org-display-inline-images)
    #+END_SRC
-
-** Capture
-   Capture templates..
-   #+BEGIN_SRC emacs-lisp
-     (setq org-capture-templates
-           (quote (("t" "todo" entry (file+headline org-index-file "Inbox")
-                    "* TODO %?\nSCHEDULED: %(org-insert-time-stamp (org-read-date nil t \"+0d\"))\n%a\n")
-                   ("r" "respond" entry (file+headline org-index-file "Inbox")
-                    "* TODO Respond to %:from on %:subject\nSCHEDULED: %(org-insert-time-stamp (org-read-date nil t \"+0d\"))\n%a\n")
-                   ("m" "Mail" entry (file+headline "~/inbox.org" "Mail")
-                    "* TODO %?\n%a   %:from %:fromname %:fromaddress" :prepend t :jump-to-captured t)
-                   )))
-
-
-
-
-   #+END_SRC
-
-   #+RESULTS:
-   | t | todo | entry | (file+headline org-index-file Inbox) | * TODO %? |
 
 ** Keybindings
 
@@ -703,7 +729,6 @@ End.
 
 end. 
 
-* Word Smithing
 * Programming
 
   General programming settings..
@@ -732,54 +757,83 @@ end.
    #+END_SRC
 
 ** Auto Complete
+
    #+BEGIN_SRC emacs-lisp
-     
-     (use-package company
-       :ensure t
-       :bind ("C-:" . company-complete)  ; In case I don't want to wait
+     (use-package auto-complete
+       :ensure t  
+       :commands auto-complete-mode
        :init
-       (global-company-mode)
-        :config 
-        (setq company-dabbrev-ignore-case t)
-        (setq company-show-numbers t)
-        (add-to-list 'company-backends 'company-gtags)
-        (add-to-list 'company-backends 'company-math-symbols-unicode)
-       :diminish company-mode)
-
-
-     (use-package company-math
-       :ensure t)
-
-(use-package company-c-headers
-  :ensure t
-  :config
-(add-to-list 'company-c-headers-path-system "/usr/include/")
-(add-to-list 'company-c-headers-path-system "~/code/libraries/libtldevel/"))
-        #+END_SRC
-
-
-
-   Take advantage of idle time by displaying some documentation using
-   company-quickhelp project.
-   #+BEGIN_SRC emacs-lisp
-     (use-package company-quickhelp
-       :ensure t
+       (progn
+         (auto-complete-mode t))
        :config
-       (company-quickhelp-mode 1))
-     
+       (progn 
+         (use-package auto-complete-config)
+
+         (ac-set-trigger-key "TAB")
+         (ac-config-default)
+
+         (setq ac-delay 0.02)
+         (setq ac-use-menu-map t)
+         (setq ac-menu-height 50)
+         (setq ac-use-quick-help nil) 
+         (setq ac-comphist-file  "~/.emacs.d/ac-comphist.dat")
+         (setq ac-ignore-case nil)
+         (setq ac-dwim  t)
+         (setq ac-fuzzy-enable t)
+
+         (use-package ac-dabbrev
+           :ensure t      
+           :config
+           (progn
+             (add-to-list 'ac-sources 'ac-source-dabbrev)))
+
+         (setq ac-modes '(emacs-lisp-mode
+                          lisp-mode
+                          lisp-interaction-mode
+                          c-mode
+                          cc-mode
+                          c++-mode
+                          makefile-mode
+                          sh-mode))))
+
+
+     (define-key ac-complete-mode-map "\C-n" 'ac-next)
+     (define-key ac-complete-mode-map "\C-p" 'ac-previous)
    #+END_SRC
 
+Headers 
+#+BEGIN_SRC emacs-lisp
+  (use-package auto-complete-c-headers
+    :ensure t)
+  (require 'auto-complete-config)
+  (ac-config-default)
+                                          ; start yasnippet with emacs
+                                          ; let's define a function which initializes auto-complete-c-headers and gets called for c/c++ hooks
+  (defun my:ac-c-header-init ()
+    (require 'auto-complete-c-headers)
+    (add-to-list 'ac-sources 'ac-source-c-headers)
+    (add-to-list 'achead:include-directories '"/usr/include")
+    )
+  (add-hook 'c-mode-hook 'my:ac-c-header-init)
+  (semantic-mode 1)
+                                          ; let's define a function which adds semantic as a suggestion backend to auto complete
+                                          ; and hook this function to c-mode-common-hook
+  (defun my:add-semantic-to-autocomplete()
+    (add-to-list 'ac-sources 'ac-source-semantic)
+    )
+  (add-hook 'c-mode-common-hook 'my:add-semantic-to-autocomplete)
+                                          ; turn on automatic reparsing of open buffers in semantic
+  (global-semantic-idle-scheduler-mode 1)
 
+  (global-semanticdb-minor-mode 1)
+#+END_SRC
 
-   #+BEGIN_SRC emacs-lisp
-     (setq-local imenu-create-index-function #'ggtags-build-imenu-index)
+#+BEGIN_SRC emacs-lisp
+  (setq-local imenu-create-index-function #'ggtags-build-imenu-index)
 
-   #+END_SRC
-   #+RESULTS:
-   : ggtags-build-imenu-index
-
-   Word Smithing
-
+#+END_SRC
+#+RESULTS:
+: ggtags-build-imenu-index
 
 ** Yasnippet
 
@@ -888,37 +942,37 @@ end.
        :init (add-hook 'C-mode-hook 'smartparens-mode))
    #+END_SRC
 
-Autocomplete 
+   Autocomplete 
 
   
-     (use-package auto-complete
-       :ensure t)
-     (use-package auto-complete-c-headers
-       :ensure t)
-                                             ; do default config for auto-complete
-     (require 'auto-complete-config)
-     (ac-config-default)
-                                             ; start yasnippet with emacs
-                                             ; let's define a function which initializes auto-complete-c-headers and gets called for c/c++ hooks
-     (defun my:ac-c-header-init ()
-       (require 'auto-complete-c-headers)
-       (add-to-list 'ac-sources 'ac-source-c-headers)
-       (add-to-list 'achead:include-directories '"/usr/include")
-       )
-     (add-hook 'c-mode-hook 'my:ac-c-header-init)
+   (use-package auto-complete
+   :ensure t)
+   (use-package auto-complete-c-headers
+   :ensure t)
+   ; do default config for auto-complete
+   (require 'auto-complete-config)
+   (ac-config-default)
+   ; start yasnippet with emacs
+   ; let's define a function which initializes auto-complete-c-headers and gets called for c/c++ hooks
+   (defun my:ac-c-header-init ()
+   (require 'auto-complete-c-headers)
+   (add-to-list 'ac-sources 'ac-source-c-headers)
+   (add-to-list 'achead:include-directories '"/usr/include")
+   )
+   (add-hook 'c-mode-hook 'my:ac-c-header-init)
 
-                                             ; turn on Semantic
-     (semantic-mode 1)
-                                             ; let's define a function which adds semantic as a suggestion backend to auto complete
-                                             ; and hook this function to c-mode-common-hook
-     (defun my:add-semantic-to-autocomplete()
-       (add-to-list 'ac-sources 'ac-source-semantic)
-       )
-     (add-hook 'c-mode-common-hook 'my:add-semantic-to-autocomplete)
-                                             ; turn on automatic reparsing of open buffers in semantic
-     (global-semantic-idle-scheduler-mode 1)
+   ; turn on Semantic
+   (semantic-mode 1)
+   ; let's define a function which adds semantic as a suggestion backend to auto complete
+   ; and hook this function to c-mode-common-hook
+   (defun my:add-semantic-to-autocomplete()
+   (add-to-list 'ac-sources 'ac-source-semantic)
+   )
+   (add-hook 'c-mode-common-hook 'my:add-semantic-to-autocomplete)
+   ; turn on automatic reparsing of open buffers in semantic
+   (global-semantic-idle-scheduler-mode 1)
 
-     (global-semanticdb-minor-mode 1)
+   (global-semanticdb-minor-mode 1)
   
 
 
@@ -1104,4 +1158,44 @@ Autocomplete
   #+END_SRC
   
   All good.
+
   
+  #+BEGIN_EXAMPLE emacs-lisp
+  ;; == irony-mode ==
+  (use-package irony
+    :ensure t
+    :defer t
+    :init
+    (add-hook 'c++-mode-hook 'irony-mode)
+    (add-hook 'c-mode-hook 'irony-mode)
+    (add-hook 'objc-mode-hook 'irony-mode)
+    :config
+    ;; replace the `completion-at-point' and `complete-symbol' bindings in
+    ;; irony-mode's buffers by irony-mode's function
+    (defun my-irony-mode-hook ()
+      (define-key irony-mode-map [remap completion-at-point]
+        'irony-completion-at-point-async)
+      (define-key irony-mode-map [remap complete-symbol]
+        'irony-completion-at-point-async))
+    (add-hook 'irony-mode-hook 'my-irony-mode-hook)
+    (add-hook 'irony-mode-hook 'irony-cdb-autosetup-compile-options)
+    )
+
+  ;; == company-mode ==
+  (use-package company
+    :ensure t
+    :defer t
+    :init (add-hook 'after-init-hook 'global-company-mode)
+    :config
+    (use-package company-irony :ensure t :defer t)
+    (setq company-idle-delay              nil
+    company-minimum-prefix-length   2
+    company-show-numbers            t
+    company-tooltip-limit           20
+    company-dabbrev-downcase        nil
+    company-backends                '((company-irony company-gtags))
+    )
+    :bind ("C-;" . company-complete-common)
+    )
+
+  #+END_EXAMPLE
