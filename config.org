@@ -447,28 +447,57 @@ Drawers
      (setq org-capture-templates
            (quote (("t" "todo" entry (file+headline org-index-file "Inbox")
                     "* TODO %?\nSCHEDULED: %(org-insert-time-stamp (org-read-date nil t \"+0d\"))\n%a\n")
+                   ("n" "note" entry (file+headline org-index-file "Inbox")
+                    "* %?\n\n  %i\n\n  See: %a" :empty-lines 1)
                    ("r" "respond" entry (file+headline org-index-file "Inbox")
                     "* TODO Respond to %:from on %:subject\nSCHEDULED: %(org-insert-time-stamp (org-read-date nil t \"+0d\"))\n%a\n")
                    ("m" "Mail" entry (file+headline "~/inbox.org" "Mail")
                     "* TODO %?\n%a   %:from %:fromname %:fromaddress" :prepend t :jump-to-captured t)
                    ("p" "Daily Plan" plain (file+datetree "~/Dropbox/planning/daily-plan.org")
                     "+ [ ] The 3 most important tasks [/]
-           - [ ] 
-           - [ ] 
-           - [ ] 
-         + [ ] Other tasks that are in the system [/]
-           - [ ] 
-         + [ ] ToDos which are not tracked by my system [/]
-           - [ ] " :immediate-finish t)
+                     - [ ] 
+                     - [ ] 
+                     - [ ] 
+                   + [ ] Other tasks that are in the system [/]
+                     - [ ] 
+                   + [ ] ToDos which are not tracked by my system [/]
+                     - [ ] " :immediate-finish t)
                    )))
-
-
-
-
    #+END_SRC
 
-   #+RESULTS:
-   | t | todo | entry | (file+headline org-index-file Inbox) | * TODO %? |
+** Taking Meeting Notes
+
+directly from https://github.com/howardabrams/dot-files/blob/master/emacs-org.org)
+
+I’ve notice that while I really like taking notes in a meeting, I don’t always like the multiple windows I have opened, so I created this function that I can easily call to eliminate distractions during a meeting.
+#+BEGIN_SRC emacs-lisp
+
+(defun meeting-notes ()
+  "Call this after creating an org-mode heading for where the notes for the meeting
+should be. After calling this function, call 'meeting-done' to reset the environment."
+  (interactive)
+  (outline-mark-subtree)                              ;; Select org-mode section
+  (narrow-to-region (region-beginning) (region-end))  ;; Only show that region
+  (deactivate-mark)
+  (delete-other-windows)                              ;; Get rid of other windows
+  (text-scale-set 2)                                  ;; Text is now readable by others
+  (fringe-mode 0)
+  (message "When finished taking your notes, run meeting-done."))
+
+#+END_SRC
+Of course, I need an ‘undo’ feature when the meeting is over…
+#+BEGIN_SRC emacs-lisp
+(defun meeting-done ()
+  "Attempt to 'undo' the effects of taking meeting notes."
+  (interactive)
+  (widen)                                       ;; Opposite of narrow-to-region
+  (text-scale-set 0)                            ;; Reset the font size increase
+  (fringe-mode 1)
+  (winner-undo))                                ;; Put the windows back in place
+
+#+END_SRC
+
+End.
 
 ** Coding
 
@@ -1071,23 +1100,23 @@ Headers
 
      (setq mu4e-compose-signature
            "
-                    Associate Professor Timo Lassmann
-                    Academic Head of Computational Biology, Telethon Kids Institute
-                    Adjunct Asssociate Professor, Center for Child Health Research
-                    University of Western Australia
+Associate Professor Timo Lassmann
+Feilman Fellow
+Academic Head of Computational Biology, Telethon Kids Institute
+Adjunct Asssociate Professor, Center for Child Health Research
+University of Western Australia
 
-                    Telethon Kids Institute
-                    100 Roberts Road, Subiaco, Western Australia, 6008
-                    PO Box 855, West Perth, Western Australia, 6872
+Telethon Kids Institute
+100 Roberts Road, Subiaco, Western Australia, 6008
+PO Box 855, West Perth, Western Australia, 6872
 
-                    https://scholar.google.com.au/citations?user=7fZs_tEAAAAJ&hl=en
+https://scholar.google.com.au/citations?user=7fZs_tEAAAAJ&hl=en
 
-                    Visiting Scientist, RIKEN Yokohama Institute, Japan
-                    Division of Genomic Technology,
-                    RIKEN Center for Life Science Technologies,
-                    Yokohama Institute,1-7-22 Suehiro-cho,
-                    Tsurumi-ku, Yokohama, 230-0045 JAPAN
-                                      ")
+Visiting Scientist, RIKEN Yokohama Institute, Japan
+Division of Genomic Technology,
+RIKEN Center for Life Science Technologies,
+Yokohama Institute,1-7-22 Suehiro-cho,
+Tsurumi-ku, Yokohama, 230-0045 JAPAN")
 
    #+END_SRC
 
