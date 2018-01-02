@@ -11,7 +11,7 @@
 
 
 (defvar script-funcs-src (concat dot-files-src
-"elisp/shell-script-funcs.el"))
+                                 "elisp/shell-script-funcs.el"))
 
 
 (require 'shell-script-funcs script-funcs-src)
@@ -22,9 +22,6 @@
 (defconst dest-elisp-dir (tl/get-path "${tl/emacs-directory}/elisp"))
 
 ;; The Script Part ... here we do all the building and compilation work.
-
-
-
 
 
 
@@ -43,8 +40,8 @@
   (message "Make links to el files.")
   (tl/mksymlinks "${dot-files-src}/elisp"
                  "${tl/emacs-directory}/elisp")
- (message "done Make links to el files.")
- 
+  (message "done Make links to el files.")
+  
   ;; copy my latex templates
   (tl/mksymlinks "${dot-files-src}/latex_templates"
                  "${tl/emacs-directory}/latex_templates")
@@ -52,7 +49,7 @@
 
   ;; Just link the entire directory instead of copying the snippets:
   ;;(ha/mksymlink  "${dot-files-src}/snippets"
-   ;;              "${ha/emacs-directory}/snippets")
+  ;;              "${ha/emacs-directory}/snippets")
 
   ;; Just link the entire directory instead of copying the snippets:
   ;;(ha/mksymlink  "${dot-files-src}/templates"
@@ -70,7 +67,7 @@
   ;;       (ha/get-files "${ha/emacs-directory}/elisp/*.el" t))
 
   (message "Finished building dot-files- Resetting Emacs.")
- (require 'config-main (tl/get-path "${user-emacs-directory}elisp/config-main.el")))
+  (require 'config-main (tl/get-path "${user-emacs-directory}elisp/config-main.el")))
 
 
 
@@ -96,8 +93,8 @@
 ;;         (shell-command (concat "cd " dot-files-src "; git pull"))))
 ;;    (if (not (= git-results 0))
 ;;        (message "Can't pull the goodness. Pull from git by hand.")
- ;;     (load-file (concat dot-files-src "/emacs.d/shell-script-funcs.el"))
- ;;     (load-file (concat dot-files-src "/build.el"))
+;;     (load-file (concat dot-files-src "/emacs.d/shell-script-funcs.el"))
+;;     (load-file (concat dot-files-src "/build.el"))
 ;;      (require 'init-main))))
 
 (tl/build-dot-files)  ;; Do it
