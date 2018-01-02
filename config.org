@@ -403,9 +403,9 @@ Refile targets / create new targets if necessary
 
 #+BEGIN_SRC emacs-lisp
 ;;(setq org-refile-targets '((org-agenda-files :maxlevel . 3)))
- (setq org-refile-targets '(("~/Dropbox/work/work-todo.org" :maxlevel . 1)
-                             ("~/Dropbox/life/life-todo.org" :maxlevel . 1)
-                             ("~/Dropbox/org/gtd/tickler.org" :maxlevel . 1)))
+ (setq org-refile-targets '(("~/Dropbox/work/work-todo.org" :maxlevel . 2)
+                             ("~/Dropbox/life/life-todo.org" :maxlevel . 2)
+                             ("~/Dropbox/org/gtd/tickler.org" :maxlevel . 2)))
   (setq org-refile-use-outline-path 'file)
   (setq org-refile-allow-creating-parent-nodes 'confirm)
 (setq org-refile-allow-creating-parent-nodes 'confirm)
