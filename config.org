@@ -759,6 +759,29 @@ End.
 
 end. 
 
+* Writing 
+
+** Writegood mode 
+   This does not work - there is a wring gpg signature in melpa... 
+   #+BEGIN_SRC emacs-lisp
+     (use-package writegood-mode
+       :ensure t
+         :init
+         (add-hook 'text-mode-hook 'writegood-mode)
+     (add-hook 'org-mode-hook 'writegood-mode))
+   #+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(add-to-list 'load-path "/home/user/programs/writegood-mode")
+(require 'writegood-mode)
+    (add-hook 'text-mode-hook 'writegood-mode)
+     (add-hook 'org-mode-hook 'writegood-mode)
+#+END_SRC
+
+this mode will improve various aspects of writing. 
+   
+end..
+
 * Programming
 
   General programming settings..
