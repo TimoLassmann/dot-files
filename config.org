@@ -912,7 +912,6 @@ Headers
        :ensure t
        :init
        (yas-global-mode 1)
-       (company-mode)
        :config
        (add-to-list 'yas-snippet-dirs (tl/emacs-subdirectory "snippets")))
 
