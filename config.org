@@ -763,20 +763,17 @@ end.
 
 ** Writegood mode 
    This does not work - there is a wring gpg signature in melpa... 
+   
    #+BEGIN_SRC emacs-lisp
-;;     (use-package writegood-mode
-  ;;     :ensure t
-    ;;     :init
-      ;;   (add-hook 'text-mode-hook 'writegood-mode)
-    ;; (add-hook 'org-mode-hook 'writegood-mode))
-   #+END_SRC
 
-#+BEGIN_SRC emacs-lisp
-(add-to-list 'load-path "/home/user/programs/writegood-mode")
-(require 'writegood-mode)
-    (add-hook 'text-mode-hook 'writegood-mode)
-     (add-hook 'org-mode-hook 'writegood-mode)
-#+END_SRC
+     (when (file-exists-p "/home/user/programs/writegood-mode")
+     (message "Loading writegood-mode")
+     (add-to-list 'load-path "/home/user/programs/writegood-mode")
+     (require 'writegood-mode)
+         (add-hook 'text-mode-hook 'writegood-mode)
+          (add-hook 'org-mode-hook 'writegood-mode)
+     )
+   #+END_SRC
 
 this mode will improve various aspects of writing. 
    
@@ -1091,38 +1088,48 @@ Headers
      ;;  (add-to-list 'load-path "~/programs/mu/mu4e")
 
      ;;         (add-to-list 'load-path "/usr/local/share/emacs/site-lisp/mu/mu4e")   
-     (require 'mu4e)
-     (require 'org-mu4e)
+
+     ;; the modules
+     ;;(if (file-exists-p mu4e-mu-binary)
+     ;;    (message "Loading Mu4e...")
+
+       
+       (if (not (require 'mu4e nil t))
+       (message "`mu4e' not found")
+
+       ;;(require 'mu4e)
+       (require 'org-mu4e)
 
 
+       (message "Loading Mu4e...")
+
+       (setq mu4e-maildir (expand-file-name "~/Maildir"))
+
+       (setq mu4e-sent-folder "/office365/sent")
+       (setq mu4e-drafts-folder "/drafts")
+       (setq mu4e-refile-folder "/office365/Archive")   ;; saved messages
+       (setq mu4e-trash-folder "/office365/trash")
 
 
-     (setq mu4e-maildir (expand-file-name "~/Maildir"))
+       (setq message-kill-buffer-on-exit t)
+       (setq mu4e-change-filenames-when-moving t)
+       (setq mu4e-confirm-quit nil)
+       (setq mail-user-agent 'mu4e-user-agent)
 
-     (setq mu4e-sent-folder "/office365/sent")
-     (setq mu4e-drafts-folder "/drafts")
-     (setq mu4e-refile-folder "/office365/Archive")   ;; saved messages
-     (setq mu4e-trash-folder "/office365/trash")
+       (setq mu4e-sent-messages-behavior 'sent)
 
+       (setq mu4e-view-show-addresses t)
 
-     (setq message-kill-buffer-on-exit t)
-     (setq mu4e-change-filenames-when-moving t)
-     (setq mu4e-confirm-quit nil)
-     (setq mail-user-agent 'mu4e-user-agent)
-
-     (setq mu4e-sent-messages-behavior 'sent)
-
-     (setq mu4e-view-show-addresses t)
-
-     (setq mu4e-attachment-dir "~/Downloads")
+       (setq mu4e-attachment-dir "~/Downloads")
 
 
+       (define-key mu4e-headers-mode-map (kbd "C-c c") 'org-mu4e-store-and-capture)
+       (define-key mu4e-view-mode-map (kbd "C-c c") 'org-mu4e-store-and-capture)
 
+       (setq mu4e-get-mail-command "~/programs/offlineimap/offlineimap.py")
 
-     (setq mu4e-get-mail-command "~/programs/offlineimap/offlineimap.py")
-
-     (setq mu4e-compose-signature
-           "Associate Professor Timo Lassmann
+       (setq mu4e-compose-signature
+                          "Associate Professor Timo Lassmann
 Feilman Fellow
 Academic Head of Computational Biology, Telethon Kids Institute
 Adjunct Associate Professor, Center for Child Health Research
@@ -1139,12 +1146,11 @@ Division of Genomic Technology,
 RIKEN Center for Life Science Technologies,
 Yokohama Institute,1-7-22 Suehiro-cho,
 Tsurumi-ku, Yokohama, 230-0045 JAPAN")
-
+)
    #+END_SRC
 
    #+BEGIN_SRC emacs-lisp
-     (define-key mu4e-headers-mode-map (kbd "C-c c") 'org-mu4e-store-and-capture)
-     (define-key mu4e-view-mode-map (kbd "C-c c") 'org-mu4e-store-and-capture)
+
    #+END_SRC
 
 
