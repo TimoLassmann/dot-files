@@ -1,0 +1,66 @@
+#+TITLE:  My Dot Files 
+#+AUTHOR: Timo Lassmann
+#+PROPERTY:    header-args:sh  :tangle no
+
+* My Dot Files
+  
+  
+  Pieced together from  [Howard Abrams][0] and [Harry R. Schwartz][1].
+  
+
+* Packages 
+  
+** Mu 
+   Mu and Mu4e needs ti be installed first.
+   
+   On Linux:
+   
+   
+   #+BEGIN_SRC sh  
+     mkdir ~/programs
+     cd ~/programs
+     git clone https://github.com/djcb/mu.git 
+   #+END_SRC
+   On Mac:
+   
+   #+BEGIN_SRC sh
+     brew install mu --with-emacs --HEAD
+
+   #+END_SRC
+   
+   
+
+** Writegood mode 
+   #+BEGIN_SRC sh
+     mkdir ~/programs
+     cd ~/programs
+     git clone https://github.com/bnbeckwith/writegood-mode.git
+
+   #+END_SRC
+
+* Install 
+
+  To install 
+  #+BEGIN_SRC sh
+
+    ./install.sh 
+
+  #+END_SRC
+  
+* Start emacs 
+  
+  Run emacs:
+  #+BEGIN_SRC sh
+    emacsclient -c --alternate-editor= <FILE> 
+  #+END_SRC
+  
+  
+  Stop the client:
+  #+BEGIN_SRC sh 
+    emacsclient --eval "(kill-emacs)" 
+  #+END_SRC
+
+
+
+[0]: https://github.com/howardabrams/dot-files
+[1]: https://github.com/hrs/dotfiles
