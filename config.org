@@ -481,7 +481,7 @@ should be. After calling this function, call 'meeting-done' to reset the environ
   (narrow-to-region (region-beginning) (region-end))  ;; Only show that region
   (deactivate-mark)
   (delete-other-windows)                              ;; Get rid of other windows
-  (text-scale-set 2)                                  ;; Text is now readable by others
+  (text-scale-set 3)                                  ;; Text is now readable by others
   (fringe-mode 0)
   (message "When finished taking your notes, run meeting-done."))
 
@@ -764,11 +764,11 @@ end.
 ** Writegood mode 
    This does not work - there is a wring gpg signature in melpa... 
    #+BEGIN_SRC emacs-lisp
-     (use-package writegood-mode
-       :ensure t
-         :init
-         (add-hook 'text-mode-hook 'writegood-mode)
-     (add-hook 'org-mode-hook 'writegood-mode))
+;;     (use-package writegood-mode
+  ;;     :ensure t
+    ;;     :init
+      ;;   (add-hook 'text-mode-hook 'writegood-mode)
+    ;; (add-hook 'org-mode-hook 'writegood-mode))
    #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
@@ -1184,7 +1184,7 @@ Tsurumi-ku, Yokohama, 230-0045 JAPAN")
 
   End. 
 
-* Done 
+* End... 
 
   #+BEGIN_SRC emacs-lisp
 
@@ -1261,3 +1261,4 @@ Tsurumi-ku, Yokohama, 230-0045 JAPAN")
     )
 
   #+END_EXAMPLE
+  
