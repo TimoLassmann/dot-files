@@ -108,7 +108,7 @@
    sweet goodness, I demand.
 
    #+BEGIN_SRC emacs-lisp
-
+(load-library "url-handlers")
      (require 'package)
 
      (setq package-archives '(("org" . "http://orgmode.org/elpa/")
@@ -452,7 +452,7 @@ Drawers
                     "* %?\n\n  %i\n\n  See: %a" :empty-lines 1)
                    ("r" "respond" entry (file+headline org-index-file "Inbox")
                     "* TODO Respond to %:from on %:subject\nSCHEDULED: %(org-insert-time-stamp (org-read-date nil t \"+0d\"))\n%a\n")
-                   ("m" "Mail" entry (file+headline "~/inbox.org" "Mail")
+                   ("m" "Mail" entry (file+headline org-index-file "Inbox")
                     "* TODO %?\n%a   %:from %:fromname %:fromaddress" :prepend t :jump-to-captured t)
                    ("p" "Daily Plan" plain (file+datetree "~/Dropbox/planning/daily-plan.org")
                     "+ [ ] The 3 most important tasks [/]
@@ -655,12 +655,12 @@ End.
    Where are the refs?
 
    #+BEGIN_SRC emacs-lisp
-     (setq reftex-default-bibliography '("~/org/bibliography/references.bib"))
+     (setq reftex-default-bibliography '("~/Dropbox/work/bibliography/references.bib"))
 
      ;; see org-ref for use of these variables
-     (setq org-ref-bibliography-notes "~/org/bibliography/notes.org"
-           org-ref-default-bibliography '("~/org/bibliography/references.bib")
-           org-ref-pdf-directory "~/org/bibliography/bibtex-pdfs/")
+     (setq org-ref-bibliography-notes "~/Dropbox/work/bibliography/notes.org"
+           org-ref-default-bibliography '("~/Dropbox/work/bibliography/references.bib")
+           org-ref-pdf-directory "~/Dropbox/work/bibliography/bibtex-pdfs/")
 
 
 
