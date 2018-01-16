@@ -198,7 +198,8 @@ End.
        :init  (setq ido-enable-flex-matching t
                     ido-ignore-extensions t
                     ido-use-virtual-buffers t
-                    ido-everywhere t)
+                    ido-everywhere t
+                      ido-enable-tramp-completion nil)
        :config
        (ido-mode 1)
        (ido-everywhere 1)
@@ -239,6 +240,7 @@ End.
        (add-to-list 'completion-ignored-extensions ".rel")
        (add-to-list 'completion-ignored-extensions ".epub")
        )
+
 
    #+END_SRC
 
