@@ -185,6 +185,34 @@
    #+END_SRC
 
 End. 
+
+* Backup
+  
+  #+BEGIN_SRC emacs-lisp
+    (setq backup-directory-alist '(("." . "~/Dropbox/backup"))) 
+  #+END_SRC
+  
+  Tramp should do the same:
+  #+BEGIN_SRC emacs-lisp
+    (setq tramp-backup-directory-alist backup-directory-alist)
+  #+END_SRC
+  Make backups of files, even when they’re in version control:
+  #+BEGIN_SRC emacs-lisp
+    (setq vc-make-backup-files t)
+  #+END_SRC
+  And let’s make sure our files are saved if we wander off and defocus the Emacs application:
+  #+BEGIN_SRC emacs-lisp
+    (defun save-all ()
+      "Save all dirty buffers without asking for confirmation."
+      (interactive)
+      (save-some-buffers t))
+
+    (add-hook 'focus-out-hook 'save-all)
+  #+END_SRC
+  
+
+
+End. 
 * Movement
 ** SMEX
 
