@@ -1,7 +1,5 @@
 \ProvidesPackage{report}
 
-\def\Author#1{\def\@Author{#1}}
-
 \usepackage{geometry}
  \geometry{
  a4paper,
@@ -35,7 +33,7 @@
 \usepackage{textcomp}
 \usepackage{verbatim}
 \usepackage{color}
-\usepackage[usenames,dvipsnames,svgnames,table]{xcolor}
+\usepackage{xcolor}
 \usepackage{tikz}
 \usepackage{lipsum}
 \usepackage{calc}
@@ -176,7 +174,7 @@
 
 \lhead{}
 \chead{}
-\rhead{ \footnotesize \begin{tabular}{@{}R{2cm}  L{2.3cm} } Author: & \@Author  \\  Date:	 & \today \\ \end{tabular}}
+\rhead{ \footnotesize \begin{tabular}{@{}R{2cm}  L{2.3cm} } Author: & \@author  \\  Date:	 & \@date \\ \end{tabular}}
 
 
 

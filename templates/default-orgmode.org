@@ -1,0 +1,16 @@
+#+TITLE:  $1
+#+AUTHOR: `user-full-name`
+#+EMAIL:  `user-mail-address`
+#+DATE:   `(format-time-string "%Y-%m-%d")`
+#+LATEX_CLASS: report
+#+OPTIONS:  toc:nil
+#+OPTIONS: H:4
+#+LATEX_CMD: xelatex
+
+* Introduction 
+  $0
+* Meeting Notes
+
+
+
+

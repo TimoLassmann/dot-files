@@ -798,6 +798,53 @@ end.
 
 * Writing 
 
+** Flyspell config 
+
+Installing aspell on linux:
+
+#+BEGIN_EXAMPLE sh
+apt install aspell aspell-en
+#+END_EXAMPLE
+
+on mac: 
+
+#+BEGIN_EXAMPLE
+brew install aspell 
+#+END_EXAMPLE
+
+Note in the config below I assume aspell is installed in =/usr/bin/= !. 
+
+
+
+#+BEGIN_SRC emacs-lisp 
+  (use-package flyspell
+    :ensure t
+    :diminish flyspell-mode
+    :init
+    (add-hook 'prog-mode-hook 'flyspell-prog-mode)
+
+    (dolist (hook '(text-mode-hook org-mode-hook))
+      (add-hook hook (lambda () (flyspell-mode 1))))
+
+    (dolist (hook '(change-log-mode-hook log-edit-mode-hook org-agenda-mode-hook))
+      (add-hook hook (lambda () (flyspell-mode -1))))
+
+    :config
+    (setq ispell-program-name "/usr/bin/aspell"
+          ispell-local-dictionary "en_US"
+          ispell-dictionary "american" ; better for aspell
+          ispell-extra-args '("--sug-mode=ultra" "--lang=en_US")
+          ispell-list-command "--list"
+          ispell-local-dictionary-alist '(("en_US" "[[:alpha:]]" "[^[:alpha:]]" "['‘’]"
+                                        t ; Many other characters
+                                        ("-d" "en_US") nil utf-8))))
+
+#+END_SRC
+
+There is more stuff in Howard Abram's config but I'll leave this for now..
+
+
+
 ** Writegood mode 
    This does not work - there is a wring gpg signature in melpa... 
    
@@ -814,8 +861,35 @@ end.
 
 this mode will improve various aspects of writing. 
    
-end..
+end.
 
+
+** LangTool
+   
+   I added the Emacs-langtool code from:
+   
+   https://github.com/mhayashi1120/Emacs-langtool
+   
+   To my =/elisp/= directory. 
+   
+   To install langtool install =maven= package, java 8 then:
+
+   #+BEGIN_EXAMPLE sh
+   cd ~/programs
+   git clone https://github.com/languagetool-org/languagetool.git
+   ./build.sh languagetool-standalone package
+
+   #+END_EXAMPLE
+   This does not work! 
+   
+   I now simply download the pre-compiles zip package... 
+
+   To load: 
+   #+BEGIN_SRC emacs-lisp
+     (require 'langtool)
+     (setq langtool-language-tool-jar "/home/user/programs/langtool/LanguageTool-4.0/languagetool-commandline.jar")
+   #+END_SRC
+   
 * Programming
 
   General programming settings..
@@ -840,7 +914,14 @@ end..
    output.
 
    #+BEGIN_SRC emacs-lisp
-     (setq compilation-scroll-output t)
+
+     ;;(setq compilation-scroll-output t)
+     (setq compile-command "make")
+     (setq compilation-scroll-output 'first-error)
+     (setq compilation-always-kill t)
+     (setq compilation-disable-input t)
+    (add-hook 'compilation-mode-hook 'visual-line-mode)
+
    #+END_SRC
 
 ** Auto Complete
@@ -1211,6 +1292,38 @@ Tsurumi-ku, Yokohama, 230-0045 JAPAN")
 
 #+END_SRC
  
+* Autoinsert templates 
+  
+  Again from Howards Abrams: 
+  #+BEGIN_SRC emacs-lisp
+    (use-package autoinsert
+      :ensure t
+      :init
+      (setq auto-insert-directory (tl/emacs-subdirectory "templates/"))
+      ;; Don't want to be prompted before insertion:
+      (setq auto-insert-query nil)
+
+      (add-hook 'find-file-hook 'auto-insert)
+      (auto-insert-mode 1))
+
+  #+END_SRC
+
+  Use yes snippet for templates. 
+  
+  #+BEGIN_SRC emacs-lisp
+    (defun tl/autoinsert-yas-expand()
+      "Replace text in yasnippet template."
+      (yas-expand-snippet (buffer-string) (point-min) (point-max)))
+  #+END_SRC
+  
+  Set templates
+  
+  #+BEGIN_SRC emacs-lisp
+    (use-package autoinsert 
+     :config
+      (define-auto-insert "\\.org$" ["default-orgmode.org" tl/autoinsert-yas-expand]))
+  #+END_SRC
+  
 * Errors
 
   Sometimes there is a problem with org "org-header function is void..
@@ -1226,7 +1339,7 @@ Tsurumi-ku, Yokohama, 230-0045 JAPAN")
 
   End. 
 
-* End... 
+* End 
 
   #+BEGIN_SRC emacs-lisp
 
@@ -1306,3 +1419,6 @@ Tsurumi-ku, Yokohama, 230-0045 JAPAN")
   
 
 
+
+
+This itt 

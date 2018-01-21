@@ -46,7 +46,8 @@
   (tl/mksymlinks "${dot-files-src}/latex_templates"
                  "${tl/emacs-directory}/latex_templates")
   
-
+  (tl/mksymlinks "${dot-files-src}/templates"
+                 "${tl/emacs-directory}/templates")
   ;; Just link the entire directory instead of copying the snippets:
   ;;(ha/mksymlink  "${dot-files-src}/snippets"
   ;;              "${ha/emacs-directory}/snippets")
