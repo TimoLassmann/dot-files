@@ -942,12 +942,13 @@ end.
 
    Flycheck 
    #+BEGIN_SRC emacs-lisp 
-     (use-package flycheck
-       :ensure t
-       :init
-       (add-hook 'after-init-hook 'global-flycheck-mode)
-       :config
-       (setq-default flycheck-disabled-checkers '(emacs-lisp-checkdoc)))
+          (use-package flycheck
+            :ensure t
+            :init
+            (add-hook 'after-init-hook 'global-flycheck-mode)
+            (add-hook 'c-mode-hook (lambda () (setq flycheck-clang-language-standard "c11")))
+            :config
+            (setq-default flycheck-disabled-checkers '(emacs-lisp-checkdoc)))
 
    #+END_SRC
 ** Aggressive Auto Indention
