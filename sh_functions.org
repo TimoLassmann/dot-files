@@ -1,0 +1,73 @@
+#+TITLE:  Shell function to make my life easier
+#+AUTHOR: Timo Lassmann
+#+EMAIL:  timo.lassmann@telethonkids.org.au
+#+DATE:   2018-01-28
+#+LATEX_CLASS: report
+#+OPTIONS:  toc:nil
+#+OPTIONS: H:4
+#+LATEX_CMD: xelatex
+
+* Introduction 
+  Set of functions to simplyfy my life
+
+* Proxy bit
+  :PROPERTIES: 
+  :header-args: sh :exports both :results none :noweb yes :tangle ~/.sh_functions.sh :shebang #!/bin/bash
+  :END:      
+  Set proxy automatically depending on hostname.. 
+  
+  #+BEGIN_SRC sh
+
+    function set_custom_proxy() {
+        export http_proxy='http://proxy.ichr.uwa.edu.au:8081'
+        export https_proxy='https://proxy.ichr.uwa.edu.au:8081'
+    }
+    function unset_custom_proxy() {
+        export http_proxy=
+        export https_proxy=
+    }
+
+    function proxy() {
+        OPTION=$1
+
+        if [ -n "$OPTION" ];
+        then
+            case $OPTION in
+                stop)
+                    
+                    echo "unsetting proxy!"
+                    unset_custom_proxy
+                    echo "Done."
+                    ;;
+                ,*)
+                    echo "Sorry, I don't understand"
+                    ;;
+            esac
+        else
+            HOSTNAME=$(hostname)
+            
+            case $HOSTNAME in
+                work)
+                    echo "at work!"
+                    set_custom_proxy
+                    ;;
+                SeqNextGen)
+                    echo "at seqnextgen"
+                    set_custom_proxy
+                    ;;
+                devel)
+                    echo "at devel"
+                    set_custom_proxy
+                    ;;
+
+                ,*)
+                    echo "Sorry, hostname not recognized"
+                    ;;
+            esac        
+            echo "Done."
+        fi
+    }
+
+  #+END_SRC
+
+

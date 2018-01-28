@@ -33,7 +33,7 @@
   ;;(ha/mkdir "$HOME/.oh-my-zsh/themes")
   ;;(tl/mkdir "${tl/emacs-directory}/elisp")
   ;;(tl/mkdir "${tl/emacs-directory}/latex_templates") 
-
+  ;;(tl/mkdir "$HOME/bin")
   (tl/tangle-files "${dot-files-src}/*.org")
 
   ;; Some Elisp files are just symlinked instead of tangled...
