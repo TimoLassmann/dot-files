@@ -27,3 +27,27 @@
     PATH=$PATH:$OLDPATH
   #+END_SRC
 
+  Colorful ls...
+  
+  #+BEGIN_SRC sh 
+    if which gls >/dev/null 2>&1
+    then
+        alias ls="gls --color"
+        alias ll="gls --color -olhA"
+    else
+        alias ls="ls --color"
+        alias ll="ls --color -olhA"
+    fi
+  #+END_SRC
+
+
+  Valgrind options. 
+  
+  #+BEGIN_SRC sh
+    if which valgrind >/dev/null 2>&1
+    then
+        alias val="valgrind --leak-check=yes --show-leak-kinds=all"
+    fi
+#+END_SRC
+
+

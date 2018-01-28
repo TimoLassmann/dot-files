@@ -35,28 +35,10 @@
     proxy
 
 #+END_SRC
-
-  Colorful ls...
-  
-  #+BEGIN_SRC sh 
-    if which gls >/dev/null 2>&1
-    then
-        alias ls="gls --color"
-        alias ll="gls --color -olhA"
-    else
-        alias ls="ls --color"
-        alias ll="ls --color -olhA"
-    fi
-  #+END_SRC
-
-
-  Valgrind options. 
   
   #+BEGIN_SRC sh
-    if which valgrind >/dev/null 2>&1
+    if [[ -f $HOME/.profile ]]
     then
-        alias val="valgrind --leak-check=yes --show-leak-kinds=all"
+        source $HOME/.profile
     fi
-#+END_SRC
-
-
+  #+END_SRC
