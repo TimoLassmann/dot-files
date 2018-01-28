@@ -10,10 +10,12 @@
 * Introduction 
   Set of functions to simplyfy my life
 
-* Proxy bit
+* Shell function 
   :PROPERTIES: 
   :header-args: sh :exports both :results none :noweb yes :tangle ~/.sh_functions.sh :shebang #!/bin/bash
   :END:      
+
+** Proxy
   Set proxy automatically depending on hostname.. 
   
   #+BEGIN_SRC sh
@@ -72,6 +74,26 @@
 
 
 
+** Clean tex
+   
+   #+BEGIN_SRC sh 
+
+     function cleantex(){
+         arg=${1:-.}
+         exts=("aux" "fls" "bbl" "blg" "brf" "idx" "ilg" "ind" "lof" "log" "lol" "lot" "out" "toc" "synctex.gz" "run.xml" "fdb_latexmk")
+         if [ -d $arg ]; then
+             for ext in $exts; do
+                 rm -f $arg/*.$ext
+             done
+         else
+             for ext in $exts; do
+                 rm -f $arg.$ext
+             done
+         fi
+     }
+
+   #+END_SRC
+   
 
 * Backup script 
   :PROPERTIES: 
@@ -234,3 +256,6 @@ EOF
 
 
 #+END_SRC
+
+
+End. 

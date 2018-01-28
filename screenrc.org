@@ -18,7 +18,7 @@
     hardstatus string "%{.bW}%-w%{.rW}%n %t%{-}%+w %=%{..G} %H %{..Y} %m/%d %C%a "
     defscrollback 10000
     termcapinfo xterm* ti@:te@
-
+    shell "/usr/bin/zsh"
   #+END_SRC
   
   
