@@ -1,0 +1,27 @@
+#+TITLE:  Screenrc settings
+#+AUTHOR: Timo Lassmann
+#+EMAIL:  timo.lassmann@telethonkids.org.au
+#+DATE:   2018-01-28
+#+LATEX_CLASS: report
+#+OPTIONS:  toc:nil
+#+OPTIONS: H:4
+#+LATEX_CMD: xelatex
+#+DESCRIPTION: Global environment variables for all shells
+#+PROPERTY: header-args:sh :tangle ~/.screenrc :comments org
+
+
+* Introduction 
+  My  =.screenrc= settings. 
+  #+BEGIN_SRC sh
+    hardstatus on
+    hardstatus alwayslastline
+    hardstatus string "%{.bW}%-w%{.rW}%n %t%{-}%+w %=%{..G} %H %{..Y} %m/%d %C%a "
+    defscrollback 10000
+    termcapinfo xterm* ti@:te@
+    shell "/usr/bin/zsh"
+  #+END_SRC
+  
+  
+  
+  
+  

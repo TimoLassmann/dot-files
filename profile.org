@@ -1,0 +1,53 @@
+#+TITLE:  Shell profile
+#+AUTHOR: Timo Lassmann
+#+EMAIL:  timo.lassmann@telethonkids.org.au
+#+DATE:   2018-01-28
+#+LATEX_CLASS: report
+#+OPTIONS:  toc:nil
+#+OPTIONS: H:4
+#+LATEX_CMD: xelatex
+#+DESCRIPTION: Global environment variables for all shells
+#+PROPERTY: header-args:sh :tangle ~/.profile :shebang #!/bin/sh :comments org
+
+* Introduction 
+  Should contain functions I often tend to use 
+  
+  #+BEGIN_SRC sh
+    OLDPATH=$PATH
+    PATH=$HOME/bin
+
+    for DIR in /opt/local/bin /opt/local/sbin /usr/local/bin /usr/local/sbin
+    do
+      if [ -d $DIR ]
+      then
+          PATH=$PATH:$DIR
+      fi
+    done
+
+    PATH=$PATH:$OLDPATH
+  #+END_SRC
+
+  Colorful ls...
+  
+  #+BEGIN_SRC sh 
+    if which gls >/dev/null 2>&1
+    then
+        alias ls="gls --color"
+        alias ll="gls --color -olhA"
+    else
+        alias ls="ls --color"
+        alias ll="ls --color -olhA"
+    fi
+  #+END_SRC
+
+
+  Valgrind options. 
+  
+  #+BEGIN_SRC sh
+    if which valgrind >/dev/null 2>&1
+    then
+        alias val="valgrind --leak-check=yes --show-leak-kinds=all"
+    fi
+#+END_SRC
+
+
