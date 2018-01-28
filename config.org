@@ -563,7 +563,7 @@ End.
       '((C . t)
         (R . t)
         (emacs-lisp . t)
-        (shell . t) 
+        (sh . t) 
         (makefile . t)
         (latex .t)
         ))
@@ -907,7 +907,7 @@ end.
    #+END_SRC
    
 * Programming
-
+  
   General programming settings..
 
 ** General
@@ -942,64 +942,64 @@ end.
 
    Flycheck 
    #+BEGIN_SRC emacs-lisp 
-          (use-package flycheck
-            :ensure t
-            :init
-            (add-hook 'after-init-hook 'global-flycheck-mode)
-            (add-hook 'c-mode-hook (lambda () (setq flycheck-clang-language-standard "c11")))
-            :config
-            (setq-default flycheck-disabled-checkers '(emacs-lisp-checkdoc)))
+     (use-package flycheck
+       :ensure t
+       :init
+       (add-hook 'after-init-hook 'global-flycheck-mode)
+       (add-hook 'c-mode-hook (lambda () (setq flycheck-clang-language-standard "c11")))
+       :config
+       (setq-default flycheck-disabled-checkers '(emacs-lisp-checkdoc)))
 
    #+END_SRC
 ** Aggressive Auto Indention
-
-Automatically indent without use of the tab found in this article, and seems to be quite helpful for many types of programming languages.
-
-To begin, we create a function that can indent a function by calling indent-region on the beginning and ending points of a function.
-#+BEGIN_SRC emacs-lisp 
-  (defun indent-defun ()
-    "Indent current defun.
-  Do nothing if mark is active (to avoid deactivaing it), or if
-  buffer is not modified (to avoid creating accidental
-  modifications)."
-    (interactive)
-    (unless (or (region-active-p)
-                buffer-read-only
-                (null (buffer-modified-p)))
-      (let ((l (save-excursion (beginning-of-defun 1) (point)))
-            (r (save-excursion (end-of-defun 1) (point))))
-        (cl-letf (((symbol-function 'message) #'ignore))
-          (indent-region l r)))))
-#+END_SRC
-
-Next, create a hook that will call the indent-defun with every command call:
-
-#+BEGIN_SRC emacs-lisp 
-  (defun activate-aggressive-indent ()
-    "Locally add `ha/indent-defun' to `post-command-hook'."
-    (add-hook 'post-command-hook
-              'indent-defun nil 'local))
-#+END_SRC
-
+   
+   Automatically indent without use of the tab found in this article, and seems to be quite helpful for many types of programming languages.
+   
+   To begin, we create a function that can indent a function by calling indent-region on the beginning and ending points of a function.
+   #+BEGIN_SRC emacs-lisp 
+     (defun indent-defun ()
+       "Indent current defun.
+     Do nothing if mark is active (to avoid deactivaing it), or if
+     buffer is not modified (to avoid creating accidental
+     modifications)."
+       (interactive)
+       (unless (or (region-active-p)
+                   buffer-read-only
+                   (null (buffer-modified-p)))
+         (let ((l (save-excursion (beginning-of-defun 1) (point)))
+               (r (save-excursion (end-of-defun 1) (point))))
+           (cl-letf (((symbol-function 'message) #'ignore))
+             (indent-region l r)))))
+   #+END_SRC
+   
+   Next, create a hook that will call the indent-defun with every command call:
+   
+   #+BEGIN_SRC emacs-lisp 
+     (defun activate-aggressive-indent ()
+       "Locally add `ha/indent-defun' to `post-command-hook'."
+       (add-hook 'post-command-hook
+                 'indent-defun nil 'local))
+   #+END_SRC
+   
 ** Auto Complete
+   
+   
+   #+BEGIN_SRC emacs-lisp
+     (use-package company
+       :ensure t
+       :init
+       (setq company-dabbrev-ignore-case t
+             company-show-numbers t)
+       (add-hook 'after-init-hook 'global-company-mode)
+       :config
+       (add-to-list 'company-backends 'company-math-symbols-unicode)
+       :bind ("C-:" . company-complete)  ; In case I don't want to wait
+       :diminish company-mode)
 
-
-#+BEGIN_SRC emacs-lisp
-(use-package company
-  :ensure t
-  :init
-  (setq company-dabbrev-ignore-case t
-        company-show-numbers t)
-  (add-hook 'after-init-hook 'global-company-mode)
-  :config
-  (add-to-list 'company-backends 'company-math-symbols-unicode)
-  :bind ("C-:" . company-complete)  ; In case I don't want to wait
-  :diminish company-mode)
-
-(use-package company-quickhelp
-  :ensure t
-  :config
-  (company-quickhelp-mode 1))
+     (use-package company-quickhelp
+       :ensure t
+       :config
+       (company-quickhelp-mode 1))
 #+END_SRC
 
   ;; #+BEGIN_SRC emacs-lisp
@@ -1177,7 +1177,9 @@ Headers
        )
 
    #+END_SRC
+
    Smartparens
+
    #+BEGIN_SRC emacs-lisp
      (use-package smartparens
        :ensure t
