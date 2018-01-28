@@ -6,8 +6,6 @@
 #+OPTIONS:  toc:nil
 #+OPTIONS: H:4
 #+LATEX_CMD: xelatex
-
-
 #+DESCRIPTION: Global environment variables for all shells
 #+PROPERTY: header-args:sh :tangle ~/.profile :shebang #!/bin/sh :comments org
 
@@ -42,3 +40,12 @@
     fi
   #+END_SRC
 
+
+  Valgrind options. 
+  
+  #+BEGIN_SRC sh
+    if which valgrind >/dev/null 2>&1
+    then
+        alias val="valgrind --leak-check=yes --show-leak-kinds=all"
+    else
+#+END_SRC
