@@ -48,6 +48,21 @@
     then
         alias val="valgrind --leak-check=yes --show-leak-kinds=all"
     fi
-#+END_SRC
+  #+END_SRC
+
+  Emacs / editor 
 
 
+
+  #+BEGIN_SRC sh
+    export ALTERNATE_EDITOR=
+    export EDITOR=emacsclient
+
+  #+END_SRC
+
+  alias emacs 
+
+  #+BEGIN_SRC sh
+    alias e='emacsclient -q -c --alternate-editor='
+
+  #+END_SRC

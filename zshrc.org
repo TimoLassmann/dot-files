@@ -13,7 +13,7 @@
   #+BEGIN_SRC sh
     export LD_LIBRARY_PATH=/usr/local/lib
 
-      
+
     export ZSH=${HOME}/.oh-my-zsh
 
     ZSH_THEME="agnoster"
@@ -23,7 +23,7 @@
 
     source $ZSH/oh-my-zsh.sh
 
-  #+END_SRC
+    #+END_SRC
 
   Load additional functions.
 
@@ -34,7 +34,7 @@
     fi
     proxy
 
-#+END_SRC
+  #+END_SRC
   
   #+BEGIN_SRC sh
     if [[ -f $HOME/.profile ]]
@@ -42,3 +42,4 @@
         source $HOME/.profile
     fi
   #+END_SRC
+
