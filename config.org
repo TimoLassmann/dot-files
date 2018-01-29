@@ -563,7 +563,7 @@ End.
       '((C . t)
         (R . t)
         (emacs-lisp . t)
-        (sh . t) 
+        (shell . t) 
         (makefile . t)
         (latex .t)
         ))
