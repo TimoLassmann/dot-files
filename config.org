@@ -982,9 +982,21 @@ end.
    #+END_SRC
    
 ** Auto Complete
-   
-   
-   #+BEGIN_SRC emacs-lisp
+   #+BEGIN_SRC emacs-lisp 
+
+
+     (use-package company-c-headers
+       :ensure t
+       )
+
+     (use-package company-math 
+       :ensure t
+       )
+
+     (use-package company-shell 
+       :ensure t
+       )
+
      (use-package company
        :ensure t
        :init
@@ -993,6 +1005,8 @@ end.
        (add-hook 'after-init-hook 'global-company-mode)
        :config
        (add-to-list 'company-backends 'company-math-symbols-unicode)
+       (add-to-list 'company-backends 'company-c-headers)
+       (add-to-list 'company-backends 'company-shell)
        :bind ("C-:" . company-complete)  ; In case I don't want to wait
        :diminish company-mode)
 
@@ -1000,84 +1014,19 @@ end.
        :ensure t
        :config
        (company-quickhelp-mode 1))
-#+END_SRC
 
-  ;; #+BEGIN_SRC emacs-lisp
-     (use-package auto-complete
-       :ensure t  
-       :commands auto-complete-mode
-       :init
-       (progn
-         (auto-complete-mode t))
-       :config
-       (progn 
-         (use-package auto-complete-config)
+     (add-hook 'c-mode-hook 'company-mode)
 
-         (ac-set-trigger-key "TAB")
-         (ac-config-default)
+   #+END_SRC
+   To make this work properly, I need to manually specify the include paths by
+   putting a =.dir-locals.el= into the source directory of my C code. I.e. most
+   of the time this will be =src= and I need to point to =../tldevel=. 
+   #+BEGIN_EXAMPLE emacs-lisp
+   ((c-mode (eval setq company-clang-arguments (append 
+                                                  company-clang-arguments
+                                                  '("-I../tldevel")))))
+   #+END_EXAMPLE
 
-         (setq ac-delay 0.02)
-         (setq ac-use-menu-map t)
-         (setq ac-menu-height 50)
-         (setq ac-use-quick-help nil) 
-         (setq ac-comphist-file  "~/.emacs.d/ac-comphist.dat")
-         (setq ac-ignore-case nil)
-         (setq ac-dwim  t)
-         (setq ac-fuzzy-enable t)
-
-         (use-package ac-dabbrev
-           :ensure t      
-           :config
-           (progn
-             (add-to-list 'ac-sources 'ac-source-dabbrev)))
-
-         (setq ac-modes '(emacs-lisp-mode
-                          lisp-mode
-                          lisp-interaction-mode
-                          c-mode
-                          cc-mode
-                          c++-mode
-                          makefile-mode
-                          sh-mode))))
-
-
-     (define-key ac-complete-mode-map "\C-n" 'ac-next)
-     (define-key ac-complete-mode-map "\C-p" 'ac-previous)
-  ;; #+END_SRC
-
-Headers 
-;;#+BEGIN_SRC emacs-lisp
-  (use-package auto-complete-c-headers
-    :ensure t)
-  (require 'auto-complete-config)
-  (ac-config-default)
-                                          ; start yasnippet with emacs
-                                          ; let's define a function which initializes auto-complete-c-headers and gets called for c/c++ hooks
-  (defun my:ac-c-header-init ()
-    (require 'auto-complete-c-headers)
-    (add-to-list 'ac-sources 'ac-source-c-headers)
-    (add-to-list 'achead:include-directories '"/usr/include")
-    )
-  (add-hook 'c-mode-hook 'my:ac-c-header-init)
-  (semantic-mode 1)
-                                          ; let's define a function which adds semantic as a suggestion backend to auto complete
-                                          ; and hook this function to c-mode-common-hook
-  (defun my:add-semantic-to-autocomplete()
-    (add-to-list 'ac-sources 'ac-source-semantic)
-    )
-  (add-hook 'c-mode-common-hook 'my:add-semantic-to-autocomplete)
-                                          ; turn on automatic reparsing of open buffers in semantic
-  (global-semantic-idle-scheduler-mode 1)
-
-  (global-semanticdb-minor-mode 1)
-;;#+END_SRC
-
-#+BEGIN_SRC emacs-lisp
-  ;;(setq-local imenu-create-index-function #'ggtags-build-imenu-index)
-
-#+END_SRC
-#+RESULTS:
-: ggtags-build-imenu-index
 
 ** Yasnippet
 

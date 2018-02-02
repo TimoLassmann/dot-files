@@ -10,8 +10,7 @@
 (message "The name of this buffer is: %s." dot-files-src)
 
 
-(defvar script-funcs-src (concat dot-files-src
-                                 "elisp/shell-script-funcs.el"))
+(defvar script-funcs-src (concat dot-files-src "elisp/shell-script-funcs.el"))
 
 
 (require 'shell-script-funcs script-funcs-src)
