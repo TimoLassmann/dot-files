@@ -1179,6 +1179,14 @@ end.
 
 ** Mu4e 
 
+   On a mac install mu via brew:
+
+   #+BEGIN_EXAMPLE sh
+   brew install mu --with-emacs --HEAD
+   #+END_EXAMPLE
+
+   and make sure the path below points to the same =HEAD= directory!
+
    #+BEGIN_SRC emacs-lisp
      (cond
       ((string-equal system-type "windows-nt") ; Microsoft Windows
@@ -1186,7 +1194,7 @@ end.
          (message "Microsoft Windows")))
       ((string-equal system-type "darwin") ; Mac OS X
        (progn
-         (add-to-list 'load-path "/usr/local/Cellar/mu/HEAD-0d9d8d2_1/share/emacs/site-lisp/mu/mu4e")
+         (add-to-list 'load-path "/usr/local/Cellar/mu/HEAD-7d6c30f/share/emacs/site-lisp/mu/mu4e")
          (setq mu4e-mu-binary "/usr/local/bin/mu")
          ))
       ((string-equal system-type "gnu/linux") ; linux
