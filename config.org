@@ -111,6 +111,11 @@
    #+END_SRC
 
 * Package Initialization
+
+** Check security 
+
+
+
 ** Package Manager
 
    Emacs has become like every other operating system, and now has a
@@ -119,12 +124,12 @@
    sweet goodness, I demand.
 
    #+BEGIN_SRC emacs-lisp
-(load-library "url-handlers")
+     (load-library "url-handlers")
      (require 'package)
 
-     (setq package-archives '(("org" . "http://orgmode.org/elpa/")
-                              ("gnu" . "http://elpa.gnu.org/packages/")
-                              ("melpa"     . "http://melpa.org/packages/")))
+     (setq package-archives '(("org" . "https://orgmode.org/elpa/")
+                              ("gnu" . "https://elpa.gnu.org/packages/")
+                              ("melpa"     . "https://melpa.org/packages/")))
 
      (package-initialize)
      (package-refresh-contents)
@@ -218,20 +223,74 @@ End.
 
 End. 
 * Movement
+
+** ivy 
+
+#+BEGIN_SRC emacs-lisp
+
+  (use-package ivy
+    :ensure t
+    :diminish (ivy-mode)
+    :bind (("C-x b" . ivy-switch-buffer))
+    :config 
+    (ivy-mode 1)
+    (setq ivy-use-virtual-buffers t) 
+    (setq ivy-display-style 'fancy))
+
+#+END_SRC
+
+** Counsel 
+
+#+BEGIN_SRC emacs-lisp
+  (use-package counsel
+  :ensure t
+  )
+#+END_SRC
+
+** Counsel tramp 
+   This is nice - simply M-x counsel-tramp and off we go. 
+
+#+BEGIN_SRC emacs-lisp
+  (use-package counsel-tramp 
+    :ensure t
+  )
+
+#+END_SRC
+
+** swiper 
+
+#+BEGIN_SRC emacs-lisp 
+    (use-package swiper
+    :ensure t
+    :bind (("C-s" . swiper)
+           ("C-r" . swiper)
+           ("C-c C-r" . ivy-resume)
+           ("M-x" . counsel-M-x)
+           ("C-x C-f" . counsel-find-file))
+    :config 
+    (progn 
+      (ivy-mode 1)
+      (setq ivy-use-virtual-buffers t)
+      (setq ivy-display-style 'fancy)
+      (setq ivy-count-format "(%d/%d) ")
+      (define-key read-expression-map (kbd "C-r") 'counsel-expression-history)
+      ))
+
+#+END_SRC 
 ** SMEX
 
-   #+BEGIN_SRC emacs-lisp
+   #+BEGIN_EXAMPLE emacs-lisp
 
      (use-package smex
        :ensure t
        :init (smex-initialize)
        :bind ("M-x" . smex)
        ("M-X" . smex-major-mode-commands))
-   #+END_SRC
+   #+END_example
    
 ** IDO
 
-   #+BEGIN_SRC emacs-lisp
+   #+BEGIN_EXAMPLE emacs-lisp
      (use-package ido
        :ensure t
        :init  (setq ido-enable-flex-matching t
@@ -281,21 +340,21 @@ End.
        )
 
 
-   #+END_SRC
+   #+END_EXAMPLE
 
    FLX package:
 
-   #+BEGIN_SRC emacs-lisp
+   #+BEGIN_EXAMPLE emacs-lisp
      (use-package flx-ido
        :ensure t
        :init (setq ido-enable-flex-matching t
                    ido-use-faces t)
        :config (flx-ido-mode 1))
-   #+END_SRC
+   #+END_EXAMPLE
 
    According to Ryan Neufeld, we could make IDO work vertically, which is much easier to read. For this, I use ido-vertically:
 
-   #+BEGIN_SRC emacs-lisp
+   #+BEGIN_EXAMPLE emacs-lisp
      (use-package ido-vertical-mode
        :ensure t
        :init               ; I like up and down arrow keys:
@@ -303,11 +362,11 @@ End.
        :config
        (ido-vertical-mode 1))
 
-   #+END_SRC
+   #+END_EXAMPLE
 
    This sorts an IDO filelist by mtime instead of alphabetically.
 
-   #+BEGIN_SRC emacs-lisp
+   #+BEGIN_EXAMPLE emacs-lisp
      (defun ido-sort-mtime ()
        "Reorder the IDO file list to sort from most recently modified."
        (setq ido-temp-list
@@ -324,7 +383,7 @@ End.
 
      (add-hook 'ido-make-file-list-hook 'ido-sort-mtime)
      (add-hook 'ido-make-dir-list-hook 'ido-sort-mtime)
-   #+END_SRC
+   #+END_EXAMPLE
 
 ** Ace-window
 
@@ -1126,6 +1185,24 @@ end.
        )
 
    #+END_SRC
+
+   Counsel-gtags
+
+#+BEGIN_SRC emacs-lisp
+  (use-package counsel-gtags
+    :ensure t
+    :bind (
+         ("M-t" . counsel-gtags-find-definition)
+         ("M-r" . counsel-gtags-find-reference)
+         ;;("M-s" . counsel-gtags-find-symbol)
+         ("M-," . counsel-gtags-go-backward)
+         )
+    :init 
+    (add-hook 'c-mode-hook 'counsel-gtags-mode)
+    (add-hook 'c++-mode-hook 'counsel-gtags-mode)
+  )
+
+#+END_SRC
 
    Smartparens
 
