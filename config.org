@@ -122,9 +122,9 @@
 (load-library "url-handlers")
      (require 'package)
 
-     (setq package-archives '(("org" . "http://orgmode.org/elpa/")
-                              ("gnu" . "http://elpa.gnu.org/packages/")
-                              ("melpa"     . "http://melpa.org/packages/")))
+     (setq package-archives '(("org" . "https://orgmode.org/elpa/")
+                              ("gnu" . "https://elpa.gnu.org/packages/")
+                              ("melpa"     . "https://melpa.org/packages/")))
 
      (package-initialize)
      (package-refresh-contents)
@@ -238,7 +238,7 @@ End.
                     ido-ignore-extensions t
                     ido-use-virtual-buffers t
                     ido-everywhere t
-                      ido-enable-tramp-completion nil)
+                    ido-enable-tramp-completion t)
        :config
        (ido-mode 1)
        (ido-everywhere 1)
@@ -337,16 +337,16 @@ End.
      (global-set-key (kbd "C-x o") 'ace-window)
 
    #+END_SRC
-
+ 
 ** Avy 
 
    #+BEGIN_SRC emacs-lisp
      (use-package avy
        :ensure t
        :init (setq avy-background t))
-
      (global-set-key (kbd "M-s") 'avy-goto-char-timer)
 
+ 
    #+END_SRC
 
 ** Smart Scan
@@ -360,6 +360,7 @@ End.
        ("M-p" . smartscan-symbol-go-backward))
 
    #+END_SRC
+
 ** Line Numbers
 
 
@@ -951,6 +952,34 @@ end.
        (setq-default flycheck-disabled-checkers '(emacs-lisp-checkdoc)))
 
    #+END_SRC
+** Magit 
+
+   I played with this before.. 
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package magit
+       :ensure t
+       :commands magit-status magit-blame
+       :init
+       (defadvice magit-status (around magit-fullscreen activate)
+         (window-configuration-to-register :magit-fullscreen)
+         ad-do-it
+         (delete-other-windows))
+       :config
+       (setq magit-branch-arguments nil
+             ;; use ido to look for branches
+             magit-completing-read-function 'magit-ido-completing-read
+             ;; don't put "origin-" in front of new branch names by default
+             magit-default-tracking-name-function 'magit-default-tracking-name-branch-only
+             magit-push-always-verify nil
+             ;; Get rid of the previous advice to go into fullscreen
+             magit-restore-window-configuration t)
+
+       :bind ("C-x g" . magit-status))
+
+   #+END_SRC
+
+   magit end. 
 ** Aggressive Auto Indention
    
    Automatically indent without use of the tab found in this article, and seems to be quite helpful for many types of programming languages.
@@ -983,8 +1012,6 @@ end.
    
 ** Auto Complete
    #+BEGIN_SRC emacs-lisp 
-
-
      (use-package company-c-headers
        :ensure t
        )
@@ -1018,15 +1045,17 @@ end.
      (add-hook 'c-mode-hook 'company-mode)
 
    #+END_SRC
+
    To make this work properly, I need to manually specify the include paths by
    putting a =.dir-locals.el= into the source directory of my C code. I.e. most
    of the time this will be =src= and I need to point to =../tldevel=. 
-   #+BEGIN_EXAMPLE emacs-lisp
-   ((c-mode (eval setq company-clang-arguments (append 
-                                                  company-clang-arguments
-                                                  '("-I../tldevel")))))
-   #+END_EXAMPLE
 
+   In addition add the include path to flycheck-clang! 
+
+   #+BEGIN_EXAMPLE emacs-lisp
+   ((c-mode (eval setq company-clang-arguments (append company-clang-arguments '("-I../tldevel")))))
+   ((c-mode (eval setq  flycheck-clang-include-path (append  flycheck-clang-include-path '("-I../tldevel")))))      
+   #+END_EXAMPLE
 
 ** Yasnippet
 
@@ -1078,7 +1107,6 @@ end.
        (add-hook 'prog-mode-hook  'turn-on-ctags-auto-update-mode)
        :diminish ctags-auto-update-mode)
    #+END_SRC
-
 
 
 
@@ -1277,11 +1305,14 @@ Tsurumi-ku, Yokohama, 230-0045 JAPAN")
 * TRAMP
 
 #+BEGIN_SRC emacs-lisp
-(tramp-set-completion-function "ssh"
-                               '((tramp-parse-sconfig "~/.ssh/config")))
-
-(setq tramp-default-method "ssh")
-
+  (use-package tramp
+      :ensure t
+      :config
+      (with-eval-after-load 'tramp-cache
+        (setq tramp-persistency-file-name "~/.emacs.d/tramp"))
+      (setq tramp-default-method "ssh")
+      (setq tramp-use-ssh-controlmaster-options nil) 
+      (message "tramp-loaded"))
 #+END_SRC
  
 * Autoinsert templates 
