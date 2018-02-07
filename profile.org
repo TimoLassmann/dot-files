@@ -26,6 +26,7 @@
 
     PATH=$PATH:$OLDPATH
   #+END_SRC
+j
 
   Colorful ls...
   
