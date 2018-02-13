@@ -65,5 +65,7 @@ j
 
   #+BEGIN_SRC sh
     alias e='emacsclient -q -c --alternate-editor='
-
+    alias es='emacsclient -e "(kill-emacs)"'
   #+END_SRC
+
+  #+RESULTS:
