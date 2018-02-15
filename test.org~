@@ -1,0 +1,20 @@
+#+TITLE:  Emacs Configuration File
+#+AUTHOR: Timo Lassmann 
+#+LATEX_CLASS: report
+#+OPTIONS:  toc:nil
+#+OPTIONS: H:4
+#+LATEX_CMD: xelatex
+
+#+PROPERTY:    header-args:emacs-lisp  :tangle elisp/config.el
+#+PROPERTY:    header-args:shell       :tangle no
+#+PROPERTY:    header-args             :results silent   :eval no-export   :comments org
+
+
+* testung 
+
+
+#+BEGIN_SRC sh
+
+echo "GAGA"
+
+#+END_SRC

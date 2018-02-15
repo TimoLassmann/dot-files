@@ -11,7 +11,6 @@
 
 # \Author{Timo La\ss mann}
 # \DocumentID{src_sh[:value verbatim]{shasum -a 256 config.org | awk '{print $1}' }}
-
 * General Settings
 ** Whoami 
    
@@ -52,14 +51,10 @@
 
 
    #+BEGIN_SRC emacs-lisp
-     (let ((path-from-shell (shell-command-to-string "/bin/bash -l -c 'echo $PATH'")))
-       (setenv "PATH" path-from-shell)
-       (setq exec-path (split-string path-from-shell path-separator)))
+       (let ((path-from-shell (shell-command-to-string "/bin/bash -l -c 'echo $PATH'")))
+         (setenv "PATH" path-from-shell)
+         (setq exec-path (split-string path-from-shell path-separator)))
 
-   #+END_SRC
-   
-   #+BEGIN_SRC emacs-lisp 
-     (setq temporary-file-directory "/tmp")
    #+END_SRC
 
 ** Modernizing Emacs
@@ -86,9 +81,6 @@
 
    #+BEGIN_SRC emacs-lisp
      (setq-default indent-tabs-mode nil)
-     (setq tab-width 2)
-
-     (setq-default tab-always-indent 'complete)
    #+END_SRC
 
    Tell emacs about the mactex installation...
@@ -99,9 +91,6 @@
 
    This should do it...
 
-
-
-
 ** Start in fullscreen
 
    Start in fullscreen mode
@@ -111,11 +100,6 @@
    #+END_SRC
 
 * Package Initialization
-
-** Check security 
-
-
-
 ** Package Manager
 
    Emacs has become like every other operating system, and now has a
@@ -124,12 +108,12 @@
    sweet goodness, I demand.
 
    #+BEGIN_SRC emacs-lisp
-     (load-library "url-handlers")
+(load-library "url-handlers")
      (require 'package)
 
-     (setq package-archives '(("org" . "https://orgmode.org/elpa/")
-                              ("gnu" . "https://elpa.gnu.org/packages/")
-                              ("melpa"     . "https://melpa.org/packages/")))
+     (setq package-archives '(("org" . "http://orgmode.org/elpa/")
+                              ("gnu" . "http://elpa.gnu.org/packages/")
+                              ("melpa"     . "http://melpa.org/packages/")))
 
      (package-initialize)
      (package-refresh-contents)
@@ -194,114 +178,27 @@
    #+END_SRC
 
 End. 
-
-* Backup
-  
-  #+BEGIN_SRC emacs-lisp
-    (setq backup-directory-alist '(("." . "~/Dropbox/backup"))) 
-  #+END_SRC
-  
-  Tramp should do the same:
-  #+BEGIN_SRC emacs-lisp
-    (setq tramp-backup-directory-alist backup-directory-alist)
-  #+END_SRC
-  Make backups of files, even when they’re in version control:
-  #+BEGIN_SRC emacs-lisp
-    (setq vc-make-backup-files t)
-  #+END_SRC
-  And let’s make sure our files are saved if we wander off and defocus the Emacs application:
-  #+BEGIN_SRC emacs-lisp
-    (defun save-all ()
-      "Save all dirty buffers without asking for confirmation."
-      (interactive)
-      (save-some-buffers t))
-
-    (add-hook 'focus-out-hook 'save-all)
-  #+END_SRC
-  
-
-
-End. 
-
 * Movement
-
-** ivy 
-
-#+BEGIN_SRC emacs-lisp
-
-  (use-package ivy
-    :ensure t
-    :diminish (ivy-mode)
-    :bind (("C-x b" . ivy-switch-buffer))
-    :config 
-    (ivy-mode 1)
-    (setq ivy-use-virtual-buffers t) 
-    (setq ivy-display-style 'fancy))
-
-#+END_SRC
-
-** Counsel 
-
-#+BEGIN_SRC emacs-lisp
-  (use-package counsel
-    :ensure t
-    :bind
-    (("M-y" . counsel-yank-pop)
-     :map ivy-minibuffer-map
-     ("M-y" . ivy-next-line)))
-#+END_SRC
-
-** Counsel tramp 
-   This is nice - simply M-x counsel-tramp and off we go. 
-
-#+BEGIN_SRC emacs-lisp
-  (use-package counsel-tramp 
-    :ensure t
-  )
-
-#+END_SRC
-
-** swiper 
-
-#+BEGIN_SRC emacs-lisp 
-    (use-package swiper
-    :ensure t
-    :bind (("C-s" . swiper)
-           ("C-r" . swiper)
-           ("C-c C-r" . ivy-resume)
-           ("M-x" . counsel-M-x)
-           ("C-x C-f" . counsel-find-file))
-    :config 
-    (progn 
-      (ivy-mode 1)
-      (setq ivy-use-virtual-buffers t)
-      (setq ivy-display-style 'fancy)
-      (setq ivy-count-format "(%d/%d) ")
-      (define-key read-expression-map (kbd "C-r") 'counsel-expression-history)
-      ))
-
-#+END_SRC 
 ** SMEX
 
-   #+BEGIN_EXAMPLE emacs-lisp
+   #+BEGIN_SRC emacs-lisp
 
      (use-package smex
        :ensure t
        :init (smex-initialize)
        :bind ("M-x" . smex)
        ("M-X" . smex-major-mode-commands))
-   #+END_example
+   #+END_SRC
    
 ** IDO
 
-   #+BEGIN_EXAMPLE emacs-lisp
+   #+BEGIN_SRC emacs-lisp
      (use-package ido
        :ensure t
        :init  (setq ido-enable-flex-matching t
                     ido-ignore-extensions t
                     ido-use-virtual-buffers t
-                    ido-everywhere t
-                    ido-enable-tramp-completion t)
+                    ido-everywhere t)
        :config
        (ido-mode 1)
        (ido-everywhere 1)
@@ -343,22 +240,21 @@ End.
        (add-to-list 'completion-ignored-extensions ".epub")
        )
 
-
-   #+END_EXAMPLE
+   #+END_SRC
 
    FLX package:
 
-   #+BEGIN_EXAMPLE emacs-lisp
+   #+BEGIN_SRC emacs-lisp
      (use-package flx-ido
        :ensure t
        :init (setq ido-enable-flex-matching t
                    ido-use-faces t)
        :config (flx-ido-mode 1))
-   #+END_EXAMPLE
+   #+END_SRC
 
    According to Ryan Neufeld, we could make IDO work vertically, which is much easier to read. For this, I use ido-vertically:
 
-   #+BEGIN_EXAMPLE emacs-lisp
+   #+BEGIN_SRC emacs-lisp
      (use-package ido-vertical-mode
        :ensure t
        :init               ; I like up and down arrow keys:
@@ -366,11 +262,11 @@ End.
        :config
        (ido-vertical-mode 1))
 
-   #+END_EXAMPLE
+   #+END_SRC
 
    This sorts an IDO filelist by mtime instead of alphabetically.
 
-   #+BEGIN_EXAMPLE emacs-lisp
+   #+BEGIN_SRC emacs-lisp
      (defun ido-sort-mtime ()
        "Reorder the IDO file list to sort from most recently modified."
        (setq ido-temp-list
@@ -387,7 +283,7 @@ End.
 
      (add-hook 'ido-make-file-list-hook 'ido-sort-mtime)
      (add-hook 'ido-make-dir-list-hook 'ido-sort-mtime)
-   #+END_EXAMPLE
+   #+END_SRC
 
 ** Ace-window
 
@@ -400,7 +296,7 @@ End.
      (global-set-key (kbd "C-x o") 'ace-window)
 
    #+END_SRC
- 
+
 ** Avy 
 
    #+BEGIN_SRC emacs-lisp
@@ -409,22 +305,7 @@ End.
        :init (setq avy-background t))
      (global-set-key (kbd "M-s") 'avy-goto-char-timer)
 
- 
    #+END_SRC
-
-** Smart Scan
-
-
-   #+BEGIN_SRC emacs-lisp
-     (use-package smartscan
-       :ensure t
-       :bind
-       ("M-n" . smartscan-symbol-go-forward)
-       ("M-p" . smartscan-symbol-go-backward))
-
-   #+END_SRC
-
-   end.
 
 ** Line Numbers
 
@@ -629,7 +510,7 @@ End.
       '((C . t)
         (R . t)
         (emacs-lisp . t)
-        (shell . t) 
+        (sh . t) 
         (makefile . t)
         (latex .t)
         ))
@@ -774,22 +655,16 @@ End.
    Where are the refs?
 
    #+BEGIN_SRC emacs-lisp
-     (setq reftex-default-bibliography '("~/Dropbox/work/bibliography/references.bib"))
+     (setq reftex-default-bibliography '("~/org/bibliography/references.bib"))
 
      ;; see org-ref for use of these variables
-     (setq org-ref-bibliography-notes "~/Dropbox/work/bibliography/notes.org"
-           org-ref-default-bibliography '("~/Dropbox/work/bibliography/references.bib")
-           org-ref-pdf-directory "~/Dropbox/work/bibliography/bibtex-pdfs/")
+     (setq org-ref-bibliography-notes "~/org/bibliography/notes.org"
+           org-ref-default-bibliography '("~/org/bibliography/references.bib")
+           org-ref-pdf-directory "~/org/bibliography/bibtex-pdfs/")
 
 
 
    #+END_SRC
-
-   #+BEGIN_SRC emacs-lisp
-     (setq org-ref-completion-library 'org-ref-ivy-cite)
-
-   #+END_SRC
-   End.
 
 ** Latex templates
    Latex templates
@@ -886,53 +761,6 @@ end.
 
 * Writing 
 
-** Flyspell config 
-
-Installing aspell on linux:
-
-#+BEGIN_EXAMPLE sh
-apt install aspell aspell-en
-#+END_EXAMPLE
-
-on mac: 
-
-#+BEGIN_EXAMPLE
-brew install aspell 
-#+END_EXAMPLE
-
-Note in the config below I assume aspell is installed in =/usr/bin/= !. 
-
-
-
-#+BEGIN_SRC emacs-lisp 
-  (use-package flyspell
-    :ensure t
-    :diminish flyspell-mode
-    :init
-    (add-hook 'prog-mode-hook 'flyspell-prog-mode)
-
-    (dolist (hook '(text-mode-hook org-mode-hook))
-      (add-hook hook (lambda () (flyspell-mode 1))))
-
-    (dolist (hook '(change-log-mode-hook log-edit-mode-hook org-agenda-mode-hook))
-      (add-hook hook (lambda () (flyspell-mode -1))))
-
-    :config
-    (setq ispell-program-name "aspell"
-          ispell-local-dictionary "en_US"
-          ispell-dictionary "american" ; better for aspell
-          ispell-extra-args '("--sug-mode=ultra" "--lang=en_US")
-          ispell-list-command "--list"
-          ispell-local-dictionary-alist '(("en_US" "[[:alpha:]]" "[^[:alpha:]]" "['‘’]"
-                                        t ; Many other characters
-                                        ("-d" "en_US") nil utf-8))))
-
-#+END_SRC
-
-There is more stuff in Howard Abram's config but I'll leave this for now..
-
-
-
 ** Writegood mode 
    This does not work - there is a wring gpg signature in melpa... 
    
@@ -949,37 +777,10 @@ There is more stuff in Howard Abram's config but I'll leave this for now..
 
 this mode will improve various aspects of writing. 
    
-end.
+end..
 
-
-** LangTool
-   
-   I added the Emacs-langtool code from:
-   
-   https://github.com/mhayashi1120/Emacs-langtool
-   
-   To my =/elisp/= directory. 
-   
-   To install langtool install =maven= package, java 8 then:
-
-   #+BEGIN_EXAMPLE sh
-   cd ~/programs
-   git clone https://github.com/languagetool-org/languagetool.git
-   ./build.sh languagetool-standalone package
-
-   #+END_EXAMPLE
-   This does not work! 
-   
-   I now simply download the pre-compiles zip package... 
-
-   To load: 
-   #+BEGIN_SRC emacs-lisp
-     (require 'langtool)
-     (setq langtool-language-tool-jar "/home/user/programs/langtool/LanguageTool-4.0/languagetool-commandline.jar")
-   #+END_SRC
-   
 * Programming
-  
+
   General programming settings..
 
 ** General
@@ -1002,135 +803,87 @@ end.
    output.
 
    #+BEGIN_SRC emacs-lisp
-
-     ;;(setq compilation-scroll-output t)
-     (setq compile-command "make")
-     (setq compilation-scroll-output 'first-error)
-     (setq compilation-always-kill t)
-     (setq compilation-disable-input t)
-    (add-hook 'compilation-mode-hook 'visual-line-mode)
-
+     (setq compilation-scroll-output t)
    #+END_SRC
 
-   Flycheck 
-   #+BEGIN_SRC emacs-lisp 
-     (use-package flycheck
-       :ensure t
-       :init
-       (add-hook 'after-init-hook 'global-flycheck-mode)
-       (add-hook 'c-mode-hook (lambda () (setq flycheck-clang-language-standard "c11")))
-       :config
-       (setq-default flycheck-disabled-checkers '(emacs-lisp-checkdoc)))
-
-   #+END_SRC
-** Magit 
-
-   I played with this before.. 
+** Auto Complete
 
    #+BEGIN_SRC emacs-lisp
-     (use-package magit
-       :ensure t
-       :commands magit-status magit-blame
+     (use-package auto-complete
+       :ensure t  
+       :commands auto-complete-mode
        :init
-       (defadvice magit-status (around magit-fullscreen activate)
-         (window-configuration-to-register :magit-fullscreen)
-         ad-do-it
-         (delete-other-windows))
+       (progn
+         (auto-complete-mode t))
        :config
-       (setq magit-branch-arguments nil
-             ;; use ido to look for branches
-             magit-completing-read-function 'magit-ido-completing-read
-             ;; don't put "origin-" in front of new branch names by default
-             magit-default-tracking-name-function 'magit-default-tracking-name-branch-only
-             magit-push-always-verify nil
-             ;; Get rid of the previous advice to go into fullscreen
-             magit-restore-window-configuration t)
+       (progn 
+         (use-package auto-complete-config)
 
-       :bind ("C-x g" . magit-status))
+         (ac-set-trigger-key "TAB")
+         (ac-config-default)
 
+         (setq ac-delay 0.02)
+         (setq ac-use-menu-map t)
+         (setq ac-menu-height 50)
+         (setq ac-use-quick-help nil) 
+         (setq ac-comphist-file  "~/.emacs.d/ac-comphist.dat")
+         (setq ac-ignore-case nil)
+         (setq ac-dwim  t)
+         (setq ac-fuzzy-enable t)
+
+         (use-package ac-dabbrev
+           :ensure t      
+           :config
+           (progn
+             (add-to-list 'ac-sources 'ac-source-dabbrev)))
+
+         (setq ac-modes '(emacs-lisp-mode
+                          lisp-mode
+                          lisp-interaction-mode
+                          c-mode
+                          cc-mode
+                          c++-mode
+                          makefile-mode
+                          sh-mode))))
+
+
+     (define-key ac-complete-mode-map "\C-n" 'ac-next)
+     (define-key ac-complete-mode-map "\C-p" 'ac-previous)
    #+END_SRC
 
-   magit end. 
-** Aggressive Auto Indention
-   
-   Automatically indent without use of the tab found in this article, and seems to be quite helpful for many types of programming languages.
-   
-   To begin, we create a function that can indent a function by calling indent-region on the beginning and ending points of a function.
-   #+BEGIN_SRC emacs-lisp 
-     (defun indent-defun ()
-       "Indent current defun.
-     Do nothing if mark is active (to avoid deactivaing it), or if
-     buffer is not modified (to avoid creating accidental
-     modifications)."
-       (interactive)
-       (unless (or (region-active-p)
-                   buffer-read-only
-                   (null (buffer-modified-p)))
-         (let ((l (save-excursion (beginning-of-defun 1) (point)))
-               (r (save-excursion (end-of-defun 1) (point))))
-           (cl-letf (((symbol-function 'message) #'ignore))
-             (indent-region l r)))))
-   #+END_SRC
-   
-   Next, create a hook that will call the indent-defun with every command call:
-   
-   #+BEGIN_SRC emacs-lisp 
-     (defun activate-aggressive-indent ()
-       "Locally add `ha/indent-defun' to `post-command-hook'."
-       (add-hook 'post-command-hook
-                 'indent-defun nil 'local))
-   #+END_SRC
-   
-** Auto Complete
-   #+BEGIN_SRC emacs-lisp 
-     (use-package company-c-headers
-       :ensure t
-       )
+Headers 
+#+BEGIN_SRC emacs-lisp
+  (use-package auto-complete-c-headers
+    :ensure t)
+  (require 'auto-complete-config)
+  (ac-config-default)
+                                          ; start yasnippet with emacs
+                                          ; let's define a function which initializes auto-complete-c-headers and gets called for c/c++ hooks
+  (defun my:ac-c-header-init ()
+    (require 'auto-complete-c-headers)
+    (add-to-list 'ac-sources 'ac-source-c-headers)
+    (add-to-list 'achead:include-directories '"/usr/include")
+    )
+  (add-hook 'c-mode-hook 'my:ac-c-header-init)
+  (semantic-mode 1)
+                                          ; let's define a function which adds semantic as a suggestion backend to auto complete
+                                          ; and hook this function to c-mode-common-hook
+  (defun my:add-semantic-to-autocomplete()
+    (add-to-list 'ac-sources 'ac-source-semantic)
+    )
+  (add-hook 'c-mode-common-hook 'my:add-semantic-to-autocomplete)
+                                          ; turn on automatic reparsing of open buffers in semantic
+  (global-semantic-idle-scheduler-mode 1)
 
-     (use-package company-math 
-       :ensure t
-       )
+  (global-semanticdb-minor-mode 1)
+#+END_SRC
 
-     (use-package company-shell 
-       :ensure t
-       )
+#+BEGIN_SRC emacs-lisp
+  (setq-local imenu-create-index-function #'ggtags-build-imenu-index)
 
-     (use-package company
-       :ensure t
-       :init
-       (setq company-dabbrev-ignore-case t
-             company-show-numbers t)
-       (add-hook 'after-init-hook 'global-company-mode)
-       :config
-       (add-to-list 'company-backends 'company-math-symbols-unicode)
-       (add-to-list 'company-backends 'company-c-headers)
-       (add-to-list 'company-backends 'company-shell)
-       :bind ("C-:" . company-complete)  ; In case I don't want to wait
-       :diminish company-mode)
-
-     (use-package company-quickhelp
-       :ensure t
-       :config
-       (company-quickhelp-mode 1))
-
-     (add-hook 'c-mode-hook 'company-mode)
-
-     (use-package company-statistics
-       :ensure t 
-       )
-
-   #+END_SRC
-
-   To make this work properly, I need to manually specify the include paths by
-   putting a =.dir-locals.el= into the source directory of my C code. I.e. most
-   of the time this will be =src= and I need to point to =../tldevel=. 
-
-   In addition add the include path to flycheck-clang! 
-
-   #+BEGIN_EXAMPLE emacs-lisp
-   ((c-mode (eval setq company-clang-arguments (append company-clang-arguments '("-I../tldevel")))))
-   ((c-mode (eval setq  flycheck-clang-include-path (append  flycheck-clang-include-path '("-I../tldevel")))))      
-   #+END_EXAMPLE
+#+END_SRC
+#+RESULTS:
+: ggtags-build-imenu-index
 
 ** Yasnippet
 
@@ -1185,12 +938,20 @@ end.
 
 
 
+
+
 ** C
    ggtags
 
    #+BEGIN_SRC emacs-lisp
      (use-package ggtags
        :ensure t
+       :commands (
+                  ggtags-mode
+                  ggtags-find-reference
+                  ggtags-idutils-query
+                  pop-tag-mark
+                  ) ; end :commands
        :init
        (add-hook 'c-mode-common-hook
                  (lambda ()
@@ -1207,9 +968,9 @@ end.
        (setq ggtags-use-project-gtagsconf nil)
 
        :bind (
-              ;;("M-," . gtags-pop-stack)
+              ("M-," . pop-tag-mark)
               ;; ("M-/" . ggtags-find-reference)
-              ;;("M-]" . ggtags-idutils-query)
+              ("M-]" . ggtags-idutils-query)
 
               :map ggtags-navigation-map
                                              ;Ergo
@@ -1223,32 +984,46 @@ end.
        )
 
    #+END_SRC
-
-   Counsel-gtags
-
-#+BEGIN_SRC emacs-lisp
-  (use-package counsel-gtags
-    :ensure t
-    ;;:bind (
-      ;;   ("M-t" . counsel-gtags-find-definition)
-        ;; ("M-r" . counsel-gtags-find-reference)
-         ;;("M-s" . counsel-gtags-find-symbol)
-        ;; ("M-," . counsel-gtags-go-backward)
-        ;; )
-    :init 
-    (add-hook 'c-mode-hook 'counsel-gtags-mode)
-    (add-hook 'c++-mode-hook 'counsel-gtags-mode)
-  )
-
-#+END_SRC
-
    Smartparens
-
    #+BEGIN_SRC emacs-lisp
      (use-package smartparens
        :ensure t
-       :init (add-hook 'c-mode-hook 'smartparens-mode))
+       :init (add-hook 'C-mode-hook 'smartparens-mode))
    #+END_SRC
+
+   Autocomplete 
+
+  
+   (use-package auto-complete
+   :ensure t)
+   (use-package auto-complete-c-headers
+   :ensure t)
+   ; do default config for auto-complete
+   (require 'auto-complete-config)
+   (ac-config-default)
+   ; start yasnippet with emacs
+   ; let's define a function which initializes auto-complete-c-headers and gets called for c/c++ hooks
+   (defun my:ac-c-header-init ()
+   (require 'auto-complete-c-headers)
+   (add-to-list 'ac-sources 'ac-source-c-headers)
+   (add-to-list 'achead:include-directories '"/usr/include")
+   )
+   (add-hook 'c-mode-hook 'my:ac-c-header-init)
+
+   ; turn on Semantic
+   (semantic-mode 1)
+   ; let's define a function which adds semantic as a suggestion backend to auto complete
+   ; and hook this function to c-mode-common-hook
+   (defun my:add-semantic-to-autocomplete()
+   (add-to-list 'ac-sources 'ac-source-semantic)
+   )
+   (add-hook 'c-mode-common-hook 'my:add-semantic-to-autocomplete)
+   ; turn on automatic reparsing of open buffers in semantic
+   (global-semantic-idle-scheduler-mode 1)
+
+   (global-semanticdb-minor-mode 1)
+  
+
 
    SET BSD indent style
 
@@ -1259,11 +1034,11 @@ end.
                   (c-set-style "bsd")
                   ))
    #+END_SRC
-  Don't ask with make command to run...
+   Don't ask with make command to run... 
 
    #+BEGIN_SRC emacs-lisp
-    (setq compilation-read-command nil)
- #+END_SRC
+     (setq compilation-read-command nil)
+   #+END_SRC
 
 ** ESS (emacs speaks statistics... ).
 
@@ -1294,14 +1069,6 @@ end.
 
 ** Mu4e 
 
-   On a mac install mu via brew:
-
-   #+BEGIN_EXAMPLE sh
-   brew install mu --with-emacs --HEAD
-   #+END_EXAMPLE
-
-   and make sure the path below points to the same =HEAD= directory!
-
    #+BEGIN_SRC emacs-lisp
      (cond
       ((string-equal system-type "windows-nt") ; Microsoft Windows
@@ -1309,7 +1076,7 @@ end.
          (message "Microsoft Windows")))
       ((string-equal system-type "darwin") ; Mac OS X
        (progn
-         (add-to-list 'load-path "/usr/local/Cellar/mu/HEAD-7d6c30f/share/emacs/site-lisp/mu/mu4e")
+         (add-to-list 'load-path "/usr/local/Cellar/mu/HEAD-0d9d8d2_1/share/emacs/site-lisp/mu/mu4e")
          (setq mu4e-mu-binary "/usr/local/bin/mu")
          ))
       ((string-equal system-type "gnu/linux") ; linux
@@ -1400,48 +1167,13 @@ Tsurumi-ku, Yokohama, 230-0045 JAPAN")
 * TRAMP
 
 #+BEGIN_SRC emacs-lisp
-  (use-package tramp
-      :ensure t
-      :config
-      (with-eval-after-load 'tramp-cache
-        (setq tramp-persistency-file-name "~/.emacs.d/tramp"))
-      (setq tramp-default-method "ssh")
-      (setq tramp-use-ssh-controlmaster-options nil) 
-      (message "tramp-loaded"))
+(tramp-set-completion-function "ssh"
+                               '((tramp-parse-sconfig "~/.ssh/config")))
+
+(setq tramp-default-method "ssh")
+
 #+END_SRC
  
-* Autoinsert templates 
-  
-  Again from Howards Abrams: 
-  #+BEGIN_SRC emacs-lisp
-    (use-package autoinsert
-      :ensure t
-      :init
-      (setq auto-insert-directory (tl/emacs-subdirectory "templates/"))
-      ;; Don't want to be prompted before insertion:
-      (setq auto-insert-query nil)
-
-      (add-hook 'find-file-hook 'auto-insert)
-      (auto-insert-mode 1))
-
-  #+END_SRC
-
-  Use yes snippet for templates. 
-  
-  #+BEGIN_SRC emacs-lisp
-    (defun tl/autoinsert-yas-expand()
-      "Replace text in yasnippet template."
-      (yas-expand-snippet (buffer-string) (point-min) (point-max)))
-  #+END_SRC
-  
-  Set templates
-  
-  #+BEGIN_SRC emacs-lisp
-    (use-package autoinsert 
-     :config
-      (define-auto-insert "\\.org$" ["default-orgmode.org" tl/autoinsert-yas-expand]))
-  #+END_SRC
-  
 * Errors
 
   Sometimes there is a problem with org "org-header function is void..
@@ -1457,7 +1189,7 @@ Tsurumi-ku, Yokohama, 230-0045 JAPAN")
 
   End. 
 
-* End 
+* End... 
 
   #+BEGIN_SRC emacs-lisp
 
@@ -1495,7 +1227,7 @@ Tsurumi-ku, Yokohama, 230-0045 JAPAN")
   All good.
 
   
-;;  #+BEGIN_EXAMPLE emacs-lisp
+  #+BEGIN_EXAMPLE emacs-lisp
   ;; == irony-mode ==
   (use-package irony
     :ensure t
@@ -1533,10 +1265,5 @@ Tsurumi-ku, Yokohama, 230-0045 JAPAN")
     :bind ("C-;" . company-complete-common)
     )
 
-;;  #+END_EXAMPLE
+  #+END_EXAMPLE
   
-
-
-
-
-This itt 

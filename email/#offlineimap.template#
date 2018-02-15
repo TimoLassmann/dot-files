@@ -1,0 +1,30 @@
+[general]
+ui = TTYUI
+accounts = office365
+pythonfile = ~/code/dot-files/email/getpass.py
+status_backend = sqlite
+
+[Account office365]
+localrepository = Local-office365
+remoterepository = Remote-office365
+
+[Repository Local-office365]
+maxconnections = 1
+type = Maildir
+localfolders = ~/Maildir/office365
+nametrans = lambda folder: {'sent' : 'Sent Items' ,
+                            }.get(folder, folder)
+
+
+[Repository Remote-office365]
+type = IMAP
+remoteuser = timo.lassmann@telethonkids.org.au
+remotepasseval = mailpasswd("office365")
+remotehost = outlook.office365.com
+remoteport = 993
+realdelete = no
+ssl = yes
+sslcacertfile = /etc/ssl/certs/ca-bundle.trust.crt
+nametrans = lambda folder: { 'Sent Items':'sent',
+                            }.get(folder, folder)
+folderfilter = lambda folder: folder in ['INBOX', 'Sent Items','Sent', 'Drafts', 'Junk E-Mail']
