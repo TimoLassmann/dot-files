@@ -99,6 +99,6 @@
 ;;      (require 'init-main))))
 
 (tl/build-dot-files)  ;; Do it
-
+(kill-emacs)
 (provide 'dot-files)
 ;;; build.el ends here
