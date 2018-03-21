@@ -172,28 +172,6 @@
 
 (add-hook 'focus-out-hook 'save-all)
 
-;; ivy 
-
-
-(use-package ivy
-  :ensure t
-  :diminish (ivy-mode)
-  :bind (("C-x b" . ivy-switch-buffer))
-  :config 
-  (ivy-mode 1)
-  (setq ivy-use-virtual-buffers t) 
-  (setq ivy-display-style 'fancy))
-
-;; Counsel 
-
-
-(use-package counsel
-  :ensure t
-  :bind
-  (("M-y" . counsel-yank-pop)
-   :map ivy-minibuffer-map
-   ("M-y" . ivy-next-line)))
-
 ;; Counsel tramp 
 ;;    This is nice - simply M-x counsel-tramp and off we go. 
 
@@ -209,9 +187,7 @@
 :ensure t
 :bind (("C-s" . swiper)
        ("C-r" . swiper)
-       ("C-c C-r" . ivy-resume)
-       ("M-x" . counsel-M-x)
-       ("C-x C-f" . counsel-find-file))
+       ("C-c C-r" . ivy-resume))
 :config 
 (progn 
   (ivy-mode 1)
@@ -220,6 +196,111 @@
   (setq ivy-count-format "(%d/%d) ")
   (define-key read-expression-map (kbd "C-r") 'counsel-expression-history)
   ))
+
+;; SMEX
+
+
+(use-package smex
+  :ensure t
+  :init (smex-initialize)
+  :bind ("M-x" . smex)
+  ("M-X" . smex-major-mode-commands))
+
+;; IDO
+
+
+(use-package ido
+  :ensure t
+  :init  (setq ido-enable-flex-matching t
+               ido-ignore-extensions t
+               ido-use-virtual-buffers t
+               ido-everywhere t
+               ido-enable-tramp-completion t)
+  :config
+  (ido-mode 1)
+  (ido-everywhere 1)
+  (add-to-list 'completion-ignored-extensions ".o")
+  (add-to-list 'completion-ignored-extensions ".elc")
+  (add-to-list 'completion-ignored-extensions "~")
+  (add-to-list 'completion-ignored-extensions ".bin")
+  (add-to-list 'completion-ignored-extensions ".bak")
+  (add-to-list 'completion-ignored-extensions ".obj")
+  (add-to-list 'completion-ignored-extensions ".map")
+  (add-to-list 'completion-ignored-extensions ".a")
+  (add-to-list 'completion-ignored-extensions ".ln")
+  (add-to-list 'completion-ignored-extensions ".mod")
+  (add-to-list 'completion-ignored-extensions ".gz")
+  (add-to-list 'completion-ignored-extensions ".aux")
+  (add-to-list 'completion-ignored-extensions ".tdo")
+  (add-to-list 'completion-ignored-extensions ".fmt")
+  (add-to-list 'completion-ignored-extensions ".swp")
+  (add-to-list 'completion-ignored-extensions ".pdfsync")
+  (add-to-list 'completion-ignored-extensions ".pdf")
+  (add-to-list 'completion-ignored-extensions ".vrb")
+  (add-to-list 'completion-ignored-extensions ".idx")
+  (add-to-list 'completion-ignored-extensions ".ind")
+  (add-to-list 'completion-ignored-extensions ".bbl")
+  (add-to-list 'completion-ignored-extensions ".toc")
+  (add-to-list 'completion-ignored-extensions ".blg")
+  (add-to-list 'completion-ignored-extensions ".snm")
+  (add-to-list 'completion-ignored-extensions ".ilg")
+  (add-to-list 'completion-ignored-extensions ".log")
+  (add-to-list 'completion-ignored-extensions ".out")
+  (add-to-list 'completion-ignored-extensions ".pyc")
+  (add-to-list 'completion-ignored-extensions ".DS_Store")
+  (add-to-list 'completion-ignored-extensions "-blx.bib")
+  (add-to-list 'completion-ignored-extensions ".run.xml")
+  (add-to-list 'completion-ignored-extensions ".fls")
+  (add-to-list 'completion-ignored-extensions ".fdb_latexmk")
+  (add-to-list 'completion-ignored-extensions ".bcf")
+  (add-to-list 'completion-ignored-extensions ".rel")
+  (add-to-list 'completion-ignored-extensions ".epub")
+  )
+
+
+
+;; FLX package:
+
+
+(use-package flx-ido
+  :ensure t
+  :init (setq ido-enable-flex-matching t
+              ido-use-faces t)
+  :config (flx-ido-mode 1))
+
+
+
+;; According to Ryan Neufeld, we could make IDO work vertically, which is much easier to read. For this, I use ido-vertically:
+
+
+(use-package ido-vertical-mode
+  :ensure t
+  :init               ; I like up and down arrow keys:
+  (setq ido-vertical-define-keys 'C-n-C-p-up-and-down)
+  :config
+  (ido-vertical-mode 1))
+
+
+
+;; This sorts an IDO filelist by mtime instead of alphabetically.
+
+
+(defun ido-sort-mtime ()
+  "Reorder the IDO file list to sort from most recently modified."
+  (setq ido-temp-list
+        (sort ido-temp-list
+              (lambda (a b)
+                (ignore-errors
+                  (time-less-p
+                   (sixth (file-attributes (concat ido-current-directory b)))
+                   (sixth (file-attributes (concat ido-current-directory a))))))))
+  (ido-to-end  ;; move . files to end (again)
+   (delq nil (mapcar
+              (lambda (x) (and (char-equal (string-to-char x) ?.) x))
+              ido-temp-list))))
+
+(add-hook 'ido-make-file-list-hook 'ido-sort-mtime)
+(add-hook 'ido-make-dir-list-hook 'ido-sort-mtime)
 
 ;; Ace-window
 

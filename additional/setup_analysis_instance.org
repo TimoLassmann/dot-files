@@ -47,8 +47,17 @@
 * Install packages 
 
   #+BEGIN_SRC shell :tangle setup.sh :shebang #!/bin/bash :exports code :results none
-    sudo apt install -y git zsh screen make autoconf libtool r-base 
+    sudo apt install -y git zsh screen make autoconf libtool r-base libssl-dev libssh2-1-dev libboost-all-dev   libgsl2 libgsl-dev libcurl4-openssl-dev 
   #+END_SRC
+
+
+* Install R packages - joy
+
+#+BEGIN_SRC shell :tangle setup.sh :exports code :results none
+sudo R -e 'install.packages(c("devtools","curl"))'
+sudo R -e 'source("https://bioconductor.org/biocLite.R");biocLite()'
+sudo R -e 'install.packages(c("Seurat","cellrangerRkit","biomaRt","tidyverse","optparse","reshape"))'
+#+END_SRC
 
 * Emacs! 
 
