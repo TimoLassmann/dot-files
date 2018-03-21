@@ -47,7 +47,7 @@
 * Install packages 
 
   #+BEGIN_SRC shell :tangle setup.sh :shebang #!/bin/bash :exports code :results none
-    sudo apt install -y git zsh screen make autoconf libtool r-base libssl-dev libssh2-1-dev libboost-all-dev   libgsl2 libgsl-dev libcurl4-openssl-dev 
+    sudo apt install -y git zsh screen make autoconf libtool r-base libssl-dev libssh2-1-dev libboost-all-dev   libgsl2 libgsl-dev libcurl4-openssl-dev  libxml2-dev
   #+END_SRC
 
 
@@ -56,7 +56,9 @@
 #+BEGIN_SRC shell :tangle setup.sh :exports code :results none
 sudo R -e 'install.packages(c("devtools","curl"))'
 sudo R -e 'source("https://bioconductor.org/biocLite.R");biocLite()'
-sudo R -e 'install.packages(c("Seurat","cellrangerRkit","biomaRt","tidyverse","optparse","reshape"))'
+sudo R -e 'install.packages(c("Seurat","tidyverse","optparse","reshape"))'
+sudo R -e 'source("https://bioconductor.org/biocLite.R");biocLite(c("biomaRt"))'
+sudo R -e 'source("http://cf.10xgenomics.com/supp/cell-exp/rkit-install-2.0.0.R")'
 #+END_SRC
 
 * Emacs! 
@@ -66,10 +68,6 @@ sudo R -e 'install.packages(c("Seurat","cellrangerRkit","biomaRt","tidyverse","o
     cd programs
     git clone https://github.com/emacs-mirror/emacs.git
   #+END_SRC
-
-
-* Meeting Notes
-
 
 
 
