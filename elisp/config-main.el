@@ -188,8 +188,11 @@
 
 
 (use-package counsel
-:ensure t
-)
+  :ensure t
+  :bind
+  (("M-y" . counsel-yank-pop)
+   :map ivy-minibuffer-map
+   ("M-y" . ivy-next-line)))
 
 ;; Counsel tramp 
 ;;    This is nice - simply M-x counsel-tramp and off we go. 
@@ -589,6 +592,8 @@ should be. After calling this function, call 'meeting-done' to reset the environ
       org-ref-default-bibliography '("~/Dropbox/work/bibliography/references.bib")
       org-ref-pdf-directory "~/Dropbox/work/bibliography/bibtex-pdfs/")
 
+(setq org-ref-completion-library 'org-ref-ivy-cite)
+
 ;; Latex templates
 ;;    Latex templates
 
@@ -707,13 +712,13 @@ should be. After calling this function, call 'meeting-done' to reset the environ
 
   :config
   (setq ispell-program-name "aspell"
-        ispell-local-dictionary "en_US"
-        ispell-dictionary "american" ; better for aspell
-        ispell-extra-args '("--sug-mode=ultra" "--lang=en_US")
+        ispell-local-dictionary "en_GB"
+        ;;ispell-dictionary "american" ; better for aspell
+        ispell-extra-args '("--sug-mode=ultra" "--lang=en_GB")
         ispell-list-command "--list"
-        ispell-local-dictionary-alist '(("en_US" "[[:alpha:]]" "[^[:alpha:]]" "['‘’]"
+        ispell-local-dictionary-alist '(("en_GB" "[[:alpha:]]" "[^[:alpha:]]" "['‘’]"
                                       t ; Many other characters
-                                      ("-d" "en_US") nil utf-8))))
+                                      ("-d" "en_GB") nil utf-8))))
 
 ;; Writegood mode 
 ;;    This does not work - there is a wring gpg signature in melpa... 
@@ -882,6 +887,10 @@ modifications)."
 
 (add-hook 'c-mode-hook 'company-mode)
 
+(use-package company-statistics
+  :ensure t 
+  )
+
 ;; Yasnippet
 
 
@@ -922,12 +931,6 @@ modifications)."
 
 (use-package ggtags
   :ensure t
-  :commands (
-             ggtags-mode
-             ggtags-find-reference
-             ggtags-idutils-query
-             pop-tag-mark
-             ) ; end :commands
   :init
   (add-hook 'c-mode-common-hook
             (lambda ()
@@ -944,9 +947,9 @@ modifications)."
   (setq ggtags-use-project-gtagsconf nil)
 
   :bind (
-         ("M-," . pop-tag-mark)
+         ;;("M-," . gtags-pop-stack)
          ;; ("M-/" . ggtags-find-reference)
-         ("M-]" . ggtags-idutils-query)
+         ;;("M-]" . ggtags-idutils-query)
 
          :map ggtags-navigation-map
                                         ;Ergo
@@ -966,12 +969,12 @@ modifications)."
 
 (use-package counsel-gtags
   :ensure t
-  :bind (
-       ("M-t" . counsel-gtags-find-definition)
-       ("M-r" . counsel-gtags-find-reference)
+  ;;:bind (
+    ;;   ("M-t" . counsel-gtags-find-definition)
+      ;; ("M-r" . counsel-gtags-find-reference)
        ;;("M-s" . counsel-gtags-find-symbol)
-       ("M-," . counsel-gtags-go-backward)
-       )
+      ;; ("M-," . counsel-gtags-go-backward)
+      ;; )
   :init 
   (add-hook 'c-mode-hook 'counsel-gtags-mode)
   (add-hook 'c++-mode-hook 'counsel-gtags-mode)

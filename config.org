@@ -227,7 +227,7 @@ End.
 
 ** ivy 
 
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_EXAMPLE emacs-lisp
 
   (use-package ivy
     :ensure t
@@ -238,7 +238,7 @@ End.
     (setq ivy-use-virtual-buffers t) 
     (setq ivy-display-style 'fancy))
 
-#+END_SRC
+#+END_EXAMPLE
 
 ** Counsel 
 
@@ -294,7 +294,7 @@ End.
    
 ** IDO
 
-   #+BEGIN_EXAMPLE emacs-lisp
+   #+BEGIN_SRC emacs-lisp
      (use-package ido
        :ensure t
        :init  (setq ido-enable-flex-matching t
@@ -344,21 +344,21 @@ End.
        )
 
 
-   #+END_EXAMPLE
+   #+END_SRC
 
    FLX package:
 
-   #+BEGIN_EXAMPLE emacs-lisp
+   #+BEGIN_SRC emacs-lisp
      (use-package flx-ido
        :ensure t
        :init (setq ido-enable-flex-matching t
                    ido-use-faces t)
        :config (flx-ido-mode 1))
-   #+END_EXAMPLE
+   #+END_SRC
 
    According to Ryan Neufeld, we could make IDO work vertically, which is much easier to read. For this, I use ido-vertically:
 
-   #+BEGIN_EXAMPLE emacs-lisp
+   #+BEGIN_SRC emacs-lisp
      (use-package ido-vertical-mode
        :ensure t
        :init               ; I like up and down arrow keys:
@@ -366,11 +366,11 @@ End.
        :config
        (ido-vertical-mode 1))
 
-   #+END_EXAMPLE
+   #+END_SRC
 
    This sorts an IDO filelist by mtime instead of alphabetically.
 
-   #+BEGIN_EXAMPLE emacs-lisp
+   #+BEGIN_SRC emacs-lisp
      (defun ido-sort-mtime ()
        "Reorder the IDO file list to sort from most recently modified."
        (setq ido-temp-list
@@ -387,7 +387,7 @@ End.
 
      (add-hook 'ido-make-file-list-hook 'ido-sort-mtime)
      (add-hook 'ido-make-dir-list-hook 'ido-sort-mtime)
-   #+END_EXAMPLE
+   #+END_SRC
 
 ** Ace-window
 
@@ -919,13 +919,13 @@ Note in the config below I assume aspell is installed in =/usr/bin/= !.
 
     :config
     (setq ispell-program-name "aspell"
-          ispell-local-dictionary "en_US"
-          ispell-dictionary "american" ; better for aspell
-          ispell-extra-args '("--sug-mode=ultra" "--lang=en_US")
+          ispell-local-dictionary "en_GB"
+          ;;ispell-dictionary "american" ; better for aspell
+          ispell-extra-args '("--sug-mode=ultra" "--lang=en_GB")
           ispell-list-command "--list"
-          ispell-local-dictionary-alist '(("en_US" "[[:alpha:]]" "[^[:alpha:]]" "['‘’]"
+          ispell-local-dictionary-alist '(("en_GB" "[[:alpha:]]" "[^[:alpha:]]" "['‘’]"
                                         t ; Many other characters
-                                        ("-d" "en_US") nil utf-8))))
+                                        ("-d" "en_GB") nil utf-8))))
 
 #+END_SRC
 

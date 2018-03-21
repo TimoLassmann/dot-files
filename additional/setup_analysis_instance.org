@@ -1,0 +1,66 @@
+#+TITLE:  Set up a cloud analysis instance
+#+AUTHOR: Timo Lassmann
+#+EMAIL:  timo.lassmann@telethonkids.org.au
+#+DATE:   2018-03-21
+#+LATEX_CLASS: report
+#+OPTIONS:  toc:nil
+#+OPTIONS: H:4
+#+LATEX_CMD: xelatex
+
+* Introduction  
+
+  These are instructions to set up an analysis VM. 
+* Update base image 
+
+  #+BEGIN_EXAMPLE shell
+  sudo apt update 
+  sudo apt upgrade 
+  #+END_EXAMPLE
+
+* Upgrade R
+   
+   Ubuntu 16 only comes with version 3.2 of R. Several packages for the analysis of
+   single cell data require 3.4+. 
+   
+   To upgrade (as root) add the following line to =/etc/apt/sources.list="
+   
+   #+BEGIN_EXAMPLE
+   deb https://cloud.r-project.org/bin/linux/ubuntu/ xenial/  
+   #+END_EXAMPLE
+   
+   get the gpg keys: 
+  
+   #+BEGIN_EXAMPLE sh 
+   gpg --keyserver keyserver.ubuntu.com --recv-key E084DAB9
+   gpg -a --export E084DAB9 | sudo apt-key add -
+   #+END_EXAMPLE
+   
+   Then update: 
+
+   #+BEGIN_EXAMPLE shell
+   sudo apt-get update && sudo apt-get upgrade
+   #+END_EXAMPLE
+  
+   End. 
+
+
+* Install packages 
+
+  #+BEGIN_SRC shell :tangle setup.sh :shebang #!/bin/bash :exports code :results none
+    sudo apt install -y git zsh screen make autoconf libtool r-base 
+  #+END_SRC
+
+* Emacs! 
+
+  #+BEGIN_SRC shell :tangle setup.sh :exports code :results none
+    mkdir programs 
+    cd programs
+    git clone https://github.com/emacs-mirror/emacs.git
+  #+END_SRC
+
+
+* Meeting Notes
+
+
+
+
