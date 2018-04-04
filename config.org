@@ -70,6 +70,11 @@
      (setq gnutls-min-prime-bits 4096)
    #+END_SRC
 
+** Turn off sleep mode 
+
+#+BEGIN_SRC emacs-lisp 
+(global-unset-key (kbd "C-z"))
+#+END_SRC
 ** misc
    Assume that I always want to kill the current buffer when hitting C-x k.
    #+BEGIN_SRC emacs-lisp

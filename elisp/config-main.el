@@ -40,6 +40,11 @@
 
 (setq gnutls-min-prime-bits 4096)
 
+;; Turn off sleep mode 
+
+
+(global-unset-key (kbd "C-z"))
+
 ;; misc
 ;;    Assume that I always want to kill the current buffer when hitting C-x k.
 
