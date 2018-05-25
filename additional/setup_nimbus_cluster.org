@@ -1,0 +1,119 @@
+#+TITLE:  Setup Nimbus cluster
+#+AUTHOR: Timo Lassmann
+#+EMAIL:  timo.lassmann@telethonkids.org.au
+#+DATE:   2018-05-24
+#+LATEX_CLASS: report
+#+OPTIONS:  toc:nil
+#+OPTIONS: H:4
+#+LATEX_CMD: xelatex
+
+* Introduction 
+Going to set up a linux cluster on Nimbus to run cellranger in parallel... 
+
+
+* Manual stuff 
+
+** Set up nimbus nodes
+
+1) As described here: 
+https://support.pawsey.org.au/documentation/display/US/Nimbus+-+Launching+an+Instance
+
+2) copy ssh key to main node connected to the internet (se we can connect to
+individual nodes.. 
+
+
+3) On the main node add a ssh config file (manually I guess...) 
+
+Here is an example of how this may look: 
+
+#+BEGIN_SRC shell :tangle ssh_config_nimbus  :exports code :results none
+  Host compute-5
+  Hostname 192.168.1.5
+  User ubuntu
+  IdentityFile ~/.ssh/pawsey.key
+  Host compute-4
+  Hostname 192.168.1.7
+  User ubuntu
+  IdentityFile ~/.ssh/pawsey.key
+  Host compute-3
+  Hostname 192.168.1.12
+  User ubuntu
+  IdentityFile ~/.ssh/pawsey.key
+  Host compute-2
+  Hostname 192.168.1.15
+  User ubuntu
+  IdentityFile ~/.ssh/pawsey.key
+  Host compute-1
+  Hostname 192.168.1.16
+  User ubuntu
+  IdentityFile ~/.ssh/pawsey.key
+
+#+END_SRC
+
+Then copy to content to ~/.ssh/config 
+
+I had to remove known hosts and log onto each instance to add back to known
+hosts. 
+
+
+4) Install pdsh as describes here
+
+https://support.pawsey.org.au/documentation/display/US/Nimbus+-+Managing+a+VM+Cluster
+
+Especially add nodes in the /etc/genders file:  
+
+
+sudo vi /etc/genders
+
+compute-1
+compute-2
+compute-3
+compute-4
+compute-5
+
+Check if everything is working: 
+
+pdsh -a uname -a
+
+
+* Upgrade software 
+
+
+** General system upgrade some additional packages..
+
+  #+BEGIN_SRC shell :tangle basic_node_setup.sh :shebang #!/bin/bash :exports code :results none
+    pdsh -a sudo apt-get update 
+    pdsh -a sudo apt-get -yq upgrade 
+    pdsh -a sudo apt-get -yq install git zsh screen make
+    pdsh -a sudo apt-get -yq install autoconf libtool libssl-dev libssh2-1-dev
+    pdsh -a sudo apt-get -yq install libboost-all-dev libgsl-dev
+    pdsh -a sudo apt-get -yq install libcurl4-openssl-dev  libxml2-dev libgslcblas0
+    pdsh -a sudo apt-get -yq install alien r-base pdsh
+    pdsh -a sudo apt-get -yq upgrade 
+    pdsh -a sudo apt-get -yq autoremove
+
+    pdsh -a sudo usermod -aG sudo ubuntu
+
+  #+END_SRC
+
+** install R packages  
+
+
+   ubuntu 18 should come with R version 3.4 ...
+
+   #+BEGIN_SRC shell :tangle basic_R_setup.sh :shebang #!/bin/bash :exports code :results none
+     pdsh -a "sudo R -e 'install.packages(c(\"devtools\",\"curl\"),repos=\"http://cran.us.r-project.org\")' "
+     pdsh -a "sudo R -e 'source(\"https://bioconductor.org/biocLite.R\");biocLite()' "
+     pdsh -a "sudo R -e 'install.packages(c(\"Seurat\",\"tidyverse\",\"optparse\",\"reshape\"),repos=\"http://cran.us.r-project.org\")'"
+     pdsh -a "sudo R -e 'source(\"https://bioconductor.org/biocLite.R\");biocLite(c(\"biomaRt\"),repos=\"http://cran.us.r-project.org\")'"
+     pdsh -a "sudo R -e 'source(\"http://cf.10xgenomics.com/supp/cell-exp/rkit-install-2.0.0.R\",repos=\"http://cran.us.r-project.org\")'"
+   #+END_SRC
+
+
+
+* Meeting Notes
+
+
+
+
+
