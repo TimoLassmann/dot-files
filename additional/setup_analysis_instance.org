@@ -47,7 +47,7 @@
 * Install packages 
 
   #+BEGIN_SRC shell :tangle setup.sh :shebang #!/bin/bash :exports code :results none
-    sudo apt install -y git zsh screen make autoconf libtool r-base libssl-dev libssh2-1-dev libboost-all-dev   libgsl2 libgsl-dev libcurl4-openssl-dev  libxml2-dev
+    sudo apt install -y git zsh screen make autoconf libtool r-base libssl-dev libssh2-1-dev libboost-all-dev   libgsl2 libgsl-dev libcurl4-openssl-dev  libxml2-dev alien 
   #+END_SRC
 
 
