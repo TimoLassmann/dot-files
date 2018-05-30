@@ -10,7 +10,6 @@
 * Introduction 
 Going to set up a linux cluster on Nimbus to run cellranger in parallel... 
 
-
 * Manual stuff 
 
 ** Set up nimbus nodes
@@ -27,24 +26,49 @@ individual nodes..
 Here is an example of how this may look: 
 
 #+BEGIN_SRC shell :tangle ssh_config_nimbus  :exports code :results none
-  Host compute-5
+  StrictHostKeyChecking no
+  Host single-cell 
+  User ubuntu
+  Hostname 192.168.1.6 
+  IdentityFile ~/.ssh/pawsey.key
+  Host node-10
+  Hostname 192.168.1.9
+  User ubuntu
+  IdentityFile ~/.ssh/pawsey.key
+  Host node-9
+  Hostname 192.168.1.19
+  User ubuntu
+  IdentityFile ~/.ssh/pawsey.key
+  Host node-8
+  Hostname 192.168.1.21
+  User ubuntu
+  IdentityFile ~/.ssh/pawsey.key
+  Host node-7
   Hostname 192.168.1.5
   User ubuntu
   IdentityFile ~/.ssh/pawsey.key
-  Host compute-4
-  Hostname 192.168.1.7
+  Host node-6
+  Hostname 192.168.1.17
   User ubuntu
   IdentityFile ~/.ssh/pawsey.key
-  Host compute-3
-  Hostname 192.168.1.12
+  Host node-5
+  Hostname 192.168.1.20
   User ubuntu
   IdentityFile ~/.ssh/pawsey.key
-  Host compute-2
-  Hostname 192.168.1.15
+  Host node-4
+  Hostname 192.168.1.14
   User ubuntu
   IdentityFile ~/.ssh/pawsey.key
-  Host compute-1
+  Host node-3
+  Hostname 192.168.1.18
+  User ubuntu
+  IdentityFile ~/.ssh/pawsey.key
+  Host node-2
   Hostname 192.168.1.16
+  User ubuntu
+  IdentityFile ~/.ssh/pawsey.key
+  Host node-1
+  Hostname 192.168.1.10
   User ubuntu
   IdentityFile ~/.ssh/pawsey.key
 
@@ -53,7 +77,8 @@ Here is an example of how this may look:
 Then copy to content to ~/.ssh/config 
 
 I had to remove known hosts and log onto each instance to add back to known
-hosts. 
+hosts. (no longer needed 
+
 
 
 4) Install pdsh as describes here
@@ -65,11 +90,151 @@ Especially add nodes in the /etc/genders file:
 
 sudo vi /etc/genders
 
-compute-1
-compute-2
-compute-3
-compute-4
-compute-5
+
+#+BEGIN_SRC shell :tangle genders  :exports code :results none
+node-1
+node-2
+node-3
+node-4
+node-5
+node-6
+node-7
+node-8
+node-9
+node-10
+
+#+END_SRC
+
+
+sudo mv genders /etc/genders
+
+5) update hosts for be ready for slurm...  file 
+
+cat bar.txt >> foo.txt
+
+#+BEGIN_SRC shell :tangle setup_host_for_slurm.sh :shebang #!/bin/bash   :exports code :results none
+sudo -- sh -c 'cat > /etc/slurm-llnl/cgroup.conf  << "EOF"
+CgroupAutomount=yes
+CgroupReleaseAgentDir="/etc/slurm-llnl/cgroup" 
+
+ConstrainCores=yes 
+ConstrainDevices=yes
+ConstrainRAMSpace=yes
+
+EOF'
+
+sudo -- sh -c 'cat > /etc/hosts  << "EOF"
+
+127.0.0.1 localhost
+192.168.1.6 single-cell
+192.168.1.9 node-10
+192.168.1.19 node-9
+192.168.1.21 node-8
+192.168.1.5 node-7
+192.168.1.17 node-6
+192.168.1.20 node-5
+192.168.1.14 node-4
+192.168.1.18 node-3
+192.168.1.16 node-2
+192.168.1.10 node-1
+# The following lines are desirable for IPv6 capable hosts
+::1 ip6-localhost ip6-loopback
+fe00::0 ip6-localnet
+ff00::0 ip6-mcastprefix
+ff02::1 ip6-allnodes
+ff02::2 ip6-allrouters
+ff02::3 ip6-allhosts
+
+EOF'
+
+sudo mv ~/slurm.conf /etc/slurm-llnl/slurm.conf
+sudo chown slurm: /etc/slurm-llnl/slurm.conf
+
+
+#+END_SRC
+
+  #+BEGIN_SRC shell :tangle setup_hosts_file.sh :shebang #!/bin/bash :exports code :results none
+sudo apt-get  install slurmctld slurmctld-dbg slurmdbd slurmdbd-dbg
+pdsh -a sudo apt-get update 
+pdsh -a sudo apt-get -yq upgrade 
+pdsh -a sudo apt-get -yq install slurmd 
+pdcp -a slurm.conf ~/slurm.conf
+pdcp -a setup_host_for_slurm.sh  ~/setup_host_for_slurm.sh
+pdsh -a ./setup_host_for_slurm.sh 
+pdsh -a grep single /etc/hosts 
+
+#+END_SRC
+
+* Start slurm.... 
+
+
+
+ #+BEGIN_SRC shell :exports code :results none
+sudo systemctl stop slurmctld
+sudo systemctl start  slurmctld
+
+pdsh -a sudo systemctl stop slurmd
+pdsh -a sudo systemctl enable slurmd
+pdsh -a sudo slurmd
+
+#+END_SRC
+
+
+
+
+
+* Let's try to share disks with NFS... 
+
+  #+BEGIN_SRC shell :exports code :results none
+    pdsh -a sudo apt-get -yq install nfs-common
+    sudo apt-get install -yq nfs-kernel-server
+
+sudo -- sh -c 'cat > /etc/exports  << "EOF"
+/data 192.168.1.9(rw,sync,no_subtree_check)
+/data 192.168.1.19(rw,sync,no_subtree_check)
+/data 192.168.1.21(rw,sync,no_subtree_check)
+/data 192.168.1.5(rw,sync,no_subtree_check)
+/data 192.168.1.17(rw,sync,no_subtree_check)
+/data 192.168.1.20(rw,sync,no_subtree_check)
+/data 192.168.1.14(rw,sync,no_subtree_check)
+/data 192.168.1.18(rw,sync,no_subtree_check)
+/data 192.168.1.16(rw,sync,no_subtree_check)
+/data 192.168.1.10(rw,sync,no_subtree_check)
+
+EOF'
+sudo /etc/init.d/rpcbind restart
+sudo /etc/init.d/nfs-kernel-server restart
+sudo exportfs -r
+
+pdsh -a sudo mkdir /data
+pdsh -a sudo chown -R ubuntu:ubuntu /data 
+pdsh -a sudo mount 192.168.1.6:/data /data      
+
+pdsh -a ls /data 
+
+  #+END_SRC
+
+
+* Let's test cellranger 
+
+ #+BEGIN_SRC shell :tangle run_cellranger_test.sh :shebang #!/bin/bash :exports code :results none
+#SBATCH --time=01:00:00
+#SBATCH --nodes=1 
+#SBATCH --ntasks-per-node=16
+
+export PATH=/data/programs/cellranger-2.1.1:$PATH
+
+cd /data
+mkdir $(hostname) 
+cd $(hostname) 
+cellranger testrun --id=tiny
+  #+END_SRC
+
+/mnt/nfs 192.168.1.124(rw,sync,no_subtree_check)
+/mnt/nfs 192.168.1.125(rw,sync,no_subtree_check)
+/mnt/nfs 192.168.1.126(rw,sync,no_subtree_check)
+
+
 
 Check if everything is working: 
 
@@ -81,20 +246,59 @@ pdsh -a uname -a
 
 ** General system upgrade some additional packages..
 
-  #+BEGIN_SRC shell :tangle basic_node_setup.sh :shebang #!/bin/bash :exports code :results none
-    pdsh -a sudo apt-get update 
-    pdsh -a sudo apt-get -yq upgrade 
-    pdsh -a sudo apt-get -yq install git zsh screen make
-    pdsh -a sudo apt-get -yq install autoconf libtool libssl-dev libssh2-1-dev
-    pdsh -a sudo apt-get -yq install libboost-all-dev libgsl-dev
-    pdsh -a sudo apt-get -yq install libcurl4-openssl-dev  libxml2-dev libgslcblas0
-    pdsh -a sudo apt-get -yq install alien r-base pdsh
-    pdsh -a sudo apt-get -yq upgrade 
-    pdsh -a sudo apt-get -yq autoremove
+   #+BEGIN_SRC shell :tangle basic_node_setup.sh :shebang #!/bin/bash :exports code :results none
+     pdsh -a sudo apt-get update 
+     pdsh -a sudo apt-get -yq upgrade 
+     pdsh -a sudo apt-get install libmunge-dev libmunge2 munge pdsh
+     pdsh -a usermod -aG sudo ubuntu
 
-    pdsh -a sudo usermod -aG sudo ubuntu
+   #+END_SRC
 
-  #+END_SRC
+** sync munge key... 
+
+   #+BEGIN_SRC shell :tangle munge_per_node.sh :shebang #!/bin/bash :exports code :results none
+     sudo systemctl stop munge
+      cd ~
+     sudo chown munge: munge.key
+     sudo mv munge.key /etc/munge/munge.key
+
+     sudo chmod 400 /etc/munge/munge.key
+
+     sudo systemctl enable munge
+     sudo systemctl start munge
+   #+END_SRC
+
+
+ 
+   #+BEGIN_SRC shell :tangle generate_sync_munge_key.sh :shebang #!/bin/bash :exports code :results none
+     dd if=/dev/random bs=1 count=1024 > munge.key
+     pdcp -a munge.key ~/munge.key
+     pdcp -a munge_per_node.sh  ~/munge_per_node.sh 
+     pdsh -a ./munge_per_node.sh 
+
+     sudo systemctl stop munge
+     sudo chown munge: munge.key
+     sudo mv munge.key /etc/munge/munge.key
+
+     sudo chmod 400 /etc/munge/munge.key
+
+     sudo systemctl enable munge
+     sudo systemctl start munge
+     
+
+
+
+   #+END_SRC
+
+
+
+** slurm via apt-get packages... 
+
+Slurm libraries
+apt-get install slurm-llnl
+sudo apt-get install -yq  mailutils
+
+
 
 ** install R packages  
 
@@ -106,12 +310,162 @@ pdsh -a uname -a
      pdsh -a "sudo R -e 'source(\"https://bioconductor.org/biocLite.R\");biocLite()' "
      pdsh -a "sudo R -e 'install.packages(c(\"Seurat\",\"tidyverse\",\"optparse\",\"reshape\"),repos=\"http://cran.us.r-project.org\")'"
      pdsh -a "sudo R -e 'source(\"https://bioconductor.org/biocLite.R\");biocLite(c(\"biomaRt\"),repos=\"http://cran.us.r-project.org\")'"
-     pdsh -a "sudo R -e 'source(\"http://cf.10xgenomics.com/supp/cell-exp/rkit-install-2.0.0.R\",repos=\"http://cran.us.r-project.org\")'"
    #+END_SRC
 
 
+* Scratch 
 
-* Meeting Notes
+
+Need to manually create and attach scratch[1-5] volumes... 
+
+NOPE - simply allocate 500GB to reach instance... 
+ 
+* Cellranger  
+
+** Move reference data to all nodes: 
+
+  #+BEGIN_EXAMPLE shell
+  cd /data/reference 
+  pdcp -a refdata-cellranger-hg19-and-mm10-2.1.0.tar.gz  ~/refdata-cellranger-hg19-and-mm10-2.1.0.tar.gz
+  pdsh -a tar -zxvf refdata-cellranger-hg19-and-mm10-2.1.0.tar.gz
+  pdsh -a rm refdata-cellranger-hg19-and-mm10-2.1.0.tar.gz
+  #+END_EXAMPLE
+
+** Move cellranger software to all nodes: 
+ #+BEGIN_EXAMPLE shell
+  cd /data/programs 
+  pdcp -a cellranger-2.1.1.tar.gz  ~/cellranger-2.1.1.tar.gz
+  pdsh -a tar -zxvf cellranger-2.1.1.tar.gz
+  pdsh -a rm cellranger-2.1.1.tar.gz
+  #+END_EXAMPLE
+ 
+** Test installation :
+
+   #+BEGIN_EXAMPLE shell
+
+   pdsh -a "export PATH=~/cellranger-2.1.1:$PATH; cellranger testrun --id=tiny"
+     #+END_EXAMPLE
+
+* Install PBS 
+
+** enable connection between work and main node 
+
+   #+BEGIN_SRC shell :tangle node_ssh_config.txt :exports code :results none
+     Host 192.168.1.*
+     StrictHostKeyChecking no
+     UserKnownHostsFile=/dev/null
+     Host single-cell
+     Hostname 192.168.1.6
+     User ubuntu
+     IdentityFile ~/.ssh/pawsey.key
+   #+END_SRC
+
+#+BEGIN_SRC shell :tangle munge_slurm_setup.sh :shebang #!/bin/bash :exports code :results none
+pdcp -a ~/.ssh/pawsey.key ~/.ssh/pawsey.key
+pdcp -a ~/node_ssh_config.txt  ~/.ssh/config
+   #+END_SRC
+
+* Play with slurm 
+
+** Install munge
+#+BEGIN_SRC shell :tangle
+sudo apt-get install libmunge-dev libmunge2 munge
+sudo systemctl enable munge
+sudo systemctl start munge
+
+#+END_SRC
+
+** install mariadb 
+
+#+BEGIN_SRC shell 
+  sudo apt-get install mariadb-server
+  sudo systemctl enable mysql
+  sudo systemctl start mysql
+#+END_SRC
+
+** Download, build, and install Slurm
+
+pdsh -a sudo apt install slurm-llnl
+
+sudo apt install  slurmdbd slurmctld slurm-client
+
+
+wget https://download.schedmd.com/slurm/slurm-17.11.6.tar.bz2
+tar xvjf slurm-17.11.6.tar.bz2
+cd slurm-17.11.6
+ ./configure --prefix=/tmp/slurm-build --sysconfdir=/etc/slurm --enable-pam --with-pam_dir=/lib/x86_64-linux-gnu/security/
+ make
+ make contrib
+ sudo make install
+ cd ..
+ fpm -s dir -t deb -v 1.0 -n slurm-17.11.6 --prefix=/usr -C /tmp/slurm-build .
+dpkg -i slurm-17.11.6_1.0_amd64.deb
+sudo useradd slurm 
+sudo mkdir -p /etc/slurm /etc/slurm/prolog.d /etc/slurm/epilog.d /var/spool/slurm/ctld /var/spool/slurm/d /var/log/slurm
+sudo chown slurm /var/spool/slurm/ctld /var/spool/slurm/d /var/log/slurm
+
+
+sudp cp ~/slurm.conf /etc/slurm/
+sudo cp slurmdbd.service /etc/systemd/system/
+sudo cp slurmctld.service /etc/systemd/system/
+
+sudo systemctl stop slurmdbd
+sudo systemctl stop slurmctld
+sudo systemctl daemon-reload
+sudo systemctl enable slurmdbd
+sudo systemctl start slurmdbd
+sudo systemctl enable slurmctld
+sudo systemctl start slurmctld
+
+sudo systemctl daemon-reload
+sudo systemctl disable slurmdbd
+sudo systemctl stop slurmdbd
+sudo systemctl disable slurmctld
+sudo systemctl stop slurmctld
+
+
+
+
+
+
+** Install munge / mariadb 
+
+   #+BEGIN_SRC shell :tangle munge_slurm_setup.sh :shebang #!/bin/bash :exports code :results none
+     pdsh -a sudo apt-get update 
+     pdsh -a sudo apt-get -yq upgrade 
+     pdsh -a sudo apt-get -yq install mariadb-server munge rng-tools 
+     pdsh -a sudo apt-get -yq upgrade 
+     pdsh -a sudo apt-get -yq autoremove 
+
+     sudo apt-get -yq install mariadb-server munge rng-tools 
+
+     sudo rngd -r /dev/urandom
+     sudo su 
+     dd if=/dev/random bs=1 count=1024 >/etc/munge/munge.key
+
+     chown munge: /etc/munge/munge.key
+     chmod 400 /etc/munge/munge.key
+exit 
+     
+     sudo cp /etc/munge/munge.key . 
+     sudo chown ubuntu: munge.key
+
+     pdcp -a munge.key  ~/munge.key
+     pdsh -a sudo chown munge: ~/munge.key
+     pdsh -a sudo chmod 400  ~/munge.key
+     pdsh -a sudo cp  ~/munge.key  /etc/munge/munge.key
+
+    
+     pdsh -a sudo /etc/init.d/munge start 
+     sudo /etc/init.d/munge start 
+   #+END_SRC
+
+
+pdcp cellranger to all nodes 
+
+unpack 
+
+compile... 
 
 
 
