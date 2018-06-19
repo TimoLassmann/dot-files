@@ -72,9 +72,18 @@
 
 ** Turn off sleep mode 
 
-#+BEGIN_SRC emacs-lisp 
-(global-unset-key (kbd "C-z"))
-#+END_SRC
+   #+BEGIN_SRC emacs-lisp 
+     (global-unset-key (kbd "C-z"))
+   #+END_SRC
+
+** Turn off arrow keys... 
+
+   #+BEGIN_SRC emacs-lisp 
+
+     (require 'no-easy-keys)
+     (no-easy-keys 1)
+
+   #+END_SRC
 ** misc
    Assume that I always want to kill the current buffer when hitting C-x k.
    #+BEGIN_SRC emacs-lisp
@@ -837,6 +846,21 @@ End.
                     ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
                     ("\\paragraph{%s}" . "\\paragraph*{%s}")
                     ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
+   #+END_SRC
+Rebuttal... 
+ #+BEGIN_SRC emacs-lisp
+   (add-to-list 'org-latex-classes
+                '("NHMRC_project_grant_rebuttal"
+                  "\\documentclass[12pt,table,names]{article}
+     \\usepackage{\\string~\"/.emacs.d/latex_templates/NHMRC_grant\"}
+     [NO-DEFAULT-PACKAGES]
+     [NO-PACKAGES]"
+                  ("\\subsection{%s}" . "\\section*{%s}")
+                  ("\\subsubsection{%s}" . "\\subsection*{%s}")q
+                  ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+                  ("\\paragraph{%s}" . "\\paragraph*{%s}")
+                  ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
+
    #+END_SRC
 
 ** ARC Discovery Grant

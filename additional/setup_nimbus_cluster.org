@@ -1,4 +1,4 @@
-#+TITLE:  Setup Nimbus cluster
+#+TITLE:  Setting up a Nimbus slurm cluster
 #+AUTHOR: Timo Lassmann
 #+EMAIL:  timo.lassmann@telethonkids.org.au
 #+DATE:   2018-05-24
@@ -7,21 +7,28 @@
 #+OPTIONS: H:4
 #+LATEX_CMD: xelatex
 
-* Introduction 
-Going to set up a linux cluster on Nimbus to run cellranger in parallel... 
+* Introduction
 
-* Manual stuff 
+This tutorial walks you through the steps required to set up a linux cluster on
+pawsey's openstack nimbus cloud.
 
-** Set up nimbus nodes
 
-1) As described here: 
+* Setting up and starting nodes 
+
+We highly recommend allocating a minimal amount of storage to each node and use
+a single large NFS mounted volume to share data within the cluster. 
+
+1) Follow the instructions here:
 https://support.pawsey.org.au/documentation/display/US/Nimbus+-+Launching+an+Instance
 
-2) copy ssh key to main node connected to the internet (se we can connect to
-individual nodes.. 
+NOTE: some of the downstream steps will be easier if you create 5 nodes at once.
+This can be accomplished by selecting a name like 'node' and requesting 5 or
+more instances. OpenStack will append '-1', '-2' etc to the names. 
 
+2) copy ssh key to main node connected to the internet (so we can connect to
+individual nodes..)
 
-3) On the main node add a ssh config file (manually I guess...) 
+3) On the main node add a ssh config file 
 
 Here is an example of how this may look: 
 
@@ -29,56 +36,32 @@ Here is an example of how this may look:
   StrictHostKeyChecking no
   Host single-cell 
   User ubuntu
-  Hostname 192.168.1.6 
-  IdentityFile ~/.ssh/pawsey.key
-  Host node-10
-  Hostname 192.168.1.9
-  User ubuntu
-  IdentityFile ~/.ssh/pawsey.key
-  Host node-9
-  Hostname 192.168.1.19
-  User ubuntu
-  IdentityFile ~/.ssh/pawsey.key
-  Host node-8
-  Hostname 192.168.1.21
-  User ubuntu
-  IdentityFile ~/.ssh/pawsey.key
-  Host node-7
-  Hostname 192.168.1.5
-  User ubuntu
-  IdentityFile ~/.ssh/pawsey.key
-  Host node-6
-  Hostname 192.168.1.17
-  User ubuntu
+  Hostname 192.168.1.6
   IdentityFile ~/.ssh/pawsey.key
   Host node-5
-  Hostname 192.168.1.20
-  User ubuntu
-  IdentityFile ~/.ssh/pawsey.key
-  Host node-4
-  Hostname 192.168.1.14
-  User ubuntu
-  IdentityFile ~/.ssh/pawsey.key
-  Host node-3
-  Hostname 192.168.1.18
-  User ubuntu
-  IdentityFile ~/.ssh/pawsey.key
-  Host node-2
   Hostname 192.168.1.16
   User ubuntu
   IdentityFile ~/.ssh/pawsey.key
-  Host node-1
-  Hostname 192.168.1.10
+  Host node-4
+  Hostname 192.168.1.7
   User ubuntu
   IdentityFile ~/.ssh/pawsey.key
-
+  Host node-3
+  Hostname 192.168.1.15
+  User ubuntu
+  IdentityFile ~/.ssh/pawsey.key
+  Host node-2
+  Hostname 192.168.1.14
+  User ubuntu
+  IdentityFile ~/.ssh/pawsey.key
+  Host node-1
+  Hostname 192.168.1.12
+  User ubuntu
+  IdentityFile ~/.ssh/pawsey.key
+  
 #+END_SRC
 
 Then copy to content to ~/.ssh/config 
-
-I had to remove known hosts and log onto each instance to add back to known
-hosts. (no longer needed 
-
 
 
 4) Install pdsh as describes here
@@ -87,9 +70,7 @@ https://support.pawsey.org.au/documentation/display/US/Nimbus+-+Managing+a+VM+Cl
 
 Especially add nodes in the /etc/genders file:  
 
-
 sudo vi /etc/genders
-
 
 #+BEGIN_SRC shell :tangle genders  :exports code :results none
 node-1
@@ -97,164 +78,32 @@ node-2
 node-3
 node-4
 node-5
-node-6
-node-7
-node-8
-node-9
-node-10
 
 #+END_SRC
 
 
-sudo mv genders /etc/genders
+* Update nodes
 
-5) update hosts for be ready for slurm...  file 
-
-cat bar.txt >> foo.txt
-
-#+BEGIN_SRC shell :tangle setup_host_for_slurm.sh :shebang #!/bin/bash   :exports code :results none
-sudo -- sh -c 'cat > /etc/slurm-llnl/cgroup.conf  << "EOF"
-CgroupAutomount=yes
-CgroupReleaseAgentDir="/etc/slurm-llnl/cgroup" 
-
-ConstrainCores=yes 
-ConstrainDevices=yes
-ConstrainRAMSpace=yes
-
-EOF'
-
-sudo -- sh -c 'cat > /etc/hosts  << "EOF"
-
-127.0.0.1 localhost
-192.168.1.6 single-cell
-192.168.1.9 node-10
-192.168.1.19 node-9
-192.168.1.21 node-8
-192.168.1.5 node-7
-192.168.1.17 node-6
-192.168.1.20 node-5
-192.168.1.14 node-4
-192.168.1.18 node-3
-192.168.1.16 node-2
-192.168.1.10 node-1
-# The following lines are desirable for IPv6 capable hosts
-::1 ip6-localhost ip6-loopback
-fe00::0 ip6-localnet
-ff00::0 ip6-mcastprefix
-ff02::1 ip6-allnodes
-ff02::2 ip6-allrouters
-ff02::3 ip6-allhosts
-
-EOF'
-
-sudo mv ~/slurm.conf /etc/slurm-llnl/slurm.conf
-sudo chown slurm: /etc/slurm-llnl/slurm.conf
-
-
-#+END_SRC
-
-  #+BEGIN_SRC shell :tangle setup_hosts_file.sh :shebang #!/bin/bash :exports code :results none
-sudo apt-get  install slurmctld slurmctld-dbg slurmdbd slurmdbd-dbg
-pdsh -a sudo apt-get update 
-pdsh -a sudo apt-get -yq upgrade 
-pdsh -a sudo apt-get -yq install slurmd 
-pdcp -a slurm.conf ~/slurm.conf
-pdcp -a setup_host_for_slurm.sh  ~/setup_host_for_slurm.sh
-pdsh -a ./setup_host_for_slurm.sh 
-pdsh -a grep single /etc/hosts 
-
-#+END_SRC
-
-* Start slurm.... 
-
-
-
- #+BEGIN_SRC shell :exports code :results none
-sudo systemctl stop slurmctld
-sudo systemctl start  slurmctld
-
-pdsh -a sudo systemctl stop slurmd
-pdsh -a sudo systemctl enable slurmd
-pdsh -a sudo slurmd
-
-#+END_SRC
-
-
-
-
-
-* Let's try to share disks with NFS... 
-
-  #+BEGIN_SRC shell :exports code :results none
-    pdsh -a sudo apt-get -yq install nfs-common
-    sudo apt-get install -yq nfs-kernel-server
-
-sudo -- sh -c 'cat > /etc/exports  << "EOF"
-/data 192.168.1.9(rw,sync,no_subtree_check)
-/data 192.168.1.19(rw,sync,no_subtree_check)
-/data 192.168.1.21(rw,sync,no_subtree_check)
-/data 192.168.1.5(rw,sync,no_subtree_check)
-/data 192.168.1.17(rw,sync,no_subtree_check)
-/data 192.168.1.20(rw,sync,no_subtree_check)
-/data 192.168.1.14(rw,sync,no_subtree_check)
-/data 192.168.1.18(rw,sync,no_subtree_check)
-/data 192.168.1.16(rw,sync,no_subtree_check)
-/data 192.168.1.10(rw,sync,no_subtree_check)
-
-EOF'
-sudo /etc/init.d/rpcbind restart
-sudo /etc/init.d/nfs-kernel-server restart
-sudo exportfs -r
-
-pdsh -a sudo mkdir /data
-pdsh -a sudo chown -R ubuntu:ubuntu /data 
-pdsh -a sudo mount 192.168.1.6:/data /data      
-
-pdsh -a ls /data 
-
+  #+BEGIN_SRC shell
+    pdsh -a sudo apt-get update 
+    pssd -a sudo apt-get -yq upgrade 
   #+END_SRC
 
+* Setup MUNGE & SLURM 
+** MUNGE 
 
-* Let's test cellranger 
-
- #+BEGIN_SRC shell :tangle run_cellranger_test.sh :shebang #!/bin/bash :exports code :results none
-#SBATCH --time=01:00:00
-#SBATCH --nodes=1 
-#SBATCH --ntasks-per-node=16
-
-export PATH=/data/programs/cellranger-2.1.1:$PATH
-
-cd /data
-mkdir $(hostname) 
-cd $(hostname) 
-cellranger testrun --id=tiny
-  #+END_SRC
-
-/mnt/nfs 192.168.1.124(rw,sync,no_subtree_check)
-/mnt/nfs 192.168.1.125(rw,sync,no_subtree_check)
-/mnt/nfs 192.168.1.126(rw,sync,no_subtree_check)
-
-
-
-Check if everything is working: 
-
-pdsh -a uname -a
-
-
-* Upgrade software 
-
-
-** General system upgrade some additional packages..
-
+*** Install 
    #+BEGIN_SRC shell :tangle basic_node_setup.sh :shebang #!/bin/bash :exports code :results none
-     pdsh -a sudo apt-get update 
-     pdsh -a sudo apt-get -yq upgrade 
-     pdsh -a sudo apt-get install libmunge-dev libmunge2 munge pdsh
-     pdsh -a usermod -aG sudo ubuntu
+ 
+     pdsh -a sudo apt-get -yq install libmunge-dev libmunge2 munge 
+     sudo apt-get -yq install libmunge-dev libmunge2 munge 
 
    #+END_SRC
 
-** sync munge key... 
+*** Synchronise munge keys.
+
+First set up a script to copy the munge key from the home directory into the
+right location on all node.
 
    #+BEGIN_SRC shell :tangle munge_per_node.sh :shebang #!/bin/bash :exports code :results none
      sudo systemctl stop munge
@@ -263,12 +112,15 @@ pdsh -a uname -a
      sudo mv munge.key /etc/munge/munge.key
 
      sudo chmod 400 /etc/munge/munge.key
-
      sudo systemctl enable munge
      sudo systemctl start munge
    #+END_SRC
 
-
+Then: 
+1) generate the munge key on the head node
+2) copy the key to all nodes 
+3) run the script above 
+4) also copy the key to the correct directory on the head node 
  
    #+BEGIN_SRC shell :tangle generate_sync_munge_key.sh :shebang #!/bin/bash :exports code :results none
      dd if=/dev/random bs=1 count=1024 > munge.key
@@ -285,10 +137,213 @@ pdsh -a uname -a
      sudo systemctl enable munge
      sudo systemctl start munge
      
+   #+END_SRC
 
+* Slurm 
+
+Setup for a basic slurm scheduler. The setup below is minimal but works.  
+
+** Generate a slurm config file 
+
+Generate a slurm config file using this web-form: 
+
+https://slurm.schedmd.com/configurator.html
+
+Note: 
+1) It is critical to correctly name the head node and the worker nodes. These
+   names have to match exactly what is shown in the openstack online management
+   console (https://nimbus.pawsey.org.au).
+
+2) Make sure the number of CPUs, main memory etc are set correctly for each
+   worker node. If you are unsure how to set these install the slurm daemon on a
+   node: 
+   ssh nodeXXX 
+   sudo apt-get install -yq slurmd 
+   and run: 
+   slurmd -C 
+
+Finally copy the output of the configurator webpage into a file called
+=slurm.conf= in the home directory of your head node. 
+
+
+** Script to set up node 
+
+   The script below is used to configure each node. This includes moving the
+   slurm.conf file created above into the right directory. Note that the IP
+   addresses have to be manually edited in this script to match your setup.
+
+   #+BEGIN_SRC shell :tangle setup_host_for_slurm.sh :shebang #!/bin/bash   :exports code :results none
+     sudo -- sh -c 'cat > /etc/slurm-llnl/cgroup.conf  << "EOF"
+     CgroupAutomount=yes
+     CgroupReleaseAgentDir="/etc/slurm-llnl/cgroup" 
+
+     ConstrainCores=yes 
+     ConstrainDevices=yes
+     ConstrainRAMSpace=yes
+
+     EOF'
+
+     sudo -- sh -c 'cat > /etc/hosts  << "EOF"
+
+     127.0.0.1 localhost
+     192.168.1.6 single-cell
+     192.168.1.16 node-5
+     192.168.1.7 node-4
+     192.168.1.15 node-3
+     192.168.1.14 node-2
+     192.168.1.12 node-1
+     # The following lines are desirable for IPv6 capable hosts
+     ::1 ip6-localhost ip6-loopback
+     fe00::0 ip6-localnet
+     ff00::0 ip6-mcastprefix
+     ff02::1 ip6-allnodes
+     ff02::2 ip6-allrouters
+     ff02::3 ip6-allhosts
+
+     EOF'
+
+     sudo mv ~/slurm.conf /etc/slurm-llnl/slurm.conf
+     sudo chown slurm: /etc/slurm-llnl/slurm.conf
 
 
    #+END_SRC
+
+The following script configures the head node, copies the above script to all
+nodes and configures them.
+
+NOTE:
+
+1) Edit the IP address to match your configuration.
+2) this script expects a =slurm.conf= file in the home directory of user ubuntu
+on the head node.
+
+  #+BEGIN_SRC shell :tangle setup_hosts_file.sh :shebang #!/bin/bash :exports code :results none
+sudo apt-get  install slurmctld slurmctld-dbg slurmdbd slurmdbd-dbg
+pdsh -a sudo apt-get update 
+pdsh -a sudo apt-get -yq upgrade 
+pdsh -a sudo apt-get -yq install slurmd pdsh
+pdcp -a cp slurm.conf ~/slurm.conf
+pdcp -a setup_host_for_slurm.sh  ~/setup_host_for_slurm.sh
+pdsh -a ./setup_host_for_slurm.sh 
+pdsh -a grep single /etc/hosts 
+
+sudo mv ~/slurm.conf /etc/slurm-llnl/slurm.conf
+sudo chown slurm: /etc/slurm-llnl/slurm.conf
+sudo -- sh -c 'cat > /etc/hosts  << "EOF"
+
+127.0.0.1 localhost
+192.168.1.6 single-cell
+192.168.1.16 node-5
+192.168.1.7 node-4
+192.168.1.15 node-3
+192.168.1.14 node-2
+192.168.1.12 node-1
+# The following lines are desirable for IPv6 capable hosts
+::1 ip6-localhost ip6-loopback
+fe00::0 ip6-localnet
+ff00::0 ip6-mcastprefix
+ff02::1 ip6-allnodes
+ff02::2 ip6-allrouters
+ff02::3 ip6-allhosts
+
+EOF'
+
+
+#+END_SRC
+
+** Start Slurm 
+
+
+ #+BEGIN_SRC shell :exports code :results none
+sudo systemctl stop slurmctld
+sudo systemctl start  slurmctld
+
+pdsh -a sudo systemctl stop slurmd
+pdsh -a sudo systemctl enable slurmd
+pdsh -a sudo slurmd
+
+#+END_SRC
+
+
+
+After this you should be able to see all nodes using the =sinfo= command. 
+
+
+* Sharing a mounted volume via NFS  
+
+  The following script starts a nfs server on the head node and runs code to mount
+  the volume on all work nodes. 
+
+  The IP addresses in the =/etc/exports= file belong to the nodes; the IP address
+  in the final mount command is the head node's.
+
+  #+BEGIN_SRC shell :exports code :results none
+    pdsh -a sudo apt-get -yq install nfs-common
+    sudo apt-get install -yq nfs-kernel-server
+
+    sudo -- sh -c 'cat > /etc/exports  << "EOF"
+    /data 192.168.1.16(rw,sync,no_subtree_check)
+    /data 192.168.1.7(rw,sync,no_subtree_check)
+    /data 192.168.1.15(rw,sync,no_subtree_check)
+    /data 192.168.1.14(rw,sync,no_subtree_check)
+    /data 192.168.1.12(rw,sync,no_subtree_check)
+
+    EOF'
+    sudo /etc/init.d/rpcbind restart
+    sudo /etc/init.d/nfs-kernel-server restart
+    sudo exportfs -r
+
+    pdsh -a sudo mkdir /data
+    pdsh -a sudo chown -R ubuntu:ubuntu /data 
+    pdsh -a sudo mount 192.168.1.6:/data /data      
+
+    pdsh -a ls /data 
+
+  #+END_SRC
+
+To stop the NFS server (i.e. before un-mounting the volume): 
+
+service nfs-kernel-server stop
+
+* Let's test cellranger 
+
+ #+BEGIN_SRC shell :tangle run_cellranger_test.sh :shebang #!/bin/bash :exports code :results none
+#SBATCH --time=01:00:00
+#SBATCH --nodes=1 
+#SBATCH --ntasks-per-node=16
+
+export PATH=/data/programs/cellranger-2.1.1:$PATH
+
+cd /data
+mkdir $(hostname) 
+cd $(hostname) 
+cellranger testrun --id=tiny
+  #+END_SRC
+
+
+* A note on extending btrfs filesystems: 
+
+1) umount
+2) detach in openstack console 
+3) resize 
+4) re-attach 
+5)  mount /dev/vdc /data
+6) resize using: 
+btrfs filesystem resize max /data/
+
+* Install bcl2fastq2 on all nodes: 
+
+  #+BEGIN_SRC shell
+    pdsh -a sudo apt-get install -yq alien
+    pdcp -a bcl2fastq2-v2.20.0.422-Linux-x86_64.rpm ~/bcl2fastq2-v2.20.0.422-Linux-x86_64.rpm 
+
+    pdsh -a sudo alien -i bcl2fastq2-v2.20.0.422-Linux-x86_64.rpm
+  #+END_SRC
+
+
+
+* (old stuff - ignore from here) Upgrade software 
+
 
 
 
@@ -348,10 +403,10 @@ NOPE - simply allocate 500GB to reach instance...
 
 * Install PBS 
 
+
 ** enable connection between work and main node 
 
    #+BEGIN_SRC shell :tangle node_ssh_config.txt :exports code :results none
-     Host 192.168.1.*
      StrictHostKeyChecking no
      UserKnownHostsFile=/dev/null
      Host single-cell

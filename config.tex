@@ -1,46 +1,51 @@
-% Created 2018-01-21 Sun 11:58
+% Created 2018-06-10 Sun 20:46
+% Intended LaTeX compiler: pdflatex
 \documentclass[12pt]{article}
 \usepackage{\string~"/.emacs.d/latex_templates/report"}
 \author{Timo Lassmann}
 \date{\today}
 \title{Emacs Configuration File}
 \hypersetup{
-  pdfkeywords={},
-  pdfsubject={},
-  pdfcreator={Emacs 25.3.1 (Org mode 8.2.10)}}
+ pdfauthor={Timo Lassmann},
+ pdftitle={Emacs Configuration File},
+ pdfkeywords={},
+ pdfsubject={},
+ pdfcreator={Emacs 27.0.50 (Org mode 9.1.9)}, 
+ pdflang={English}}
 \begin{document}
 
 \maketitle
-\section{General Settings}
-\label{sec-1}
-\subsection{Whoami}
-\label{sec-1-1}
 
-\lstset{language=Lisp,label= ,caption= ,numbers=none}
+\section{General Settings}
+\label{sec:org02eedb6}
+\subsection{Whoami}
+\label{sec:org51da36d}
+
+\lstset{language=Lisp,label= ,caption= ,captionpos=b,numbers=none}
 \begin{lstlisting}
 (setq user-full-name "Timo Lassmann"
       user-mail-address "timo.lassmann@telethonkids.org.au")
 \end{lstlisting}
 
 \subsection{Emacs directory}
-\label{sec-1-2}
+\label{sec:orgf2e2c8a}
 
-\lstset{language=Lisp,label= ,caption= ,numbers=none}
+\lstset{language=Lisp,label= ,caption= ,captionpos=b,numbers=none}
 \begin{lstlisting}
 (defconst tl/emacs-directory (concat (getenv "HOME") "/.emacs.d/"))
 (defun tl/emacs-subdirectory (d) (expand-file-name d tl/emacs-directory))
 \end{lstlisting}
 
-\lstset{language=Lisp,label= ,caption= ,numbers=none}
+\lstset{language=Lisp,label= ,caption= ,captionpos=b,numbers=none}
 \begin{lstlisting}
 (message "%s" (tl/emacs-subdirectory "elisp"))
 (add-to-list 'load-path (tl/emacs-subdirectory "elisp"))
 \end{lstlisting}
 
 \subsection{Sensible setting}
-\label{sec-1-3}
+\label{sec:orga4fea7a}
 
-\lstset{language=Lisp,label= ,caption= ,numbers=none}
+\lstset{language=Lisp,label= ,caption= ,captionpos=b,numbers=none}
 \begin{lstlisting}
 (load-file "~/.emacs.d/elisp/sensible-defaults.el")
 (sensible-defaults/increase-gc-threshold)
@@ -49,41 +54,51 @@
 \end{lstlisting}
 
 \subsection{Very general}
-\label{sec-1-4}
+\label{sec:org382f58d}
 
-\lstset{language=Lisp,label= ,caption= ,numbers=none}
+\lstset{language=Lisp,label= ,caption= ,captionpos=b,numbers=none}
 \begin{lstlisting}
+
 (setq scroll-conservatively 10000
       scroll-preserve-screen-position t)
+
 \end{lstlisting}
 
 
-\lstset{language=Lisp,label= ,caption= ,numbers=none}
+\lstset{language=Lisp,label= ,caption= ,captionpos=b,numbers=none}
 \begin{lstlisting}
 (let ((path-from-shell (shell-command-to-string "/bin/bash -l -c 'echo $PATH'")))
   (setenv "PATH" path-from-shell)
   (setq exec-path (split-string path-from-shell path-separator)))
+
 \end{lstlisting}
 
-\lstset{language=Lisp,label= ,caption= ,numbers=none}
+\lstset{language=Lisp,label= ,caption= ,captionpos=b,numbers=none}
 \begin{lstlisting}
 (setq temporary-file-directory "/tmp")
 \end{lstlisting}
 
 \subsection{Modernizing Emacs}
-\label{sec-1-5}
+\label{sec:orgb6c20d0}
 
-Found \href{https://github.com/wasamasa/dotemacs/blob/master/init.org#init}{here} how to remove the warnings from the GnuTLS library when
+Found \href{https://github.com/wasamasa/dotemacs/blob/master/init.org\#init}{here} how to remove the warnings from the GnuTLS library when
 using HTTPS\ldots{} increase the minimum prime bits size:
-\lstset{language=Lisp,label= ,caption= ,numbers=none}
+\lstset{language=Lisp,label= ,caption= ,captionpos=b,numbers=none}
 \begin{lstlisting}
 (setq gnutls-min-prime-bits 4096)
 \end{lstlisting}
 
+\subsection{Turn off sleep mode}
+\label{sec:org4c302f8}
+
+\lstset{language=Lisp,label= ,caption= ,captionpos=b,numbers=none}
+\begin{lstlisting}
+(global-unset-key (kbd "C-z"))
+\end{lstlisting}
 \subsection{misc}
-\label{sec-1-6}
+\label{sec:orgdc34a9d}
 Assume that I always want to kill the current buffer when hitting C-x k.
-\lstset{language=Lisp,label= ,caption= ,numbers=none}
+\lstset{language=Lisp,label= ,caption= ,captionpos=b,numbers=none}
 \begin{lstlisting}
 (defun tl/kill-current-buffer ()
   "Kill the current buffer without prompting."
@@ -96,14 +111,17 @@ Assume that I always want to kill the current buffer when hitting C-x k.
 
 Never use tabs. Tabs are the devil’s whitespace.
 
-\lstset{language=Lisp,label= ,caption= ,numbers=none}
+\lstset{language=Lisp,label= ,caption= ,captionpos=b,numbers=none}
 \begin{lstlisting}
 (setq-default indent-tabs-mode nil)
+(setq tab-width 2)
+
+(setq-default tab-always-indent 'complete)
 \end{lstlisting}
 
 Tell emacs about the mactex installation\ldots{}
 
-\lstset{language=Lisp,label= ,caption= ,numbers=none}
+\lstset{language=Lisp,label= ,caption= ,captionpos=b,numbers=none}
 \begin{lstlisting}
 (setenv "PATH" (concat "/Library/TeX/texbin" ":" (getenv "PATH")))
 \end{lstlisting}
@@ -114,45 +132,51 @@ This should do it\ldots{}
 
 
 \subsection{Start in fullscreen}
-\label{sec-1-7}
+\label{sec:orge46758f}
 
 Start in fullscreen mode
 
-\lstset{language=Lisp,label= ,caption= ,numbers=none}
+\lstset{language=Lisp,label= ,caption= ,captionpos=b,numbers=none}
 \begin{lstlisting}
 (custom-set-variables '(initial-frame-alist (quote ((fullscreen . maximized)))))
 \end{lstlisting}
 
 \section{Package Initialization}
-\label{sec-2}
+\label{sec:org1e2832e}
+
+\subsection{Check security}
+\label{sec:org449dee2}
+
+
+
 \subsection{Package Manager}
-\label{sec-2-1}
+\label{sec:orgd844162}
 
 Emacs has become like every other operating system, and now has a
 \href{http://tromey.com/elpa/}{package manager} with its own collection repository, but since it is
 so conservative, we need to add more repositories to get all the
 sweet goodness, I demand.
 
-\lstset{language=Lisp,label= ,caption= ,numbers=none}
+\lstset{language=Lisp,label= ,caption= ,captionpos=b,numbers=none}
 \begin{lstlisting}
 (load-library "url-handlers")
-     (require 'package)
+(require 'package)
 
-     (setq package-archives '(("org" . "http://orgmode.org/elpa/")
-                              ("gnu" . "http://elpa.gnu.org/packages/")
-                              ("melpa"     . "http://melpa.org/packages/")))
+(setq package-archives '(("org" . "https://orgmode.org/elpa/")
+                         ("gnu" . "https://elpa.gnu.org/packages/")
+                         ("melpa"     . "https://melpa.org/packages/")))
 
-     (package-initialize)
-     (package-refresh-contents)
+(package-initialize)
+(package-refresh-contents)
 \end{lstlisting}
 
 \subsection{Use-Package}
-\label{sec-2-2}
+\label{sec:orga53c11c}
 
 Using \href{https://github.com/jwiegley/use-package}{use-package} to automatically install certain packages, as
 well as the ease of lazily loading them.
 
-\lstset{language=Lisp,label= ,caption= ,numbers=none}
+\lstset{language=Lisp,label= ,caption= ,captionpos=b,numbers=none}
 \begin{lstlisting}
 (unless (package-installed-p 'use-package)
   (package-refresh-contents)
@@ -162,12 +186,12 @@ well as the ease of lazily loading them.
 \end{lstlisting}
 
 \subsection{Init File Support}
-\label{sec-2-3}
+\label{sec:org4cbf01e}
 
 Load up a collection of enhancements to Emacs Lisp, including \href{https://github.com/magnars/dash.el}{dash},
 \href{https://github.com/magnars/s.el}{s} for string manipulation, and \href{https://github.com/rejeep/f.el}{f} for file manipulation.
 
-\lstset{language=Lisp,label= ,caption= ,numbers=none}
+\lstset{language=Lisp,label= ,caption= ,captionpos=b,numbers=none}
 \begin{lstlisting}
 (require 'cl)
 
@@ -183,10 +207,10 @@ Load up a collection of enhancements to Emacs Lisp, including \href{https://gith
 \end{lstlisting}
 
 \subsection{Fill Mode}
-\label{sec-2-4}
+\label{sec:org3c1c90f}
 Automatically wrapping when you get to the end of a line (or the fill-region):
 
-\lstset{language=Lisp,label= ,caption= ,numbers=none}
+\lstset{language=Lisp,label= ,caption= ,captionpos=b,numbers=none}
 \begin{lstlisting}
 (use-package fill
   :bind (("C-c T f" . auto-fill-mode)
@@ -196,9 +220,9 @@ Automatically wrapping when you get to the end of a line (or the fill-region):
 \end{lstlisting}
 
 \subsection{Undo / redo}
-\label{sec-2-5}
+\label{sec:orgb28b276}
 According to this article, I get better functionality than the redo+ plugin (which I can’t seem to get working well).
-\lstset{language=Lisp,label= ,caption= ,numbers=none}
+\lstset{language=Lisp,label= ,caption= ,captionpos=b,numbers=none}
 \begin{lstlisting}
 (use-package undo-tree
   :ensure t
@@ -209,30 +233,31 @@ According to this article, I get better functionality than the redo+ plugin (whi
   (defalias 'redo 'undo-tree-redo)
   :bind (("C-z" . undo)     ; Zap to character isn't helpful
          ("C-S-z" . redo)))
+
 \end{lstlisting}
 
 End. 
 
 \section{Backup}
-\label{sec-3}
+\label{sec:orga0ee6ba}
 
-\lstset{language=Lisp,label= ,caption= ,numbers=none}
+\lstset{language=Lisp,label= ,caption= ,captionpos=b,numbers=none}
 \begin{lstlisting}
-(setq backup-directory-alist '(("." . "~/Dropbox/backup")))
+(setq backup-directory-alist '(("." . "~/Dropbox/backup"))) 
 \end{lstlisting}
 
 Tramp should do the same:
-\lstset{language=Lisp,label= ,caption= ,numbers=none}
+\lstset{language=Lisp,label= ,caption= ,captionpos=b,numbers=none}
 \begin{lstlisting}
 (setq tramp-backup-directory-alist backup-directory-alist)
 \end{lstlisting}
 Make backups of files, even when they’re in version control:
-\lstset{language=Lisp,label= ,caption= ,numbers=none}
+\lstset{language=Lisp,label= ,caption= ,captionpos=b,numbers=none}
 \begin{lstlisting}
 (setq vc-make-backup-files t)
 \end{lstlisting}
 And let’s make sure our files are saved if we wander off and defocus the Emacs application:
-\lstset{language=Lisp,label= ,caption= ,numbers=none}
+\lstset{language=Lisp,label= ,caption= ,captionpos=b,numbers=none}
 \begin{lstlisting}
 (defun save-all ()
   "Save all dirty buffers without asking for confirmation."
@@ -245,13 +270,76 @@ And let’s make sure our files are saved if we wander off and defocus the Emacs
 
 
 End. 
-\section{Movement}
-\label{sec-4}
-\subsection{SMEX}
-\label{sec-4-1}
 
-\lstset{language=Lisp,label= ,caption= ,numbers=none}
+\section{Movement}
+\label{sec:orgdf9578b}
+
+\subsection{ivy}
+\label{sec:orged04c2e}
+
+\begin{verbatim}
+
+(use-package ivy
+  :ensure t
+  :diminish (ivy-mode)
+  :bind (("C-x b" . ivy-switch-buffer))
+  :config 
+  (ivy-mode 1)
+  (setq ivy-use-virtual-buffers t) 
+  (setq ivy-display-style 'fancy))
+
+\end{verbatim}
+
+\subsection{Counsel}
+\label{sec:org8573436}
+
+\begin{verbatim}
+(use-package counsel
+  :ensure t
+  :bind
+  (("M-y" . counsel-yank-pop)
+   :map ivy-minibuffer-map
+   ("M-y" . ivy-next-line)))
+\end{verbatim}
+
+\subsection{Counsel tramp}
+\label{sec:org85ea291}
+This is nice - simply M-x counsel-tramp and off we go. 
+
+\lstset{language=Lisp,label= ,caption= ,captionpos=b,numbers=none}
 \begin{lstlisting}
+(use-package counsel-tramp 
+  :ensure t
+)
+
+\end{lstlisting}
+
+\subsection{swiper}
+\label{sec:org4e789a0}
+
+\lstset{language=Lisp,label= ,caption= ,captionpos=b,numbers=none}
+\begin{lstlisting}
+(use-package swiper
+:ensure t
+:bind (("C-s" . swiper)
+       ("C-r" . swiper)
+       ("C-c C-r" . ivy-resume))
+:config 
+(progn 
+  (ivy-mode 1)
+  (setq ivy-use-virtual-buffers t)
+  (setq ivy-display-style 'fancy)
+  (setq ivy-count-format "(%d/%d) ")
+  (define-key read-expression-map (kbd "C-r") 'counsel-expression-history)
+  ))
+
+\end{lstlisting}
+\subsection{SMEX}
+\label{sec:org42ef061}
+
+\lstset{language=Lisp,label= ,caption= ,captionpos=b,numbers=none}
+\begin{lstlisting}
+
 (use-package smex
   :ensure t
   :init (smex-initialize)
@@ -260,9 +348,9 @@ End.
 \end{lstlisting}
 
 \subsection{IDO}
-\label{sec-4-2}
+\label{sec:org55e925a}
 
-\lstset{language=Lisp,label= ,caption= ,numbers=none}
+\lstset{language=Lisp,label= ,caption= ,captionpos=b,numbers=none}
 \begin{lstlisting}
 (use-package ido
   :ensure t
@@ -270,7 +358,7 @@ End.
                ido-ignore-extensions t
                ido-use-virtual-buffers t
                ido-everywhere t
-                 ido-enable-tramp-completion nil)
+               ido-enable-tramp-completion t)
   :config
   (ido-mode 1)
   (ido-everywhere 1)
@@ -311,11 +399,13 @@ End.
   (add-to-list 'completion-ignored-extensions ".rel")
   (add-to-list 'completion-ignored-extensions ".epub")
   )
+
+
 \end{lstlisting}
 
 FLX package:
 
-\lstset{language=Lisp,label= ,caption= ,numbers=none}
+\lstset{language=Lisp,label= ,caption= ,captionpos=b,numbers=none}
 \begin{lstlisting}
 (use-package flx-ido
   :ensure t
@@ -326,7 +416,7 @@ FLX package:
 
 According to Ryan Neufeld, we could make IDO work vertically, which is much easier to read. For this, I use ido-vertically:
 
-\lstset{language=Lisp,label= ,caption= ,numbers=none}
+\lstset{language=Lisp,label= ,caption= ,captionpos=b,numbers=none}
 \begin{lstlisting}
 (use-package ido-vertical-mode
   :ensure t
@@ -334,11 +424,12 @@ According to Ryan Neufeld, we could make IDO work vertically, which is much easi
   (setq ido-vertical-define-keys 'C-n-C-p-up-and-down)
   :config
   (ido-vertical-mode 1))
+
 \end{lstlisting}
 
 This sorts an IDO filelist by mtime instead of alphabetically.
 
-\lstset{language=Lisp,label= ,caption= ,numbers=none}
+\lstset{language=Lisp,label= ,caption= ,captionpos=b,numbers=none}
 \begin{lstlisting}
 (defun ido-sort-mtime ()
   "Reorder the IDO file list to sort from most recently modified."
@@ -359,9 +450,9 @@ This sorts an IDO filelist by mtime instead of alphabetically.
 \end{lstlisting}
 
 \subsection{Ace-window}
-\label{sec-4-3}
+\label{sec:org9826606}
 
-\lstset{language=Lisp,label= ,caption= ,numbers=none}
+\lstset{language=Lisp,label= ,caption= ,captionpos=b,numbers=none}
 \begin{lstlisting}
 (use-package ace-window
   :ensure t
@@ -369,24 +460,43 @@ This sorts an IDO filelist by mtime instead of alphabetically.
   (setq aw-keys '(?1 ?2 ?3 ?4 ?5 ?6 ?7 ?8))
   :diminish ace-window-mode)
 (global-set-key (kbd "C-x o") 'ace-window)
+
 \end{lstlisting}
 
 \subsection{Avy}
-\label{sec-4-4}
+\label{sec:org2b50ff4}
 
-\lstset{language=Lisp,label= ,caption= ,numbers=none}
+\lstset{language=Lisp,label= ,caption= ,captionpos=b,numbers=none}
 \begin{lstlisting}
 (use-package avy
   :ensure t
   :init (setq avy-background t))
 (global-set-key (kbd "M-s") 'avy-goto-char-timer)
+
+
 \end{lstlisting}
 
+\subsection{Smart Scan}
+\label{sec:org05234c0}
+
+
+\lstset{language=Lisp,label= ,caption= ,captionpos=b,numbers=none}
+\begin{lstlisting}
+(use-package smartscan
+  :ensure t
+  :bind
+  ("M-n" . smartscan-symbol-go-forward)
+  ("M-p" . smartscan-symbol-go-backward))
+
+\end{lstlisting}
+
+end.
+
 \subsection{Line Numbers}
-\label{sec-4-5}
+\label{sec:orgc7cbb57}
 
 
-\lstset{language=Lisp,label= ,caption= ,numbers=none}
+\lstset{language=Lisp,label= ,caption= ,captionpos=b,numbers=none}
 \begin{lstlisting}
 (use-package linum
   :ensure t
@@ -406,11 +516,12 @@ This sorts an IDO filelist by mtime instead of alphabetically.
          ("s-C-k"   . linum-mode)
          ("A-C-M-k" . linum-fringe-toggle)
          ("s-C-M-k" . linum-fringe-toggle)))
+
 \end{lstlisting}
 
 
 relative
-\lstset{language=Lisp,label= ,caption= ,numbers=none}
+\lstset{language=Lisp,label= ,caption= ,captionpos=b,numbers=none}
 \begin{lstlisting}
 (use-package linum-relative
   :ensure t
@@ -428,9 +539,9 @@ relative
 \end{lstlisting}
 
 \subsection{Turn off mouse FIXME - why here}
-\label{sec-4-6}
+\label{sec:org36abeb0}
 
-\lstset{language=Lisp,label= ,caption= ,numbers=none}
+\lstset{language=Lisp,label= ,caption= ,captionpos=b,numbers=none}
 \begin{lstlisting}
 (mouse-wheel-mode -1)
 (global-set-key [wheel-up] 'ignore)
@@ -439,17 +550,18 @@ relative
 (global-set-key [double-wheel-down] 'ignore)
 (global-set-key [triple-wheel-up] 'ignore)
 (global-set-key [triple-wheel-down] 'ignore)
+
 \end{lstlisting}
 
 \section{Org-mode}
-\label{sec-5}
+\label{sec:orgb0708ae}
 
 \subsection{General setup}
-\label{sec-5-1}
+\label{sec:orgeee287a}
 
 load org mode
 
-\lstset{language=Lisp,label= ,caption= ,numbers=none}
+\lstset{language=Lisp,label= ,caption= ,captionpos=b,numbers=none}
 \begin{lstlisting}
 (use-package org
   :init
@@ -461,7 +573,7 @@ load org mode
 
 Directory, inbox ..
 
-\lstset{language=Lisp,label= ,caption= ,numbers=none}
+\lstset{language=Lisp,label= ,caption= ,captionpos=b,numbers=none}
 \begin{lstlisting}
 (setq org-directory "~/Dropbox")
 (defun org-file-path (filename)
@@ -474,7 +586,7 @@ Directory, inbox ..
 
 Multiple files for agenda source:
 
-\lstset{language=Lisp,label= ,caption= ,numbers=none}
+\lstset{language=Lisp,label= ,caption= ,captionpos=b,numbers=none}
 \begin{lstlisting}
 ;;   (setq org-agenda-files (list org-index-file))
 (setq org-agenda-files '("~/Dropbox/capture"
@@ -485,7 +597,7 @@ Multiple files for agenda source:
 
 Refile targets / create new targets if necessary
 
-\lstset{language=Lisp,label= ,caption= ,numbers=none}
+\lstset{language=Lisp,label= ,caption= ,captionpos=b,numbers=none}
 \begin{lstlisting}
 ;;(setq org-refile-targets '((org-agenda-files :maxlevel . 3)))
  (setq org-refile-targets '(("~/Dropbox/work/work-todo.org" :maxlevel . 2)
@@ -497,7 +609,7 @@ Refile targets / create new targets if necessary
 \end{lstlisting}
 
 Drawers 
-\lstset{language=Lisp,label= ,caption= ,numbers=none}
+\lstset{language=Lisp,label= ,caption= ,captionpos=b,numbers=none}
 \begin{lstlisting}
 (setq org-log-into-drawer t)
 
@@ -508,7 +620,7 @@ Drawers
 Hitting C-c C-x C-s will mark a todo as done and move it to an appropriate place
 in the archive.
 
-\lstset{language=Lisp,label= ,caption= ,numbers=none}
+\lstset{language=Lisp,label= ,caption= ,captionpos=b,numbers=none}
 \begin{lstlisting}
 (defun tl/mark-done-and-archive ()
   "Mark the state of an org-mode item as DONE and archive it."
@@ -517,19 +629,22 @@ in the archive.
   (org-archive-subtree))
 
 ;;    (define-key org-mode-map (kbd "C-c C-x C-s") 'tl/mark-done-and-archive)
+
+
+
 \end{lstlisting}
 
 Record the time that a todo was archived.
 
-\lstset{language=Lisp,label= ,caption= ,numbers=none}
+\lstset{language=Lisp,label= ,caption= ,captionpos=b,numbers=none}
 \begin{lstlisting}
 (setq org-log-done 'time)
 \end{lstlisting}
 
 \subsection{Capture}
-\label{sec-5-2}
+\label{sec:org1b45775}
 Capture templates..
-\lstset{language=Lisp,label= ,caption= ,numbers=none}
+\lstset{language=Lisp,label= ,caption= ,captionpos=b,numbers=none}
 \begin{lstlisting}
 (setq org-capture-templates
       (quote (("t" "todo" entry (file+headline org-index-file "Inbox")
@@ -553,13 +668,14 @@ Capture templates..
 \end{lstlisting}
 
 \subsection{Taking Meeting Notes}
-\label{sec-5-3}
+\label{sec:org0855ce2}
 
 directly from \url{https://github.com/howardabrams/dot-files/blob/master/emacs-org.org})
 
 I’ve notice that while I really like taking notes in a meeting, I don’t always like the multiple windows I have opened, so I created this function that I can easily call to eliminate distractions during a meeting.
-\lstset{language=Lisp,label= ,caption= ,numbers=none}
+\lstset{language=Lisp,label= ,caption= ,captionpos=b,numbers=none}
 \begin{lstlisting}
+
 (defun meeting-notes ()
   "Call this after creating an org-mode heading for where the notes for the meeting
 should be. After calling this function, call 'meeting-done' to reset the environment."
@@ -571,9 +687,10 @@ should be. After calling this function, call 'meeting-done' to reset the environ
   (text-scale-set 3)                                  ;; Text is now readable by others
   (fringe-mode 0)
   (message "When finished taking your notes, run meeting-done."))
+
 \end{lstlisting}
 Of course, I need an ‘undo’ feature when the meeting is over…
-\lstset{language=Lisp,label= ,caption= ,numbers=none}
+\lstset{language=Lisp,label= ,caption= ,captionpos=b,numbers=none}
 \begin{lstlisting}
 (defun meeting-done ()
   "Attempt to 'undo' the effects of taking meeting notes."
@@ -582,48 +699,52 @@ Of course, I need an ‘undo’ feature when the meeting is over…
   (text-scale-set 0)                            ;; Reset the font size increase
   (fringe-mode 1)
   (winner-undo))                                ;; Put the windows back in place
+
 \end{lstlisting}
 
 End.
 
 \subsection{Coding}
-\label{sec-5-4}
+\label{sec:orgb970354}
 
 Allow babel to evaluate C \ldots{}
 
-\lstset{language=Lisp,label= ,caption= ,numbers=none}
+\lstset{language=Lisp,label= ,caption= ,captionpos=b,numbers=none}
 \begin{lstlisting}
 (org-babel-do-load-languages
  'org-babel-load-languages
  '((C . t)
    (R . t)
    (emacs-lisp . t)
-   (sh . t) 
+   (shell . t) 
    (makefile . t)
    (latex .t)
    ))
+
 \end{lstlisting}
 
 Don’t ask before evaluating code blocks.
-\lstset{language=Lisp,label= ,caption= ,numbers=none}
+\lstset{language=Lisp,label= ,caption= ,captionpos=b,numbers=none}
 \begin{lstlisting}
+
 (setq org-confirm-babel-evaluate nil)
+
 \end{lstlisting}
 
 smart brackets in export
 
-\lstset{language=Lisp,label= ,caption= ,numbers=none}
+\lstset{language=Lisp,label= ,caption= ,captionpos=b,numbers=none}
 \begin{lstlisting}
 (setq org-export-with-smart-quotes t)
 \end{lstlisting}
 
 Done.
 \subsection{Export}
-\label{sec-5-5}
+\label{sec:orgcb7c017}
 
 Export packages\ldots{}
 
-\lstset{language=Lisp,label= ,caption= ,numbers=none}
+\lstset{language=Lisp,label= ,caption= ,captionpos=b,numbers=none}
 \begin{lstlisting}
 (require 'ox-latex)
 (require 'ox-beamer)
@@ -631,48 +752,48 @@ Export packages\ldots{}
 
 Htmlize required for reveal\ldots{}
 
-\lstset{language=Lisp,label= ,caption= ,numbers=none}
+\lstset{language=Lisp,label= ,caption= ,captionpos=b,numbers=none}
 \begin{lstlisting}
 (use-package htmlize
   :ensure t)
 \end{lstlisting}
 
 \subsection{Flyspell}
-\label{sec-5-6}
+\label{sec:orgdabbae7}
 Enable spell-checking in Org-mode.
-\lstset{language=Lisp,label= ,caption= ,numbers=none}
+\lstset{language=Lisp,label= ,caption= ,captionpos=b,numbers=none}
 \begin{lstlisting}
 (add-hook 'org-mode-hook 'flyspell-mode)
 \end{lstlisting}
 
 \subsection{Color and display}
-\label{sec-5-7}
+\label{sec:org7c71ab2}
 
 Use syntax highlighting in source blocks while editing.
-\lstset{language=Lisp,label= ,caption= ,numbers=none}
+\lstset{language=Lisp,label= ,caption= ,captionpos=b,numbers=none}
 \begin{lstlisting}
 (setq org-src-fontify-natively t)
 \end{lstlisting}
 
 Make TAB act as if it were issued in a buffer of the language’s major mode.
-\lstset{language=Lisp,label= ,caption= ,numbers=none}
+\lstset{language=Lisp,label= ,caption= ,captionpos=b,numbers=none}
 \begin{lstlisting}
 (setq org-src-tab-acts-natively t)
 \end{lstlisting}
 
 When editing a code snippet, use the current window rather than popping open a
 new one (which shows the same information).
-\lstset{language=Lisp,label= ,caption= ,numbers=none}
+\lstset{language=Lisp,label= ,caption= ,captionpos=b,numbers=none}
 \begin{lstlisting}
 (setq org-src-window-setup 'current-window)
 \end{lstlisting}
 
 \subsection{Image preview}
-\label{sec-5-8}
+\label{sec:orga8987a0}
 
 Inline images support:
 
-\lstset{language=Lisp,label= ,caption= ,numbers=none}
+\lstset{language=Lisp,label= ,caption= ,captionpos=b,numbers=none}
 \begin{lstlisting}
 (setq org-latex-create-formula-image-program 'imagemagick)
 
@@ -690,12 +811,12 @@ Inline images support:
 \end{lstlisting}
 
 \subsection{Keybindings}
-\label{sec-5-9}
+\label{sec:orge67ecf7}
 
 
 Standard bindings
 
-\lstset{language=Lisp,label= ,caption= ,numbers=none}
+\lstset{language=Lisp,label= ,caption= ,captionpos=b,numbers=none}
 \begin{lstlisting}
 (define-key global-map "\C-cl" 'org-store-link)
 (define-key global-map "\C-ca" 'org-agenda)
@@ -703,7 +824,7 @@ Standard bindings
 \end{lstlisting}
 
 Quickly open index file
-\lstset{language=Lisp,label= ,caption= ,numbers=none}
+\lstset{language=Lisp,label= ,caption= ,captionpos=b,numbers=none}
 \begin{lstlisting}
 (defun open-index-file ()
   "Open the master org TODO list."
@@ -718,7 +839,7 @@ Quickly open index file
 
 undef a key
 
-\lstset{language=Lisp,label= ,caption= ,numbers=none}
+\lstset{language=Lisp,label= ,caption= ,captionpos=b,numbers=none}
 \begin{lstlisting}
 (add-hook 'org-mode-hook
           '(lambda ()
@@ -727,12 +848,13 @@ undef a key
              ;; expands the files in the directories individually
              (org-defkey org-mode-map "\C-c[" 'undefined))
           'append)
+
 \end{lstlisting}
 
 \subsection{Org-ref}
-\label{sec-5-10}
+\label{sec:org04fd8c5}
 
-\lstset{language=Lisp,label= ,caption= ,numbers=none}
+\lstset{language=Lisp,label= ,caption= ,captionpos=b,numbers=none}
 \begin{lstlisting}
 (use-package org-ref
   :ensure t)
@@ -741,8 +863,9 @@ undef a key
 Define format for bibtex entries
 
 
-\lstset{language=Lisp,label= ,caption= ,numbers=none}
+\lstset{language=Lisp,label= ,caption= ,captionpos=b,numbers=none}
 \begin{lstlisting}
+
 ;; variables that control bibtex key format for auto-generation
 ;; I want firstauthor-year-title-words
 ;; this usually makes a legitimate filename to store pdfs under.
@@ -757,7 +880,7 @@ Define format for bibtex entries
 
 Where are the refs?
 
-\lstset{language=Lisp,label= ,caption= ,numbers=none}
+\lstset{language=Lisp,label= ,caption= ,captionpos=b,numbers=none}
 \begin{lstlisting}
 (setq reftex-default-bibliography '("~/Dropbox/work/bibliography/references.bib"))
 
@@ -765,13 +888,24 @@ Where are the refs?
 (setq org-ref-bibliography-notes "~/Dropbox/work/bibliography/notes.org"
       org-ref-default-bibliography '("~/Dropbox/work/bibliography/references.bib")
       org-ref-pdf-directory "~/Dropbox/work/bibliography/bibtex-pdfs/")
+
+
+
 \end{lstlisting}
 
-\subsection{Latex templates}
-\label{sec-5-11}
-Latex templates
-\lstset{language=Lisp,label= ,caption= ,numbers=none}
+\lstset{language=Lisp,label= ,caption= ,captionpos=b,numbers=none}
 \begin{lstlisting}
+(setq org-ref-completion-library 'org-ref-ivy-cite)
+
+\end{lstlisting}
+End.
+
+\subsection{Latex templates}
+\label{sec:org026bdce}
+Latex templates
+\lstset{language=Lisp,label= ,caption= ,captionpos=b,numbers=none}
+\begin{lstlisting}
+
 (setq org-latex-listings t)
 
 ;;(setq org-latex-to-pdf-process '("xelatex %f && bibtex %f && xelatex %f && xelatex %f"))
@@ -798,9 +932,9 @@ Latex templates
 \end{lstlisting}
 
 \subsection{NHMRC project grant}
-\label{sec-5-12}
+\label{sec:org93f5603}
 
-\lstset{language=Lisp,label= ,caption= ,numbers=none}
+\lstset{language=Lisp,label= ,caption= ,captionpos=b,numbers=none}
 \begin{lstlisting}
 (add-to-list 'org-latex-classes
              '("NHMRC_project_grant"
@@ -814,11 +948,27 @@ Latex templates
                ("\\paragraph{%s}" . "\\paragraph*{%s}")
                ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
 \end{lstlisting}
+Rebuttal\ldots{} 
+\lstset{language=Lisp,label= ,caption= ,captionpos=b,numbers=none}
+\begin{lstlisting}
+(add-to-list 'org-latex-classes
+             '("NHMRC_project_grant_rebuttal"
+               "\\documentclass[12pt,table,names]{article}
+  \\usepackage{\\string~\"/.emacs.d/latex_templates/NHMRC_grant\"}
+  [NO-DEFAULT-PACKAGES]
+  [NO-PACKAGES]"
+               ("\\subsection{%s}" . "\\section*{%s}")
+               ("\\subsubsection{%s}" . "\\subsection*{%s}")
+               ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+               ("\\paragraph{%s}" . "\\paragraph*{%s}")
+               ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
+
+\end{lstlisting}
 
 \subsection{ARC Discovery Grant}
-\label{sec-5-13}
+\label{sec:org93f855c}
 
-\lstset{language=Lisp,label= ,caption= ,numbers=none}
+\lstset{language=Lisp,label= ,caption= ,captionpos=b,numbers=none}
 \begin{lstlisting}
 (add-to-list 'org-latex-classes
              '("ARC_discovery_grant"
@@ -833,8 +983,8 @@ Latex templates
 \end{lstlisting}
 
 \subsection{Internal report}
-\label{sec-5-14}
-\lstset{language=Lisp,label= ,caption= ,numbers=none}
+\label{sec:org611ee5f}
+\lstset{language=Lisp,label= ,caption= ,captionpos=b,numbers=none}
 \begin{lstlisting}
 (add-to-list 'org-latex-classes
              '("report"
@@ -850,9 +1000,9 @@ Latex templates
 \end{lstlisting}
 
 \subsection{Simple presentation}
-\label{sec-5-15}
+\label{sec:orgc0a2895}
 
-\lstset{language=Lisp,label= ,caption= ,numbers=none}
+\lstset{language=Lisp,label= ,caption= ,captionpos=b,numbers=none}
 \begin{lstlisting}
 (add-to-list 'org-latex-classes
              '("simplepresentation"
@@ -870,10 +1020,10 @@ Latex templates
 end. 
 
 \section{Writing}
-\label{sec-6}
+\label{sec:org992444a}
 
 \subsection{Flyspell config}
-\label{sec-6-1}
+\label{sec:org63b2b2c}
 
 Installing aspell on linux:
 
@@ -884,14 +1034,14 @@ apt install aspell aspell-en
 on mac: 
 
 \begin{verbatim}
-brew install aspell
+brew install aspell 
 \end{verbatim}
 
 Note in the config below I assume aspell is installed in \texttt{/usr/bin/} !. 
 
 
 
-\lstset{language=Lisp,label= ,caption= ,numbers=none}
+\lstset{language=Lisp,label= ,caption= ,captionpos=b,numbers=none}
 \begin{lstlisting}
 (use-package flyspell
   :ensure t
@@ -906,14 +1056,15 @@ Note in the config below I assume aspell is installed in \texttt{/usr/bin/} !.
     (add-hook hook (lambda () (flyspell-mode -1))))
 
   :config
-  (setq ispell-program-name "/usr/bin/aspell"
-        ispell-local-dictionary "en_US"
-        ispell-dictionary "american" ; better for aspell
-        ispell-extra-args '("--sug-mode=ultra" "--lang=en_US")
+  (setq ispell-program-name "aspell"
+        ispell-local-dictionary "en_GB"
+        ;;ispell-dictionary "american" ; better for aspell
+        ispell-extra-args '("--sug-mode=ultra" "--lang=en_GB")
         ispell-list-command "--list"
-        ispell-local-dictionary-alist '(("en_US" "[[:alpha:]]" "[^[:alpha:]]" "['‘’]"
+        ispell-local-dictionary-alist '(("en_GB" "[[:alpha:]]" "[^[:alpha:]]" "['‘’]"
                                       t ; Many other characters
-                                      ("-d" "en_US") nil utf-8))))
+                                      ("-d" "en_GB") nil utf-8))))
+
 \end{lstlisting}
 
 There is more stuff in Howard Abram's config but I'll leave this for now..
@@ -921,11 +1072,12 @@ There is more stuff in Howard Abram's config but I'll leave this for now..
 
 
 \subsection{Writegood mode}
-\label{sec-6-2}
+\label{sec:org184fd38}
 This does not work - there is a wring gpg signature in melpa\ldots{} 
 
-\lstset{language=Lisp,label= ,caption= ,numbers=none}
+\lstset{language=Lisp,label= ,caption= ,captionpos=b,numbers=none}
 \begin{lstlisting}
+
 (when (file-exists-p "/home/user/programs/writegood-mode")
 (message "Loading writegood-mode")
 (add-to-list 'load-path "/home/user/programs/writegood-mode")
@@ -941,7 +1093,7 @@ end.
 
 
 \subsection{LangTool}
-\label{sec-6-3}
+\label{sec:org1d14d48}
 
 I added the Emacs-langtool code from:
 
@@ -955,36 +1107,37 @@ To install langtool install \texttt{maven} package, java 8 then:
 cd ~/programs
 git clone https://github.com/languagetool-org/languagetool.git
 ./build.sh languagetool-standalone package
+
 \end{verbatim}
 This does not work! 
 
 I now simply download the pre-compiles zip package\ldots{} 
 
 To load: 
-\lstset{language=Lisp,label= ,caption= ,numbers=none}
+\lstset{language=Lisp,label= ,caption= ,captionpos=b,numbers=none}
 \begin{lstlisting}
 (require 'langtool)
 (setq langtool-language-tool-jar "/home/user/programs/langtool/LanguageTool-4.0/languagetool-commandline.jar")
 \end{lstlisting}
 
 \section{Programming}
-\label{sec-7}
+\label{sec:org81b7648}
 
 General programming settings..
 
 \subsection{General}
-\label{sec-7-1}
+\label{sec:orgdef21ad}
 
 I like shallow indentation, but tabs are displayed as 8 characters by default. This reduces that.
 
-\lstset{language=Lisp,label= ,caption= ,numbers=none}
+\lstset{language=Lisp,label= ,caption= ,captionpos=b,numbers=none}
 \begin{lstlisting}
 (setq-default tab-width 2)
 \end{lstlisting}
 
 Treating terms in CamelCase symbols as separate words makes editing a little
 easier for me, so I like to use subword-mode everywhere.
-\lstset{language=Lisp,label= ,caption= ,numbers=none}
+\lstset{language=Lisp,label= ,caption= ,captionpos=b,numbers=none}
 \begin{lstlisting}
 (global-subword-mode 1)
 \end{lstlisting}
@@ -994,100 +1147,151 @@ selected, so the compilation output disappears past the bottom of the window.
 This automatically scrolls the compilation window so I can always see the
 output.
 
-\lstset{language=Lisp,label= ,caption= ,numbers=none}
+\lstset{language=Lisp,label= ,caption= ,captionpos=b,numbers=none}
 \begin{lstlisting}
+
  ;;(setq compilation-scroll-output t)
  (setq compile-command "make")
  (setq compilation-scroll-output 'first-error)
  (setq compilation-always-kill t)
  (setq compilation-disable-input t)
 (add-hook 'compilation-mode-hook 'visual-line-mode)
+
+\end{lstlisting}
+
+Flycheck 
+\lstset{language=Lisp,label= ,caption= ,captionpos=b,numbers=none}
+\begin{lstlisting}
+(use-package flycheck
+  :ensure t
+  :init
+  (add-hook 'after-init-hook 'global-flycheck-mode)
+  (add-hook 'c-mode-hook (lambda () (setq flycheck-clang-language-standard "c11")))
+  :config
+  (setq-default flycheck-disabled-checkers '(emacs-lisp-checkdoc)))
+
+\end{lstlisting}
+\subsection{Magit}
+\label{sec:org3556a34}
+
+I played with this before.. 
+
+\lstset{language=Lisp,label= ,caption= ,captionpos=b,numbers=none}
+\begin{lstlisting}
+(use-package magit
+  :ensure t
+  :commands magit-status magit-blame
+  :init
+  (defadvice magit-status (around magit-fullscreen activate)
+    (window-configuration-to-register :magit-fullscreen)
+    ad-do-it
+    (delete-other-windows))
+  :config
+  (setq magit-branch-arguments nil
+        ;; use ido to look for branches
+        magit-completing-read-function 'magit-ido-completing-read
+        ;; don't put "origin-" in front of new branch names by default
+        magit-default-tracking-name-function 'magit-default-tracking-name-branch-only
+        magit-push-always-verify nil
+        ;; Get rid of the previous advice to go into fullscreen
+        magit-restore-window-configuration t)
+
+  :bind ("C-x g" . magit-status))
+
+\end{lstlisting}
+
+magit end. 
+\subsection{Aggressive Auto Indention}
+\label{sec:org64c39b2}
+
+Automatically indent without use of the tab found in this article, and seems to be quite helpful for many types of programming languages.
+
+To begin, we create a function that can indent a function by calling indent-region on the beginning and ending points of a function.
+\lstset{language=Lisp,label= ,caption= ,captionpos=b,numbers=none}
+\begin{lstlisting}
+(defun indent-defun ()
+  "Indent current defun.
+Do nothing if mark is active (to avoid deactivaing it), or if
+buffer is not modified (to avoid creating accidental
+modifications)."
+  (interactive)
+  (unless (or (region-active-p)
+              buffer-read-only
+              (null (buffer-modified-p)))
+    (let ((l (save-excursion (beginning-of-defun 1) (point)))
+          (r (save-excursion (end-of-defun 1) (point))))
+      (cl-letf (((symbol-function 'message) #'ignore))
+        (indent-region l r)))))
+\end{lstlisting}
+
+Next, create a hook that will call the indent-defun with every command call:
+
+\lstset{language=Lisp,label= ,caption= ,captionpos=b,numbers=none}
+\begin{lstlisting}
+(defun activate-aggressive-indent ()
+  "Locally add `ha/indent-defun' to `post-command-hook'."
+  (add-hook 'post-command-hook
+            'indent-defun nil 'local))
 \end{lstlisting}
 
 \subsection{Auto Complete}
-\label{sec-7-2}
-
-\lstset{language=Lisp,label= ,caption= ,numbers=none}
+\label{sec:org70fcd60}
+\lstset{language=Lisp,label= ,caption= ,captionpos=b,numbers=none}
 \begin{lstlisting}
-(use-package auto-complete
-  :ensure t  
-  :commands auto-complete-mode
+(use-package company-c-headers
+  :ensure t
+  )
+
+(use-package company-math 
+  :ensure t
+  )
+
+(use-package company-shell 
+  :ensure t
+  )
+
+(use-package company
+  :ensure t
   :init
-  (progn
-    (auto-complete-mode t))
+  (setq company-dabbrev-ignore-case t
+        company-show-numbers t)
+  (add-hook 'after-init-hook 'global-company-mode)
   :config
-  (progn 
-    (use-package auto-complete-config)
+  (add-to-list 'company-backends 'company-math-symbols-unicode)
+  (add-to-list 'company-backends 'company-c-headers)
+  (add-to-list 'company-backends 'company-shell)
+  :bind ("C-:" . company-complete)  ; In case I don't want to wait
+  :diminish company-mode)
 
-    (ac-set-trigger-key "TAB")
-    (ac-config-default)
+(use-package company-quickhelp
+  :ensure t
+  :config
+  (company-quickhelp-mode 1))
 
-    (setq ac-delay 0.02)
-    (setq ac-use-menu-map t)
-    (setq ac-menu-height 50)
-    (setq ac-use-quick-help nil) 
-    (setq ac-comphist-file  "~/.emacs.d/ac-comphist.dat")
-    (setq ac-ignore-case nil)
-    (setq ac-dwim  t)
-    (setq ac-fuzzy-enable t)
+(add-hook 'c-mode-hook 'company-mode)
 
-    (use-package ac-dabbrev
-      :ensure t      
-      :config
-      (progn
-        (add-to-list 'ac-sources 'ac-source-dabbrev)))
-
-    (setq ac-modes '(emacs-lisp-mode
-                     lisp-mode
-                     lisp-interaction-mode
-                     c-mode
-                     cc-mode
-                     c++-mode
-                     makefile-mode
-                     sh-mode))))
-
-
-(define-key ac-complete-mode-map "\C-n" 'ac-next)
-(define-key ac-complete-mode-map "\C-p" 'ac-previous)
-\end{lstlisting}
-
-Headers 
-\lstset{language=Lisp,label= ,caption= ,numbers=none}
-\begin{lstlisting}
-(use-package auto-complete-c-headers
-  :ensure t)
-(require 'auto-complete-config)
-(ac-config-default)
-                                        ; start yasnippet with emacs
-                                        ; let's define a function which initializes auto-complete-c-headers and gets called for c/c++ hooks
-(defun my:ac-c-header-init ()
-  (require 'auto-complete-c-headers)
-  (add-to-list 'ac-sources 'ac-source-c-headers)
-  (add-to-list 'achead:include-directories '"/usr/include")
+(use-package company-statistics
+  :ensure t 
   )
-(add-hook 'c-mode-hook 'my:ac-c-header-init)
-(semantic-mode 1)
-                                        ; let's define a function which adds semantic as a suggestion backend to auto complete
-                                        ; and hook this function to c-mode-common-hook
-(defun my:add-semantic-to-autocomplete()
-  (add-to-list 'ac-sources 'ac-source-semantic)
-  )
-(add-hook 'c-mode-common-hook 'my:add-semantic-to-autocomplete)
-                                        ; turn on automatic reparsing of open buffers in semantic
-(global-semantic-idle-scheduler-mode 1)
 
-(global-semanticdb-minor-mode 1)
 \end{lstlisting}
 
-\lstset{language=Lisp,label= ,caption= ,numbers=none}
-\begin{lstlisting}
-(setq-local imenu-create-index-function #'ggtags-build-imenu-index)
-\end{lstlisting}
+To make this work properly, I need to manually specify the include paths by
+putting a \texttt{.dir-locals.el} into the source directory of my C code. I.e. most
+of the time this will be \texttt{src} and I need to point to \texttt{../tldevel}. 
+
+In addition add the include path to flycheck-clang! 
+
+\begin{verbatim}
+((c-mode (eval setq company-clang-arguments (append company-clang-arguments '("-I../tldevel")))))
+((c-mode (eval setq  flycheck-clang-include-path (append  flycheck-clang-include-path '("-I../tldevel")))))      
+\end{verbatim}
+
 \subsection{Yasnippet}
-\label{sec-7-3}
+\label{sec:orgb86e689}
 
 
-\lstset{language=Lisp,label= ,caption= ,numbers=none}
+\lstset{language=Lisp,label= ,caption= ,captionpos=b,numbers=none}
 \begin{lstlisting}
 (global-set-key (kbd "M-/") 'hippie-expand)
 
@@ -1104,7 +1308,7 @@ Headers
 
 Yasnippet
 
-\lstset{language=Lisp,label= ,caption= ,numbers=none}
+\lstset{language=Lisp,label= ,caption= ,captionpos=b,numbers=none}
 \begin{lstlisting}
 (use-package yasnippet
   :ensure t
@@ -1112,11 +1316,12 @@ Yasnippet
   (yas-global-mode 1)
   :config
   (add-to-list 'yas-snippet-dirs (tl/emacs-subdirectory "snippets")))
+
 \end{lstlisting}
 
 \subsection{Comments}
-\label{sec-7-4}
-\lstset{language=Lisp,label= ,caption= ,numbers=none}
+\label{sec:orgcf46dc5}
+\lstset{language=Lisp,label= ,caption= ,captionpos=b,numbers=none}
 \begin{lstlisting}
 (use-package smart-comment
   :ensure t
@@ -1124,15 +1329,15 @@ Yasnippet
 \end{lstlisting}
 
 \subsection{Tags:}
-\label{sec-7-5}
+\label{sec:org97aaff2}
 
-\lstset{language=example,label= ,caption= ,numbers=none}
+\lstset{language=example,label= ,caption= ,captionpos=b,numbers=none}
 \begin{lstlisting}
 (use-package etags
   :init (setq tags-revert-without-query 1))
 \end{lstlisting}
 
-\lstset{language=example,label= ,caption= ,numbers=none}
+\lstset{language=example,label= ,caption= ,captionpos=b,numbers=none}
 \begin{lstlisting}
 (use-package ctags-update
   :ensure t
@@ -1143,22 +1348,14 @@ Yasnippet
 
 
 
-
-
 \subsection{C}
-\label{sec-7-6}
+\label{sec:orgb9423d5}
 ggtags
 
-\lstset{language=Lisp,label= ,caption= ,numbers=none}
+\lstset{language=Lisp,label= ,caption= ,captionpos=b,numbers=none}
 \begin{lstlisting}
 (use-package ggtags
   :ensure t
-  :commands (
-             ggtags-mode
-             ggtags-find-reference
-             ggtags-idutils-query
-             pop-tag-mark
-             ) ; end :commands
   :init
   (add-hook 'c-mode-common-hook
             (lambda ()
@@ -1175,9 +1372,9 @@ ggtags
   (setq ggtags-use-project-gtagsconf nil)
 
   :bind (
-         ("M-," . pop-tag-mark)
+         ;;("M-," . gtags-pop-stack)
          ;; ("M-/" . ggtags-find-reference)
-         ("M-]" . ggtags-idutils-query)
+         ;;("M-]" . ggtags-idutils-query)
 
          :map ggtags-navigation-map
                                         ;Ergo
@@ -1189,69 +1386,58 @@ ggtags
          ("M-i" . previous-error)
          ) ; end :bind
   )
+
 \end{lstlisting}
+
+Counsel-gtags
+
+\lstset{language=Lisp,label= ,caption= ,captionpos=b,numbers=none}
+\begin{lstlisting}
+(use-package counsel-gtags
+  :ensure t
+  ;;:bind (
+    ;;   ("M-t" . counsel-gtags-find-definition)
+      ;; ("M-r" . counsel-gtags-find-reference)
+       ;;("M-s" . counsel-gtags-find-symbol)
+      ;; ("M-," . counsel-gtags-go-backward)
+      ;; )
+  :init 
+  (add-hook 'c-mode-hook 'counsel-gtags-mode)
+  (add-hook 'c++-mode-hook 'counsel-gtags-mode)
+)
+
+\end{lstlisting}
+
 Smartparens
-\lstset{language=Lisp,label= ,caption= ,numbers=none}
+
+\lstset{language=Lisp,label= ,caption= ,captionpos=b,numbers=none}
 \begin{lstlisting}
 (use-package smartparens
   :ensure t
-  :init (add-hook 'C-mode-hook 'smartparens-mode))
+  :init (add-hook 'c-mode-hook 'smartparens-mode))
 \end{lstlisting}
-
-Autocomplete 
-
-
-(use-package auto-complete
-:ensure t)
-(use-package auto-complete-c-headers
-:ensure t)
-; do default config for auto-complete
-(require `auto-complete-config)
-(ac-config-default)
-; start yasnippet with emacs
-; let's define a function which initializes auto-complete-c-headers and gets called for c/c++ hooks
-(defun my:ac-c-header-init ()
-(require `auto-complete-c-headers)
-(add-to-list `ac-sources `ac-source-c-headers)
-(add-to-list `achead:include-directories '"/usr/include'')
-)
-(add-hook `c-mode-hook `my:ac-c-header-init)
-
-; turn on Semantic
-(semantic-mode 1)
-; let's define a function which adds semantic as a suggestion backend to auto complete
-; and hook this function to c-mode-common-hook
-(defun my:add-semantic-to-autocomplete()
-(add-to-list `ac-sources `ac-source-semantic)
-)
-(add-hook `c-mode-common-hook `my:add-semantic-to-autocomplete)
-; turn on automatic reparsing of open buffers in semantic
-(global-semantic-idle-scheduler-mode 1)
-
-(global-semanticdb-minor-mode 1)
-
-
 
 SET BSD indent style
 
-\lstset{language=Lisp,label= ,caption= ,numbers=none}
+\lstset{language=Lisp,label= ,caption= ,captionpos=b,numbers=none}
 \begin{lstlisting}
+
 (add-hook 'c-mode-hook
           '(lambda()
              (c-set-style "bsd")
              ))
 \end{lstlisting}
-Don't ask with make command to run\ldots{} 
+Don't ask with make command to run\ldots{}
 
-\lstset{language=Lisp,label= ,caption= ,numbers=none}
+\lstset{language=Lisp,label= ,caption= ,captionpos=b,numbers=none}
 \begin{lstlisting}
 (setq compilation-read-command nil)
 \end{lstlisting}
 
 \subsection{ESS (emacs speaks statistics\ldots{} ).}
-\label{sec-7-7}
+\label{sec:org20a1119}
 
-\lstset{language=Lisp,label= ,caption= ,numbers=none}
+\lstset{language=Lisp,label= ,caption= ,captionpos=b,numbers=none}
 \begin{lstlisting}
 (use-package ess
   :ensure t
@@ -1259,10 +1445,10 @@ Don't ask with make command to run\ldots{}
 \end{lstlisting}
 
 \section{Email}
-\label{sec-8}
+\label{sec:orgc505fc9}
 
 
-\lstset{language=Lisp,label= ,caption= ,numbers=none}
+\lstset{language=Lisp,label= ,caption= ,captionpos=b,numbers=none}
 \begin{lstlisting}
 (require 'starttls)
 (setq starttls-use-gnutls t)
@@ -1276,12 +1462,21 @@ Don't ask with make command to run\ldots{}
       smtpmail-smtp-server  "smtp.office365.com"
       smtpmail-stream-type  'starttls
       smtpmail-smtp-service 587)
+
 \end{lstlisting}
 
 \subsection{Mu4e}
-\label{sec-8-1}
+\label{sec:org95c10e7}
 
-\lstset{language=Lisp,label= ,caption= ,numbers=none}
+On a mac install mu via brew:
+
+\begin{verbatim}
+brew install mu --with-emacs --HEAD
+\end{verbatim}
+
+and make sure the path below points to the same \texttt{HEAD} directory!
+
+\lstset{language=Lisp,label= ,caption= ,captionpos=b,numbers=none}
 \begin{lstlisting}
      (cond
       ((string-equal system-type "windows-nt") ; Microsoft Windows
@@ -1289,7 +1484,7 @@ Don't ask with make command to run\ldots{}
          (message "Microsoft Windows")))
       ((string-equal system-type "darwin") ; Mac OS X
        (progn
-         (add-to-list 'load-path "/usr/local/Cellar/mu/HEAD-0d9d8d2_1/share/emacs/site-lisp/mu/mu4e")
+         (add-to-list 'load-path "/usr/local/Cellar/mu/HEAD-7d6c30f/share/emacs/site-lisp/mu/mu4e")
          (setq mu4e-mu-binary "/usr/local/bin/mu")
          ))
       ((string-equal system-type "gnu/linux") ; linux
@@ -1364,30 +1559,35 @@ Tsurumi-ku, Yokohama, 230-0045 JAPAN")
 
 Spell check 
 
-\lstset{language=Lisp,label= ,caption= ,numbers=none}
+\lstset{language=Lisp,label= ,caption= ,captionpos=b,numbers=none}
 \begin{lstlisting}
 (add-hook 'mu4e-compose-mode-hook
           'flyspell-mode)
 (add-hook 'message-mode-hook 'turn-on-orgtbl)
 (add-hook 'message-mode-hook 'turn-on-orgstruct++)
+
 \end{lstlisting}
 
 \section{TRAMP}
-\label{sec-9}
+\label{sec:orgbdbba4b}
 
-\lstset{language=Lisp,label= ,caption= ,numbers=none}
+\lstset{language=Lisp,label= ,caption= ,captionpos=b,numbers=none}
 \begin{lstlisting}
-(tramp-set-completion-function "ssh"
-                               '((tramp-parse-sconfig "~/.ssh/config")))
-
-(setq tramp-default-method "ssh")
+(use-package tramp
+    :ensure t
+    :config
+    (with-eval-after-load 'tramp-cache
+      (setq tramp-persistency-file-name "~/.emacs.d/tramp"))
+    (setq tramp-default-method "ssh")
+    (setq tramp-use-ssh-controlmaster-options nil) 
+    (message "tramp-loaded"))
 \end{lstlisting}
 
 \section{Autoinsert templates}
-\label{sec-10}
+\label{sec:orgc1d85a9}
 
 Again from Howards Abrams: 
-\lstset{language=Lisp,label= ,caption= ,numbers=none}
+\lstset{language=Lisp,label= ,caption= ,captionpos=b,numbers=none}
 \begin{lstlisting}
 (use-package autoinsert
   :ensure t
@@ -1398,11 +1598,12 @@ Again from Howards Abrams:
 
   (add-hook 'find-file-hook 'auto-insert)
   (auto-insert-mode 1))
+
 \end{lstlisting}
 
 Use yes snippet for templates. 
 
-\lstset{language=Lisp,label= ,caption= ,numbers=none}
+\lstset{language=Lisp,label= ,caption= ,captionpos=b,numbers=none}
 \begin{lstlisting}
 (defun tl/autoinsert-yas-expand()
   "Replace text in yasnippet template."
@@ -1411,7 +1612,7 @@ Use yes snippet for templates.
 
 Set templates
 
-\lstset{language=Lisp,label= ,caption= ,numbers=none}
+\lstset{language=Lisp,label= ,caption= ,captionpos=b,numbers=none}
 \begin{lstlisting}
 (use-package autoinsert 
  :config
@@ -1419,7 +1620,7 @@ Set templates
 \end{lstlisting}
 
 \section{Errors}
-\label{sec-11}
+\label{sec:org4d5f75d}
 
 Sometimes there is a problem with org ``org-header function is void..
 
@@ -1435,10 +1636,11 @@ rm -rf *elc
 End. 
 
 \section{End}
-\label{sec-12}
+\label{sec:orgeb6e1dd}
 
-\lstset{language=Lisp,label= ,caption= ,numbers=none}
+\lstset{language=Lisp,label= ,caption= ,captionpos=b,numbers=none}
 \begin{lstlisting}
+
     ;;(if (window-system)
     ;;(require 'init-client) 
    ;; (if (daemonp)
@@ -1456,15 +1658,18 @@ End.
              (with-selected-frame f
                (when (window-system f) (require 'init-client) ))))
 (require 'init-client) )
+
+
+
 \end{lstlisting}
 
-\lstset{language=Lisp,label= ,caption= ,numbers=none}
+\lstset{language=Lisp,label= ,caption= ,captionpos=b,numbers=none}
 \begin{lstlisting}
 (require 'init-local nil t)
 \end{lstlisting}
 
 
-\lstset{language=Lisp,label= ,caption= ,numbers=none}
+\lstset{language=Lisp,label= ,caption= ,captionpos=b,numbers=none}
 \begin{lstlisting}
 (provide 'config-main)
 \end{lstlisting}
@@ -1472,28 +1677,28 @@ End.
 All good.
 
 
-\begin{verbatim}
-;; == irony-mode ==
-(use-package irony
-  :ensure t
-  :defer t
-  :init
-  (add-hook 'c++-mode-hook 'irony-mode)
-  (add-hook 'c-mode-hook 'irony-mode)
-  (add-hook 'objc-mode-hook 'irony-mode)
-  :config
-  ;; replace the `completion-at-point' and `complete-symbol' bindings in
-  ;; irony-mode's buffers by irony-mode's function
-  (defun my-irony-mode-hook ()
-    (define-key irony-mode-map [remap completion-at-point]
-      'irony-completion-at-point-async)
-    (define-key irony-mode-map [remap complete-symbol]
-      'irony-completion-at-point-async))
-  (add-hook 'irony-mode-hook 'my-irony-mode-hook)
-  (add-hook 'irony-mode-hook 'irony-cdb-autosetup-compile-options)
-  )
+;;  \#+BEGIN\(_{\text{EXAMPLE}}\) emacs-lisp
+  ;; \texttt{= irony-mode =}
+  (use-package irony
+    :ensure t
+    :defer t
+    :init
+    (add-hook 'c++-mode-hook 'irony-mode)
+    (add-hook 'c-mode-hook 'irony-mode)
+    (add-hook 'objc-mode-hook 'irony-mode)
+    :config
+    ;; replace the `completion-at-point' and `complete-symbol' bindings in
+    ;; irony-mode's buffers by irony-mode's function
+    (defun my-irony-mode-hook ()
+      (define-key irony-mode-map [remap completion-at-point]
+        'irony-completion-at-point-async)
+      (define-key irony-mode-map [remap complete-symbol]
+        'irony-completion-at-point-async))
+    (add-hook 'irony-mode-hook 'my-irony-mode-hook)
+    (add-hook 'irony-mode-hook 'irony-cdb-autosetup-compile-options)
+    )
 
-;; == company-mode ==
+;; \texttt{= company-mode =}
 (use-package company
   :ensure t
   :defer t
@@ -1507,14 +1712,14 @@ All good.
   company-dabbrev-downcase        nil
   company-backends                '((company-irony company-gtags))
   )
-  :bind ("C-;" . company-complete-common)
+  :bind (``C-;'' . company-complete-common)
   )
-\end{verbatim}
+
+;;  \#+END\(_{\text{EXAMPLE}}\)
 
 
 
 
 
 This itt 
-% Emacs 25.3.1 (Org mode 8.2.10)
 \end{document}

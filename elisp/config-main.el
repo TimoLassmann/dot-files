@@ -722,6 +722,21 @@ should be. After calling this function, call 'meeting-done' to reset the environ
                ("\\paragraph{%s}" . "\\paragraph*{%s}")
                ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
 
+
+;; Rebuttal... 
+
+(add-to-list 'org-latex-classes
+             '("NHMRC_project_grant_rebuttal"
+               "\\documentclass[12pt,table,names]{article}
+\\usepackage{\\string~\"/.emacs.d/latex_templates/NHMRC_grant\"}
+[NO-DEFAULT-PACKAGES]
+[NO-PACKAGES]"
+               ("\\section{%s}" . "\\subsection*{%s}")
+               ("\\subsection{%s}" . "\\subsubsection*{%s}")
+               ("\\subsubsection{%s}" . "\\paragraph*{%s}")
+               ("\\paragraph{%s}" . "\\subparagraph*{%s}")
+               ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
+
 ;; ARC Discovery Grant
 
 
