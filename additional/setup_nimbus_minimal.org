@@ -317,7 +317,7 @@
     sudo apt install r-api-3.5
     pdsh -a sudo add-apt-repository ppa:marutter/rrutter3.5
     pdsh -a sudo apt update 
-    pdsh -a sudo apt install -yq r-api-3.5 libxml2-dev libcurl4-openssl-dev openssl libssl-dev  libssh2-1-dev git 
+    pdsh -a sudo apt install -yq default-jdk r-api-3.5 libxml2-dev libcurl4-openssl-dev openssl libssl-dev  libssh2-1-dev git 
   #+END_SRC
 
 
@@ -326,11 +326,18 @@
   Need to add double quotes for pdsh to work - all other double quotes need to be
   escaped.
 
-  #+BEGIN_SRC R
-    pdsh -a "sudo R -e 'install.packages(c(\"Seurat\",\"tidyverse\",\"optparse\",\"reshape2\",\"devtools\"), repos=\"http://cran.us.r-project.org\")'"
+  #+BEGIN_SRC sh
+    pdsh -a "sudo apt-get install -yq libhdf5-dev"
+    pdsh -a "sudo R -e 'install.packages(c(\"Seurat\",\"tidyverse\",\"optparse\",\"reshape2\",\"devtools\",\"reshape\"), repos=\"http://cran.us.r-project.org\")'"
     pdsh -a "sudo R -e 'source(\"https://bioconductor.org/biocLite.R\");biocLite(\"GSVA\")'"
     pdsh -a "sudo R -e 'source(\"https://bioconductor.org/biocLite.R\");biocLite(\"biomaRt\")'"
+    pdsh -a "sudo R -e 'source(\"https://bioconductor.org/biocLite.R\");biocLite(\"DropletUtils\")'"
+    pdsh -a "sudo R -e 'source(\"https://bioconductor.org/biocLite.R\");biocLite(\"ensembldb\")'"
+    pdsh -a "sudo R -e 'source(\"https://bioconductor.org/biocLite.R\");biocLite(\"EnsDb.Hsapiens.v86\")'"
+    pdsh -a "sudo R -e 'source(\"https://bioconductor.org/biocLite.R\");biocLite(\"EnsDb.Mmusculus.v79\")'"
     pdsh -a "sudo R -e 'devtools::install_github(\"dviraran/SingleR\")'"
+    pdsh -a "sudo R -e 'source(\"https://bioconductor.org/biocLite.R\");biocLite(\"scater\")'"
+    pdsh -a "sudo R -e 'source(\"http://cf.10xgenomics.com/supp/cell-exp/rkit-install-2.0.0.R\")'"
 
   #+END_SRC
 

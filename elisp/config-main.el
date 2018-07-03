@@ -45,6 +45,12 @@
 
 (global-unset-key (kbd "C-z"))
 
+;; Turn off arrow keys... 
+
+
+(require 'no-easy-keys)
+(no-easy-keys 1)
+
 ;; misc
 ;;    Assume that I always want to kill the current buffer when hitting C-x k.
 
@@ -728,13 +734,13 @@ should be. After calling this function, call 'meeting-done' to reset the environ
 (add-to-list 'org-latex-classes
              '("NHMRC_project_grant_rebuttal"
                "\\documentclass[12pt,table,names]{article}
-\\usepackage{\\string~\"/.emacs.d/latex_templates/NHMRC_grant\"}
-[NO-DEFAULT-PACKAGES]
-[NO-PACKAGES]"
-               ("\\section{%s}" . "\\subsection*{%s}")
-               ("\\subsection{%s}" . "\\subsubsection*{%s}")
-               ("\\subsubsection{%s}" . "\\paragraph*{%s}")
-               ("\\paragraph{%s}" . "\\subparagraph*{%s}")
+  \\usepackage{\\string~\"/.emacs.d/latex_templates/NHMRC_grant\"}
+  [NO-DEFAULT-PACKAGES]
+  [NO-PACKAGES]"
+               ("\\subsection{%s}" . "\\section*{%s}")
+               ("\\subsubsection{%s}" . "\\subsection*{%s}")q
+               ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+               ("\\paragraph{%s}" . "\\paragraph*{%s}")
                ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
 
 ;; ARC Discovery Grant
