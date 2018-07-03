@@ -101,7 +101,6 @@
    #+BEGIN_SRC emacs-lisp
      (setq-default indent-tabs-mode nil)
      (setq tab-width 2)
-
      (setq-default tab-always-indent 'complete)
    #+END_SRC
 
@@ -1465,7 +1464,7 @@ Tsurumi-ku, Yokohama, 230-0045 JAPAN")
   
   #+BEGIN_SRC emacs-lisp
     (use-package autoinsert 
-     :config
+      :config
       (define-auto-insert "\\.org$" ["default-orgmode.org" tl/autoinsert-yas-expand]))
   #+END_SRC
   
@@ -1488,30 +1487,20 @@ Tsurumi-ku, Yokohama, 230-0045 JAPAN")
 
   #+BEGIN_SRC emacs-lisp
 
-    ;;(if (window-system)
-    ;;(require 'init-client) 
-   ;; (if (daemonp)
-     ;;   (add-hook 'after-make-frame-functions
-     ;;             (lambda (frame)
-    ;;                (tl/change-theme 'gotham 'org-src-color-blocks-dark)))
-    ;;  (tl/change-theme 'gotham 'org-src-color-blocks-dark))
-    ;;(require 'init-client)
-    ;;((message "nada"))) 
-
-
-(if (daemonp)
-(add-hook 'after-make-frame-functions
-          '(lambda (f)
-             (with-selected-frame f
-               (when (window-system f) (require 'init-client) ))))
-(require 'init-client) )
+    
+    (if (daemonp)
+        (add-hook 'after-make-frame-functions
+                  '(lambda (f)
+                     (with-selected-frame f
+                       (when (window-system f) (require 'init-client) ))))
+      (require 'init-client) )
 
 
 
   #+END_SRC
   
   #+BEGIN_SRC   emacs-lisp
- (require 'init-local nil t)
+    (require 'init-local nil t)
   #+END_SRC
   
   
@@ -1521,49 +1510,3 @@ Tsurumi-ku, Yokohama, 230-0045 JAPAN")
   
   All good.
 
-  
-;;  #+BEGIN_EXAMPLE emacs-lisp
-  ;; == irony-mode ==
-  (use-package irony
-    :ensure t
-    :defer t
-    :init
-    (add-hook 'c++-mode-hook 'irony-mode)
-    (add-hook 'c-mode-hook 'irony-mode)
-    (add-hook 'objc-mode-hook 'irony-mode)
-    :config
-    ;; replace the `completion-at-point' and `complete-symbol' bindings in
-    ;; irony-mode's buffers by irony-mode's function
-    (defun my-irony-mode-hook ()
-      (define-key irony-mode-map [remap completion-at-point]
-        'irony-completion-at-point-async)
-      (define-key irony-mode-map [remap complete-symbol]
-        'irony-completion-at-point-async))
-    (add-hook 'irony-mode-hook 'my-irony-mode-hook)
-    (add-hook 'irony-mode-hook 'irony-cdb-autosetup-compile-options)
-    )
-
-  ;; == company-mode ==
-  (use-package company
-    :ensure t
-    :defer t
-    :init (add-hook 'after-init-hook 'global-company-mode)
-    :config
-    (use-package company-irony :ensure t :defer t)
-    (setq company-idle-delay              nil
-    company-minimum-prefix-length   2
-    company-show-numbers            t
-    company-tooltip-limit           20
-    company-dabbrev-downcase        nil
-    company-backends                '((company-irony company-gtags))
-    )
-    :bind ("C-;" . company-complete-common)
-    )
-
-;;  #+END_EXAMPLE
-  
-
-
-
-
-This itt 
