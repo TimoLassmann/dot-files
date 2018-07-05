@@ -533,6 +533,7 @@ should be. After calling this function, call 'meeting-done' to reset the environ
  'org-babel-load-languages
  '((C . t)
    (R . t)
+   (dot . t)
    (emacs-lisp . t)
    (shell . t) 
    (makefile . t)
@@ -1278,29 +1279,18 @@ Tsurumi-ku, Yokohama, 230-0045 JAPAN")
 
 
 (use-package autoinsert 
- :config
+  :config
   (define-auto-insert "\\.org$" ["default-orgmode.org" tl/autoinsert-yas-expand]))
 
 ;; End 
 
 
-;;(if (window-system)
-    ;;(require 'init-client) 
-   ;; (if (daemonp)
-     ;;   (add-hook 'after-make-frame-functions
-     ;;             (lambda (frame)
-    ;;                (tl/change-theme 'gotham 'org-src-color-blocks-dark)))
-    ;;  (tl/change-theme 'gotham 'org-src-color-blocks-dark))
-    ;;(require 'init-client)
-    ;;((message "nada"))) 
-
-
 (if (daemonp)
-(add-hook 'after-make-frame-functions
-          '(lambda (f)
-             (with-selected-frame f
-               (when (window-system f) (require 'init-client) ))))
-(require 'init-client) )
+    (add-hook 'after-make-frame-functions
+              '(lambda (f)
+                 (with-selected-frame f
+                   (when (window-system f) (require 'init-client) ))))
+  (require 'init-client) )
 
 (require 'init-local nil t)
 

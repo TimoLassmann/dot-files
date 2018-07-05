@@ -28,7 +28,7 @@
 \setlist[itemize]{labelwidth=20pt,labelindent=0pt,leftmargin=*,labelsep=5pt,align=left,topsep=2pt, parsep=2pt, itemsep=0pt}
 
 \usepackage{setspace}
-
+\usepackage{listings}
 \usepackage{hyperref}
 \usepackage{textcomp}
 \usepackage{verbatim}
@@ -92,6 +92,18 @@
 
 \graphicspath{{../images/}{../../images/}}
 
+\lstset{
+     basicstyle=\small\ttfamily,
+     backgroundcolor=\color{backgroundgrey},
+     breaklines=true,
+    fancyvrb=true,
+    showstringspaces=false,
+    tabsize=3,
+    keywordstyle=\color{blue}\textbf,
+    identifierstyle=,
+    commentstyle=\color{gogetit}\textit,
+    stringstyle=\color{red},
+    }
 
 
 \linespread{1.2}

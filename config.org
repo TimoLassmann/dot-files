@@ -639,6 +639,7 @@ End.
       'org-babel-load-languages
       '((C . t)
         (R . t)
+        (dot . t)
         (emacs-lisp . t)
         (shell . t) 
         (makefile . t)
