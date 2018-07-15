@@ -39,6 +39,8 @@
      (sensible-defaults/increase-gc-threshold)
      (sensible-defaults/use-all-settings)
      (sensible-defaults/use-all-keybindings)
+
+     (display-time-mode t)
    #+END_SRC
 
 ** Very general
@@ -76,14 +78,31 @@
      (global-unset-key (kbd "C-z"))
    #+END_SRC
 
-** Turn off arrow keys... 
+** Turn off arrow keys
 
    #+BEGIN_SRC emacs-lisp 
 
      (require 'no-easy-keys)
      (no-easy-keys 1)
 
+     #+END_SRC
+
+
+** Dired settings 
+
+   Taken from: https://github.com/munen/emacs.d
+
+
+   Ability to use =a= to visit a new directory or file in dired instead of using =RET=.
+   =RET= works just fine, but it will create a new buffer for every interaction
+   whereas a reuses the current buffer.
+
+   #+BEGIN_SRC emacs-lisp
+     (put 'dired-find-alternate-file 'disabled nil)
+     (setq-default dired-listing-switches "-alh")
    #+END_SRC
+
+
 ** misc
    Assume that I always want to kill the current buffer when hitting C-x k.
    #+BEGIN_SRC emacs-lisp
@@ -120,7 +139,8 @@
    Start in fullscreen mode
 
    #+BEGIN_SRC emacs-lisp
-     (custom-set-variables '(initial-frame-alist (quote ((fullscreen . maximized)))))
+(set-frame-parameter nil 'fullscreen 'fullboth)
+    ;; (custom-set-variables '(initial-frame-alist (quote ((fullscreen . maximized)))))
    #+END_SRC
 
 * Package Initialization
@@ -145,7 +165,7 @@
                               ("melpa"     . "https://melpa.org/packages/")))
 
      (package-initialize)
-     (package-refresh-contents)
+   ;  (package-refresh-contents)
    #+END_SRC
 
 ** Use-Package
@@ -533,13 +553,13 @@ End.
 Refile targets / create new targets if necessary
 
 #+BEGIN_SRC emacs-lisp
-;;(setq org-refile-targets '((org-agenda-files :maxlevel . 3)))
- (setq org-refile-targets '(("~/Dropbox/work/work-todo.org" :maxlevel . 2)
+  ;;(setq org-refile-targets '((org-agenda-files :maxlevel . 3)))
+  (setq org-refile-targets '(("~/Dropbox/work/work-todo.org" :maxlevel . 2)
                              ("~/Dropbox/life/life-todo.org" :maxlevel . 2)
-                             ("~/Dropbox/org/gtd/tickler.org" :maxlevel . 2)))
+                             ))
   (setq org-refile-use-outline-path 'file)
   (setq org-refile-allow-creating-parent-nodes 'confirm)
-(setq org-refile-allow-creating-parent-nodes 'confirm)
+  (setq org-refile-allow-creating-parent-nodes 'confirm)
 #+END_SRC
 
 Drawers 

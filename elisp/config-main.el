@@ -21,6 +21,8 @@
 (sensible-defaults/use-all-settings)
 (sensible-defaults/use-all-keybindings)
 
+(display-time-mode t)
+
 ;; Very general
 
 
@@ -45,11 +47,24 @@
 
 (global-unset-key (kbd "C-z"))
 
-;; Turn off arrow keys... 
+;; Turn off arrow keys
 
 
 (require 'no-easy-keys)
 (no-easy-keys 1)
+
+;; Dired settings 
+
+;;    Taken from: https://github.com/munen/emacs.d
+
+
+;;    Ability to use =a= to visit a new directory or file in dired instead of using =RET=.
+;;    =RET= works just fine, but it will create a new buffer for every interaction
+;;    whereas a reuses the current buffer.
+
+
+(put 'dired-find-alternate-file 'disabled nil)
+(setq-default dired-listing-switches "-alh")
 
 ;; misc
 ;;    Assume that I always want to kill the current buffer when hitting C-x k.
@@ -83,7 +98,8 @@
 ;;    Start in fullscreen mode
 
 
-(custom-set-variables '(initial-frame-alist (quote ((fullscreen . maximized)))))
+(set-frame-parameter nil 'fullscreen 'fullboth)
+    ;; (custom-set-variables '(initial-frame-alist (quote ((fullscreen . maximized)))))
 
 ;; Package Manager
 
@@ -94,14 +110,14 @@
 
 
 (load-library "url-handlers")
-(require 'package)
+  (require 'package)
 
-(setq package-archives '(("org" . "https://orgmode.org/elpa/")
-                         ("gnu" . "https://elpa.gnu.org/packages/")
-                         ("melpa"     . "https://melpa.org/packages/")))
+  (setq package-archives '(("org" . "https://orgmode.org/elpa/")
+                           ("gnu" . "https://elpa.gnu.org/packages/")
+                           ("melpa"     . "https://melpa.org/packages/")))
 
-(package-initialize)
-(package-refresh-contents)
+  (package-initialize)
+;  (package-refresh-contents)
 
 ;; Use-Package
 
@@ -435,11 +451,11 @@
 
 
 ;;(setq org-refile-targets '((org-agenda-files :maxlevel . 3)))
- (setq org-refile-targets '(("~/Dropbox/work/work-todo.org" :maxlevel . 2)
-                             ("~/Dropbox/life/life-todo.org" :maxlevel . 2)
-                             ("~/Dropbox/org/gtd/tickler.org" :maxlevel . 2)))
-  (setq org-refile-use-outline-path 'file)
-  (setq org-refile-allow-creating-parent-nodes 'confirm)
+(setq org-refile-targets '(("~/Dropbox/work/work-todo.org" :maxlevel . 2)
+                           ("~/Dropbox/life/life-todo.org" :maxlevel . 2)
+                           ))
+(setq org-refile-use-outline-path 'file)
+(setq org-refile-allow-creating-parent-nodes 'confirm)
 (setq org-refile-allow-creating-parent-nodes 'confirm)
 
 

@@ -344,3 +344,26 @@
 
 
 
+
+* Add users.. 
+
+
+  #+BEGIN_SRC sh 
+
+    sudo addgroup --gid 1005 analysis 
+    sudo useradd -m -b  /home -d /home/melvin  -g 1005 -u 1001 melvin
+    sudo useradd -m -b  /home -d /home/andre  -g 1005 -u 1002 andre
+    pdsh -a sudo addgroup --gid 1005 analysis 
+    pdsh -a sudo useradd -m -b  /home -d /home/melvin  -g 1005 -u 1001 melvin
+    pdsh -a sudo useradd -m -b  /home -d /home/andre  -g 1005 -u 1002 andre
+
+
+  #+END_SRC
+
+  Set password
+
+  #+BEGIN_SRC sh 
+    sudo passwd andre
+    sudo passwd melvin 
+  #+END_SRC
+ 
