@@ -1361,8 +1361,8 @@ end.
          ))
       ((string-equal system-type "gnu/linux") ; linux
        (progn
-         (add-to-list 'load-path "~/programs/mu/mu4e")
-         (setq mu4e-mu-binary "~/programs/mu/mu/mu")
+       ;;  (add-to-list 'load-path "~/programs/mu/mu4e")
+         (setq mu4e-mu-binary "/usr/local/bin/mu")
          )))
 
      ;;  (add-to-list 'load-path "~/programs/mu/mu4e")
@@ -1406,7 +1406,7 @@ end.
        (define-key mu4e-headers-mode-map (kbd "C-c c") 'org-mu4e-store-and-capture)
        (define-key mu4e-view-mode-map (kbd "C-c c") 'org-mu4e-store-and-capture)
 
-       (setq mu4e-get-mail-command "~/programs/offlineimap/offlineimap.py")
+       (setq mu4e-get-mail-command "offlineimap")
 
        (setq mu4e-compose-signature
                           "Associate Professor Timo Lassmann
@@ -1429,9 +1429,6 @@ Tsurumi-ku, Yokohama, 230-0045 JAPAN")
 )
    #+END_SRC
 
-   #+BEGIN_SRC emacs-lisp
-
-   #+END_SRC
 
 
    Spell check 

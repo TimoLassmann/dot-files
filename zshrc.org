@@ -23,7 +23,7 @@
 
     source $ZSH/oh-my-zsh.sh
 
-  #+END_SRC
+    #+END_SRC
 
   Load additional functions.
 
@@ -43,3 +43,4 @@
     fi
   #+END_SRC
 
+ 

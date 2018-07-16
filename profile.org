@@ -26,7 +26,7 @@
 
     PATH=$PATH:$OLDPATH
   #+END_SRC
-j
+
 
   Colorful ls...
   
@@ -68,5 +68,3 @@ j
     alias es='emacsclient -e "(kill-emacs)"'
 
   #+END_SRC
-
-  #+RESULTS:
