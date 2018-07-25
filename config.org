@@ -257,7 +257,22 @@ End.
 End. 
 
 * Movement
+** winner mode 
 
+
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package winner
+       :ensure t
+       :config
+       (setq winner-dont-bind-my-keys t)
+       (setq winner-mode 1)
+       )
+
+     (global-set-key (kbd "C-c u") 'winner-undo)
+     (global-set-key (kbd "C-c r") 'winner-redo)
+
+   #+END_SRC
 ** ivy 
 
 #+BEGIN_EXAMPLE emacs-lisp
