@@ -341,11 +341,24 @@
 
   #+END_SRC
 
+  #+RESULTS:
 
+ #+BEGIN_SRC sh
+    sudo apt-get install -yq libhdf5-dev
+    sudo R -e 'install.packages(c("Seurat","tidyverse","optparse","reshape2","devtools","reshape"), repos="http://cran.us.r-project.org")'
+    sudo R -e 'source("https://bioconductor.org/biocLite.R");biocLite("GSVA")'
+    sudo R -e 'source("https://bioconductor.org/biocLite.R");biocLite("biomaRt")'
+    sudo R -e 'source("https://bioconductor.org/biocLite.R");biocLite("DropletUtils")'
+    sudo R -e 'source("https://bioconductor.org/biocLite.R");biocLite("ensembldb")'
+    sudo R -e 'source("https://bioconductor.org/biocLite.R");biocLite("EnsDb.Hsapiens.v86")'
+    sudo R -e 'source("https://bioconductor.org/biocLite.R");biocLite("EnsDb.Mmusculus.v79")'
+    sudo R -e 'devtools::install_github("dviraran/SingleR")'
+    sudo R -e 'source("https://bioconductor.org/biocLite.R");biocLite("scater")'
+    sudo R -e 'source("http://cf.10xgenomics.com/supp/cell-exp/rkit-install-2.0.0.R")'
 
+  #+END_SRC
 
-
-* Add users.. 
+* Add users
 
 
   #+BEGIN_SRC sh 
