@@ -1,0 +1,62 @@
+
+#+BEGIN_SRC sh 
+
+  sudo apt update 
+  sudo apt upgrade
+  sudo apt install make autoconf automake libtool clang valgrind
+  sudo apt install xorg-server 
+  sudo apt install xorg
+  sudo apt install fonts-powerline 
+  sudo apt install exwm 
+  sudo apt install xorg 
+  sudo apt install pulsemixer 
+  sudo apt install ibus-daemon 
+  sudo apt install ibus 
+  sudo apt install aspell aspell-en
+  sudo apt install exuberant* 
+  sudo apt install exuber*
+  sudo apt install global
+  sudo apt install libbz2-dev libbz2 bzip2 
+  sudo apt install libbz2-dev  bzip2 
+  sudo apt install liblzma liblzma-dev 
+  sudo apt install liblzma-dev 
+  sudo apt install libcurl-dev
+  sudo apt install libcurl4-openssl-dev 
+  sudo apt install libcurl4-openssl
+  sudo apt install libcurl4
+  sudo apt install libcurl4*
+  sudo apt install "libcurl4*"
+  sudo apt install openssl
+  sudo apt install openssl-dev
+  sudo apt install "openssl*"
+  sudo apt install libssl-dev
+  sudo apt install xbacklight 
+  sudo apt install xrand 
+  sudo apt install offlineimap
+  sudo apt install ca-bundle
+  sudo apt install ca-certificates
+  sudo apt install openssl 
+  sudo apt install ssl-cert 
+  sudo apt install ssl-cert-check 
+  sudo apt install ssl-cert
+  sudo apt install ca-certificates
+  sudo apt install cert-pem 
+  sudo apt install certutil
+  sudo apt install nss
+  sudo apt install nss-update 
+  sudo apt install nss-updatedb
+  sudo apt install libnss
+  sudo apt install libnss-db
+  sudo apt install nss-updatedb
+  sudo apt install "libnss3*"
+  sudo apt install rsync 
+  sudo apt install ca-certificates 
+  sudo apt install tls 
+  sudo apt install texlive-full
+  sudo apt install "gnutls*"
+  sudo apt install gpg2 
+  sudo apt install gnu-gpg
+  sudo apt install gnupg2
+  sudo apt update 
+  sudo apt upgrade
+#+END_SRC
