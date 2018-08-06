@@ -215,27 +215,27 @@ add some missing fonts..
 
   I've previously made the cursor an obnoxious color, and let's save
   that value:
-  #+BEGIN_SRC elisp
+  #+BEGIN_SRC emacs-lisp
     (defvar cursor-initial-color (face-attribute 'cursor :background)
       "The initial value of the cursor that will be use when re-showing it.")
   #+END_SRC
 
   If I type a character or maybe two, I don't want to hide the
   cursor... only when I start to really get typing:
-  #+BEGIN_SRC elisp
+  #+BEGIN_SRC emacs-lisp
     (defvar cursor-number-chars-before-hiding 2
       "The number of characters one needs to type before we hide the cursor.")
   #+END_SRC
 
   Of course, I need to have some sort of state variable that counts
   the number of characters that have been typed:
-  #+BEGIN_SRC elisp
+  #+BEGIN_SRC emacs-lisp
     (defvar cursor-current-number-chars 0)
   #+END_SRC
 
   Now let's have a couple of functions that will /show/ and /hide/ the
   cursor (or at least, lessen its visibility):
-  #+BEGIN_SRC elisp
+  #+BEGIN_SRC emacs-lisp
     (defun cursor-hide (&optional arg)
       "Hides cursor by setting the color to the background color.
     This only happens after a number of characters have been
@@ -256,23 +256,40 @@ add some missing fonts..
 
   After entering a text that is inserted into a buffer, hide the
   cursor by using some advice:
-  #+BEGIN_SRC elisp
+  #+BEGIN_SRC emacs-lisp
     (advice-add 'self-insert-command :after #'cursor-hide)
   #+END_SRC
 
   After I'm done typing (that is, when the cursor is idle), show the cursor:
-  #+BEGIN_SRC elisp
+  #+BEGIN_SRC emacs-lisp
     (setq my-cursor-timer (run-with-idle-timer 1 t #'cursor-show))
   #+END_SRC
 
+* Beacon
   Let's make the cursor more noticeable whenever the window scrolls
   (which seems to be the time when I need to visually look for it):
 
-  #+BEGIN_SRC elisp 
-    (use-package beacon
-      :ensure t
-      :defer  t
-      :diminish 'beacon-mode
-      :init  (beacon-mode +1)
-      :config 
+  #+BEGIN_SRC emacs-lisp
+(use-package beacon
+  :ensure t
+  :defer  t
+  :diminish 'beacon-mode
+  :init  (beacon-mode +1)
+  :config (setq beacon-color cursor-initial-color))
+
   #+END_SRC
+
+* Rainbow
+
+#+BEGIN_SRC emacs-lisp
+(use-package rainbow-mode
+  :ensure t
+  :init
+    (add-hook 'prog-mode-hook 'rainbow-mode))
+#+END_SRC
+
+The end. 
+
+
+
+

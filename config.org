@@ -307,27 +307,59 @@ A package called fancy-battery will be used if we are in GUI emacs, otherwise th
       (display-battery-mode)))
 #+END_SRC
 
-* Terminal 
+* Improvements
+** Better beginning of line
 
+#+BEGIN_SRC emacs-lisp
+  (defun smarter-move-beginning-of-line (arg)
+    "Move point back to indentation of beginning of line.
+
+  Move point to the first non-whitespace character on this line.
+  If point is already there, move to the beginning of the line.
+  Effectively toggle between the first non-whitespace character and
+  the beginning of the line.
+
+  If ARG is not nil or 1, move forward ARG - 1 lines first.  If
+  point reaches the beginning or end of the buffer, stop there."
+    (interactive "^p")
+    (setq arg (or arg 1))
+
+    ;; Move lines first
+    (when (/= arg 1)
+      (let ((line-move-visual nil))
+        (forward-line (1- arg))))
+
+    (let ((orig-point (point)))
+      (back-to-indentation)
+      (when (= orig-point (point))
+        (move-beginning-of-line 1))))
+
+  ;; remap C-a to `smarter-move-beginning-of-line'
+  (global-set-key [remap move-beginning-of-line] 'smarter-move-beginning-of-line)
+  (global-set-key [remap org-beginning-of-line]  'smarter-move-beginning-of-line)
+#+END_SRC
+
+* Terminal 
+  
   I have used urxvt for years, and I miss it sometimes, but ansi-term is enough for most of my tasks.
 ** Default shell should be zsh
-
+   
    I don’t know why this is a thing, but asking me what shell to launch every single time I open a terminal makes me want to slap babies, this gets rid of it. This goes without saying but you can replace bash with your shell of choice.
-#+BEGIN_SRC emacs-lisp
+   #+BEGIN_SRC emacs-lisp
 
 (defvar my-term-shell "/usr/bin/zsh")
 (defadvice ansi-term (before force-bash)
   (interactive (list my-term-shell)))
 (ad-activate 'ansi-term)
-#+END_SRC
-
+   #+END_SRC
+   
 ** Easy to remember keybinding
-
-In loving memory of bspwm, Super + Enter opens a new terminal, old habits die hard.
-#+BEGIN_SRC emacs-lisp
-(global-set-key (kbd "<s-return>") 'ansi-term)
-#+END_SRC
-
+   
+   In loving memory of bspwm, Super + Enter opens a new terminal, old habits die hard.
+   #+BEGIN_SRC emacs-lisp
+(global-set-key (kbd "<s-return>") 'eshell)
+   #+END_SRC
+   
 * Moving around
 
 One of the most important things about a text editor is how efficient
@@ -444,7 +476,6 @@ I don’t understand how ibuffer isn’t the default option by now. It’s vastl
 (global-set-key (kbd "C-x C-b") 'ibuffer)
 #+END_SRC
 
-
 ** IDO
 
    #+BEGIN_SRC emacs-lisp
@@ -560,12 +591,6 @@ I don’t understand how ibuffer isn’t the default option by now. It’s vastl
   (global-set-key (kbd "C-x b") 'ido-switch-buffer)
 #+END_SRC
 
-** iBuffers
- 
-   #+BEGIN_SRC emacs-lisp
-(global-set-key (kbd "C-x b") 'ibuffer)
-   
-   #+END_SRC
 ** Avy 
 
 #+BEGIN_SRC emacs-lisp
@@ -574,27 +599,7 @@ I don’t understand how ibuffer isn’t the default option by now. It’s vastl
   :bind
     ("M-s" . avy-goto-char))
 #+END_SRC
-
-** Beacon
-
-#+BEGIN_SRC emacs-lisp
-(use-package beacon
-  :ensure t
-  :config
-    (beacon-mode 1))
-
-#+END_SRC
   
-** Rainbow
-
-#+BEGIN_SRC emacs-lisp
-(use-package rainbow-mode
-  :ensure t
-  :init
-    (add-hook 'prog-mode-hook 'rainbow-mode))
-
-#+END_SRC
-
 * Writing
 
 ** Flyspell config 
@@ -629,7 +634,7 @@ Note in the config below I assume aspell is installed in =/usr/bin/= !.
     :config
     (setq ispell-program-name "aspell"
           ispell-local-dictionary "en_GB"
-          ;;ispell-dictionary "american" ; better for aspell
+          ;;ispell-dictionary "american" ; better for aspellr
           ispell-extra-args '("--sug-mode=ultra" "--lang=en_GB")
           ispell-list-command "--list"
           ispell-local-dictionary-alist '(("en_GB" "[[:alpha:]]" "[^[:alpha:]]" "['‘’]"
@@ -1135,7 +1140,7 @@ end.
      (setq compilation-scroll-output 'first-error)
      (setq compilation-always-kill t)
      (setq compilation-disable-input t)
-    (add-hook 'compilation-mode-hook 'visual-line-mode)
+     (add-hook 'compilation-mode-hook 'visual-line-mode)
 
    #+END_SRC
 
@@ -1150,6 +1155,7 @@ end.
        (setq-default flycheck-disabled-checkers '(emacs-lisp-checkdoc)))
 
    #+END_SRC
+
 ** Magit 
 
    I played with this before.. 
@@ -1383,6 +1389,15 @@ end.
        :init (add-hook 'c-mode-hook 'smartparens-mode))
    #+END_SRC
 
+*** smart scan
+
+#+BEGIN_SRC emacs-lisp
+(use-package smartscan
+  :ensure t
+  :bind ("M-n" . smartscan-symbol-go-forward)
+        ("M-p" . smartscan-symbol-go-backward))
+
+#+END_SRC
    SET BSD indent style
 
    #+BEGIN_SRC emacs-lisp
