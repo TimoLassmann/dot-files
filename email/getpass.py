@@ -4,13 +4,6 @@ import os
 def mailpasswd(account):
     _USERNAME = os.getenv("USER") 
     _HOME = os.path.expanduser('~'+_USERNAME)
-<<<<<<< HEAD
-=======
-    path = "%(homedir)s/.mail-%(account)s-passwd.gpg"
-    path %= {'homedir':_HOME,'account':account}
-    return subprocess.check_output(["gpg2", "--quiet", "--batch", "-d", path]).strip()
->>>>>>> 9374dd199b3d0f439c40e2cc12a554448128ffc6
-
     path = "%(homedir)s/.mail-%(account)s-passwd.gpg"
     path %= {'homedir':_HOME,'account':account}
     return subprocess.check_output(["gpg2", "--quiet", "--batch", "-d", path]).strip()
