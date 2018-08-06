@@ -251,23 +251,6 @@ Let projectile call make
 (global-set-key (kbd "<f5>") 'projectile-compile-project)
 #+END_SRC
 
-** Dashboard
-
-This is your new startup screen, together with projectile it works in unison and provides you with a quick look into your latest projects and files. Change the welcome message to whatever string you want and change the numbers to suit your liking, I find 5 to be enough.
-#+BEGIN_SRC emacs-lisp
-
-
-(use-package dashboard
-  :ensure t
-  :config
-    (dashboard-setup-startup-hook)
-    (setq dashboard-startup-banner 'official)
-    (setq dashboard-items '((recents  . 5)
-                            (projects . 5)))
-    (setq dashboard-banner-logo-title ""))
-
-#+END_SRC
-
 ** space-line 
 
 #+BEGIN_SRC emacs-lisp
@@ -347,17 +330,21 @@ In loving memory of bspwm, Super + Enter opens a new terminal, old habits die ha
 
 * Moving around
 
-One of the most important things about a text editor is how efficient you manage to be when using it, how much time do basic tasks take you and so on and so forth. One of those tasks is moving around files and buffers, whatever you may use emacs for you will be jumping around buffers like it’s serious business, the following set of enhancements aims to make it easier.
+One of the most important things about a text editor is how efficient
+you manage to be when using it, how much time do basic tasks take you
+and so on and so forth. One of those tasks is moving around files and
+buffers, whatever you may use emacs for you will be jumping around
+buffers like it’s serious business, the following set of enhancements
+aims to make it easier.
 
 As a great emacs user once said:
 
-    Do me the favor, do me the biggest favor, matter of fact do yourself the biggest favor and integrate those into your workflow.
+    Do me the favor, do me the biggest favor, matter of fact do
+    yourself the biggest favor and integrate those into your workflow.
 
 ** a prerequisite for others packages
 
 #+BEGIN_SRC emacs-lisp
-
-
 (use-package ivy
   :ensure t)
 #+END_SRC
@@ -366,22 +353,21 @@ As a great emacs user once said:
 
 I don’t know to be honest, but this little bit of code makes scrolling with emacs a lot nicer.
 #+BEGIN_SRC emacs-lisp
-
-
 (setq scroll-conservatively 100)
 #+END_SRC
+
 ** which-key and why I love emacs
 
 In order to use emacs, you don’t need to know how to use emacs. It’s self documenting, and coupled with this insanely useful package, it’s even easier. In short, after you start the input of a command and stop, pondering what key must follow, it will automatically open a non-intrusive buffer at the bottom of the screen offering you suggestions for completing the command, that’s it, nothing else.
 
 It’s beautiful
 #+BEGIN_SRC emacs-lisp
-
 (use-package which-key
   :ensure t
   :config
     (which-key-mode))
 #+END_SRC
+
 ** windows,panes and why I hate other-window
 
 Some of us have large displays, others have tiny netbook screens, but regardless of your hardware you probably use more than 2 panes/windows at times, cycling through all of them with C-c o is annoying to say the least, it’s a lot of keystrokes and takes time, time you could spend doing something more productive.
@@ -389,8 +375,6 @@ switch-window
 
 This magnificent package takes care of this issue. It’s unnoticeable if you have <3 panes open, but with 3 or more, upon pressing C-x o you will notice how your buffers turn a solid color and each buffer is asigned a letter (the list below shows the letters, you can modify them to suit your liking), upon pressing a letter asigned to a window, your will be taken to said window, easy to remember, quick to use and most importantly, it annihilates a big issue I had with emacs. An alternative is ace-window, however by default it also changes the behaviour of C-x o even if only 2 windows are open, this is bad, it also works less well with exwm for some reason.
 #+BEGIN_SRC emacs-lisp
-
-
 (use-package switch-window
   :ensure t
   :config
@@ -405,33 +389,29 @@ This magnificent package takes care of this issue. It’s unnoticeable if you ha
 #+END_SRC
 
 ** Following window splits
+   
+   After you split a window, your focus remains in the previous one. This annoyed me so much I wrote these two, they take care of it.
+   #+BEGIN_SRC emacs-lisp
+     (defun split-and-follow-horizontally ()
+       (interactive)
+       (split-window-below)
+       (balance-windows)
+       (other-window 1))
+     (global-set-key (kbd "C-x 2") 'split-and-follow-horizontally)
 
-After you split a window, your focus remains in the previous one. This annoyed me so much I wrote these two, they take care of it.
-#+BEGIN_SRC emacs-lisp
+     (defun split-and-follow-vertically ()
+       (interactive)
+       (split-window-right)
+       (balance-windows)
+       (other-window 1))
+     (global-set-key (kbd "C-x 3") 'split-and-follow-vertically)
 
-
-(defun split-and-follow-horizontally ()
-  (interactive)
-  (split-window-below)
-  (balance-windows)
-  (other-window 1))
-(global-set-key (kbd "C-x 2") 'split-and-follow-horizontally)
-
-(defun split-and-follow-vertically ()
-  (interactive)
-  (split-window-right)
-  (balance-windows)
-  (other-window 1))
-(global-set-key (kbd "C-x 3") 'split-and-follow-vertically)
-
-#+END_SRC
+   #+END_SRC
 
 ** swiper and why is the default search so lame
 
 I like me some searching, the default search is very meh. In emacs, you mostly use search to get around your buffer, much like with avy, but sometimes it doesn’t hurt to search for entire words or mode, swiper makes sure this is more efficient.
 #+BEGIN_SRC emacs-lisp
-
-
 (use-package swiper
   :ensure t
   :bind ("C-s" . 'swiper))
@@ -444,8 +424,6 @@ Always murder current buffer
 
 Doing C-x k should kill the current buffer at all times, we have ibuffer for more sophisticated thing.
 #+BEGIN_SRC emacs-lisp
-
-
 (defun kill-current-buffer ()
   "Kills the current buffer."
   (interactive)
@@ -456,7 +434,6 @@ Kill buffers without asking for confirmation
 
 Unless you have the muscle memory, I recommend omitting this bit, as you may lose progress for no reason when working.
 #+BEGIN_SRC emacs-lisp
-
 (setq kill-buffer-query-functions (delq 'process-kill-buffer-query-function kill-buffer-query-functions))
 #+END_SRC
 
@@ -464,7 +441,7 @@ Unless you have the muscle memory, I recommend omitting this bit, as you may los
 
 I don’t understand how ibuffer isn’t the default option by now. It’s vastly superior in terms of ergonomics and functionality, you can delete buffers, rename buffer, move buffers, organize buffers etc.
 #+BEGIN_SRC emacs-lisp
-(global-set-key (kbd "C-x b") 'ibuffer)
+(global-set-key (kbd "C-x C-b") 'ibuffer)
 #+END_SRC
 
 
@@ -566,14 +543,13 @@ I don’t understand how ibuffer isn’t the default option by now. It’s vastl
    #+END_SRC
 
 
-
 ** SMEX
 
    #+BEGIN_SRC emacs-lisp
           (use-package smex
             :ensure t
             :init (smex-initialize)
-            :bind 
+            :bind
             ("M-x" . smex)
             ("M-X" . smex-major-mode-commands))
    #+END_SRC
@@ -581,7 +557,7 @@ I don’t understand how ibuffer isn’t the default option by now. It’s vastl
 ** switch buffers 
 
 #+BEGIN_SRC emacs-lisp
-  (global-set-key (kbd "C-x C-b") 'ido-switch-buffer)
+  (global-set-key (kbd "C-x b") 'ido-switch-buffer)
 #+END_SRC
 
 ** iBuffers
@@ -608,7 +584,7 @@ I don’t understand how ibuffer isn’t the default option by now. It’s vastl
     (beacon-mode 1))
 
 #+END_SRC
-
+  
 ** Rainbow
 
 #+BEGIN_SRC emacs-lisp
@@ -859,7 +835,7 @@ End.
         (R . t)
         (dot . t)
         (emacs-lisp . t)
-        (shell . t) 
+        (sh . t) 
         (makefile . t)
         (latex .t)
         ))
