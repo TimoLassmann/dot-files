@@ -207,17 +207,6 @@ Next let's make sure we have use-package
   (when window-system (add-hook 'prog-mode-hook 'hl-line-mode))
 #+END_SRC
 
-** Pretty symbols
-
-Changes lambda to an actual symbol and a few others as well, only in the GUI version though.
-#+BEGIN_SRC emacs-lisp
-(when window-system
-      (use-package pretty-mode
-      :ensure t
-      :config
-      (global-pretty-mode t)))
-#+END_SRC
-
 ** yes-no to y-n
 #+BEGIN_SRC emacs-lisp
 (defalias 'yes-or-no-p 'y-or-n-p)
