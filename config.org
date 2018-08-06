@@ -1375,83 +1375,86 @@ compile
    and make sure the path below points to the same =HEAD= directory!
 
    #+BEGIN_SRC emacs-lisp
-     (cond
-      ((string-equal system-type "windows-nt") ; Microsoft Windows
-       (progn
-         (message "Microsoft Windows")))
-      ((string-equal system-type "darwin") ; Mac OS X
-       (progn
-         (add-to-list 'load-path "/usr/local/Cellar/mu/HEAD-7d6c30f/share/emacs/site-lisp/mu/mu4e")
-         (setq mu4e-mu-binary "/usr/local/bin/mu")
-         ))
-      ((string-equal system-type "gnu/linux") ; linux
-       (progn
-       ;;  (add-to-list 'load-path "~/programs/mu/mu4e")
-         (setq mu4e-mu-binary "/usr/local/bin/mu")
-         )))
-
-     ;;  (add-to-list 'load-path "~/programs/mu/mu4e")
-
-     ;;         (add-to-list 'load-path "/usr/local/share/emacs/site-lisp/mu/mu4e")   
-
-     ;; the modules
-     ;;(if (file-exists-p mu4e-mu-binary)
-     ;;    (message "Loading Mu4e...")
-
-       
-       (if (not (require 'mu4e nil t))
-       (message "`mu4e' not found")
-
-       ;;(require 'mu4e)
-       (require 'org-mu4e)
+          (cond
+           ((string-equal system-type "windows-nt") ; Microsoft Windows
+            (progn
+              (message "Microsoft Windows")))
+           ((string-equal system-type "darwin") ; Mac OS X
+            (progn
+              (add-to-list 'load-path "/usr/local/Cellar/mu/HEAD-7d6c30f/share/emacs/site-lisp/mu/mu4e")
+              (setq mu4e-mu-binary "/usr/local/bin/mu")
+              ))
+           ((string-equal system-type "gnu/linux") ; linux
+            (progn
+              (add-to-list 'load-path "/usr/local/share/emacs/site-lisp/mu4e")   
+              (setq mu4e-mu-binary "/usr/local/bin/mu")
+              )))
 
 
-       (message "Loading Mu4e...")
-
-       (setq mu4e-maildir (expand-file-name "~/Maildir"))
-
-       (setq mu4e-sent-folder "/office365/sent")
-       (setq mu4e-drafts-folder "/drafts")
-       (setq mu4e-refile-folder "/office365/Archive")   ;; saved messages
-       (setq mu4e-trash-folder "/office365/trash")
 
 
-       (setq message-kill-buffer-on-exit t)
-       (setq mu4e-change-filenames-when-moving t)
-       (setq mu4e-confirm-quit nil)
-       (setq mail-user-agent 'mu4e-user-agent)
+          ;;  (add-to-list 'load-path "~/programs/mu/mu4e")
 
-       (setq mu4e-sent-messages-behavior 'sent)
+          ;;         (add-to-list 'load-path "/usr/local/share/emacs/site-lisp/mu/mu4e")   
 
-       (setq mu4e-view-show-addresses t)
-
-       (setq mu4e-attachment-dir "~/Downloads")
+          ;; the modules
+          ;;(if (file-exists-p mu4e-mu-binary)
+          ;;    (message "Loading Mu4e...")
 
 
-       (define-key mu4e-headers-mode-map (kbd "C-c c") 'org-mu4e-store-and-capture)
-       (define-key mu4e-view-mode-map (kbd "C-c c") 'org-mu4e-store-and-capture)
+          (if (not (require 'mu4e nil t))
+              (message "`mu4e' not found")
 
-       (setq mu4e-get-mail-command "offlineimap")
+            ;;(require 'mu4e)
+            (require 'org-mu4e)
 
-       (setq mu4e-compose-signature
-                          "Associate Professor Timo Lassmann
-Feilman Fellow
-Academic Head of Computational Biology, Telethon Kids Institute
-Adjunct Associate Professor, Center for Child Health Research
-University of Western Australia
 
-Telethon Kids Institute
-100 Roberts Road, Subiaco, Western Australia, 6008
-PO Box 855, West Perth, Western Australia, 6872
+            (message "Loading Mu4e...")
 
-https://scholar.google.com.au/citations?user=7fZs_tEAAAAJ&hl=en
+            (setq mu4e-maildir (expand-file-name "~/Maildir"))
 
-Visiting Scientist, RIKEN Yokohama Institute, Japan
-Division of Genomic Technology,
-RIKEN Center for Life Science Technologies,
-Yokohama Institute,1-7-22 Suehiro-cho,
-Tsurumi-ku, Yokohama, 230-0045 JAPAN")
-)
+            (setq mu4e-sent-folder "/office365/sent")
+            (setq mu4e-drafts-folder "/drafts")
+            (setq mu4e-refile-folder "/office365/Archive")   ;; saved messages
+            (setq mu4e-trash-folder "/office365/trash")
+
+
+            (setq message-kill-buffer-on-exit t)
+            (setq mu4e-change-filenames-when-moving t)
+            (setq mu4e-confirm-quit nil)
+            (setq mail-user-agent 'mu4e-user-agent)
+
+            (setq mu4e-sent-messages-behavior 'sent)
+
+            (setq mu4e-view-show-addresses t)
+
+            (setq mu4e-attachment-dir "~/Downloads")
+
+
+            (define-key mu4e-headers-mode-map (kbd "C-c c") 'org-mu4e-store-and-capture)
+            (define-key mu4e-view-mode-map (kbd "C-c c") 'org-mu4e-store-and-capture)
+
+            (setq mu4e-get-mail-command "offlineimap")
+
+            (setq mu4e-compose-signature
+                  "Associate Professor Timo Lassmann
+          Feilman Fellow
+          Academic Head of Computational Biology, Telethon Kids Institute
+          Adjunct Associate Professor, Center for Child Health Research
+          University of Western Australia
+
+          Telethon Kids Institute
+          100 Roberts Road, Subiaco, Western Australia, 6008
+          PO Box 855, West Perth, Western Australia, 6872
+
+          https://scholar.google.com.au/citations?user=7fZs_tEAAAAJ&hl=en
+
+          Visiting Scientist, RIKEN Yokohama Institute, Japan
+          Division of Genomic Technology,
+          RIKEN Center for Life Science Technologies,
+          Yokohama Institute,1-7-22 Suehiro-cho,
+          Tsurumi-ku, Yokohama, 230-0045 JAPAN")
+            )
    #+END_SRC
 
 

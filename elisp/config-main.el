@@ -198,6 +198,21 @@
 
 (add-hook 'focus-out-hook 'save-all)
 
+;; winner mode 
+
+
+
+
+(use-package winner
+  :ensure t
+  :config
+  (setq winner-dont-bind-my-keys t)
+  (setq winner-mode 1)
+  )
+
+(global-set-key (kbd "C-c u") 'winner-undo)
+(global-set-key (kbd "C-c r") 'winner-redo)
+
 ;; Counsel tramp 
 ;;    This is nice - simply M-x counsel-tramp and off we go. 
 
@@ -1049,7 +1064,17 @@ modifications)."
   :bind ("M-;" . smart-comment))
 
 ;; C
-;;    ggtags
+
+;; compile 
+
+
+(global-set-key (kbd "<f5>") (lambda ()
+                               (interactive)
+                               (setq-local compilation-read-command nil)
+                               (call-interactively 'compile)))
+
+
+;; ggtags
 
 
 (use-package ggtags
@@ -1164,65 +1189,65 @@ modifications)."
 
 
 (cond
-      ((string-equal system-type "windows-nt") ; Microsoft Windows
-       (progn
-         (message "Microsoft Windows")))
-      ((string-equal system-type "darwin") ; Mac OS X
-       (progn
-         (add-to-list 'load-path "/usr/local/Cellar/mu/HEAD-7d6c30f/share/emacs/site-lisp/mu/mu4e")
-         (setq mu4e-mu-binary "/usr/local/bin/mu")
-         ))
-      ((string-equal system-type "gnu/linux") ; linux
-       (progn
-         (add-to-list 'load-path "~/programs/mu/mu4e")
-         (setq mu4e-mu-binary "~/programs/mu/mu/mu")
-         )))
+ ((string-equal system-type "windows-nt") ; Microsoft Windows
+  (progn
+    (message "Microsoft Windows")))
+ ((string-equal system-type "darwin") ; Mac OS X
+  (progn
+    (add-to-list 'load-path "/usr/local/Cellar/mu/HEAD-7d6c30f/share/emacs/site-lisp/mu/mu4e")
+    (setq mu4e-mu-binary "/usr/local/bin/mu")
+    ))
+ ((string-equal system-type "gnu/linux") ; linux
+  (progn
+    (add-to-list 'load-path "/usr/local/share/emacs/site-lisp/mu4e")   
+    (setq mu4e-mu-binary "/usr/local/bin/mu")
+    )))
 
-     ;;  (add-to-list 'load-path "~/programs/mu/mu4e")
+;;  (add-to-list 'load-path "~/programs/mu/mu4e")
 
-     ;;         (add-to-list 'load-path "/usr/local/share/emacs/site-lisp/mu/mu4e")   
+;;         (add-to-list 'load-path "/usr/local/share/emacs/site-lisp/mu/mu4e")   
 
-     ;; the modules
-     ;;(if (file-exists-p mu4e-mu-binary)
-     ;;    (message "Loading Mu4e...")
-
-       
-       (if (not (require 'mu4e nil t))
-       (message "`mu4e' not found")
-
-       ;;(require 'mu4e)
-       (require 'org-mu4e)
+;; the modules
+;;(if (file-exists-p mu4e-mu-binary)
+;;    (message "Loading Mu4e...")
 
 
-       (message "Loading Mu4e...")
+(if (not (require 'mu4e nil t))
+    (message "`mu4e' not found")
 
-       (setq mu4e-maildir (expand-file-name "~/Maildir"))
-
-       (setq mu4e-sent-folder "/office365/sent")
-       (setq mu4e-drafts-folder "/drafts")
-       (setq mu4e-refile-folder "/office365/Archive")   ;; saved messages
-       (setq mu4e-trash-folder "/office365/trash")
+  ;;(require 'mu4e)
+  (require 'org-mu4e)
 
 
-       (setq message-kill-buffer-on-exit t)
-       (setq mu4e-change-filenames-when-moving t)
-       (setq mu4e-confirm-quit nil)
-       (setq mail-user-agent 'mu4e-user-agent)
+  (message "Loading Mu4e...")
 
-       (setq mu4e-sent-messages-behavior 'sent)
+  (setq mu4e-maildir (expand-file-name "~/Maildir"))
 
-       (setq mu4e-view-show-addresses t)
-
-       (setq mu4e-attachment-dir "~/Downloads")
+  (setq mu4e-sent-folder "/office365/sent")
+  (setq mu4e-drafts-folder "/drafts")
+  (setq mu4e-refile-folder "/office365/Archive")   ;; saved messages
+  (setq mu4e-trash-folder "/office365/trash")
 
 
-       (define-key mu4e-headers-mode-map (kbd "C-c c") 'org-mu4e-store-and-capture)
-       (define-key mu4e-view-mode-map (kbd "C-c c") 'org-mu4e-store-and-capture)
+  (setq message-kill-buffer-on-exit t)
+  (setq mu4e-change-filenames-when-moving t)
+  (setq mu4e-confirm-quit nil)
+  (setq mail-user-agent 'mu4e-user-agent)
 
-       (setq mu4e-get-mail-command "~/programs/offlineimap/offlineimap.py")
+  (setq mu4e-sent-messages-behavior 'sent)
 
-       (setq mu4e-compose-signature
-                          "Associate Professor Timo Lassmann
+  (setq mu4e-view-show-addresses t)
+
+  (setq mu4e-attachment-dir "~/Downloads")
+
+
+  (define-key mu4e-headers-mode-map (kbd "C-c c") 'org-mu4e-store-and-capture)
+  (define-key mu4e-view-mode-map (kbd "C-c c") 'org-mu4e-store-and-capture)
+
+  (setq mu4e-get-mail-command "offlineimap")
+
+  (setq mu4e-compose-signature
+        "Associate Professor Timo Lassmann
 Feilman Fellow
 Academic Head of Computational Biology, Telethon Kids Institute
 Adjunct Associate Professor, Center for Child Health Research
@@ -1239,8 +1264,7 @@ Division of Genomic Technology,
 RIKEN Center for Life Science Technologies,
 Yokohama Institute,1-7-22 Suehiro-cho,
 Tsurumi-ku, Yokohama, 230-0045 JAPAN")
-)
-
+  )
 
 
 
