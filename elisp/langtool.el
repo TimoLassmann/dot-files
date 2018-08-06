@@ -1,5 +1,5 @@
-;; Code 
 
+;; Code
 
 ;; Author: Masahiro Hayashi <mhayashi1120@gmail.com>
 ;; Keywords: docs

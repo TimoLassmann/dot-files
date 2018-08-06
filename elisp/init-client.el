@@ -1,3 +1,4 @@
+
 ;; Display Settings
 
 (setq ring-bell-function 'ignore);; turn everything offf
@@ -15,18 +16,16 @@
 
 ;; I love syntax highlighting.
 
-
 (global-font-lock-mode 1)
 
 ;; I think so. I keep changing my
-;;   font based on the monospace du jour... While I [[http://mplus-fonts.sourceforge.jp/mplus-outline-fonts/download/index.html][M+]] because it is
-;;   thinner and has more white space between lines, but [[http://blogs.adobe.com/typblography/2012/09/source-code-pro.html][Source Code Pro]]
-;;   is so attractive, oh, and then there is Anonymous Pro...
+;;    font based on the monospace du jour... While I [[http://mplus-fonts.sourceforge.jp/mplus-outline-fonts/download/index.html][M+]] because it is
+;;    thinner and has more white space between lines, but [[http://blogs.adobe.com/typblography/2012/09/source-code-pro.html][Source Code Pro]]
+;;    is so attractive, oh, and then there is Anonymous Pro...
 
-;;   While thicker, [[https://github.com/tonsky/FiraCode][Fira]] does symbol ligatures. However, [[https://github.com/i-tu/Hasklig][Hasklig]] is a
-;;   nice font that is thinner and easier to read, with /some/ symbolic
-;;   ligatures that doesn't interfere with my org-mode header bullets.
-
+;;    While thicker, [[https://github.com/tonsky/FiraCode][Fira]] does symbol ligatures. However, [[https://github.com/i-tu/Hasklig][Hasklig]] is a
+;;    nice font that is thinner and easier to read, with /some/ symbolic
+;;    ligatures that doesn't interfere with my org-mode header bullets.
 
 (defvar tl/fixed-font-family
   (cond ((x-list-fonts "Hasklig")         "Hasklig")
@@ -36,9 +35,8 @@
   "My fixed width font based on what is installed, `nil' if not defined.")
 
 ;; Since the headers are based on Adobe’s open source font pair of the
-;;   proportional font, [[https://github.com/adobe-fonts/source-sans-pro/releases/tag/2.010R-ro/1.065R-it][Source Sans Pro]], will match the non-proportional
-;;   font, [[https://github.com/adobe-fonts/source-code-pro/][Source Code Pro]].
-
+;;    proportional font, [[https://github.com/adobe-fonts/source-sans-pro/releases/tag/2.010R-ro/1.065R-it][Source Sans Pro]], will match the non-proportional
+;;    font, [[https://github.com/adobe-fonts/source-code-pro/][Source Code Pro]].
 
 (defvar tl/variable-font-tuple
   (cond ((x-list-fonts "Source Sans Pro") '(:font "Source Sans Pro"))
@@ -52,7 +50,6 @@
 
 ;;    According to [[http://emacsninja.com/posts/making-emacs-more-presentable.html][this article]], we can update the =text-scale-XYZ=
 ;;    functions to work on a frame instead of just a buffer:
-
 
 (defun tl/text-scale-frame-change (fn)
   (let* ((current-font-name (frame-parameter nil 'font))
@@ -78,17 +75,13 @@
 ;;   Use the color theme project by following [[http://www.nongnu.org/color-theme/][these instructions]].
 ;;   We now can do =M-x color-theme-<TAB> RET=
 
-
 (use-package gotham-theme
       :ensure t
       )
 
 (set-face-attribute 'ido-virtual  nil :foreground "#00003f")
 
-
-  
-;; add some missing fonts.. 
-
+;; add some missing fonts..
 
 (defun tl-color-scheme-additions ()
          "Some extra colors I added..."
@@ -97,10 +90,7 @@
           '(ido-virtual
             ((t (:foreground "#008ED1" :background "#000000"))))))
 
-
-
-;; Make dark blocks... 
-
+;; Make dark blocks...
 
 (defun org-src-color-blocks-dark ()
   "Colors the block headers and footers to make them stand out more for dark themes"
@@ -115,10 +105,7 @@
    '(org-block-end-line
      ((t (:foreground "#008ED1" :background "#002E41"))))))
 
-
-
 ;; New theme.
-
 
 (deftheme tl/org-theme "Sub-theme to beautify org mode")
 
@@ -165,10 +152,7 @@
                                                           :height 2.1))))
                             `(org-document-title ((t (,@headline ,@tl/variable-font-tuple :height 1.5 :underline nil)))))))
 
-
-
 ;; And the default startup goes to…night…
-
 
 (tl/change-theme 'gotham 'org-src-color-blocks-dark 'tl-color-scheme-additions)
 

@@ -12,14 +12,61 @@
 # \Author{Timo La\ss mann}
 # \DocumentID{src_sh[:value verbatim]{shasum -a 256 config.org | awk '{print $1}' }}
 
+* To speed things up 
+  
+  #+BEGIN_SRC emacs-lisp
+ (setq gc-cons-threshold 16777216)
+ (setq gc-cons-percentage 0.1)
+  #+END_SRC
+
+* Package Manager
+To start we need the package "package" 
+
+#+BEGIN_SRC emacs-lisp
+  (require 'package)
+
+  (setq package-archives '(("org" . "https://orgmode.org/elpa/")
+                           ("gnu" . "https://elpa.gnu.org/packages/")
+                           ("melpa"     . "https://melpa.org/packages/")))
+  (package-initialize)
+#+END_SRC
+
+Next let's make sure we have use-package
+
+#+BEGIN_SRC emacs-lisp
+     (unless (package-installed-p 'use-package)
+       (package-refresh-contents)
+       (package-install 'use-package))
+#+END_SRC
+
 * General Settings
+
+** Init File Support
+
+   Load up a collection of enhancements to Emacs Lisp, including [[https://github.com/magnars/dash.el][dash]],
+   [[https://github.com/magnars/s.el][s]] for string manipulation, and [[https://github.com/rejeep/f.el][f]] for file manipulation.
+
+   #+BEGIN_SRC emacs-lisp
+     (require 'cl)
+
+     (use-package dash
+       :ensure t
+       :config (eval-after-load "dash" '(dash-enable-font-lock)))
+
+     (use-package s
+       :ensure t)
+
+     (use-package f
+       :ensure t)
+   #+END_SRC
+
 ** Whoami 
    
    #+BEGIN_SRC emacs-lisp
      (setq user-full-name "Timo Lassmann"
            user-mail-address "timo.lassmann@telethonkids.org.au")
    #+END_SRC
-
+   
 ** Emacs directory
 
    #+BEGIN_SRC emacs-lisp
@@ -32,26 +79,100 @@
      (add-to-list 'load-path (tl/emacs-subdirectory "elisp"))
    #+END_SRC
 
-** Sensible setting
+** Basic looks 
+*** remove startup screen
+#+BEGIN_SRC emacs-lisp
+  (setq inhibit-startup-message t) 
+#+END_SRC
 
+*** remove bars ets 
+#+BEGIN_SRC emacs-lisp
+(tool-bar-mode -1)
+(menu-bar-mode -1)
+(scroll-bar-mode -1)
+#+END_SRC
+*** Disable bell 
+#+BEGIN_SRC emacs-lisp 
+  (setq ring-bell-function 'ignore)
+#+END_SRC
+
+*** UTF-8
+
+  #+BEGIN_SRC emacs-lisp
+  (setq locale-coding-system 'utf-8)
+  (set-terminal-coding-system 'utf-8)
+  (set-keyboard-coding-system 'utf-8)
+  (set-selection-coding-system 'utf-8)
+  (prefer-coding-system 'utf-8)
+  #+END_SRC
+
+** Turn off arrow keys
+
+   #+BEGIN_SRC emacs-lisp 
+
+     (require 'no-easy-keys)
+     (no-easy-keys 1)
+
+     #+END_SRC
+
+** Undo / redo
+   According to this article, I get better functionality than the redo+ plugin (which I can’t seem to get working well).
    #+BEGIN_SRC emacs-lisp
-     (load-file "~/.emacs.d/elisp/sensible-defaults.el")
-     (sensible-defaults/increase-gc-threshold)
-     (sensible-defaults/use-all-settings)
-     (sensible-defaults/use-all-keybindings)
+     (use-package undo-tree
+       :ensure t
+       :diminish undo-tree-mode
+       :init
+       (global-undo-tree-mode 1)
+       :config
+       (defalias 'redo 'undo-tree-redo)
+       :bind (("C-z" . undo)     ; Zap to character isn't helpful
+              ("C-S-z" . redo)))
 
-     (display-time-mode t)
    #+END_SRC
 
-** Very general
-
+** Kill this buffer
+   Assume that I always want to kill the current buffer when hitting C-x k.
    #+BEGIN_SRC emacs-lisp
-
-     (setq scroll-conservatively 10000
-           scroll-preserve-screen-position t)
-
+     (defun tl/kill-current-buffer ()
+       "Kill the current buffer without prompting."
+       (interactive)
+       (kill-buffer (current-buffer)))
+     (global-set-key (kbd "C-x k") 'tl/kill-current-buffer)
    #+END_SRC
 
+** Tabs 
+   Never use tabs. Tabs are the devil’s whitespace.
+
+   #+BEGIN_SRC emacs-lisp
+     (setq-default indent-tabs-mode nil)
+     (setq tab-width 2)
+     (setq-default tab-always-indent 'complete)
+   #+END_SRC
+
+** Location of mactex (if we are using mac - unlikely...
+   Tell emacs about the mactex installation...
+
+   #+BEGIN_SRC emacs-lisp
+     (setenv "PATH" (concat "/Library/TeX/texbin" ":" (getenv "PATH")))
+   #+END_SRC
+
+   This should do it...
+
+** Dired settings 
+
+   Taken from: https://github.com/munen/emacs.d
+
+
+   Ability to use =a= to visit a new directory or file in dired instead of using =RET=.
+   =RET= works just fine, but it will create a new buffer for every interaction
+   whereas a reuses the current buffer.
+
+   #+BEGIN_SRC emacs-lisp
+     (put 'dired-find-alternate-file 'disabled nil)
+     (setq-default dired-listing-switches "-alh")
+   #+END_SRC
+
+** Path 
 
    #+BEGIN_SRC emacs-lisp
      (let ((path-from-shell (shell-command-to-string "/bin/bash -l -c 'echo $PATH'")))
@@ -73,271 +194,380 @@
    #+END_SRC
 
 ** Turn off sleep mode 
-
+   I keep hitting this by accidental
    #+BEGIN_SRC emacs-lisp 
      (global-unset-key (kbd "C-z"))
    #+END_SRC
 
-** Turn off arrow keys
-
-   #+BEGIN_SRC emacs-lisp 
-
-     (require 'no-easy-keys)
-     (no-easy-keys 1)
-
-     #+END_SRC
-
-
-** Dired settings 
-
-   Taken from: https://github.com/munen/emacs.d
-
-
-   Ability to use =a= to visit a new directory or file in dired instead of using =RET=.
-   =RET= works just fine, but it will create a new buffer for every interaction
-   whereas a reuses the current buffer.
-
-   #+BEGIN_SRC emacs-lisp
-     (put 'dired-find-alternate-file 'disabled nil)
-     (setq-default dired-listing-switches "-alh")
-   #+END_SRC
-
-
-** misc
-   Assume that I always want to kill the current buffer when hitting C-x k.
-   #+BEGIN_SRC emacs-lisp
-     (defun tl/kill-current-buffer ()
-       "Kill the current buffer without prompting."
-       (interactive)
-       (kill-buffer (current-buffer)))
-     (global-set-key (kbd "C-x k") 'tl/kill-current-buffer)
-   #+END_SRC
-
-
-
-   Never use tabs. Tabs are the devil’s whitespace.
-
-   #+BEGIN_SRC emacs-lisp
-     (setq-default indent-tabs-mode nil)
-     (setq tab-width 2)
-     (setq-default tab-always-indent 'complete)
-   #+END_SRC
-
-   Tell emacs about the mactex installation...
-
-   #+BEGIN_SRC emacs-lisp
-     (setenv "PATH" (concat "/Library/TeX/texbin" ":" (getenv "PATH")))
-   #+END_SRC
-
-   This should do it...
-
-
-
-
-** Start in fullscreen
-
-   Start in fullscreen mode
-
-   #+BEGIN_SRC emacs-lisp
-(set-frame-parameter nil 'fullscreen 'fullboth)
-    ;; (custom-set-variables '(initial-frame-alist (quote ((fullscreen . maximized)))))
-   #+END_SRC
-
-* Package Initialization
-
-** Check security 
-
-
-
-** Package Manager
-
-   Emacs has become like every other operating system, and now has a
-   [[http://tromey.com/elpa/][package manager]] with its own collection repository, but since it is
-   so conservative, we need to add more repositories to get all the
-   sweet goodness, I demand.
-
-   #+BEGIN_SRC emacs-lisp
-     (load-library "url-handlers")
-     (require 'package)
-
-     (setq package-archives '(("org" . "https://orgmode.org/elpa/")
-                              ("gnu" . "https://elpa.gnu.org/packages/")
-                              ("melpa"     . "https://melpa.org/packages/")))
-
-     (package-initialize)
-   ;  (package-refresh-contents)
-   #+END_SRC
-
-** Use-Package
-
-   Using [[https://github.com/jwiegley/use-package][use-package]] to automatically install certain packages, as
-   well as the ease of lazily loading them.
-
-   #+BEGIN_SRC emacs-lisp
-     (unless (package-installed-p 'use-package)
-       (package-refresh-contents)
-       (package-install 'use-package))
-
-     (require 'use-package)
-   #+END_SRC
-
-** Init File Support
-
-   Load up a collection of enhancements to Emacs Lisp, including [[https://github.com/magnars/dash.el][dash]],
-   [[https://github.com/magnars/s.el][s]] for string manipulation, and [[https://github.com/rejeep/f.el][f]] for file manipulation.
-
-   #+BEGIN_SRC emacs-lisp
-     (require 'cl)
-
-     (use-package dash
-       :ensure t
-       :config (eval-after-load "dash" '(dash-enable-font-lock)))
-
-     (use-package s
-       :ensure t)
-
-     (use-package f
-       :ensure t)
-   #+END_SRC
-
-** Fill Mode
-   Automatically wrapping when you get to the end of a line (or the fill-region):
-
-   #+BEGIN_SRC emacs-lisp
-     (use-package fill
-       :bind (("C-c T f" . auto-fill-mode)
-              ("C-c T t" . toggle-truncate-lines))
-       :init (add-hook 'org-mode-hook 'turn-on-auto-fill)
-       :diminish auto-fill-mode)
-   #+END_SRC
-
-** Undo / redo
-   According to this article, I get better functionality than the redo+ plugin (which I can’t seem to get working well).
-   #+BEGIN_SRC emacs-lisp
-     (use-package undo-tree
-       :ensure t
-       :diminish undo-tree-mode
-       :init
-       (global-undo-tree-mode 1)
-       :config
-       (defalias 'redo 'undo-tree-redo)
-       :bind (("C-z" . undo)     ; Zap to character isn't helpful
-              ("C-S-z" . redo)))
-
-   #+END_SRC
-
-End. 
-
-* Backup
-  
-  #+BEGIN_SRC emacs-lisp
-    (setq backup-directory-alist '(("." . "~/Dropbox/backup"))) 
-  #+END_SRC
-  
-  Tramp should do the same:
-  #+BEGIN_SRC emacs-lisp
-    (setq tramp-backup-directory-alist backup-directory-alist)
-  #+END_SRC
-  Make backups of files, even when they’re in version control:
-  #+BEGIN_SRC emacs-lisp
-    (setq vc-make-backup-files t)
-  #+END_SRC
-  And let’s make sure our files are saved if we wander off and defocus the Emacs application:
-  #+BEGIN_SRC emacs-lisp
-    (defun save-all ()
-      "Save all dirty buffers without asking for confirmation."
-      (interactive)
-      (save-some-buffers t))
-
-    (add-hook 'focus-out-hook 'save-all)
-  #+END_SRC
-  
-
-
-End. 
-
-* Movement
-** winner mode 
-
-
-
-   #+BEGIN_SRC emacs-lisp
-     (use-package winner
-       :ensure t
-       :config
-       (setq winner-dont-bind-my-keys t)
-       (setq winner-mode 1)
-       )
-
-     (global-set-key (kbd "C-c u") 'winner-undo)
-     (global-set-key (kbd "C-c r") 'winner-redo)
-
-   #+END_SRC
-** ivy 
-
-#+BEGIN_EXAMPLE emacs-lisp
-
-  (use-package ivy
-    :ensure t
-    :diminish (ivy-mode)
-    :bind (("C-x b" . ivy-switch-buffer))
-    :config 
-    (ivy-mode 1)
-    (setq ivy-use-virtual-buffers t) 
-    (setq ivy-display-style 'fancy))
-
-#+END_EXAMPLE
-
-** Counsel 
-
-#+BEGIN_EXAMPLE emacs-lisp
-  (use-package counsel
-    :ensure t
-    :bind
-    (("M-y" . counsel-yank-pop)
-     :map ivy-minibuffer-map
-     ("M-y" . ivy-next-line)))
-#+END_EXAMPLE
-
-** Counsel tramp 
-   This is nice - simply M-x counsel-tramp and off we go. 
+* EXWM
 
 #+BEGIN_SRC emacs-lisp
-  (use-package counsel-tramp 
-    :ensure t
-  )
+      (use-package exwm
+        :ensure t
+        :config
+
+          ;; necessary to configure exwm manually
+          (require 'exwm-config)
+
+          ;; fringe size, most people prefer 1 
+          (fringe-mode 3)
+          
+          ;; emacs as a daemon, use "emacsclient <filename>" to seamlessly edit files from the terminal directly in the exwm instance
+          (server-start)
+          
+          ;; this fixes issues with ido mode, if you use helm, get rid of it
+          (exwm-config-ido)
+
+          ;; a number between 1 and 9, exwm creates workspaces dynamically so I like starting out with 1
+          (setq exwm-workspace-number 1)
+
+          ;; this is a way to declare truly global/always working keybindings
+          ;; this is a nifty way to go back from char mode to line mode without using the mouse
+          (exwm-input-set-key (kbd "s-r") #'exwm-reset)
+          (exwm-input-set-key (kbd "s-k") #'exwm-workspace-delete)
+          (exwm-input-set-key (kbd "s-w") #'exwm-workspace-swap)
+
+          ;; the next loop will bind s-<number> to switch to the corresponding workspace
+          (dotimes (i 10)
+            (exwm-input-set-key (kbd (format "s-%d" i))
+                                `(lambda ()
+                                   (interactive)
+                                   (exwm-workspace-switch-create ,i))))
+
+           ;; the simplest launcher, I keep it in only if dmenu eventually stopped working or something
+          (exwm-input-set-key (kbd "s-&")
+                              (lambda (command)
+                                (interactive (list (read-shell-command "$ ")))
+                                (start-process-shell-command command nil command)))
+
+          ;; an easy way to make keybindings work *only* in line mode
+          (push ?\C-q exwm-input-prefix-keys)
+          (define-key exwm-mode-map [?\C-q] #'exwm-input-send-next-key)
+
+          ;; simulation keys are keys that exwm will send to the exwm buffer upon inputting a key combination
+          (exwm-input-set-simulation-keys
+           '(
+             ;; movement
+             ([?\C-b] . left)
+             ([?\M-b] . C-left)
+             ([?\C-f] . right)
+             ([?\M-f] . C-right)
+             ([?\C-p] . up)
+             ([?\C-n] . down)
+             ([?\C-a] . home)
+             ([?\C-e] . end)
+             ([?\M-v] . prior)
+             ([?\C-v] . next)
+             ([?\C-d] . delete)
+             ([?\C-k] . (S-end delete))
+             ;; cut/paste
+             ([?\C-w] . ?\C-x)
+             ([?\M-w] . ?\C-c)
+             ([?\C-y] . ?\C-v)
+             ;; search
+             ([?\C-s] . ?\C-f)))
+
+
+    ;; this little bit will make sure that XF86 keys work in exwm buffers as well
+          (dolist (k '(
+                       XF86AudioMute
+                       XF86AudioLowerVolume
+                       XF86AudioRaiseVolume
+                       XF86AudioPrev
+                       XF86AudioPlay
+                       XF86AudioNext
+                       XF86MonBrightnessUp
+                       XF86MonBrightnessDown
+                       ))  (cl-pushnew k exwm-input-prefix-keys))
+
+          ;; this little bit will make sure that XF86 keys work in exwm buffers as well
+          ;; xrandr --output eDP-1 --brightness 0.75 
+          ;; This just enables exwm, it started automatically once everything is ready
+          (exwm-enable))
+  (require 'exwm-systemtray)
+  (exwm-systemtray-enable)
+  (setq exwm-systemtray-height 16)
+#+END_SRC
+** Launcher 
+
+
+#+BEGIN_SRC emacs-lisp
+(use-package dmenu
+  :ensure t
+  :bind
+    ("s-SPC" . 'dmenu))
 
 #+END_SRC
 
-** swiper 
+* Basic Functionality 
+** Highligh current line
 
-#+BEGIN_SRC emacs-lisp 
-    (use-package swiper
-    :ensure t
-    :bind (("C-s" . swiper)
-           ("C-r" . swiper)
-           ("C-c C-r" . ivy-resume))
-    :config 
-    (progn 
-      (ivy-mode 1)
-      (setq ivy-use-virtual-buffers t)
-      (setq ivy-display-style 'fancy)
-      (setq ivy-count-format "(%d/%d) ")
-      (define-key read-expression-map (kbd "C-r") 'counsel-expression-history)
-      ))
+    hl-line is awesome! It’s not very awesome in the terminal version of emacs though, so we don’t use that. Besides, it’s only used for programming.
+#+BEGIN_SRC emacs-lisp
+  (when window-system (add-hook 'prog-mode-hook 'hl-line-mode))
+#+END_SRC
 
-#+END_SRC 
-** SMEX
+** Pretty symbols
 
-   #+BEGIN_SRC emacs-lisp
+Changes lambda to an actual symbol and a few others as well, only in the GUI version though.
+#+BEGIN_SRC emacs-lisp
+(when window-system
+      (use-package pretty-mode
+      :ensure t
+      :config
+      (global-pretty-mode t)))
+#+END_SRC
 
-     (use-package smex
-       :ensure t
-       :init (smex-initialize)
-       :bind ("M-x" . smex)
-       ("M-X" . smex-major-mode-commands))
-   #+END_SRC
-   
+** yes-no to y-n
+#+BEGIN_SRC emacs-lisp
+(defalias 'yes-or-no-p 'y-or-n-p)
+#+END_SRC
+
+** Async
+
+Lets us use asynchronous processes wherever possible, pretty useful.
+#+BEGIN_SRC emacs-lisp
+(use-package async
+  :ensure t
+  :init (dired-async-mode 1))
+#+END_SRC
+
+** Projectile
+
+Projectile is an awesome project manager, mostly because it recognizes directories with a .git directory as projects and helps you manage them accordingly.
+Enable projectile globally
+
+This makes sure that everything can be a project.
+#+BEGIN_SRC emacs-lisp
+(use-package projectile
+  :ensure t
+  :init
+    (projectile-mode 1))
+#+END_SRC
+
+Let projectile call make
+
+#+BEGIN_SRC emacs-lisp
+(global-set-key (kbd "<f5>") 'projectile-compile-project)
+#+END_SRC
+
+** Dashboard
+
+This is your new startup screen, together with projectile it works in unison and provides you with a quick look into your latest projects and files. Change the welcome message to whatever string you want and change the numbers to suit your liking, I find 5 to be enough.
+#+BEGIN_SRC emacs-lisp
+
+
+(use-package dashboard
+  :ensure t
+  :config
+    (dashboard-setup-startup-hook)
+    (setq dashboard-startup-banner "~/.emacs.d/img/dashLogo.png")
+    (setq dashboard-items '((recents  . 5)
+                            (projects . 5)))
+    (setq dashboard-banner-logo-title ""))
+
+#+END_SRC
+
+** space-line 
+
+#+BEGIN_SRC emacs-lisp
+(use-package spaceline
+  :ensure t
+  :config
+  (require 'spaceline-config)
+    (setq spaceline-buffer-encoding-abbrev-p nil)
+    (setq spaceline-line-column-p nil)
+    (setq spaceline-line-p nil)
+    (setq powerline-default-separator (quote arrow))
+    (spaceline-spacemacs-theme))
+#+END_SRC
+
+No separator!
+#+BEGIN_SRC emacs-lisp
+(setq powerline-default-separator nil)
+#+END_SRC
+Cursor position
+
+Show the current line and column for your cursor. We are not going to have relative-linum-mode in every major mode, so this is useful.
+#+BEGIN_SRC emacs-lisp
+(setq line-number-mode t)
+(setq column-number-mode t)
+#+END_SRC
+Clock
+
+If you prefer the 12hr-format, change the variable to nil instead of t.
+Time format
+#+BEGIN_SRC emacs-lisp
+
+(setq display-time-24hr-format t)
+(setq display-time-format "%H:%M - %d %B %Y")
+#+END_SRC
+
+Enabling the mode
+
+This turns on the clock globally.
+#+BEGIN_SRC emacs-lisp
+(display-time-mode 1)
+#+END_SRC
+
+** Battery indicator
+
+A package called fancy-battery will be used if we are in GUI emacs, otherwise the built in battery-mode will be used. Fancy battery has very odd colors if used in the tty, hence us disabling it.
+#+BEGIN_SRC emacs-lisp
+(use-package fancy-battery
+  :ensure t
+  :config
+    (setq fancy-battery-show-percentage t)
+    (setq battery-update-interval 15)
+    (if window-system
+      (fancy-battery-mode)
+      (display-battery-mode)))
+#+END_SRC
+
+* Terminal 
+
+  I have used urxvt for years, and I miss it sometimes, but ansi-term is enough for most of my tasks.
+** Default shell should be zsh
+
+   I don’t know why this is a thing, but asking me what shell to launch every single time I open a terminal makes me want to slap babies, this gets rid of it. This goes without saying but you can replace bash with your shell of choice.
+#+BEGIN_SRC emacs-lisp
+
+(defvar my-term-shell "/usr/bin/zsh")
+(defadvice ansi-term (before force-bash)
+  (interactive (list my-term-shell)))
+(ad-activate 'ansi-term)
+#+END_SRC
+
+** Easy to remember keybinding
+
+In loving memory of bspwm, Super + Enter opens a new terminal, old habits die hard.
+#+BEGIN_SRC emacs-lisp
+(global-set-key (kbd "<s-return>") 'ansi-term)
+#+END_SRC
+
+* Moving around
+
+One of the most important things about a text editor is how efficient you manage to be when using it, how much time do basic tasks take you and so on and so forth. One of those tasks is moving around files and buffers, whatever you may use emacs for you will be jumping around buffers like it’s serious business, the following set of enhancements aims to make it easier.
+
+As a great emacs user once said:
+
+    Do me the favor, do me the biggest favor, matter of fact do yourself the biggest favor and integrate those into your workflow.
+
+** a prerequisite for others packages
+
+#+BEGIN_SRC emacs-lisp
+
+
+(use-package ivy
+  :ensure t)
+#+END_SRC
+
+** scrolling and why does the screen move
+
+I don’t know to be honest, but this little bit of code makes scrolling with emacs a lot nicer.
+#+BEGIN_SRC emacs-lisp
+
+
+(setq scroll-conservatively 100)
+#+END_SRC
+** which-key and why I love emacs
+
+In order to use emacs, you don’t need to know how to use emacs. It’s self documenting, and coupled with this insanely useful package, it’s even easier. In short, after you start the input of a command and stop, pondering what key must follow, it will automatically open a non-intrusive buffer at the bottom of the screen offering you suggestions for completing the command, that’s it, nothing else.
+
+It’s beautiful
+#+BEGIN_SRC emacs-lisp
+
+(use-package which-key
+  :ensure t
+  :config
+    (which-key-mode))
+#+END_SRC
+** windows,panes and why I hate other-window
+
+Some of us have large displays, others have tiny netbook screens, but regardless of your hardware you probably use more than 2 panes/windows at times, cycling through all of them with C-c o is annoying to say the least, it’s a lot of keystrokes and takes time, time you could spend doing something more productive.
+switch-window
+
+This magnificent package takes care of this issue. It’s unnoticeable if you have <3 panes open, but with 3 or more, upon pressing C-x o you will notice how your buffers turn a solid color and each buffer is asigned a letter (the list below shows the letters, you can modify them to suit your liking), upon pressing a letter asigned to a window, your will be taken to said window, easy to remember, quick to use and most importantly, it annihilates a big issue I had with emacs. An alternative is ace-window, however by default it also changes the behaviour of C-x o even if only 2 windows are open, this is bad, it also works less well with exwm for some reason.
+#+BEGIN_SRC emacs-lisp
+
+
+(use-package switch-window
+  :ensure t
+  :config
+    (setq switch-window-input-style 'minibuffer)
+    (setq switch-window-increase 4)
+    (setq switch-window-threshold 2)
+    (setq switch-window-shortcut-style 'qwerty)
+    (setq switch-window-qwerty-shortcuts
+        '("a" "s" "d" "f" "j" "k" "l" "i" "o"))
+  :bind
+    ([remap other-window] . switch-window))
+#+END_SRC
+
+** Following window splits
+
+After you split a window, your focus remains in the previous one. This annoyed me so much I wrote these two, they take care of it.
+#+BEGIN_SRC emacs-lisp
+
+
+(defun split-and-follow-horizontally ()
+  (interactive)
+  (split-window-below)
+  (balance-windows)
+  (other-window 1))
+(global-set-key (kbd "C-x 2") 'split-and-follow-horizontally)
+
+(defun split-and-follow-vertically ()
+  (interactive)
+  (split-window-right)
+  (balance-windows)
+  (other-window 1))
+(global-set-key (kbd "C-x 3") 'split-and-follow-vertically)
+
+#+END_SRC
+
+** swiper and why is the default search so lame
+
+I like me some searching, the default search is very meh. In emacs, you mostly use search to get around your buffer, much like with avy, but sometimes it doesn’t hurt to search for entire words or mode, swiper makes sure this is more efficient.
+#+BEGIN_SRC emacs-lisp
+
+
+(use-package swiper
+  :ensure t
+  :bind ("C-s" . 'swiper))
+#+END_SRC
+
+** buffers and why I hate list-buffers
+
+Another big thing is, buffers. If you use emacs, you use buffers, everyone loves them. Having many buffers is useful, but can be tedious to work with, let us see how we can improve it.
+Always murder current buffer
+
+Doing C-x k should kill the current buffer at all times, we have ibuffer for more sophisticated thing.
+#+BEGIN_SRC emacs-lisp
+
+
+(defun kill-current-buffer ()
+  "Kills the current buffer."
+  (interactive)
+  (kill-buffer (current-buffer)))
+(global-set-key (kbd "C-x k") 'kill-current-buffer)
+#+END_SRC
+Kill buffers without asking for confirmation
+
+Unless you have the muscle memory, I recommend omitting this bit, as you may lose progress for no reason when working.
+#+BEGIN_SRC emacs-lisp
+
+(setq kill-buffer-query-functions (delq 'process-kill-buffer-query-function kill-buffer-query-functions))
+#+END_SRC
+
+** Turn switch-to-buffer into ibuffer
+
+I don’t understand how ibuffer isn’t the default option by now. It’s vastly superior in terms of ergonomics and functionality, you can delete buffers, rename buffer, move buffers, organize buffers etc.
+#+BEGIN_SRC emacs-lisp
+(global-set-key (kbd "C-x b") 'ibuffer)
+#+END_SRC
+
+
 ** IDO
 
    #+BEGIN_SRC emacs-lisp
@@ -405,12 +635,12 @@ End.
    According to Ryan Neufeld, we could make IDO work vertically, which is much easier to read. For this, I use ido-vertically:
 
    #+BEGIN_SRC emacs-lisp
-     (use-package ido-vertical-mode
-       :ensure t
-       :init               ; I like up and down arrow keys:
-       (setq ido-vertical-define-keys 'C-n-C-p-up-and-down)
-       :config
-       (ido-vertical-mode 1))
+          (use-package ido-vertical-mode
+            :ensure t
+            :init               ; I like up and down arrow keys:
+            (setq ido-vertical-define-keys 'C-n-C-p-up-and-down)
+            :config
+            (ido-vertical-mode 1))
 
    #+END_SRC
 
@@ -435,99 +665,153 @@ End.
      (add-hook 'ido-make-dir-list-hook 'ido-sort-mtime)
    #+END_SRC
 
-** Ace-window
+
+
+** SMEX
 
    #+BEGIN_SRC emacs-lisp
-     (use-package ace-window
-       :ensure t
-       :init
-       (setq aw-keys '(?1 ?2 ?3 ?4 ?5 ?6 ?7 ?8))
-       :diminish ace-window-mode)
-     (global-set-key (kbd "C-x o") 'ace-window)
-
+          (use-package smex
+            :ensure t
+            :init (smex-initialize)
+            :bind 
+            ("M-x" . smex)
+            ("M-X" . smex-major-mode-commands))
    #+END_SRC
+
+** switch buffers 
+
+#+BEGIN_SRC emacs-lisp
+  (global-set-key (kbd "C-x C-b") 'ido-switch-buffer)
+#+END_SRC
+
+** iBuffers
  
+   #+BEGIN_SRC emacs-lisp
+(global-set-key (kbd "C-x b") 'ibuffer)
+   
+   #+END_SRC
 ** Avy 
 
-   #+BEGIN_SRC emacs-lisp
-     (use-package avy
-       :ensure t
-       :init (setq avy-background t))
-     (global-set-key (kbd "M-s") 'avy-goto-char-timer)
+#+BEGIN_SRC emacs-lisp
+(use-package avy
+  :ensure t
+  :bind
+    ("M-s" . avy-goto-char))
+#+END_SRC
 
- 
+** Beacon
+
+#+BEGIN_SRC emacs-lisp
+(use-package beacon
+  :ensure t
+  :config
+    (beacon-mode 1))
+
+#+END_SRC
+
+** Rainbow
+
+#+BEGIN_SRC emacs-lisp
+(use-package rainbow-mode
+  :ensure t
+  :init
+    (add-hook 'prog-mode-hook 'rainbow-mode))
+
+#+END_SRC
+
+* Writing
+
+** Flyspell config 
+
+Installing aspell on linux:
+
+#+BEGIN_EXAMPLE sh
+apt install aspell aspell-en
+#+END_EXAMPLE
+
+on mac: 
+
+#+BEGIN_EXAMPLE
+brew install aspell 
+#+END_EXAMPLE
+
+Note in the config below I assume aspell is installed in =/usr/bin/= !. 
+
+#+BEGIN_SRC emacs-lisp 
+  (use-package flyspell
+    :ensure t
+    :diminish flyspell-mode
+    :init
+    (add-hook 'prog-mode-hook 'flyspell-prog-mode)
+
+    (dolist (hook '(text-mode-hook org-mode-hook))
+      (add-hook hook (lambda () (flyspell-mode 1))))
+
+    (dolist (hook '(change-log-mode-hook log-edit-mode-hook org-agenda-mode-hook))
+      (add-hook hook (lambda () (flyspell-mode -1))))
+
+    :config
+    (setq ispell-program-name "aspell"
+          ispell-local-dictionary "en_GB"
+          ;;ispell-dictionary "american" ; better for aspell
+          ispell-extra-args '("--sug-mode=ultra" "--lang=en_GB")
+          ispell-list-command "--list"
+          ispell-local-dictionary-alist '(("en_GB" "[[:alpha:]]" "[^[:alpha:]]" "['‘’]"
+                                        t ; Many other characters
+                                        ("-d" "en_GB") nil utf-8))))
+
+#+END_SRC
+
+There is more stuff in Howard Abram's config but I'll leave this for now..
+
+
+
+** Writegood mode 
+   This does not work - there is a wring gpg signature in melpa... 
+   
+   #+BEGIN_SRC emacs-lisp
+
+     (when (file-exists-p "/home/user/programs/writegood-mode")
+     (message "Loading writegood-mode")
+     (add-to-list 'load-path "/home/user/programs/writegood-mode")
+     (require 'writegood-mode)
+         (add-hook 'text-mode-hook 'writegood-mode)
+          (add-hook 'org-mode-hook 'writegood-mode)
+     )
    #+END_SRC
 
-** Smart Scan
+this mode will improve various aspects of writing. 
+   
+end.
 
 
+** LangTool
+   
+   I added the Emacs-langtool code from:
+   
+   https://github.com/mhayashi1120/Emacs-langtool
+   
+   To my =/elisp/= directory. 
+   
+   To install langtool install =maven= package, java 8 then:
+
+   #+BEGIN_EXAMPLE sh
+   cd ~/programs
+   git clone https://github.com/languagetool-org/languagetool.git
+   ./build.sh languagetool-standalone package
+
+   #+END_EXAMPLE
+   This does not work! 
+   
+   I now simply download the pre-compiles zip package... 
+
+   To load: 
    #+BEGIN_SRC emacs-lisp
-     (use-package smartscan
-       :ensure t
-       :bind
-       ("M-n" . smartscan-symbol-go-forward)
-       ("M-p" . smartscan-symbol-go-backward))
-
+     (require 'langtool)
+     (setq langtool-language-tool-jar "/home/user/programs/langtool/LanguageTool-4.0/languagetool-commandline.jar")
    #+END_SRC
-
-   end.
-
-** Line Numbers
-
-
-   #+BEGIN_SRC emacs-lisp
-     (use-package linum
-       :ensure t
-       :init
-       (add-hook 'prog-mode-hook 'linum-mode)
-       (add-hook 'linum-mode-hook (lambda () (set-face-attribute 'linum nil :height 110)))
-
-       :config
-       (defun linum-fringe-toggle ()
-         "Toggles the line numbers as well as the fringe."    (interactive)
-         (cond (linum-mode (fringe-mode '(0 . 0))
-                           (linum-mode -1))
-               (t          (fringe-mode '(8 . 0))
-                           (linum-mode 1))))
-
-       :bind (("A-C-k"   . linum-mode)
-              ("s-C-k"   . linum-mode)
-              ("A-C-M-k" . linum-fringe-toggle)
-              ("s-C-M-k" . linum-fringe-toggle)))
-
-   #+END_SRC
-
-
-   relative
-   #+BEGIN_SRC emacs-lisp
-     (use-package linum-relative
-       :ensure t
-       :config
-       (defun linum-new-mode ()
-         "If line numbers aren't displayed, then display them.
-          Otherwise, toggle between absolute and relative numbers."
-         (interactive)
-         (if linum-mode
-             (linum-relative-toggle)
-           (linum-mode 1)))
-
-       :bind ("A-k" . linum-new-mode)
-       ("s-k" . linum-new-mode))   ;; For Linux
-   #+END_SRC
-
-** Turn off mouse FIXME - why here
-
-   #+BEGIN_SRC emacs-lisp
-     (mouse-wheel-mode -1)
-     (global-set-key [wheel-up] 'ignore)
-     (global-set-key [wheel-down] 'ignore)
-     (global-set-key [double-wheel-up] 'ignore)
-     (global-set-key [double-wheel-down] 'ignore)
-     (global-set-key [triple-wheel-up] 'ignore)
-     (global-set-key [triple-wheel-down] 'ignore)
-
-   #+END_SRC
-
+   
+  
 * Org-mode
 
 ** General setup
@@ -676,7 +960,7 @@ End.
         (R . t)
         (dot . t)
         (emacs-lisp . t)
-        (shell . t) 
+        (sh . t) 
         (makefile . t)
         (latex .t)
         ))
@@ -946,100 +1230,8 @@ Rebuttal...
 
 end. 
 
-* Writing 
-
-** Flyspell config 
-
-Installing aspell on linux:
-
-#+BEGIN_EXAMPLE sh
-apt install aspell aspell-en
-#+END_EXAMPLE
-
-on mac: 
-
-#+BEGIN_EXAMPLE
-brew install aspell 
-#+END_EXAMPLE
-
-Note in the config below I assume aspell is installed in =/usr/bin/= !. 
 
 
-
-#+BEGIN_SRC emacs-lisp 
-  (use-package flyspell
-    :ensure t
-    :diminish flyspell-mode
-    :init
-    (add-hook 'prog-mode-hook 'flyspell-prog-mode)
-
-    (dolist (hook '(text-mode-hook org-mode-hook))
-      (add-hook hook (lambda () (flyspell-mode 1))))
-
-    (dolist (hook '(change-log-mode-hook log-edit-mode-hook org-agenda-mode-hook))
-      (add-hook hook (lambda () (flyspell-mode -1))))
-
-    :config
-    (setq ispell-program-name "aspell"
-          ispell-local-dictionary "en_GB"
-          ;;ispell-dictionary "american" ; better for aspell
-          ispell-extra-args '("--sug-mode=ultra" "--lang=en_GB")
-          ispell-list-command "--list"
-          ispell-local-dictionary-alist '(("en_GB" "[[:alpha:]]" "[^[:alpha:]]" "['‘’]"
-                                        t ; Many other characters
-                                        ("-d" "en_GB") nil utf-8))))
-
-#+END_SRC
-
-There is more stuff in Howard Abram's config but I'll leave this for now..
-
-
-
-** Writegood mode 
-   This does not work - there is a wring gpg signature in melpa... 
-   
-   #+BEGIN_SRC emacs-lisp
-
-     (when (file-exists-p "/home/user/programs/writegood-mode")
-     (message "Loading writegood-mode")
-     (add-to-list 'load-path "/home/user/programs/writegood-mode")
-     (require 'writegood-mode)
-         (add-hook 'text-mode-hook 'writegood-mode)
-          (add-hook 'org-mode-hook 'writegood-mode)
-     )
-   #+END_SRC
-
-this mode will improve various aspects of writing. 
-   
-end.
-
-
-** LangTool
-   
-   I added the Emacs-langtool code from:
-   
-   https://github.com/mhayashi1120/Emacs-langtool
-   
-   To my =/elisp/= directory. 
-   
-   To install langtool install =maven= package, java 8 then:
-
-   #+BEGIN_EXAMPLE sh
-   cd ~/programs
-   git clone https://github.com/languagetool-org/languagetool.git
-   ./build.sh languagetool-standalone package
-
-   #+END_EXAMPLE
-   This does not work! 
-   
-   I now simply download the pre-compiles zip package... 
-
-   To load: 
-   #+BEGIN_SRC emacs-lisp
-     (require 'langtool)
-     (setq langtool-language-tool-jar "/home/user/programs/langtool/LanguageTool-4.0/languagetool-commandline.jar")
-   #+END_SRC
-   
 * Programming
   
   General programming settings..
@@ -1106,7 +1298,7 @@ end.
              magit-default-tracking-name-function 'magit-default-tracking-name-branch-only
              magit-push-always-verify nil
              ;; Get rid of the previous advice to go into fullscreen
-             magit-restore-window-configuration t)
+             magit-restnore-window-configuration t)
 
        :bind ("C-x g" . magit-status))
 
@@ -1145,41 +1337,51 @@ end.
    
 ** Auto Complete
    #+BEGIN_SRC emacs-lisp 
-     (use-package company-c-headers
-       :ensure t
-       )
+          (use-package company-c-headers
+            :ensure t
+            )
 
-     (use-package company-math 
-       :ensure t
-       )
+          (use-package company-math 
+            :ensure t
+            )
 
-     (use-package company-shell 
-       :ensure t
-       )
+          (use-package company-shell 
+            :ensure t
+            )
 
-     (use-package company
-       :ensure t
-       :init
-       (setq company-dabbrev-ignore-case t
-             company-show-numbers t)
-       (add-hook 'after-init-hook 'global-company-mode)
-       :config
-       (add-to-list 'company-backends 'company-math-symbols-unicode)
-       (add-to-list 'company-backends 'company-c-headers)
-       (add-to-list 'company-backends 'company-shell)
-       :bind ("C-:" . company-complete)  ; In case I don't want to wait
-       :diminish company-mode)
+          (use-package company
+            :ensure t
+            :init
+            (setq company-dabbrev-ignore-case t
+                  company-show-numbers t)
+            (add-hook 'after-init-hook 'global-company-mode)
+            :config
+            (setq company-idle-delay 0)
+            (setq company-minimum-prefix-length 3)
 
-     (use-package company-quickhelp
-       :ensure t
-       :config
-       (company-quickhelp-mode 1))
+            (add-to-list 'company-backends 'company-math-symbols-unicode)
+            (add-to-list 'company-backends 'company-c-headers)
+            (add-to-list 'company-backends 'company-shell)
+            :bind ("C-:" . company-complete)  ; In case I don't want to wait
+            :diminish company-mode)
 
-     (add-hook 'c-mode-hook 'company-mode)
+          (use-package company-quickhelp
+            :ensure t
+            :config
+            (company-quickhelp-mode 1))
 
-     (use-package company-statistics
-       :ensure t 
-       )
+          (add-hook 'c-mode-hook 'company-mode)
+
+          (use-package company-statistics
+            :ensure t 
+            )
+
+     (with-eval-after-load 'company
+       (define-key company-active-map (kbd "M-n") nil)
+       (define-key company-active-map (kbd "M-p") nil)
+       (define-key company-active-map (kbd "C-n") #'company-select-next)
+       (define-key company-active-map (kbd "C-p") #'company-select-previous)
+       (define-key company-active-map (kbd "SPC") #'company-abort))
 
    #+END_SRC
 
@@ -1194,7 +1396,7 @@ end.
    ((c-mode (eval setq  flycheck-clang-include-path (append  flycheck-clang-include-path '("-I../tldevel")))))      
    #+END_EXAMPLE
 
-** Yasnippet
+** hippie expand
 
 
    #+BEGIN_SRC emacs-lisp
@@ -1211,16 +1413,17 @@ end.
              try-expand-line))
    #+END_SRC
 
-   Yasnippet
-
+** Yasnippet
+   
    #+BEGIN_SRC emacs-lisp
-     (use-package yasnippet
-       :ensure t
-       :init
-       (yas-global-mode 1)
-       :config
-       (add-to-list 'yas-snippet-dirs (tl/emacs-subdirectory "snippets")))
-
+      (use-package yasnippet
+        :ensure t
+        :init
+        (yas-global-mode 1)
+        :config
+     (use-package yasnippet-snippets
+       :ensure t)
+     (yas-reload-all));
    #+END_SRC
 
 ** Comments
@@ -1230,26 +1433,11 @@ end.
        :bind ("M-;" . smart-comment))
    #+End_SRC
 
-** Tags:
-
-   #+BEGIN_SRC example 
-     (use-package etags
-       :init (setq tags-revert-without-query 1))
-   #+END_SRC
-
-   #+BEGIN_SRC example
-     (use-package ctags-update
-       :ensure t
-       :config
-       (add-hook 'prog-mode-hook  'turn-on-ctags-auto-update-mode)
-       :diminish ctags-auto-update-mode)
-   #+END_SRC
-
 
 
 ** C
 
-compile 
+*** compile 
 
 #+BEGIN_SRC emacs-lisp
 (global-set-key (kbd "<f5>") (lambda ()
@@ -1258,7 +1446,7 @@ compile
                                (call-interactively 'compile)))
 
 #+END_SRC
-   ggtags
+*** ggtags
 
    #+BEGIN_SRC emacs-lisp
      (use-package ggtags
@@ -1296,7 +1484,7 @@ compile
 
    #+END_SRC
 
-   Counsel-gtags
+*** Counsel-gtags
 
 #+BEGIN_SRC emacs-lisp
   (use-package counsel-gtags
@@ -1314,7 +1502,7 @@ compile
 
 #+END_SRC
 
-   Smartparens
+*** Smartparens
 
    #+BEGIN_SRC emacs-lisp
      (use-package smartparens
@@ -1387,7 +1575,8 @@ compile
       ((string-equal system-type "gnu/linux") ; linux
        (progn
        ;;  (add-to-list 'load-path "~/programs/mu/mu4e")
-         (setq mu4e-mu-binary "/usr/local/bin/mu")
+;;          (add-to-list 'load-path "/usr/share/emacs/site-lisp/mu4e")
+;;         (setq mu4e-mu-binary "/usr/local/bin/mu")
          )))
 
      ;;  (add-to-list 'load-path "~/programs/mu/mu4e")
@@ -1396,7 +1585,9 @@ compile
 
      ;; the modules
      ;;(if (file-exists-p mu4e-mu-binary)
-     ;;    (message "Loading Mu4e...")
+     ;; 
+
+   (message "Loading Mu4e...")
 
        
        (if (not (require 'mu4e nil t))
@@ -1511,22 +1702,66 @@ Tsurumi-ku, Yokohama, 230-0045 JAPAN")
       (define-auto-insert "\\.org$" ["default-orgmode.org" tl/autoinsert-yas-expand]))
   #+END_SRC
   
-* Errors
 
-  Sometimes there is a problem with org "org-header function is void..
+* Eshell 
 
-  In this case delete the *elc files in the org dir:
+Set up environment.
+#+BEGIN_SRC emacs-lisp
 
-  #+BEGIN_EXAMPLE
-  cd .emacs.d/elpa/org-ZXXX/
+  (setenv "LD_LIBRARY_PATH" "/usr/local/lib")
 
-  rm -rf *elc
-  #+END_EXAMPLE
+  (setenv "PATH"
+          (concat
+           "/usr/local/bin:/usr/local/sbin:"
+           (getenv "PATH")))
+
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(use-package eshell
+  :init
+  (setq ;; eshell-buffer-shorthand t ...  Can't see Bug#19391
+        eshell-scroll-to-bottom-on-input 'all
+        eshell-error-if-no-glob t
+        eshell-hist-ignoredups t
+        eshell-save-history-on-exit t
+        eshell-prefer-lisp-functions nil
+        eshell-destroy-buffer-when-process-dies t))
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(use-package eshell
+  :init
+  (add-hook 'eshell-mode-hook
+            (lambda ()
+              (add-to-list 'eshell-visual-commands "ssh")
+              (add-to-list 'eshell-visual-commands "tail")
+              (add-to-list 'eshell-visual-commands "top"))))
+#+END_SRC
+
+Alias
+#+BEGIN_SRC emacs-lisp
+(add-hook 'eshell-mode-hook (lambda ()
+    (eshell/alias "e" "find-file $1")
+    (eshell/alias "ff" "find-file $1")
+    (eshell/alias "emacs" "find-file $1")
+    (eshell/alias "ee" "find-file-other-window $1")
+
+    (eshell/alias "gd" "magit-diff-unstaged")
+    (eshell/alias "gds" "magit-diff-staged")
+    (eshell/alias "d" "dired $1")
+
+    ;; The 'ls' executable requires the Gnu version on the Mac
+    (let ((ls (if (file-exists-p "/usr/local/bin/gls")
+                  "/usr/local/bin/gls"
+                "/bin/ls")))
+      (eshell/alias "ll" (concat ls " -AlohG --color=always")))))
+#+END_SRC
+
+* End
 
 
-  End. 
-
-* End 
+  Run client
 
   #+BEGIN_SRC emacs-lisp
 
@@ -1545,11 +1780,20 @@ Tsurumi-ku, Yokohama, 230-0045 JAPAN")
   #+BEGIN_SRC   emacs-lisp
     (require 'init-local nil t)
   #+END_SRC
-  
-  
-  #+BEGIN_SRC emacs-lisp
-    (provide 'config-main)
-  #+END_SRC
-  
-  All good.
 
+
+
+
+** Fill Mode
+   Automatically wrapping when you get to the end of a line (or the fill-region):
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package fill
+       :bind (("C-c T f" . auto-fill-mode)
+              ("C-c T t" . toggle-truncate-lines))
+       :init (add-hook 'org-mode-hook 'turn-on-auto-fill)
+       :diminish auto-fill-mode)
+   #+END_SRC
+
+
+End. 

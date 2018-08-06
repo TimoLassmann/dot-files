@@ -1,5 +1,5 @@
-;; Utility functions:
 
+;; Utility functions:
 
 (defun sensible-defaults/comment-or-uncomment-region-or-line ()
   "Comments or uncomments the region or the current line if
@@ -16,7 +16,6 @@ there's no active region."
   (text-scale-set 0))
 
 ;; Settings:
-
 
 (defun sensible-defaults/open-files-from-home-directory ()
   "When opening a file, start searching at the user's home
@@ -184,7 +183,6 @@ respectively."
   (sensible-defaults/bind-keys-to-change-text-size))
 
 ;; Non-default settings:
-
 
 (defun sensible-defaults/backup-to-temp-directory ()
   "Store backups and auto-saved files in

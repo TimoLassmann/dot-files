@@ -2,7 +2,7 @@
 import subprocess
 
 def mailpasswd(account):
-    path = "/home/user/.mail-%s-passwd.gpg" % account
+    path = "/home/tlassmann/.mail-%s-passwd.gpg" % account
     return subprocess.check_output(["gpg2", "--quiet", "--batch", "-d", path]).strip()
 
 
