@@ -240,62 +240,6 @@ Let projectile call make
 (global-set-key (kbd "<f5>") 'projectile-compile-project)
 #+END_SRC
 
-** space-line 
-
-#+BEGIN_SRC emacs-lisp
-(use-package spaceline
-  :ensure t
-  :config
-  (require 'spaceline-config)
-    (setq spaceline-buffer-encoding-abbrev-p nil)
-    (setq spaceline-line-column-p nil)
-    (setq spaceline-line-p nil)
-    (setq powerline-default-separator (quote arrow))
-    (spaceline-spacemacs-theme))
-#+END_SRC
-
-No separator!
-#+BEGIN_SRC emacs-lisp
-(setq powerline-default-separator nil)
-#+END_SRC
-Cursor position
-
-Show the current line and column for your cursor. We are not going to have relative-linum-mode in every major mode, so this is useful.
-#+BEGIN_SRC emacs-lisp
-(setq line-number-mode t)
-(setq column-number-mode t)
-#+END_SRC
-Clock
-
-If you prefer the 12hr-format, change the variable to nil instead of t.
-Time format
-#+BEGIN_SRC emacs-lisp
-
-(setq display-time-24hr-format t)
-(setq display-time-format "%H:%M - %d %B %Y")
-#+END_SRC
-
-Enabling the mode
-
-This turns on the clock globally.
-#+BEGIN_SRC emacs-lisp
-(display-time-mode 1)
-#+END_SRC
-
-** Battery indicator
-
-A package called fancy-battery will be used if we are in GUI emacs, otherwise the built in battery-mode will be used. Fancy battery has very odd colors if used in the tty, hence us disabling it.
-#+BEGIN_SRC emacs-lisp
-(use-package fancy-battery
-  :ensure t
-  :config
-    (setq fancy-battery-show-percentage t)
-    (setq battery-update-interval 15)
-    (if window-system
-      (fancy-battery-mode)
-      (display-battery-mode)))
-#+END_SRC
-
 * Improvements
 ** Better beginning of line
 
@@ -383,10 +327,11 @@ In order to use emacs, you don’t need to know how to use emacs. It’s self do
 
 It’s beautiful
 #+BEGIN_SRC emacs-lisp
-(use-package which-key
-  :ensure t
-  :config
-    (which-key-mode))
+  (use-package which-key
+    :ensure t
+    :diminish which-key-mode
+    :config
+      (which-key-mode))
 #+END_SRC
 
 ** windows,panes and why I hate other-window

@@ -36,7 +36,7 @@ Type=Application
       (require 'exwm-config)
 
       ;; fringe size, most people prefer 1 
-      (fringe-mode 3)
+      (fringe-mode 1)
       
       ;; emacs as a daemon, use "emacsclient <filename>" to seamlessly edit files from the terminal directly in the exwm instance
       (server-start)
