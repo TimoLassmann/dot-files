@@ -1,0 +1,17 @@
+#+TITLE:  Global git config
+#+AUTHOR: Timo Lassmann
+#+EMAIL:  timo.lassmann@telethonkids.org.au
+#+DATE:   2018-01-28
+#+LATEX_CLASS: report
+#+OPTIONS:  toc:nil
+#+OPTIONS: H:4
+#+LATEX_CMD: xelatex
+#+PROPERTY: header-args:sh :tangle ~/.gitconfig
+#+DESCRIPTION: Functions, aliases and other resources for ZShell
+* Introduction 
+  Main bit... 
+  #+BEGIN_SRC sh
+[user]
+	email = timo.lassmann@telethonkids.org.au
+	name = Timo Lassmann
+    #+END_SRC
