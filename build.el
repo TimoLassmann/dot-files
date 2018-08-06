@@ -48,6 +48,9 @@
   
   (tl/mksymlinks "${dot-files-src}/templates"
                  "${tl/emacs-directory}/templates")
+  
+                 
+
   ;; Just link the entire directory instead of copying the snippets:
   ;;(ha/mksymlink  "${dot-files-src}/snippets"
   ;;              "${ha/emacs-directory}/snippets")
@@ -68,7 +71,8 @@
   ;;       (ha/get-files "${ha/emacs-directory}/elisp/*.el" t))
 
   (message "Finished building dot-files- Resetting Emacs.")
-  (require 'config-main (tl/get-path "${user-emacs-directory}elisp/config-main.el")))
+  ;;(require 'config-main (tl/get-path "${user-emacs-directory}elisp/config-main.el"))
+  )
 
 
 

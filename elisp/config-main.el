@@ -20,6 +20,23 @@
   (package-refresh-contents)
   (package-install 'use-package))
 
+;; Init File Support
+
+;;    Load up a collection of enhancements to Emacs Lisp, including [[https://github.com/magnars/dash.el][dash]],
+;;    [[https://github.com/magnars/s.el][s]] for string manipulation, and [[https://github.com/rejeep/f.el][f]] for file manipulation.
+
+(require 'cl)
+
+(use-package dash
+  :ensure t
+  :config (eval-after-load "dash" '(dash-enable-font-lock)))
+
+(use-package s
+  :ensure t)
+
+(use-package f
+  :ensure t)
+
 ;; Whoami
 
 (setq user-full-name "Timo Lassmann"
@@ -55,84 +72,76 @@
 (set-selection-coding-system 'utf-8)
 (prefer-coding-system 'utf-8)
 
-;; EXWM
+;; Turn off arrow keys
 
-(use-package exwm
+(require 'no-easy-keys)
+(no-easy-keys 1)
+
+;; Undo / redo
+;;    According to this article, I get better functionality than the redo+ plugin (which I can’t seem to get working well).
+
+(use-package undo-tree
   :ensure t
+  :diminish undo-tree-mode
+  :init
+  (global-undo-tree-mode 1)
   :config
+  (defalias 'redo 'undo-tree-redo)
+  :bind (("C-z" . undo)     ; Zap to character isn't helpful
+         ("C-S-z" . redo)))
 
-    ;; necessary to configure exwm manually
-    (require 'exwm-config)
+;; Kill this buffer
+;;    Assume that I always want to kill the current buffer when hitting C-x k.
 
-    ;; fringe size, most people prefer 1 
-    (fringe-mode 3)
-    
-    ;; emacs as a daemon, use "emacsclient <filename>" to seamlessly edit files from the terminal directly in the exwm instance
-    (server-start)
-    
-    ;; this fixes issues with ido mode, if you use helm, get rid of it
-    (exwm-config-ido)
+(defun tl/kill-current-buffer ()
+  "Kill the current buffer without prompting."
+  (interactive)
+  (kill-buffer (current-buffer)))
+(global-set-key (kbd "C-x k") 'tl/kill-current-buffer)
 
-    ;; a number between 1 and 9, exwm creates workspaces dynamically so I like starting out with 1
-    (setq exwm-workspace-number 1)
+;; Tabs 
+;;    Never use tabs. Tabs are the devil’s whitespace.
 
-    ;; this is a way to declare truly global/always working keybindings
-    ;; this is a nifty way to go back from char mode to line mode without using the mouse
-    (exwm-input-set-key (kbd "s-r") #'exwm-reset)
-    (exwm-input-set-key (kbd "s-k") #'exwm-workspace-delete)
-    (exwm-input-set-key (kbd "s-w") #'exwm-workspace-swap)
+(setq-default indent-tabs-mode nil)
+(setq tab-width 2)
+(setq-default tab-always-indent 'complete)
 
-    ;; the next loop will bind s-<number> to switch to the corresponding workspace
-    (dotimes (i 10)
-      (exwm-input-set-key (kbd (format "s-%d" i))
-                          `(lambda ()
-                             (interactive)
-                             (exwm-workspace-switch-create ,i))))
+;; Location of mactex (if we are using mac - unlikely...
+;;    Tell emacs about the mactex installation...
 
-     ;; the simplest launcher, I keep it in only if dmenu eventually stopped working or something
-    (exwm-input-set-key (kbd "s-&")
-                        (lambda (command)
-                          (interactive (list (read-shell-command "$ ")))
-                          (start-process-shell-command command nil command)))
+(setenv "PATH" (concat "/Library/TeX/texbin" ":" (getenv "PATH")))
 
-    ;; an easy way to make keybindings work *only* in line mode
-    (push ?\C-q exwm-input-prefix-keys)
-    (define-key exwm-mode-map [?\C-q] #'exwm-input-send-next-key)
+;; Dired settings 
 
-    ;; simulation keys are keys that exwm will send to the exwm buffer upon inputting a key combination
-    (exwm-input-set-simulation-keys
-     '(
-       ;; movement
-       ([?\C-b] . left)
-       ([?\M-b] . C-left)
-       ([?\C-f] . right)
-       ([?\M-f] . C-right)
-       ([?\C-p] . up)
-       ([?\C-n] . down)
-       ([?\C-a] . home)
-       ([?\C-e] . end)
-       ([?\M-v] . prior)
-       ([?\C-v] . next)
-       ([?\C-d] . delete)
-       ([?\C-k] . (S-end delete))
-       ;; cut/paste
-       ([?\C-w] . ?\C-x)
-       ([?\M-w] . ?\C-c)
-       ([?\C-y] . ?\C-v)
-       ;; search
-       ([?\C-s] . ?\C-f)))
+;;    Taken from: https://github.com/munen/emacs.d
 
-    ;; this little bit will make sure that XF86 keys work in exwm buffers as well
-    
-    ;; this just enables exwm, it started automatically once everything is ready
-    (exwm-enable))
 
-;; Launcher
+;;    Ability to use =a= to visit a new directory or file in dired instead of using =RET=.
+;;    =RET= works just fine, but it will create a new buffer for every interaction
+;;    whereas a reuses the current buffer.
 
-(use-package dmenu
-  :ensure t
-  :bind
-    ("s-SPC" . 'dmenu))
+(put 'dired-find-alternate-file 'disabled nil)
+(setq-default dired-listing-switches "-alh")
+
+;; Path
+
+(let ((path-from-shell (shell-command-to-string "/bin/bash -l -c 'echo $PATH'")))
+  (setenv "PATH" path-from-shell)
+  (setq exec-path (split-string path-from-shell path-separator)))
+
+(setq temporary-file-directory "/tmp")
+
+;; Modernizing Emacs
+
+;;    Found [[https://github.com/wasamasa/dotemacs/blob/master/init.org#init][here]] how to remove the warnings from the GnuTLS library when
+;;    using HTTPS... increase the minimum prime bits size:
+
+(setq gnutls-min-prime-bits 4096)
+
+;; Turn off sleep mode 
+;;    I keep hitting this by accidental
+
+(global-unset-key (kbd "C-z"))
 
 ;; Highligh current line
 
@@ -186,7 +195,7 @@
   :ensure t
   :config
     (dashboard-setup-startup-hook)
-    (setq dashboard-startup-banner "~/.emacs.d/img/dashLogo.png")
+    (setq dashboard-startup-banner 'official)
     (setq dashboard-items '((recents  . 5)
                             (projects . 5)))
     (setq dashboard-banner-logo-title ""))
@@ -348,14 +357,6 @@
 
 (global-set-key (kbd "C-x b") 'ibuffer)
 
-;; SMEX
-
-(use-package smex
-  :ensure t
-  :init (smex-initialize)
-  :bind ("M-x" . smex)
-  ("M-X" . smex-major-mode-commands))
-
 ;; IDO
 
 (use-package ido
@@ -417,12 +418,11 @@
 ;; According to Ryan Neufeld, we could make IDO work vertically, which is much easier to read. For this, I use ido-vertically:
 
 (use-package ido-vertical-mode
-       :ensure t
-       :init               ; I like up and down arrow keys:
-       (setq ido-vertical-define-keys 'C-n-C-p-up-and-down)
-       :config
-       (ido-vertical-mode 1))
-(setq ido-vertical-define-keys 'C-n-and-C-p-only)
+  :ensure t
+  :init               ; I like up and down arrow keys:
+  (setq ido-vertical-define-keys 'C-n-C-p-up-and-down)
+  :config
+  (ido-vertical-mode 1))
 
 ;; This sorts an IDO filelist by mtime instead of alphabetically.
 
@@ -442,6 +442,23 @@
 
 (add-hook 'ido-make-file-list-hook 'ido-sort-mtime)
 (add-hook 'ido-make-dir-list-hook 'ido-sort-mtime)
+
+;; SMEX
+
+(use-package smex
+  :ensure t
+  :init (smex-initialize)
+  :bind 
+  ("M-x" . smex)
+  ("M-X" . smex-major-mode-commands))
+
+;; switch buffers
+
+(global-set-key (kbd "C-x C-b") 'ido-switch-buffer)
+
+;; iBuffers
+
+(global-set-key (kbd "C-x b") 'ibuffer)
 
 ;; Avy
 
@@ -1010,7 +1027,7 @@ modifications)."
   (define-key company-active-map (kbd "C-p") #'company-select-previous)
   (define-key company-active-map (kbd "SPC") #'company-abort))
 
-;; Yasnippet
+;; hippie expand
 
 (global-set-key (kbd "M-/") 'hippie-expand)
 
@@ -1027,11 +1044,13 @@ modifications)."
 ;; Yasnippet
 
 (use-package yasnippet
-  :ensure t
-  :init
-  (yas-global-mode 1)
-  :config
-  (add-to-list 'yas-snippet-dirs (tl/emacs-subdirectory "snippets")))
+   :ensure t
+   :init
+   (yas-global-mode 1)
+   :config
+(use-package yasnippet-snippets
+  :ensure t)
+(yas-reload-all));
 
 ;; Comments
 
@@ -1119,7 +1138,204 @@ modifications)."
   :ensure t
   :init (require 'ess-site))
 
-;; END
+;; Email
+
+(require 'starttls)
+(setq starttls-use-gnutls t)
+
+(require 'smtpmail)
+(setq send-mail-function  'smtpmail-send-it
+      message-send-mail-function    'smtpmail-send-it
+      starttls-use-gnutls t
+      smtpmail-starttls-credentials  '(("smtp.office365.com" 587 nil nil))
+      smtpmail-auth-credentials (expand-file-name "~/.authinfo.gpg")
+      smtpmail-smtp-server  "smtp.office365.com"
+      smtpmail-stream-type  'starttls
+      smtpmail-smtp-service 587)
+
+;; Mu4e 
+
+;;    On a mac install mu via brew:
+
+;;    #+BEGIN_EXAMPLE sh
+;;    brew install mu --with-emacs --HEAD
+;;    #+END_EXAMPLE
+
+;;    and make sure the path below points to the same =HEAD= directory!
+
+(cond
+      ((string-equal system-type "windows-nt") ; Microsoft Windows
+       (progn
+         (message "Microsoft Windows")))
+      ((string-equal system-type "darwin") ; Mac OS X
+       (progn
+         (add-to-list 'load-path "/usr/local/Cellar/mu/HEAD-7d6c30f/share/emacs/site-lisp/mu/mu4e")
+         (setq mu4e-mu-binary "/usr/local/bin/mu")
+         ))
+      ((string-equal system-type "gnu/linux") ; linux
+       (progn
+       ;;  (add-to-list 'load-path "~/programs/mu/mu4e")
+;;          (add-to-list 'load-path "/usr/share/emacs/site-lisp/mu4e")
+;;         (setq mu4e-mu-binary "/usr/local/bin/mu")
+         )))
+
+     ;;  (add-to-list 'load-path "~/programs/mu/mu4e")
+
+     ;;         (add-to-list 'load-path "/usr/local/share/emacs/site-lisp/mu/mu4e")   
+
+     ;; the modules
+     ;;(if (file-exists-p mu4e-mu-binary)
+     ;; 
+
+   (message "Loading Mu4e...")
+
+       
+       (if (not (require 'mu4e nil t))
+       (message "`mu4e' not found")
+
+       ;;(require 'mu4e)
+       (require 'org-mu4e)
+
+
+       (message "Loading Mu4e...")
+
+       (setq mu4e-maildir (expand-file-name "~/Maildir"))
+
+       (setq mu4e-sent-folder "/office365/sent")
+       (setq mu4e-drafts-folder "/drafts")
+       (setq mu4e-refile-folder "/office365/Archive")   ;; saved messages
+       (setq mu4e-trash-folder "/office365/trash")
+
+
+       (setq message-kill-buffer-on-exit t)
+       (setq mu4e-change-filenames-when-moving t)
+       (setq mu4e-confirm-quit nil)
+       (setq mail-user-agent 'mu4e-user-agent)
+
+       (setq mu4e-sent-messages-behavior 'sent)
+
+       (setq mu4e-view-show-addresses t)
+
+       (setq mu4e-attachment-dir "~/Downloads")
+
+
+       (define-key mu4e-headers-mode-map (kbd "C-c c") 'org-mu4e-store-and-capture)
+       (define-key mu4e-view-mode-map (kbd "C-c c") 'org-mu4e-store-and-capture)
+
+       (setq mu4e-get-mail-command "offlineimap")
+
+       (setq mu4e-compose-signature
+                          "Associate Professor Timo Lassmann
+Feilman Fellow
+Academic Head of Computational Biology, Telethon Kids Institute
+Adjunct Associate Professor, Center for Child Health Research
+University of Western Australia
+
+Telethon Kids Institute
+100 Roberts Road, Subiaco, Western Australia, 6008
+PO Box 855, West Perth, Western Australia, 6872
+
+https://scholar.google.com.au/citations?user=7fZs_tEAAAAJ&hl=en
+
+Visiting Scientist, RIKEN Yokohama Institute, Japan
+Division of Genomic Technology,
+RIKEN Center for Life Science Technologies,
+Yokohama Institute,1-7-22 Suehiro-cho,
+Tsurumi-ku, Yokohama, 230-0045 JAPAN")
+)
+
+;; Spell check
+
+(add-hook 'mu4e-compose-mode-hook
+          'flyspell-mode)
+(add-hook 'message-mode-hook 'turn-on-orgtbl)
+(add-hook 'message-mode-hook 'turn-on-orgstruct++)
+
+;; TRAMP
+
+(use-package tramp
+    :ensure t
+    :config
+    (with-eval-after-load 'tramp-cache
+      (setq tramp-persistency-file-name "~/.emacs.d/tramp"))
+    (setq tramp-default-method "ssh")
+    (setq tramp-use-ssh-controlmaster-options nil) 
+    (message "tramp-loaded"))
+
+;; Autoinsert templates 
+  
+;;   Again from Howards Abrams:
+
+(use-package autoinsert
+  :ensure t
+  :init
+  (setq auto-insert-directory (tl/emacs-subdirectory "templates/"))
+  ;; Don't want to be prompted before insertion:
+  (setq auto-insert-query nil)
+
+  (add-hook 'find-file-hook 'auto-insert)
+  (auto-insert-mode 1))
+
+;; Use yes snippet for templates.
+
+(defun tl/autoinsert-yas-expand()
+  "Replace text in yasnippet template."
+  (yas-expand-snippet (buffer-string) (point-min) (point-max)))
+
+;; Set templates
+
+(use-package autoinsert 
+  :config
+  (define-auto-insert "\\.org$" ["default-orgmode.org" tl/autoinsert-yas-expand]))
+
+;; Eshell 
+
+;; Set up environment.
+
+(setenv "LD_LIBRARY_PATH" "/usr/local/lib")
+
+(setenv "PATH"
+        (concat
+         "/usr/local/bin:/usr/local/sbin:"
+         (getenv "PATH")))
+
+(use-package eshell
+  :init
+  (setq ;; eshell-buffer-shorthand t ...  Can't see Bug#19391
+        eshell-scroll-to-bottom-on-input 'all
+        eshell-error-if-no-glob t
+        eshell-hist-ignoredups t
+        eshell-save-history-on-exit t
+        eshell-prefer-lisp-functions nil
+        eshell-destroy-buffer-when-process-dies t))
+
+(use-package eshell
+  :init
+  (add-hook 'eshell-mode-hook
+            (lambda ()
+              (add-to-list 'eshell-visual-commands "ssh")
+              (add-to-list 'eshell-visual-commands "tail")
+              (add-to-list 'eshell-visual-commands "top"))))
+
+;; Alias
+
+(add-hook 'eshell-mode-hook (lambda ()
+    (eshell/alias "e" "find-file $1")
+    (eshell/alias "ff" "find-file $1")
+    (eshell/alias "emacs" "find-file $1")
+    (eshell/alias "ee" "find-file-other-window $1")
+
+    (eshell/alias "gd" "magit-diff-unstaged")
+    (eshell/alias "gds" "magit-diff-staged")
+    (eshell/alias "d" "dired $1")
+
+    ;; The 'ls' executable requires the Gnu version on the Mac
+    (let ((ls (if (file-exists-p "/usr/local/bin/gls")
+                  "/usr/local/bin/gls"
+                "/bin/ls")))
+      (eshell/alias "ll" (concat ls " -AlohG --color=always")))))
+
+;; End
 
 
 ;;   Run client
@@ -1133,81 +1349,6 @@ modifications)."
 
 (require 'init-local nil t)
 
-;; Very general
-
-(setq scroll-conservatively 100
-      scroll-preserve-screen-position t)
-
-(let ((path-from-shell (shell-command-to-string "/bin/bash -l -c 'echo $PATH'")))
-  (setenv "PATH" path-from-shell)
-  (setq exec-path (split-string path-from-shell path-separator)))
-
-(setq temporary-file-directory "/tmp")
-
-;; Modernizing Emacs
-
-;;    Found [[https://github.com/wasamasa/dotemacs/blob/master/init.org#init][here]] how to remove the warnings from the GnuTLS library when
-;;    using HTTPS... increase the minimum prime bits size:
-
-(setq gnutls-min-prime-bits 4096)
-
-;; Turn off sleep mode
-
-(global-unset-key (kbd "C-z"))
-
-;; Turn off arrow keys
-
-(require 'no-easy-keys)
-(no-easy-keys 1)
-
-;; Dired settings 
-
-;;    Taken from: https://github.com/munen/emacs.d
-
-
-;;    Ability to use =a= to visit a new directory or file in dired instead of using =RET=.
-;;    =RET= works just fine, but it will create a new buffer for every interaction
-;;    whereas a reuses the current buffer.
-
-(put 'dired-find-alternate-file 'disabled nil)
-(setq-default dired-listing-switches "-alh")
-
-;; misc
-;;    Assume that I always want to kill the current buffer when hitting C-x k.
-
-(defun tl/kill-current-buffer ()
-  "Kill the current buffer without prompting."
-  (interactive)
-  (kill-buffer (current-buffer)))
-(global-set-key (kbd "C-x k") 'tl/kill-current-buffer)
-
-;; Never use tabs. Tabs are the devil’s whitespace.
-
-(setq-default indent-tabs-mode nil)
-(setq tab-width 2)
-(setq-default tab-always-indent 'complete)
-
-;; Tell emacs about the mactex installation...
-
-(setenv "PATH" (concat "/Library/TeX/texbin" ":" (getenv "PATH")))
-
-;; Init File Support
-
-;;    Load up a collection of enhancements to Emacs Lisp, including [[https://github.com/magnars/dash.el][dash]],
-;;    [[https://github.com/magnars/s.el][s]] for string manipulation, and [[https://github.com/rejeep/f.el][f]] for file manipulation.
-
-(require 'cl)
-
-(use-package dash
-  :ensure t
-  :config (eval-after-load "dash" '(dash-enable-font-lock)))
-
-(use-package s
-  :ensure t)
-
-(use-package f
-  :ensure t)
-
 ;; Fill Mode
 ;;    Automatically wrapping when you get to the end of a line (or the fill-region):
 
@@ -1216,16 +1357,3 @@ modifications)."
          ("C-c T t" . toggle-truncate-lines))
   :init (add-hook 'org-mode-hook 'turn-on-auto-fill)
   :diminish auto-fill-mode)
-
-;; Undo / redo
-;;    According to this article, I get better functionality than the redo+ plugin (which I can’t seem to get working well).
-
-(use-package undo-tree
-  :ensure t
-  :diminish undo-tree-mode
-  :init
-  (global-undo-tree-mode 1)
-  :config
-  (defalias 'redo 'undo-tree-redo)
-  :bind (("C-z" . undo)     ; Zap to character isn't helpful
-         ("C-S-z" . redo)))

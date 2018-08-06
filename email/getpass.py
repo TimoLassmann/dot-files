@@ -1,10 +1,13 @@
-#! /usr/bin/env python2
+#! /usr/bin/env python3
 import subprocess
-
+import os
 def mailpasswd(account):
-    path = "/home/tlassmann/.mail-%s-passwd.gpg" % account
-    return subprocess.check_output(["gpg2", "--quiet", "--batch", "-d", path]).strip()
+    _USERNAME = os.getenv("USER") 
+    _HOME = os.path.expanduser('~'+_USERNAME)
 
+    path = "%(homedir)s/.mail-%(account)s-passwd.gpg"
+    path %= {'homedir':_HOME,'account':account}
+    return subprocess.check_output(["gpg2", "--quiet", "--batch", "-d", path]).strip()
 
 #
 # need to greate new gpg key with :
