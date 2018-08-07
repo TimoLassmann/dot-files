@@ -276,3 +276,15 @@ add some missing fonts..
       :init  (beacon-mode +1)
       :config 
   #+END_SRC
+
+
+#+BEGIN_SRC emacs-lisp 
+(use-package dashboard
+  :ensure t
+  :Config
+    (dashboard-setup-startup-hook)
+    (setq dashboard-startup-banner 'official)
+    (setq dashboard-items '((recents  . 5)
+                            (projects . 5)))
+    (setq dashboard-banner-logo-title ""))
+#+END_SRC
