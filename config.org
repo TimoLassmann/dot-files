@@ -146,8 +146,8 @@ Next let's make sure we have use-package
 
    #+BEGIN_SRC emacs-lisp
      (setq-default indent-tabs-mode nil)
-     (setq tab-width 2)
-     (setq-default tab-always-indent 'complete)
+     (setq tab-width 4)
+    ;; (setq-default tab-always-indent 'complete)
    #+END_SRC
 
 ** Location of mactex (if we are using mac - unlikely...
@@ -552,7 +552,6 @@ end.
    #+END_SRC
    
 * Org-mode
-
 ** General setup
 
    load org mode
@@ -699,7 +698,7 @@ End.
         (R . t)
         (dot . t)
         (emacs-lisp . t)
-        (sh . t) 
+        (shell . t) 
         (makefile . t)
         (latex .t)
         ))
@@ -1172,7 +1171,6 @@ end.
        :bind ("M-;" . smart-comment))
    #+End_SRC
 
-
 ** C
 *** compile 
 
@@ -1182,6 +1180,12 @@ end.
                                (setq-local compilation-read-command nil)
                                (call-interactively 'compile)))
 
+#+END_SRC
+
+Follow compilation
+
+#+BEGIN_SRC emacs-lisp
+ (setq compilation-scroll-output t)
 #+END_SRC
 
 *** ggtags
@@ -1258,7 +1262,10 @@ end.
         ("M-p" . smartscan-symbol-go-backward))
 
 #+END_SRC
-   SET BSD indent style
+   
+** Indenting 
+
+SET BSD indent style
 
    #+BEGIN_SRC emacs-lisp
 
@@ -1267,9 +1274,55 @@ end.
                   (c-set-style "bsd")
                   ))
    #+END_SRC
-  Don't ask with make command to run...
+  
+Whitespace mode
 
-   #+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp
+  (global-set-key (kbd "C-c w") 'whitespace-mode)
+  (add-hook 'prog-mode-hook (lambda () (interactive) (setq show-trailing-whitespace 1)))
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(setq-default indent-tabs-mode nil)
+#+END_SRC
+
+*** clean aindent mode
+
+#+BEGIN_SRC emacs-lisp
+  (use-package clean-aindent-mode
+    :ensure t 
+
+    :init 
+    (add-hook 'prog-mode-hook 'clean-aindent-mode)
+  )
+#+END_SRC
+
+*** dtrt indent mode
+
+#+BEGIN_SRC emacs-lisp
+  (use-package dtrt-indent 
+    :ensure t
+    :init 
+    (dtrt-indent-mode 1)
+    (setq dtrt-indent-verbosity 0)
+    )
+#+END_SRC
+
+*** Whitespace bulter 
+
+#+BEGIN_SRC emacs-lisp
+(use-package ws-butler
+:ensure t 
+:init
+(add-hook 'c-mode-common-hook 'ws-butler-mode)
+)
+#+END_SRC
+
+
+
+** Don't ask for permission to run make
+Don't ask with make command to run...
+#+BEGIN_SRC emacs-lisp
     (setq compilation-read-command nil)
  #+END_SRC
 
@@ -1376,22 +1429,24 @@ end.
 
             (setq mu4e-compose-signature
                   "Associate Professor Timo Lassmann
-          Feilman Fellow
-          Academic Head of Computational Biology, Telethon Kids Institute
-          Adjunct Associate Professor, Center for Child Health Research
-          University of Western Australia
+Feilman Fellow
+Academic Head of Computational Biology, Telethon Kids Institute
+Adjunct Associate Professor, Center for Child Health Research
+University of Western Australia
 
-          Telethon Kids Institute
-          100 Roberts Road, Subiaco, Western Australia, 6008
-          PO Box 855, West Perth, Western Australia, 6872
+Telethon Kids Institute
+Northern Entrance, Perth Children's Hospital
+15 Hospital Avenue, Nedlands, Western Australia, 6009
+PO Box 855, West Perth, Western Australia, 6872 
 
-          https://scholar.google.com.au/citations?user=7fZs_tEAAAAJ&hl=en
 
-          Visiting Scientist, RIKEN Yokohama Institute, Japan
-          Division of Genomic Technology,
-          RIKEN Center for Life Science Technologies,
-          Yokohama Institute,1-7-22 Suehiro-cho,
-          Tsurumi-ku, Yokohama, 230-0045 JAPAN")
+https://scholar.google.com.au/citations?user=7fZs_tEAAAAJ&hl=en
+
+Visiting Scientist, RIKEN Yokohama Institute, Japan
+Division of Genomic Technology,
+RIKEN Center for Life Science Technologies,
+Yokohama Institute,1-7-22 Suehiro-cho,
+Tsurumi-ku, Yokohama, 230-0045 JAPAN")
             )
    #+END_SRC
 
