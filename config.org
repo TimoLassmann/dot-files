@@ -1014,6 +1014,17 @@ end.
 
    #+END_SRC
 
+
+** Line Numbering 
+
+#+BEGIN_SRC emacs-lisp
+(use-package linum-relative
+  :ensure t
+  :config
+    (setq linum-relative-current-symbol "")
+    (add-hook 'prog-mode-hook 'linum-relative-mode))
+
+#+END_SRC
 ** Magit 
 
    I played with this before.. 
@@ -1560,6 +1571,24 @@ Alias
                   "/usr/local/bin/gls"
                 "/bin/ls")))
       (eshell/alias "ll" (concat ls " -AlohG --color=always")))))
+#+END_SRC
+
+* PDF tools
+
+#+BEGIN_SRC emacs-lisp
+
+
+(use-package pdf-tools
+ :pin manual ;; manually update
+ :config
+ ;; initialise
+ (pdf-tools-install)
+ ;; open pdfs scaled to fit page
+ (setq-default pdf-view-display-size 'fit-page)
+ ;; automatically annotate highlights
+ (setq pdf-annot-activate-created-annotations t)
+ ;; use normal isearch
+ (define-key pdf-view-mode-map (kbd "C-s") 'isearch-forward))
 #+END_SRC
 
 * End
