@@ -18,85 +18,101 @@
   We highly recommend allocating a minimal amount of storage to each node and use
   a single large NFS mounted volume to share data within the cluster. 
 
-  1) Follow the instructions here:
+1) Follow the instructions here:
   https://support.pawsey.org.au/documentation/display/US/Nimbus+-+Launching+an+Instance
 
   NOTE: some of the downstream steps will be easier if you create 5 nodes at once.
   This can be accomplished by selecting a name like 'node' and requesting 5 or
   more instances. OpenStack will append '-1', '-2' etc to the names. 
 
-  2) copy ssh key to main node connected to the internet (so we can connect to
-  individual nodes..)
+2) What can we do without emacs? 
 
-  3) On the main node add a ssh config file 
+#+BEGIN_SRC shell 
+sudo apt update -yq 
+sudo apt install emacs25 pdsh git autoconf automake clang llvm libtool cmake 
+#+END_SRC
+
+
+3) copy ssh key to main node connected to the internet
+(so we can connect to individual nodes..)
+
+4) On the main node add a ssh config file 
 
   Here is an example of how this may look: 
 
   #+BEGIN_SRC shell :tangle ssh_config_nimbus  :exports code :results none
     StrictHostKeyChecking no
-    Host single-cell 
+    Host node-1 
     User ubuntu
-    Hostname 192.168.1.6
+    Hostname 192.168.1.12
     IdentityFile ~/.ssh/pawsey.key
-    Host node-5
-    Hostname 192.168.1.16
-    User ubuntu
-    IdentityFile ~/.ssh/pawsey.key
-    Host node-4
+    Host node-2
     Hostname 192.168.1.7
     User ubuntu
     IdentityFile ~/.ssh/pawsey.key
     Host node-3
-    Hostname 192.168.1.15
+    Hostname 192.168.1.5
     User ubuntu
     IdentityFile ~/.ssh/pawsey.key
-    Host node-2
+    Host node-4
     Hostname 192.168.1.14
     User ubuntu
     IdentityFile ~/.ssh/pawsey.key
-    Host node-1
-    Hostname 192.168.1.12
+    Host node-5
+    Hostname 192.168.1.10
     User ubuntu
     IdentityFile ~/.ssh/pawsey.key
-
+    Host node-6
+    Hostname 192.168.1.9
+    User ubuntu
+    IdentityFile ~/.ssh/pawsey.key
   #+END_SRC
 
   Then copy to content to ~/.ssh/config 
 
 
-  4) Install pdsh as describes here
+  5) Install pdsh as describes here
 
-  https://support.pawsey.org.au/documentation/display/US/Nimbus+-+Managing+a+VM+Cluster
+  https://support.pawsey.org.au/documentatnion/display/US/Nimbus+-+Managing+a+VM+Cluster
 
+#+BEGIN_SRC shell 
+sudo apt-get install pdsh
+
+#+END_SRC
   Especially add nodes in the /etc/genders file:  
 
   sudo vi /etc/genders
 
   #+BEGIN_SRC shell :tangle genders  :exports code :results none
-    node-1
     node-2
     node-3
     node-4
     node-5
-
+    node-6
   #+END_SRC
 
+File =/etc/pdsh/rcmd_default= needs to contain =ssh=. 
+
+To test: 
+#+BEGIN_SRC shell 
+pdsh -a 'ip a | grep 192.168'
+#+END_SRC
 
 * Update nodes
 
   #+BEGIN_SRC shell
     pdsh -a sudo apt-get update 
-    pssd -a sudo apt-get -yq upgrade 
+
   #+END_SRC
 
 * Setup MUNGE & SLURM 
-** MUNGE 
+** MUNGE
 
 *** Install 
     #+BEGIN_SRC shell :tangle basic_node_setup.sh :shebang #!/bin/bash :exports code :results none
 
-      pdsh -a sudo apt-get -yq install libmunge-dev libmunge2 munge 
-      sudo apt-get -yq install libmunge-dev libmunge2 munge 
+      pdsh -a sudo apt-get -yq install libmunge-dev libmunge2 munge pdsh
+      sudo apt-get -yq install libmunge-dev libmunge2 munge pdsh
 
     #+END_SRC
 
@@ -109,7 +125,7 @@
       sudo systemctl stop munge
       cd ~
       sudo chown munge: munge.key
-      sudo mv munge.key /etc/munge/munge.key
+      sudo cp munge.key /etc/munge/munge.key
 
       sudo chmod 400 /etc/munge/munge.key
       sudo systemctl enable munge
@@ -123,14 +139,15 @@
     4) also copy the key to the correct directory on the head node 
 
        #+BEGIN_SRC shell :tangle generate_sync_munge_key.sh :shebang #!/bin/bash :exports code :results none
-         dd if=/dev/random bs=1 count=1024 > munge.key
+         dd if=/dev/urandom bs=1 count=1024 > munge.key
+
          pdcp -a munge.key ~/munge.key
          pdcp -a munge_per_node.sh  ~/munge_per_node.sh 
          pdsh -a ./munge_per_node.sh 
 
          sudo systemctl stop munge
          sudo chown munge: munge.key
-         sudo mv munge.key /etc/munge/munge.key
+         sudo cp munge.key /etc/munge/munge.key
 
          sudo chmod 400 /etc/munge/munge.key
 
@@ -138,6 +155,17 @@
          sudo systemctl start munge
 
        #+END_SRC
+
+Testing!!! 
+#+BEGIN_SRC shell 
+munge -n | unmunge
+munge -n | ssh node-2 unmunge
+munge -n | ssh node-3 unmunge
+munge -n | ssh node-4 unmunge
+munge -n | ssh node-5 unmunge
+munge -n | ssh node-6 unmunge
+remunge
+#+END_SRC
 
 * Slurm 
 
@@ -184,14 +212,13 @@
      EOF'
 
      sudo -- sh -c 'cat > /etc/hosts  << "EOF"
-
      127.0.0.1 localhost
-     192.168.1.6 single-cell
-     192.168.1.16 node-5
-     192.168.1.7 node-4
-     192.168.1.15 node-3
-     192.168.1.14 node-2
      192.168.1.12 node-1
+     192.168.1.7 node-2
+     192.168.1.5 node-3
+     192.168.1.14 node-4
+     192.168.1.10 node-5
+     192.168.1.9 node-6
      # The following lines are desirable for IPv6 capable hosts
      ::1 ip6-localhost ip6-loopback
      fe00::0 ip6-localnet
@@ -202,7 +229,7 @@
 
      EOF'
 
-     sudo mv ~/slurm.conf /etc/slurm-llnl/slurm.conf
+     sudo cp ~/slurm.conf /etc/slurm-llnl/slurm.conf
      sudo chown slurm: /etc/slurm-llnl/slurm.conf
 
 
@@ -218,26 +245,25 @@
    on the head node.
 
    #+BEGIN_SRC shell :tangle setup_hosts_file.sh :shebang #!/bin/bash :exports code :results none
-     sudo apt-get  install slurmctld slurmctld-dbg slurmdbd slurmdbd-dbg
-     pdsh -a sudo apt-get update 
-     pdsh -a sudo apt-get -yq upgrade 
+     sudo apt-get  install slurmctld slurmdbd -yq 
+     pdsh -a sudo apt-get update  
      pdsh -a sudo apt-get -yq install slurmd pdsh
-     pdcp -a cp slurm.conf ~/slurm.conf
+     pdcp -a slurm.conf ~/slurm.conf
      pdcp -a setup_host_for_slurm.sh  ~/setup_host_for_slurm.sh
      pdsh -a ./setup_host_for_slurm.sh 
-     pdsh -a grep single /etc/hosts 
+     pdsh -a grep "node-1" /etc/hosts 
 
-     sudo mv ~/slurm.conf /etc/slurm-llnl/slurm.conf
+     sudo cp ~/slurm.conf /etc/slurm-llnl/slurm.conf
      sudo chown slurm: /etc/slurm-llnl/slurm.conf
      sudo -- sh -c 'cat > /etc/hosts  << "EOF"
-
      127.0.0.1 localhost
-     192.168.1.6 single-cell
-     192.168.1.16 node-5
-     192.168.1.7 node-4
-     192.168.1.15 node-3
-     192.168.1.14 node-2
      192.168.1.12 node-1
+     192.168.1.7 node-2
+     192.168.1.5 node-3
+     192.168.1.14 node-4
+     192.168.1.10 node-5
+     192.168.1.9 node-6
+
      # The following lines are desirable for IPv6 capable hosts
      ::1 ip6-localhost ip6-loopback
      fe00::0 ip6-localnet
@@ -254,6 +280,7 @@
 ** Start Slurm 
 
 
+
    #+BEGIN_SRC shell :exports code :results none
      sudo systemctl stop slurmctld
      sudo systemctl start  slurmctld
@@ -266,7 +293,20 @@
 
 
 
+
    After this you should be able to see all nodes using the =sinfo= command. 
+
+Sometimes the nodes appear to have low memory. To fix this: 
+
+#+BEGIN_SRC shell 
+sudo scontrol 
+
+#+END_SRC
+
+ and then
+
+scontrol: update NodeName=node10 State=DOWN Reason="undraining"
+scontrol: update NodeName=node10 State=RESUME
 
 
 * Sharing a mounted volume via NFS  
