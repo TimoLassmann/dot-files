@@ -189,6 +189,9 @@ remunge
       sudo apt-get install -yq slurmd 
       and run: 
       slurmd -C 
+   3) Make sure the =SlurmctldPidFile= and =SlurmdPidFile= variables
+      point to directories writable bu the slurm user (on ubuntu 18
+      this is =/var/run/slurm-llnl=)
 
    Finally copy the output of the configurator webpage into a file called
    =slurm.conf= in the home directory of your head node. 
@@ -289,23 +292,35 @@ chmod 755 /var/spool/slurmctld
 
 ** Start Slurm 
 
+First let's start the work nodes 
+
+#+BEGIN_SRC shell :exports code :results none
+  pdsh -a sudo systemctl enable slurmd.service
+  pdsh -a sudo systemctl start slurmd.service
+
+#+END_SRC
 
 
-   #+BEGIN_SRC shell :exports code :results none
-     sudo systemctl enable  slurmctld 
-     sudo systemctl stop slurmctld
-     sudo systemctl start  slurmctld 
-
-     pdsh -a sudo systemctl stop slurmd
-     pdsh -a sudo systemctl enable slurmd
-     pdsh -a sudo slurmd
-
-   #+END_SRC
+Now let's see if we can start the server node: 
 
 
+#+BEGIN_SRC shell :exports code :results none
+  sudo systemctl enable slurmctld.service
+  sudo systemctl start slurmctld.service
+  sudo systemctl status slurmctld.service
+
+#+END_SRC
+
+Test if everything is ok: 
+
+#+BEGIN_SRC shell :exports code :results none
+scontrol show nodes
+#+END_SRC
 
 
    After this you should be able to see all nodes using the =sinfo= command. 
+
+Troubleshooting: 
 
 Sometimes the nodes appear to have low memory. To fix this: 
 
@@ -357,6 +372,18 @@ scontrol: update NodeName=node10 State=RESUME
   service nfs-kernel-server stop
 
 
+
+
+* Install Docker 
+
+  #+BEGIN_SRC shell :exports code :results none
+    pdsh -a sudo apt  install docker.io -yq 
+  #+END_SRC
+
+  Add myself to docker group... 
+  #+BEGIN_SRC 
+pdsh -a sudo gpasswd -a $USER docker
+  #+END_SRC
 
 
 * Install R (3.5+) on all nodes 
