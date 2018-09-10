@@ -334,7 +334,6 @@ sudo scontrol
 scontrol: update NodeName=node10 State=DOWN Reason="undraining"
 scontrol: update NodeName=node10 State=RESUME
 
-
 * Sharing a mounted volume via NFS  
 
   The following script starts a nfs server on the head node and runs code to mount
@@ -373,7 +372,6 @@ scontrol: update NodeName=node10 State=RESUME
 
 
 
-
 * Install Docker 
 
   #+BEGIN_SRC shell :exports code :results none
@@ -384,7 +382,6 @@ scontrol: update NodeName=node10 State=RESUME
   #+BEGIN_SRC 
 pdsh -a sudo gpasswd -a $USER docker
   #+END_SRC
-
 
 * Install R (3.5+) on all nodes 
 
@@ -397,7 +394,6 @@ pdsh -a sudo gpasswd -a $USER docker
     pdsh -a sudo apt update 
     pdsh -a sudo apt install -yq default-jdk r-api-3.5 libxml2-dev libcurl4-openssl-dev openssl libssl-dev  libssh2-1-dev git 
   #+END_SRC
-
 
 * Install R packages 
 
