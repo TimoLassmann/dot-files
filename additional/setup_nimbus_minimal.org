@@ -379,7 +379,7 @@ scontrol: update NodeName=node10 State=RESUME
   #+END_SRC
 
   Add myself to docker group... 
-  #+BEGIN_SRC 
+  #+BEGIN_SRC shell
 pdsh -a sudo gpasswd -a $USER docker
   #+END_SRC
 
