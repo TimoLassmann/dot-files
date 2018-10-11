@@ -308,12 +308,6 @@ As a great emacs user once said:
     Do me the favor, do me the biggest favor, matter of fact do
     yourself the biggest favor and integrate those into your workflow.
 
-** a prerequisite for others packages
-
-#+BEGIN_SRC emacs-lisp
-(use-package ivy
-  :ensure t)
-#+END_SRC
 
 ** scrolling and why does the screen move
 
@@ -379,7 +373,7 @@ This magnificent package takes care of this issue. It’s unnoticeable if you ha
 
 ** Helm 
 
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_EXAMPLE emacs-lisp
 (use-package helm
   :ensure t
   :bind
@@ -420,7 +414,7 @@ This magnificent package takes care of this issue. It’s unnoticeable if you ha
 (global-set-key (kbd "M-y") 'helm-show-kill-ring)
 (global-set-key (kbd "C-x b") 'helm-mini)
 
-#+END_SRC
+#+END_EXAMPLE
 
 
 ** Avy 
@@ -458,51 +452,105 @@ This magnificent package takes care of this issue. It’s unnoticeable if you ha
 (setq helm-swoop-speed-or-color t))
 
 #+END_SRC
-  
+* Completion   
+** IDO
+
+   #+BEGIN_SRC emacs-lisp
+     (ido-mode t)
+     (ido-everywhere t)
+     (setq ido-enable-flex-matching t)
+
+   #+END_SRC
+
+
+** Ivy 
+   #+BEGIN_SRC emacs-lisp
+
+     (use-package ivy
+       :ensure t
+       :config
+       (setq ivy-use-virtual-buffers t
+             enable-recursive-minibuffers t
+             ivy-wrap t 
+             ivy-count-format "%d/%d "))
+   #+END_SRC
+
+** Swiper 
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package swiper
+       :ensure t
+       )
+
+     (global-set-key "\C-s" 'swiper)
+
+   #+END_SRC
+
+** Counsel 
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package counsel 
+       :ensure t
+       )
+     (global-set-key (kbd "M-x") (lambda ()
+                                   (interactive)
+                                   (counsel-M-x "")))
+     (global-set-key (kbd "C-x C-f") 'counsel-find-file)
+
+   #+END_SRC
+
+** Counsel tramp 
+   #+BEGIN_SRC emacs-lisp
+     (use-package counsel-tramp
+       :ensure t
+       )
+
+
+   #+END_SRC
 * Writing
 
 ** Flyspell config 
 
-Installing aspell on linux:
+   Installing aspell on linux:
 
-#+BEGIN_EXAMPLE sh
-apt install aspell aspell-en
-#+END_EXAMPLE
+   #+BEGIN_EXAMPLE sh
+   apt install aspell aspell-en
+   #+END_EXAMPLE
 
-on mac: 
+   on mac: 
 
-#+BEGIN_EXAMPLE
-brew install aspell 
-#+END_EXAMPLE
+   #+BEGIN_EXAMPLE
+   brew install aspell 
+   #+END_EXAMPLE
 
-Note in the config below I assume aspell is installed in =/usr/bin/= !. 
+   Note in the config below I assume aspell is installed in =/usr/bin/= !. 
 
-#+BEGIN_SRC emacs-lisp 
-  (use-package flyspell
-    :ensure t
-    :diminish flyspell-mode
-    :init
-    (add-hook 'prog-mode-hook 'flyspell-prog-mode)
+   #+BEGIN_SRC emacs-lisp 
+     (use-package flyspell
+       :ensure t
+       :diminish flyspell-mode
+       :init
+       (add-hook 'prog-mode-hook 'flyspell-prog-mode)
 
-    (dolist (hook '(text-mode-hook org-mode-hook))
-      (add-hook hook (lambda () (flyspell-mode 1))))
+       (dolist (hook '(text-mode-hook org-mode-hook))
+         (add-hook hook (lambda () (flyspell-mode 1))))
 
-    (dolist (hook '(change-log-mode-hook log-edit-mode-hook org-agenda-mode-hook))
-      (add-hook hook (lambda () (flyspell-mode -1))))
+       (dolist (hook '(change-log-mode-hook log-edit-mode-hook org-agenda-mode-hook))
+         (add-hook hook (lambda () (flyspell-mode -1))))
 
-    :config
-    (setq ispell-program-name "aspell"
-          ispell-local-dictionary "en_GB"
-          ;;ispell-dictionary "american" ; better for aspellr
-          ispell-extra-args '("--sug-mode=ultra" "--lang=en_GB")
-          ispell-list-command "--list"
-          ispell-local-dictionary-alist '(("en_GB" "[[:alpha:]]" "[^[:alpha:]]" "['‘’]"
-                                        t ; Many other characters
-                                        ("-d" "en_GB") nil utf-8))))
+       :config
+       (setq ispell-program-name "aspell"
+             ispell-local-dictionary "en_GB"
+             ;;ispell-dictionary "american" ; better for aspellr
+             ispell-extra-args '("--sug-mode=ultra" "--lang=en_GB")
+             ispell-list-command "--list"
+             ispell-local-dictionary-alist '(("en_GB" "[[:alpha:]]" "[^[:alpha:]]" "['‘’]"
+                                              t ; Many other characters
+                                              ("-d" "en_GB") nil utf-8))))
 
-#+END_SRC
+   #+END_SRC
 
-There is more stuff in Howard Abram's config but I'll leave this for now..
+   There is more stuff in Howard Abram's config but I'll leave this for now..
 
 
 
@@ -512,17 +560,17 @@ There is more stuff in Howard Abram's config but I'll leave this for now..
    #+BEGIN_SRC emacs-lisp
 
      (when (file-exists-p "/home/user/programs/writegood-mode")
-     (message "Loading writegood-mode")
-     (add-to-list 'load-path "/home/user/programs/writegood-mode")
-     (require 'writegood-mode)
-         (add-hook 'text-mode-hook 'writegood-mode)
-          (add-hook 'org-mode-hook 'writegood-mode)
-     )
+       (message "Loading writegood-mode")
+       (add-to-list 'load-path "/home/user/programs/writegood-mode")
+       (require 'writegood-mode)
+       (add-hook 'text-mode-hook 'writegood-mode)
+       (add-hook 'org-mode-hook 'writegood-mode)
+       )
    #+END_SRC
 
-this mode will improve various aspects of writing. 
+   this mode will improve various aspects of writing. 
    
-end.
+   end.
 
 
 ** LangTool
@@ -1387,59 +1435,57 @@ Don't ask with make command to run...
          ))
       ((string-equal system-type "gnu/linux") ; linux
        (progn
-       ;;  (add-to-list 'load-path "~/programs/mu/mu4e")
-          (add-to-list 'load-path "/usr/share/emacs/site-lisp/mu4e")
-          (add-to-list 'load-path "/usr/local/share/emacs/site-lisp/mu4e")   
-;;         (setq mu4e-mu-binary "/usr/local/bin/mu")
+         ;;  (add-to-list 'load-path "~/programs/mu/mu4e")
+         (add-to-list 'load-path "/usr/share/emacs/site-lisp/mu4e")
+         (add-to-list 'load-path "/usr/local/share/emacs/site-lisp/mu4e")   
+         ;;         (setq mu4e-mu-binary "/usr/local/bin/mu")
          )))
 
-   (message "Loading Mu4e...")
+     (message "Loading Mu4e...")
 
-          ;;  (add-to-list 'load-path "~/programs/mu/mu4e")
+     ;;  (add-to-list 'load-path "~/programs/mu/mu4e")
 
-          ;;         (add-to-list 'load-path "/usr/local/share/emacs/site-lisp/mu/mu4e")   
+     ;;         (add-to-list 'load-path "/usr/local/share/emacs/site-lisp/mu/mu4e")   
 
-          ;; the modules
-          ;;(if (file-exists-p mu4e-mu-binary)
-          ;;    (message "Loading Mu4e...")
-
-
-          (if (not (require 'mu4e nil t))
-              (message "`mu4e' not found")
-
-            ;;(require 'mu4e)
-            (require 'org-mu4e)
+     ;; the modules
+     ;;(if (file-exists-p mu4e-mu-binary)
+     ;;    (message "Loading Mu4e...")
 
 
-            (message "Loading Mu4e...")
+     (if (not (require 'mu4e nil t))
+         (message "`mu4e' not found")
 
-            (setq mu4e-maildir (expand-file-name "~/Maildir"))
+       ;;(require 'mu4e)
+       (require 'org-mu4e)
 
-            (setq mu4e-sent-folder "/office365/sent")
-            (setq mu4e-drafts-folder "/drafts")
-            (setq mu4e-refile-folder "/office365/Archive")   ;; saved messages
-            (setq mu4e-trash-folder "/office365/trash")
+       (setq mu4e-maildir (expand-file-name "~/Maildir"))
 
-
-            (setq message-kill-buffer-on-exit t)
-            (setq mu4e-change-filenames-when-moving t)
-            (setq mu4e-confirm-quit nil)
-            (setq mail-user-agent 'mu4e-user-agent)
-
-            (setq mu4e-sent-messages-behavior 'sent)
-
-            (setq mu4e-view-show-addresses t)
-
-            (setq mu4e-attachment-dir "~/Downloads")
+       (setq mu4e-sent-folder "/office365/sent")
+       (setq mu4e-drafts-folder "/drafts")
+       (setq mu4e-refile-folder "/office365/Archive")   ;; saved messages
+       (setq mu4e-trash-folder "/office365/trash")
 
 
-            (define-key mu4e-headers-mode-map (kbd "C-c c") 'org-mu4e-store-and-capture)
-            (define-key mu4e-view-mode-map (kbd "C-c c") 'org-mu4e-store-and-capture)
+       (setq message-kill-buffer-on-exit t)
+       (setq mu4e-change-filenames-when-moving t)
+       (setq mu4e-confirm-quit nil)
+       (setq mail-user-agent 'mu4e-user-agent)
+       (setq mu4e-completing-read-function 'ivy-completing-read)
 
-            (setq mu4e-get-mail-command "offlineimap")
+       (setq mu4e-sent-messages-behavior 'sent)
 
-            (setq mu4e-compose-signature
-                  "Associate Professor Timo Lassmann
+       (setq mu4e-view-show-addresses t)
+
+       (setq mu4e-attachment-dir "~/Downloads")
+
+
+       (define-key mu4e-headers-mode-map (kbd "C-c c") 'org-mu4e-store-and-capture)
+       (define-key mu4e-view-mode-map (kbd "C-c c") 'org-mu4e-store-and-capture)
+
+       (setq mu4e-get-mail-command "offlineimap")
+
+       (setq mu4e-compose-signature
+             "Associate Professor Timo Lassmann
 Feilman Fellow
 Academic Head of Computational Biology, Telethon Kids Institute
 Adjunct Associate Professor, Center for Child Health Research
@@ -1450,7 +1496,6 @@ Northern Entrance, Perth Children's Hospital
 15 Hospital Avenue, Nedlands, Western Australia, 6009
 PO Box 855, West Perth, Western Australia, 6872 
 
-
 https://scholar.google.com.au/citations?user=7fZs_tEAAAAJ&hl=en
 
 Visiting Scientist, RIKEN Yokohama Institute, Japan
@@ -1458,7 +1503,7 @@ Division of Genomic Technology,
 RIKEN Center for Life Science Technologies,
 Yokohama Institute,1-7-22 Suehiro-cho,
 Tsurumi-ku, Yokohama, 230-0045 JAPAN")
-            )
+       )
    #+END_SRC
 
 
