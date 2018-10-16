@@ -1,0 +1,199 @@
+#+TITLE:  Backup via rsync
+#+AUTHOR: Timo Lassmann
+#+EMAIL:  timo.lassmann@telethonkids.org.au
+#+DATE:   2018-10-04
+#+LATEX_CLASS: report
+#+OPTIONS:  toc:nil
+#+OPTIONS: H:4
+#+LATEX_CMD: xelatex
+
+* Introduction
+  Implementation of the rsync backup strategy discussed here: 
+https://www.marksanborn.net/howto/use-rsync-for-daily-weekly-and-full-monthly-backups/
+
+#+BEGIN_SRC sh :results none 
+  mkdir rsync
+  cd rsync 
+  mkdir daily 
+  mkdir weekly
+  mkdir monthly
+
+#+END_SRC
+
+* Backup script
+  :PROPERTIES: 
+  :header-args: sh :exports both :results none :noweb yes :tangle ~/bin/backup_rsync.sh :shebang #!/bin/bash
+  :END:      
+
+  I want to have one script to execute daily, weekly, monthly
+  backups. 
+
+  #+BEGIN_SRC sh
+    #!/usr/bin/env bash
+
+    #
+    # Set parameteprs below to fit your system
+    #
+
+    backup_daily()
+    {
+        printf "Running rsync\n"
+        printf "%30s\n" $1;
+        rsync –av --include-from=$1 $HOME/rsync/daily
+        printf "Done\n"
+    }
+
+    backup_weekly()
+    {
+        printf "Running rsync\n"
+        rsync –av --delete $HOME/rsync/daily $HOME/rsync/weekly
+        printf "Done\n"
+    }
+
+    backup_monthly()
+    {
+
+        printf "Pwd: "
+        read_secret PASSWD
+        printf "again: "
+        read_secret PASSWD2
+
+        if [ "$PASSWD" != "$PASSWD2" ]
+        then
+            printf "\nERROR: passwords do not match!\n\n" ;
+            exit 1;
+        fi
+
+        if [ "${PASSWD}" = "" ]; then usage; fi
+
+
+        DATE=$(date +%Y%m%d)
+
+        OUTFILENAME=$HOME"/rsync/monthly/monthly"$DATE".tar.gz"
+        OGPG=$OUTFILENAME".gpg"
+
+
+        if [ -f $OGPG ]
+        then
+            printf "\nERROR: the file %s exists!\n\n" $OGPG;
+            usage;
+        fi
+
+        printf "Creating archive: \n";
+
+        printf "%30s\n" $OUTFILENAME ;
+
+        cd
+        tar -czf $OUTFILENAME $HOME"/rsync/daily/"
+
+        if [ "$?" -eq "0" ]
+        then
+            printf "%30s\n" "Success";
+        else
+            printf "\nERROR: tar FAILED!\n\n";
+
+            usage;
+        fi
+
+
+
+
+        printf "Encrypting: \n";
+        printf "%30s\n" $OGPG ;
+
+        echo $PASSWD | gpg2 --batch --passphrase-fd 0 --symmetric --s2k-cipher-algo AES256 --s2k-mode 3 --s2k-count 65000000 -o $OGPG $OUTFILENAME
+
+        if [ "$?" -eq "0" ]
+        then
+            printf "%30s\n" "Success";
+        else
+            printf "\nERROR: gpg FAILED!\n\n";
+            usage;
+        fi
+
+        #
+        # delete unencrypted tar archive...
+        #
+
+        rm $OUTFILENAME;
+
+    }
+
+    read_secret()
+    {
+        stty -echo
+        trap 'stty echo' EXIT
+        read "$@"
+        stty echo
+        trap - EXIT
+        echo
+    }
+
+
+
+
+    INLIST=
+    PASSWD=
+    MODE=
+    function usage()
+    {
+        cat <<EOF
+        usage: $0  -m <d/w/m> -i <file with list of directories>
+    EOF
+        exit 1;
+    }
+
+    while getopts i:m: opt
+    do
+        case ${opt} in
+            i) INLIST=${OPTARG};;
+            m) MODE=${OPTARG};;
+            ,*) usage;;
+        esac
+    done
+
+    if [ "${INLIST}" = "" ]; then usage; fi
+    if [ "${MODE}" = "" ]; then usage; fi
+
+    #
+    #   Sanity check
+    #
+
+    programs=(rsync scp tar sha512sum gpg2)
+
+    printf "Running Sanity checks:\n";
+
+    for item in ${programs[*]}
+    do
+        if which $item >/dev/null; then
+            printf "%15s found...\n"  $item;
+        else
+            printf "\nERROR: %s not found!\n\n" $item;
+            exit 1;
+        fi
+    done
+
+
+    case "$MODE" in
+        d)
+            backup_daily $INLIST
+            ;;
+        w)
+            backup_weekly
+            ;;
+        m)
+            backup_monthly
+            ;;
+        ,*)
+            echo $"Usage: $0 -m <d/w/m> -i <list of dirs to back up>"
+            exit 1
+    esac
+
+
+  #+END_SRC
+
+* Meeting Notes
+
+
+
+
