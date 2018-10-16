@@ -282,8 +282,8 @@
      (global-set-key [remap org-beginning-of-line]  'smarter-move-beginning-of-line)
    #+END_SRC
 
-* Terminal 
-  
+* Terminal
+
   I have used urxvt for years, and I miss it sometimes, but ansi-term is enough for most of my tasks.
 ** Default shell should be zsh
    
@@ -462,7 +462,7 @@
 
    #+END_SRC
 
-* Completion   
+* Completion
 ** IDO
 
    #+BEGIN_SRC emacs-lisp
@@ -1071,7 +1071,6 @@
 
    #+END_SRC
 
-
 ** Line Numbering 
 
    #+BEGIN_SRC emacs-lisp
@@ -1388,7 +1387,6 @@
     #+END_SRC
 
 
-
 ** Don't ask for permission to run make
    Don't ask with make command to run...
    #+BEGIN_SRC emacs-lisp
@@ -1573,7 +1571,7 @@
       (define-auto-insert "\\.org$" ["default-orgmode.org" tl/autoinsert-yas-expand]))
   #+END_SRC
   
-* Eshell 
+* Eshell
 
   Set up environment.
   #+BEGIN_SRC emacs-lisp
