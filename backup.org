@@ -192,7 +192,30 @@ https://www.marksanborn.net/howto/use-rsync-for-daily-weekly-and-full-monthly-ba
 
   #+END_SRC
 
-* Meeting Notes
+* Testing 
+
+
+  #+BEGIN_SRC sh 
+    targets=($HOME/code $HOME/work)
+
+    test_function()
+    {
+
+        for item in ${targets[*]}
+        do
+        
+            printf "rsync -a --progress  %s  $HOME/rsync/daily \n" $item
+        done
+    }
+    test_function
+  #+END_SRC
+
+  #+RESULTS:
+| rsync | -a | --progress | /home/user/code | /home/user/rsync/daily |
+| rsync | -a | --progress | /home/user/work | /home/user/rsync/daily |
+
+
+
 
 
 
