@@ -1,0 +1,50 @@
+
+\usepackage{tikz}
+
+\usetheme{default}
+\setbeamertemplate{navigation symbols}{}
+
+\definecolor{foreground}{RGB}{182,186,190}
+\definecolor{background}{RGB}{13,19,25}
+
+
+\setbeamercolor{titlelike}{fg=foreground}
+\setbeamercolor{normal text}{fg=foreground, bg=background}
+\setbeamercolor{item}{fg=foreground}
+
+\setbeamerfont{frametitle}{size=\Large, series=\bfseries}
+\setbeamerfont{title}{size=\Huge, series=\bfseries}
+\setbeamerfont{subtitle}{size=\small}
+\setbeamerfont{author}{size=\large}
+\setbeamerfont{date}{size=\small}
+
+\newdimen\sharky@frametitlesep
+\sharky@frametitlesep=1.5ex
+\newdimen\sharky@footbarsep
+\sharky@footbarsep=1ex
+
+\setbeamertemplate{frametitle}{%
+    \nointerlineskip%
+    \usebeamerfont{frametitle}%
+    \begin{beamercolorbox}[wd=\paperwidth,sep=\sharky@frametitlesep]{frametitle}
+        \usebeamerfont{frametitle}\insertframetitle%
+    \end{beamercolorbox}
+}
+
+\def\parsecomma#1,#2\endparsecomma{\def\page@x{#1}\def\page@y{#2}}
+\tikzdeclarecoordinatesystem{page}{
+    \parsecomma#1\endparsecomma
+    \pgfpointanchor{current page}{north east}
+    % Save the upper right corner
+    \pgf@xc=\pgf@x%
+    \pgf@yc=\pgf@y%
+    % save the lower left corner
+    \pgfpointanchor{current page}{south west}
+    \pgf@xb=\pgf@x%
+    \pgf@yb=\pgf@y%
+    % Transform to the correct placement
+    \pgfmathparse{(\pgf@xc-\pgf@xb)/2.*\page@x+(\pgf@xc+\pgf@xb)/2.}
+    \expandafter\pgf@x\expandafter=\pgfmathresult pt
+    \pgfmathparse{(\pgf@yc-\pgf@yb)/2.*\page@y+(\pgf@yc+\pgf@yb)/2.}
+    \expandafter\pgf@y\expandafter=\pgfmathresult pt
+}

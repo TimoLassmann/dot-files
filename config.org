@@ -1023,6 +1023,21 @@
                      "\\end{frame}")))
    #+END_SRC
 
+** Fancier presentation
+
+#+BEGIN_SRC emacs-lisp
+
+ (add-to-list 'org-latex-classes
+                  '("modernpresentation"
+                    "\\documentclass[12pt,t]{beamer}
+     \\usepackage{\\string~\"/.emacs.d/latex_templates/modern\"}
+     [NO-DEFAULT-PACKAGES]
+     [NO-PACKAGES]"
+                    ("\\section{%s}" . "\\section*{%s}")
+                    ("\\begin{frame}[fragile]\\frametitle{%s}"
+                     "\\end{frame}")))
+
+#+END_SRC
    end. 
 
 * Programming

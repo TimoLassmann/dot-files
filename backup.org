@@ -34,19 +34,26 @@ https://www.marksanborn.net/howto/use-rsync-for-daily-weekly-and-full-monthly-ba
     #
     # Set parameteprs below to fit your system
     #
+    targets=($HOME/code $HOME/work)
+
 
     backup_daily()
     {
         printf "Running rsync\n"
         printf "%30s\n" $1;
-        rsync –av --include-from=$1 $HOME/rsync/daily
+        for item in ${targets[*]}
+        do
+            rsync –av --include-from=$1 $HOME/rsync/daily
+        done
         printf "Done\n"
     }
 
     backup_weekly()
     {
         printf "Running rsync\n"
+
         rsync –av --delete $HOME/rsync/daily $HOME/rsync/weekly
+
         printf "Done\n"
     }
 
@@ -138,8 +145,8 @@ https://www.marksanborn.net/howto/use-rsync-for-daily-weekly-and-full-monthly-ba
     function usage()
     {
         cat <<EOF
-        usage: $0  -m <d/w/m> -i <file with list of directories>
-    EOF
+            usage: $0  -m <d/w/m> -i <file with list of directories>
+        EOF
         exit 1;
     }
 
@@ -213,10 +220,4 @@ https://www.marksanborn.net/howto/use-rsync-for-daily-weekly-and-full-monthly-ba
   #+RESULTS:
 | rsync | -a | --progress | /home/user/code | /home/user/rsync/daily |
 | rsync | -a | --progress | /home/user/work | /home/user/rsync/daily |
-
-
-
-
-
-
 
