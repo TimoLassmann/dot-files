@@ -347,11 +347,11 @@ scontrol: update NodeName=node10 State=RESUME
     sudo apt-get install -yq nfs-kernel-server
 
     sudo -- sh -c 'cat > /etc/exports  << "EOF"
-    /data 192.168.1.7(rw,sync,no_subtree_check)
-    /data 192.168.1.5(rw,sync,no_subtree_check)
-    /data 192.168.1.14(rw,sync,no_subtree_check)
-    /data 192.168.1.10(rw,sync,no_subtree_check)
-    /data 192.168.1.9(rw,sync,no_subtree_check)
+        /data 192.168.1.7(rw,sync,no_subtree_check)
+        /data 192.168.1.5(rw,sync,no_subtree_check)
+        /data 192.168.1.14(rw,sync,no_subtree_check)
+        /data 192.168.1.10(rw,sync,no_subtree_check)
+        /data 192.168.1.9(rw,sync,no_subtree_check)
 
     EOF'
     sudo /etc/init.d/rpcbind restart

@@ -1,22 +1,30 @@
 
 \usepackage{tikz}
 
-\usetheme{default}
 \setbeamertemplate{navigation symbols}{}
 
-\definecolor{foreground}{RGB}{182,186,190}
-\definecolor{background}{RGB}{13,19,25}
+\definecolor{foreground}{RGB}{220,210,200}
+\definecolor{background}{RGB}{0,0,20}
+\definecolor{darkgrey}{RGB}{88,88,108}
+\definecolor{red}{RGB}{255,20,10}
+
+\setbeamerfont{frametitle}{size=\Large}
+\setbeamerfont{title}{size=\LARGE\bfseries}
+\setbeamerfont{subtitle}{size=\small}
+\setbeamerfont{author}{size=\normalsize}
+\setbeamerfont{date}{size=\small}
+\setbeamerfont{institute}{size=\tiny}
+
+\setbeamerfont{footnote}{size=\tiny}
+\renewcommand\footnoterule{{\color{darkgrey}\hrule height 0.5pt}}
+
 
 
 \setbeamercolor{titlelike}{fg=foreground}
 \setbeamercolor{normal text}{fg=foreground, bg=background}
 \setbeamercolor{item}{fg=foreground}
 
-\setbeamerfont{frametitle}{size=\Large, series=\bfseries}
-\setbeamerfont{title}{size=\Huge, series=\bfseries}
-\setbeamerfont{subtitle}{size=\small}
-\setbeamerfont{author}{size=\large}
-\setbeamerfont{date}{size=\small}
+\newcommand{\footref}[1]{\let\thefootnote\relax\footfullcite{ #1}} 
 
 \newdimen\sharky@frametitlesep
 \sharky@frametitlesep=1.5ex
@@ -30,6 +38,57 @@
         \usebeamerfont{frametitle}\insertframetitle%
     \end{beamercolorbox}
 }
+%% Bibliography
+\usepackage[backend=bibtex,hyperref=true,
+            url=false,
+            isbn=false,
+            style=numeric,
+            maxcitenames=3,
+            maxbibnames=1,
+            block=none]{biblatex}
+\addbibresource{~/Dropbox/work/bibliography/references.bib}
+
+%% bibliography formatting 
+\renewcommand\bibfont{\scriptsize}
+\setbeamercolor*{bibliography entry title}{fg=darkgrey}
+\setbeamercolor*{bibliography entry author}{fg=darkgrey}
+\setbeamercolor*{bibliography entry location}{fg=darkgrey}
+\setbeamercolor*{bibliography entry note}{fg=darkgrey}
+\setbeamertemplate{frametitle continuation}[from second]
+\setbeamertemplate{bibliography item}{}
+
+% custom draw the title page above
+\setbeamertemplate{title page}{
+    \begin{beamercolorbox}[wd=\paperwidth, ht=0.99\paperheight]{title page}
+        \begin{tikzpicture}
+            % set up the entire slide as the canvas
+            \useasboundingbox (0,0) rectangle(\the\paperwidth,\the\paperheight);
+
+            % the background
+            %\fill[color=background] (0,0) rectangle(\the\paperwidth,\the\paperheight);
+
+            % draw the actual text
+            \node[text width=\paperwidth-0.5cm, anchor = south west] at (0.05\paperwidth, 0.55\paperheight) {
+              \usebeamerfont{title}\inserttitle \par\vspace{0.5cm} \usebeamerfont{subtitle}\insertsubtitle};
+
+
+            \draw (0.05\paperwidth,0.5\paperheight) -- (0.95\paperwidth,0.5\paperheight);
+            %\node[above] at(0.5\paperwidth,2.3cm) {\color{sharky_black}\tiny by};
+            \node[text width=\paperwidth-0.5cm, anchor = north west,align=left] at (0.05\paperwidth, 0.45\paperheight) {
+              \usebeamerfont{author}\insertauthor
+              \\
+              \usebeamerfont{date}\insertdate};
+
+            % add the date in the corner
+            %\node[above] at(0.5\paperwidth,2cm) {\color{foreground}\small\insertdate};
+            \node [align=left, anchor = south west,font=\usebeamerfont{institute}] at (0.05\paperwidth, 0.0){\insertinstitute};
+            \node [anchor = south east] at (\paperwidth, 0.0){\inserttitlegraphic};
+        \end{tikzpicture}
+    \end{beamercolorbox}
+}
+
+
+%% Coordinate system for tikz pictures...
 
 \def\parsecomma#1,#2\endparsecomma{\def\page@x{#1}\def\page@y{#2}}
 \tikzdeclarecoordinatesystem{page}{

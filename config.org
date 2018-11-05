@@ -1029,7 +1029,7 @@
 
  (add-to-list 'org-latex-classes
                   '("modernpresentation"
-                    "\\documentclass[12pt,t]{beamer}
+                    "\\documentclass[14pt]{beamer}
      \\usepackage{\\string~\"/.emacs.d/latex_templates/modern\"}
      [NO-DEFAULT-PACKAGES]
      [NO-PACKAGES]"
@@ -1039,6 +1039,10 @@
 
 #+END_SRC
    end. 
+
+
+
+
 
 * Programming
   

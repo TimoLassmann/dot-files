@@ -1,0 +1,75 @@
+#+TITLE: My Title
+#+AUTHOR: Timo Lassmann
+#+OPTIONS: H:2 toc:nil
+#+LATEX_CMD: pdflatex
+#+LATEX_CLASS: modernpresentation
+#+LATEX_CLASS_OPTIONS: [12pt]
+#+BEAMER_FRAME_LEVEL: 2
+#+BEAMER_HEADER: \institute{Telethon Kids Institute\\\url{https://www.telethonkids.org.au}}
+#+BEAMER_HEADER: \titlegraphic{\includegraphics[height=1.5cm]{TKI-logo.jpg}}
+
+* Introduction  
+
+
+** Overview
+
+- point 1 
+- point 2 
+
+
+
+** 
+   #+ATTR_BEAMER: :overlay +-
+     - @@beamer: \color<1>{red} fact 1  @@ 
+
+     - @@beamer: \color<2>{red} fact 2 @@
+
+     - @@beamer: \color<3>{red} fact 3 @@
+
+     - @@beamer: \color<4>{red} fact 4 @@
+
+\footref{king-1975-evolut-at}
+
+** 
+
+#+BEGIN_SRC latex
+\begin{figure}
+\resizebox{!}{.5\textheight}{%
+\begin{tikzpicture}
+\node  at (0,6) (GERD){GERD};
+\node  at (-3,4) (Esophagitis){Reflux esophagitis};
+\node  at (0,4) (NERD){NERD};
+\node  at (3,4) (Barret){Barret's esophagitis};
+\node  at (0,2) (Ph){Ph testing};
+\node  at (-3,0) (positive) {Ph +ve NERD};
+\node  at (3,0) (Negative){Functional heart burn};
+\node[] at (3,-2)(Symptoms) {\footnotesize {Symptoms associated with P\textsuperscript{H} changes?}};
+\node  at (5, -4)(hypersensitive) {hypersensitive esophagus};
+\node at (1,-4)(unassociated){Acid unassociated heart burn};
+\begin{scope}[cyan!40!black]
+\draw[->] (GERD) -- (Esophagitis);
+\draw[->] (GERD) -- (NERD);
+\draw[->] (GERD) -- (Barret);
+\draw[->] (NERD)--(Ph);
+\draw[->](Ph)--(positive);
+\draw[->](Ph)--(Negative);
+\draw[->](Negative)--(Symptoms);
+\draw[->](Symptoms)--(unassociated);
+\draw[->](Symptoms)--(hypersensitive);
+\end{scope} 
+\end{tikzpicture}%
+}
+\end{figure}
+
+#+END_SRC
+** References
+   \printbibliography
+
+   #+LATEX: \tiny \color{darkgrey}
+   #+BEGIN_SRC emacs-lisp :results output :exports results :eval yes
+     (princ (concat (format "Emacs version:\n%s\n" (emacs-version))
+                    (format "\norg version: %s\n" (org-version))))
+
+   #+END_SRC
+
+   
