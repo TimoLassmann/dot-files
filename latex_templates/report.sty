@@ -14,8 +14,8 @@
 % head=0ex,foot=05ex
  }
  
-\usepackage{fontspec}
-\setmainfont{Times New Roman}
+\usepackage{cmbright}
+%\setmainfont{Times New Roman}
 \usepackage[utf8]{inputenc}
 \usepackage{graphicx}
 \usepackage{longtable}
@@ -186,14 +186,14 @@
 
 \lhead{}
 \chead{}
-\rhead{ \footnotesize \begin{tabular}{@{}R{2cm}  L{2.3cm} } Author: & \@author  \\  Date:	 & \@date \\ \end{tabular}}
+\rhead{} 
 
 
 
 
 %\makeatother
 %\newlength{\myheight}
-\lfoot{}
+\lfoot{\footnotesize \@author, \@date }
 \cfoot{}
 \rfoot{\footnotesize Page \thepage}
 \renewcommand\headrulewidth{0pt}

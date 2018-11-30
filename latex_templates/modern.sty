@@ -1,6 +1,13 @@
 
 \usepackage{tikz}
-
+\usepackage{tkz-euclide}
+\usetikzlibrary{backgrounds}
+\usetikzlibrary{positioning,calc,shadings}
+\usetikzlibrary{arrows,automata} 
+\usetikzlibrary{decorations.text}
+\usetikzlibrary{shapes}
+\usetikzlibrary{decorations.pathmorphing}
+\usepackage{cmbright}
 \setbeamertemplate{navigation symbols}{}
 
 \definecolor{foreground}{RGB}{220,210,200}
@@ -72,9 +79,9 @@
               \usebeamerfont{title}\inserttitle \par\vspace{0.5cm} \usebeamerfont{subtitle}\insertsubtitle};
 
 
-            \draw (0.05\paperwidth,0.5\paperheight) -- (0.95\paperwidth,0.5\paperheight);
+            \draw (0.05\paperwidth,0.4\paperheight) -- (0.95\paperwidth,0.4\paperheight);
             %\node[above] at(0.5\paperwidth,2.3cm) {\color{sharky_black}\tiny by};
-            \node[text width=\paperwidth-0.5cm, anchor = north west,align=left] at (0.05\paperwidth, 0.45\paperheight) {
+            \node[text width=\paperwidth-0.5cm, anchor = north west,align=left] at (0.05\paperwidth, 0.35\paperheight) {
               \usebeamerfont{author}\insertauthor
               \\
               \usebeamerfont{date}\insertdate};

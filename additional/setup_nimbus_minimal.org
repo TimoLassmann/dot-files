@@ -325,14 +325,26 @@ Troubleshooting:
 Sometimes the nodes appear to have low memory. To fix this: 
 
 #+BEGIN_SRC shell 
-sudo scontrol 
+  sudo scontrol 
+
+  update NodeName=node-2 State=DOWN Reason="undraining"
+  update NodeName=node-2 State=RESUME
+
+  update NodeName=node-3 State=DOWN Reason="undraining"
+  update NodeName=node-3 State=RESUME
+
+
+  update NodeName=node-4 State=DOWN Reason="undraining"
+  update NodeName=node-4 State=RESUME
+
+  update NodeName=node-5 State=DOWN Reason="undraining"
+  update NodeName=node-5 State=RESUME
+
+  update NodeName=node-6 State=DOWN Reason="undraining"
+  update NodeName=node-6 State=RESUME
 
 #+END_SRC
 
- and then
-
-scontrol: update NodeName=node10 State=DOWN Reason="undraining"
-scontrol: update NodeName=node10 State=RESUME
 
 * Sharing a mounted volume via NFS  
 
