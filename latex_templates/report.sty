@@ -49,6 +49,9 @@
 \usepackage{etaremune}
 \usepackage[natbib=true,style=nature,maxnames=1, minnames=1,hyperref=auto,backref=true,sorting=none,backend=bibtex]{biblatex}
 
+\newcommand{\footref}[1]{\let\thefootnote\footfullcite{ #1}} 
+
+
 \usepackage{fancyvrb,listings}
 \definecolor{gogetit}{HTML}{6C8B9F}
 \definecolor{backgroundgrey}{RGB}{237,237,237}
@@ -193,9 +196,9 @@
 
 %\makeatother
 %\newlength{\myheight}
-\lfoot{\footnotesize \@author, \@date }
+\lfoot{\color{gray}{\footnotesize \@author, \@date} }
 \cfoot{}
-\rfoot{\footnotesize Page \thepage}
+\rfoot{\color{gray}{\footnotesize Page \thepage}}
 \renewcommand\headrulewidth{0pt}
 \renewcommand\footrulewidth{0pt}
 %%%
