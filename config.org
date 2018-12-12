@@ -124,6 +124,14 @@
        :demand t)
 
    #+END_SRC
+** Turn off auto-fill mode
+
+   #+BEGIN_SRC emacs-lisp
+     (setq auto-fill-mode -1)
+     (setq-default fill-column 99999)
+     (setq fill-column 99999)
+
+   #+END_SRC
 ** Undo / redo
    According to this article, I get better functionality than the redo+ plugin (which I can’t seem to get working well).
    #+BEGIN_SRC emacs-lisp
@@ -1040,9 +1048,6 @@
 #+END_SRC
    end. 
 
-
-
-
 * Programming
   
   General programming settings..
@@ -1541,7 +1546,7 @@
                'flyspell-mode)
      (add-hook 'message-mode-hook 'turn-on-orgtbl)
      (add-hook 'message-mode-hook 'turn-on-orgstruct++)
-
+     (add-hook 'mu4e-compose-mode-hook 'turn-off-auto-fill)
    #+END_SRC
  
 * TRAMP
@@ -1688,16 +1693,24 @@
 
 
 
+
+
 ** Fill Mode
    Automatically wrapping when you get to the end of a line (or the fill-region):
 
-   #+BEGIN_SRC emacs-lisp
-     (use-package fill
-       :bind (("C-c T f" . auto-fill-mode)
-              ("C-c T t" . toggle-truncate-lines))
-       :init (add-hook 'org-mode-hook 'turn-on-auto-fill)
-       :diminish auto-fill-mode)
-   #+END_SRC
+
+#+BEGIN_EXAMPLE 
+
+     
+
+
+          (use-package fill
+            :bind (("C-c T f" . auto-fill-mode)
+                   ("C-c T t" . toggle-truncate-lines))
+            :init (add-hook 'org-mode-hook 'turn-on-auto-fill)
+            :diminish auto-fill-mode)
+
+#+END_EXAMPLE
 
 
    End. 

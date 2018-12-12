@@ -18,6 +18,9 @@
 %\setmainfont{Times New Roman}
 \usepackage[utf8]{inputenc}
 \usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{caption}
+\usepackage{subcaption}
 \usepackage{longtable}
 \usepackage{booktabs}
 \usepackage{enumitem}
@@ -49,7 +52,7 @@
 \usepackage{etaremune}
 \usepackage[natbib=true,style=nature,maxnames=1, minnames=1,hyperref=auto,backref=true,sorting=none,backend=bibtex]{biblatex}
 
-\newcommand{\footref}[1]{\let\thefootnote\footfullcite{ #1}} 
+\newcommand{\footref}[1]{\let\thefootnote\relax\footfullcite{ #1}} 
 
 
 \usepackage{fancyvrb,listings}
@@ -144,7 +147,7 @@
 
 \titleformat{\section}{\color{grantblue}\normalfont\large\selectfont\bfseries}{}{0.0em}{}
 \titleformat{\subsection}{\color{grantblue}\selectfont\bfseries}{\thesubsection}{0.25em}{}
-\titleformat{\subsubsection}{\color{grantblue}\normalfont\normalsize\selectfont\itshape}{\thesubsubsection}{0.5em}{}
+\titleformat{\subsubsection}{\color{grantblue}\normalfont\normalsize\selectfont\itshape}{}{0.5em}{}
 %\titleformat{\subsubsubsection}{\normalfont\normalsize\selectfont\itshape}{\thesubsubsubsection}{0.5em}{}
 \titleformat{\paragraph}[runin]{\color{grantblue}\normalfont\normalsize\itshape}{}{0em}{\uline}[:\enspace] 
 

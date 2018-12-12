@@ -159,7 +159,7 @@ instead of ringing the terminal bell."
 
 (defun sensible-defaults/set-default-line-length-to (line-length)
   "Set the default line length to LINE-LENGTH."
-  (setq-default fill-column line-length))
+  (setq-default fill-column 999999))
 
 (defun sensible-defaults/open-clicked-files-in-same-frame-on-mac ()
   "When you double-click on a file in the Mac Finder open it as a
