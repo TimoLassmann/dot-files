@@ -5,11 +5,10 @@
 #+LATEX_CLASS: report
 #+OPTIONS:  toc:nil
 #+OPTIONS: H:4
-#+LATEX_CMD: xelatex
-
+#+LATEX_CMD: pdflatex
 * Introduction 
   $0
-* Meeting Notes
+
 
 
 
