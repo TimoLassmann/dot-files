@@ -29,12 +29,7 @@ https://www.marksanborn.net/howto/use-rsync-for-daily-weekly-and-full-monthly-ba
   backups. 
 
   #+BEGIN_SRC sh
-    #!/usr/bin/env bash
-
-    #
-    # Set parameteprs below to fit your system
-    #
-    targets=($HOME/code $HOME/work)
+    targets=($HOME/code $HOME/Dropbox/work $HOME/Dropbox/life $HOME/Dropbox/travel)
 
 
     backup_daily()
@@ -43,7 +38,9 @@ https://www.marksanborn.net/howto/use-rsync-for-daily-weekly-and-full-monthly-ba
         printf "%30s\n" $1;
         for item in ${targets[*]}
         do
-            rsync –av --include-from=$1 $HOME/rsync/daily
+            printf "rsync-ing %s\n" $item;
+            rsync -av --stats  --progress $item $HOME/rsync/daily 2>&1
+            echo "rsync -av --progress $item $HOME/rsync/daily"
         done
         printf "Done\n"
     }
@@ -52,7 +49,7 @@ https://www.marksanborn.net/howto/use-rsync-for-daily-weekly-and-full-monthly-ba
     {
         printf "Running rsync\n"
 
-        rsync –av --delete $HOME/rsync/daily $HOME/rsync/weekly
+        rsync -av --stats  --progress --delete $HOME/rsync/daily $HOME/rsync/weekly 2>&1
 
         printf "Done\n"
     }
@@ -145,21 +142,19 @@ https://www.marksanborn.net/howto/use-rsync-for-daily-weekly-and-full-monthly-ba
     function usage()
     {
         cat <<EOF
-            usage: $0  -m <d/w/m> -i <file with list of directories>
-        EOF
+usage: $0  -m <d/w/m>
+EOF
         exit 1;
     }
 
-    while getopts i:m: opt
+    while getopts m: opt
     do
         case ${opt} in
-            i) INLIST=${OPTARG};;
             m) MODE=${OPTARG};;
             ,*) usage;;
         esac
     done
 
-    if [ "${INLIST}" = "" ]; then usage; fi
     if [ "${MODE}" = "" ]; then usage; fi
 
     #
