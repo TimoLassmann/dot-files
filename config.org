@@ -1362,7 +1362,14 @@
     #+BEGIN_SRC emacs-lisp
       (use-package smartparens
         :ensure t
+        :config
+        (sp-pair "'" nil :actions :rem)
+        (sp-pair "`" nil :actions :rem)
         :init (add-hook 'c-mode-hook 'smartparens-mode))
+
+
+
+
     #+END_SRC
 
 *** smart scan
