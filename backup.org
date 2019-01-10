@@ -1,34 +1,45 @@
-#+TITLE:  Backup via rsync
+#+TITLE:  Backups using rsync
 #+AUTHOR: Timo Lassmann
 #+EMAIL:  timo.lassmann@telethonkids.org.au
 #+DATE:   2018-10-04
 #+LATEX_CLASS: report
 #+OPTIONS:  toc:nil
 #+OPTIONS: H:4
-#+LATEX_CMD: xelatex
+#+LATEX_CMD: pdflatex
 
 * Introduction
-  Implementation of the rsync backup strategy discussed here: 
-https://www.marksanborn.net/howto/use-rsync-for-daily-weekly-and-full-monthly-backups/
+  Here is my implementation of a backup strategy outlined by Mark Sanborn (https://www.marksanborn.net/howto/use-rsync-for-daily-weekly-and-full-monthly-backups/).
+  
+  The general idea is to use rsync to mirror important directories daily on the same machine. At the end of every week, the daily backup is moved into a weekly folder and every month a tarball containing the current status is created. This strategy allows you to restore files that were accidentally overwritten but *does not help* if files get corrupted or the disk on your machine fails. To address these issues occasionally move the entire backup directory to a second (and third!) machine / hard disk. 
 
-#+BEGIN_SRC sh :results none 
-  mkdir rsync
-  cd rsync 
-  mkdir daily 
-  mkdir weekly
-  mkdir monthly
+* To get started
 
-#+END_SRC
+  Firstly create the target directories for the backups: 
+  #+BEGIN_SRC sh :results none 
+    mkdir rsync
+    cd rsync 
+    mkdir daily 
+    mkdir weekly
+    mkdir monthly
 
-* Backup script
-  :PROPERTIES: 
-  :header-args: sh :exports both :results none :noweb yes :tangle ~/bin/backup_rsync.sh :shebang #!/bin/bash
-  :END:      
+  #+END_SRC
 
-  I want to have one script to execute daily, weekly, monthly
-  backups. 
 
-  #+BEGIN_SRC sh
+* Backup script  
+
+  The script below implements the daily, weekly and monthly rsync commands. Since I generally do not change what I back up I list the directories included in my backup in the =targets= array at the start of the script. Modify these entries to point to the directories you intend to back up.
+
+  Since I am not sure where I'll keep my monthly backups in the future, I use encrypt the tarballs using symmetric encryption. 
+
+  To run the backup script:
+
+  #+BEGIN_SRC sh :results none 
+    backup_rsync.sh -m <d|w|m>  
+  #+END_SRC
+
+  for daily (=d=), weekly (=w=) or monthly (=m=) backups. 
+
+  #+BEGIN_SRC sh :exports both :results none :noweb yes :tangle ~/bin/backup_rsync.sh :shebang #!/bin/bash
     targets=($HOME/code $HOME/Dropbox/work $HOME/Dropbox/life $HOME/Dropbox/travel)
 
 
@@ -194,25 +205,4 @@ EOF
 
   #+END_SRC
 
-* Testing 
-
-
-  #+BEGIN_SRC sh 
-    targets=($HOME/code $HOME/work)
-
-    test_function()
-    {
-
-        for item in ${targets[*]}
-        do
-        
-            printf "rsync -a --progress  %s  $HOME/rsync/daily \n" $item
-        done
-    }
-    test_function
-  #+END_SRC
-
-  #+RESULTS:
-| rsync | -a | --progress | /home/user/code | /home/user/rsync/daily |
-| rsync | -a | --progress | /home/user/work | /home/user/rsync/daily |
 
