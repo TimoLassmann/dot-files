@@ -1008,17 +1008,18 @@
 
 ** Nature style paper 
 
-#+BEGIN_SRC emacs-lisp
-  (add-to-list 'org-latex-classes
+   #+BEGIN_SRC emacs-lisp
+     (add-to-list 'org-latex-classes
                   '("nature"
                     "\\documentclass[12pt]{article}
-     \\usepackage{\\string~\"/.emacs.d/latex_templates/nature\"}
-     [NO-DEFAULT-PACKAGES]
-     [NO-PACKAGES]"
+          \\usepackage{\\string~\"/.emacs.d/latex_templates/nature\"}
+          [NO-DEFAULT-PACKAGES]
+          [NO-PACKAGES]"
                     ("\\section*{%s}" . "\\section*{%s}")
-                    ("\\subsection*{%s}" . "\\subsection*{%s}")
-                    ("\\subsubsection*{%s}" . "\\subsubsection*{%s}")
-                    ("\\paragraph*{%s}" . "\\paragraph*{%s}")))
+                    ("\\subsection{%s}" . "\\subsection*{%s}")
+                    ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+                    ("\\paragraph{%s}" . "\\paragraph*{%s}")
+                    ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
 #+END_SRC
 
 ** Internal report
