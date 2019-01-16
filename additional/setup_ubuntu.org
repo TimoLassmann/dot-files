@@ -1,0 +1,31 @@
+#+TITLE:  Common commands to install missing packages 
+#+AUTHOR: Timo Lassmann
+#+EMAIL:  timo.lassmann@telethonkids.org.au
+#+DATE:   2019-01-16
+#+LATEX_CLASS: report
+#+OPTIONS:  toc:nil
+#+OPTIONS: H:4
+#+LATEX_CMD: pdflatex
+* Introduction 
+  Essentials: 
+#+BEGIN_SRC bash 
+
+
+  sudo add-apt-repository universe
+  sudo apt update
+  sudo apt upgrade -y
+  sudo apt install autoconf libtool gcc pkg-config git screen zsh libcairo2-dev emacs 
+#+END_SRC
+Slurm: 
+#+BEGIN_SRC bash
+  sudo apt install slurmd slurmctld slurm-client 
+
+#+END_SRC
+
+
+   After this you should be able to see all nodes using the =sinfo= command. 
+
+ sudo scontrol 
+
+  update NodeName=hohpc98 State=DOWN Reason="undraining"
+  update NodeName=hohpc98 State=RESUME

@@ -13,19 +13,19 @@
  \geometry{
  a4paper,
  total={210mm,297mm},
- left=5mm,
- right=5mm,
- top=5mm,
- bottom=5mm,
- headheight=5mm
+ left=10mm,
+ right=10mm,
+ top=10mm,
+ bottom=10mm,
+ headheight=10mm
  %hmargin=14mm,
  %vmargin=20mm,
 % head=0ex,foot=05ex
  }
  
 \usepackage{import}
-\usepackage{fontspec}
-\setmainfont{Times New Roman}
+%\usepackage{fontspec}
+%\setmainfont{Times New Roman}
 %\usepackage[utf8]{inputenc}
 \usepackage{graphicx}
 \usepackage{longtable}
@@ -118,7 +118,7 @@ takahashi20125,
 \graphicspath{{../images/}{../../images/}}
 
 
-\linespread{1.25}
+\linespread{1.1}
 
 
 %\geometry{a4paper,
@@ -151,8 +151,8 @@ takahashi20125,
 %\renewcommand\thesubsubsubsection{\arabic{subsection}.\arabic{subsubsection}.\arabic{subsubsubsection}.}
 
 
-\titleformat{\section}{\bfseries\uppercase}{}{0.0em}{}
-\titleformat{\subsection}{\bfseries\itshape\uppercase}{}{0.0em}{}
+\titleformat{\section}{\Large\scshape}{}{0.0em}{}
+\titleformat{\subsection}[runin]{\bfseries\itshape\uppercase}{}{0.0em}{}[.]
 \titleformat{\subsubsection}{\itshape}{}{0em}{\uline}
 %\titleformat{\subsubsubsection}{\normalfont\normalsize\selectfont\itshape}{\thesubsubsubsection}{0.5em}{}
 \titleformat{\paragraph}[runin]{\itshape}{}{0em}{\uline}[:\enspace] 
@@ -163,8 +163,8 @@ takahashi20125,
 
 %\titlespacing*{\section}{0pt}{12pt plus 4pt minus 2pt}{12pt plus 4pt minus 2pt }
 %\titlespacing*{\subsection}{0pt}{12pt plus 4pt minus 2pt}{0pt plus 4pt minus 2pt }
-\titlespacing*{\section}{0pt}{0pt}{0pt}
-\titlespacing*{\subsection}{0pt}{0pt}{0pt}
+\titlespacing*{\section}{0pt}{12pt}{12pt}
+\titlespacing*{\subsection}{0pt}{*0}{*0}
 \titlespacing*{\subsubsection}{0pt}{0pt}{0pt}
 %\titlespacing*{\subsubsection}{0pt}{0.1cm}{0.1cm}
 %\titlespacing*{\subsubsubsection}{0pt}{*0}{0.1cm}
@@ -172,6 +172,7 @@ takahashi20125,
 
 
 \renewcommand{\footnotesize}{\normalzise}
+
 
 \setlength{\parindent}{0cm}
 
@@ -190,6 +191,9 @@ takahashi20125,
 \end{tikzpicture}
 \end{center}
 }
+
+
+
 
 %%%
 \newcolumntype{L}[1]{>{\raggedright\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
