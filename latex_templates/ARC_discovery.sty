@@ -95,9 +95,10 @@
 
 % Add books to 'important' category in preamble
 \addtocategory{important}{%
-  lassmann-2007-autom,
+finn-2006-pfam,
+lassmann-2007-autom,
 andersson-2014,
-forrest-2014,
+forrest-2014
 arner-2015-trans,
 djebali-2012-lands-trans,
 baynam-2016-rare-undiag,
@@ -108,7 +109,19 @@ itoh2012automated,
 suzuki2009transcriptional,
 schmidl-2014-trans-enhan,
 takahashi20125,
+djebali-2012-lands-trans,
+dunham-2012-integ-encyc,
+takahashi-2012-end-center,
+itoh-2012-autom-workf,
+suzuki-2009-trans-networ,
+arner-2015-trans-enhan,
+arner-2015-trans-enhan 
 }
+
+
+\usepackage{xpatch}
+
+
 
 
 \renewcommand*{\bibfont}{\normalsize}
@@ -152,7 +165,7 @@ takahashi20125,
 
 
 \titleformat{\section}{\Large\scshape}{}{0.0em}{}
-\titleformat{\subsection}[runin]{\bfseries\itshape\uppercase}{}{0.0em}{}[.]
+\titleformat{\subsection}[runin]{\itshape}{}{0.0em}{}[.]
 \titleformat{\subsubsection}{\itshape}{}{0em}{\uline}
 %\titleformat{\subsubsubsection}{\normalfont\normalsize\selectfont\itshape}{\thesubsubsubsection}{0.5em}{}
 \titleformat{\paragraph}[runin]{\itshape}{}{0em}{\uline}[:\enspace] 

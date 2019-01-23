@@ -52,10 +52,44 @@
 \usepackage{lipsum}
 \usepackage{wrapfig}
 \usepackage{etaremune}
-\usepackage[natbib=true,style=nature,maxnames=1, minnames=1,hyperref=auto,backref=true,sorting=none,backend=bibtex]{biblatex}
+\usepackage[natbib=true,style=nature,maxnames=100, minnames=1,hyperref=auto,backref=true,sorting=none,backend=bibtex]{biblatex}
 
 \newcommand{\footref}[1]{\let\thefootnote\relax\footfullcite{ #1}} 
 
+
+\usepackage{xpatch}
+
+
+
+\def\makenamesetup{%
+  \def\bibnamedelima{~}%
+  \def\bibnamedelimb{ }%
+  \def\bibnamedelimc{ }%
+  \def\bibnamedelimd{ }%
+  \def\bibnamedelimi{ }%
+  \def\bibinitperiod{.}%
+  \def\bibinitdelim{~}%
+  \def\bibinithyphendelim{.-}}    
+\newcommand*{\makename}[2]{\begingroup\makenamesetup\xdef#1{#2}\endgroup}
+
+\newcommand*{\boldname}[3]{%
+  \def\lastname{#1}%
+  \def\firstname{#2}%
+  \def\firstinit{#3}}
+\boldname{}{}{}
+
+% Patch new definitions
+\renewcommand{\mkbibnamegiven}[1]{%
+  \ifboolexpr{ ( test {\ifdefequal{\firstname}{\namepartgiven}} or test {\ifdefequal{\firstinit}{\namepartgiven}} ) and test {\ifdefequal{\lastname}{\namepartfamily}} }
+  {\mkbibbold{#1}}{#1}%
+}
+
+\renewcommand{\mkbibnamefamily}[1]{%
+  \ifboolexpr{ ( test {\ifdefequal{\firstname}{\namepartgiven}} or test {\ifdefequal{\firstinit}{\namepartgiven}} ) and test {\ifdefequal{\lastname}{\namepartfamily}} }
+  {\mkbibbold{#1}}{#1}%
+}
+
+\boldname{Lassmann}{Timo}{T.}
 
 \usepackage{fancyvrb,listings}
 \definecolor{gogetit}{HTML}{6C8B9F}
@@ -144,7 +178,7 @@
 
 
 \titleformat{\section}{\color{grantblue}\normalfont\large\selectfont\bfseries}{}{0.0em}{}
-\titleformat{\subsection}{\color{grantblue}\selectfont\bfseries}{\thesubsection}{0.25em}{}
+\titleformat{\subsection}{\color{grantblue}\selectfont\bfseries}{\Alph{subsection}. }{0.25em}{}
 \titleformat{\subsubsection}{\color{grantblue}\normalfont\normalsize\selectfont\itshape}{}{0.5em}{}
 %\titleformat{\subsubsubsection}{\normalfont\normalsize\selectfont\itshape}{\thesubsubsubsection}{0.5em}{}
 \titleformat{\paragraph}[runin]{\color{grantblue}\normalfont\normalsize\itshape}{}{0em}{\uline}[:\enspace] 
@@ -290,3 +324,23 @@
   %      \renewcommand{\thefigure}{S\arabic{figure}}%
   %   }
 
+
+\makeatletter
+\def\parsecomma#1,#2\endparsecomma{\def\page@x{#1}\def\page@y{#2}}
+\tikzdeclarecoordinatesystem{page}{
+    \parsecomma#1\endparsecomma
+    \pgfpointanchor{current page}{north east}
+    % Save the upper right corner
+    \pgf@xc=\pgf@x%
+    \pgf@yc=\pgf@y%
+    % save the lower left corner
+    \pgfpointanchor{current page}{south west}
+    \pgf@xb=\pgf@x%
+    \pgf@yb=\pgf@y%
+    % Transform to the correct placement
+    \pgfmathparse{(\pgf@xc-\pgf@xb)/2.*\page@x+(\pgf@xc+\pgf@xb)/2.}
+    \expandafter\pgf@x\expandafter=\pgfmathresult pt
+    \pgfmathparse{(\pgf@yc-\pgf@yb)/2.*\page@y+(\pgf@yc+\pgf@yb)/2.}
+    \expandafter\pgf@y\expandafter=\pgfmathresult pt
+}
+\makeatother
