@@ -993,6 +993,7 @@
 
 ** ARC Discovery Grant
 
+   Main grant 
    #+BEGIN_SRC emacs-lisp
      (add-to-list 'org-latex-classes
                   '("ARC_discovery_grant"
@@ -1005,6 +1006,25 @@
                     ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
                     ("\\paragraph{%s}" . "\\paragraph*{%s}")))
    #+END_SRC
+
+   Special formatting for the ROPE sections.
+
+   #+BEGIN_SRC emacs-lisp
+     (add-to-list 'org-latex-classes
+                  '("ARC_ROPE"
+                    "\\documentclass[12pt]{article}
+     \\usepackage{\\string~\"/.emacs.d/latex_templates/ARC_discovery_ROPE\"}
+     [NO-DEFAULT-PACKAGES]
+     [NO-PACKAGES]"
+                    ("\\section{%s}" . "\\section*{%s}")
+                    ("\\subsection{%s}" . "\\subsection*{%s}")
+                    ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+                    ("\\paragraph{%s}" . "\\paragraph*{%s}")))
+   #+END_SRC
+
+
+
+
 
 ** Nature style paper 
 

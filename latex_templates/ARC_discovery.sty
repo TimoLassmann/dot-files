@@ -32,11 +32,15 @@
 \usepackage{booktabs}
 \usepackage{enumitem}
 \usepackage{tcolorbox}
+\usepackage{colortbl}
 
 \setlist[enumerate]{labelwidth=20pt,labelindent=0pt,leftmargin=*,labelsep=5pt,align=left,topsep=2pt, parsep=2pt, itemsep=2pt}
 \setlist[itemize]{labelwidth=20pt,labelindent=0pt,leftmargin=*,labelsep=5pt,align=left,topsep=2pt, parsep=2pt, itemsep=0pt}
 
 \usepackage{setspace}
+
+\usepackage{pbox}
+\usepackage{tcolorbox}
 
 \usepackage{hyperref}
 \usepackage{textcomp}
@@ -82,8 +86,8 @@
 
 
 
-\addbibresource{~/Dropbox/work/bibliography/references.bib}
 
+\addbibresource{~/Dropbox/work/bibliography/references.bib}
 
 \DeclareBibliographyCategory{important}
 
@@ -165,7 +169,7 @@ arner-2015-trans-enhan
 
 
 \titleformat{\section}{\Large\scshape}{}{0.0em}{}
-\titleformat{\subsection}[runin]{\itshape}{}{0.0em}{}[.]
+\titleformat{\subsection}[runin]{\bfseries}{}{0.0em}{}[\enspace] 
 \titleformat{\subsubsection}{\itshape}{}{0em}{\uline}
 %\titleformat{\subsubsubsection}{\normalfont\normalsize\selectfont\itshape}{\thesubsubsubsection}{0.5em}{}
 \titleformat{\paragraph}[runin]{\itshape}{}{0em}{\uline}[:\enspace] 
@@ -177,7 +181,7 @@ arner-2015-trans-enhan
 %\titlespacing*{\section}{0pt}{12pt plus 4pt minus 2pt}{12pt plus 4pt minus 2pt }
 %\titlespacing*{\subsection}{0pt}{12pt plus 4pt minus 2pt}{0pt plus 4pt minus 2pt }
 \titlespacing*{\section}{0pt}{12pt}{12pt}
-\titlespacing*{\subsection}{0pt}{*0}{*0}
+\titlespacing*{\subsection}{5pt}{*0}{*0}
 \titlespacing*{\subsubsection}{0pt}{0pt}{0pt}
 %\titlespacing*{\subsubsection}{0pt}{0.1cm}{0.1cm}
 %\titlespacing*{\subsubsubsection}{0pt}{*0}{0.1cm}

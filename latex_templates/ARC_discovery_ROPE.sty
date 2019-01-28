@@ -1,0 +1,229 @@
+\ProvidesPackage{ARC_discovery}
+
+\def\grantname#1{\def\@grantname{#1}}
+
+\def\ApplicationID#1{\def\@ApplicationID{#1}}
+\def\CIASurname#1{\def\@CIASurname{#1}}
+
+
+\def\DocumentID#1{\def\@DocumentID{#1}}
+
+
+\usepackage{geometry}
+ \geometry{
+ a4paper,
+ total={210mm,297mm},
+ left=10mm,
+ right=10mm,
+ top=10mm,
+ bottom=10mm,
+ headheight=10mm
+ %hmargin=14mm,
+ %vmargin=20mm,
+% head=0ex,foot=05ex
+ }
+ 
+\usepackage{import}
+%\usepackage{fontspec}
+%\setmainfont{Times New Roman}
+%\usepackage[utf8]{inputenc}
+\usepackage{graphicx}
+\usepackage{longtable}
+\usepackage{booktabs}
+\usepackage{enumitem}
+\usepackage{tcolorbox}
+\usepackage{colortbl}
+
+\setlist[enumerate]{labelwidth=20pt,labelindent=0pt,leftmargin=*,labelsep=5pt,align=left,topsep=2pt, parsep=2pt, itemsep=2pt}
+\setlist[itemize]{labelwidth=20pt,labelindent=0pt,leftmargin=*,labelsep=5pt,align=left,topsep=2pt, parsep=2pt, itemsep=0pt}
+
+\usepackage{setspace}
+
+\usepackage{pbox}
+\usepackage{tcolorbox}
+
+\usepackage{hyperref}
+\usepackage{textcomp}
+\usepackage{verbatim}
+\usepackage{color}
+%\usepackage[usenames,dvipsnames,svgnames,table]{xcolor}
+\usepackage{tikz}
+\usepackage{lipsum}
+\usepackage{calc}
+\usepackage{booktabs}
+\usepackage{float}
+\usepackage{tkz-euclide}
+\usetikzlibrary{decorations.text}
+\usetikzlibrary{shapes,arrows}
+\usetikzlibrary{backgrounds}
+
+\usepackage[symbol]{footmisc}
+
+\makeatletter
+\renewcommand*{\@makefnmark}
+    {\hbox{\@textsuperscript{\scalebox{\fnmarkscale}{\normalfont\@thefnmark}}}}
+\makeatother
+
+\usepackage{lipsum}
+\usepackage{wrapfig}
+\usepackage{etaremune}
+\usepackage[natbib=true,style=nature,maxnames=18, minnames=18,hyperref=auto,backref=true,sorting=ydnt,defernumbers=true]{biblatex}
+
+
+\DefineBibliographyStrings{english}{%
+  backrefpage = {page},% originally "cited on page"
+  backrefpages = {pages},% originally "cited on pages"
+}
+
+\definecolor{grantblue}{RGB}{5,99,193}
+
+\hypersetup{
+  colorlinks   = true,
+  linkcolor    = grantblue,   
+  citecolor    = grantblue,
+  urlcolor     = grantblue
+}
+
+\usepackage{xpatch}
+
+\def\makenamesetup{%
+  \def\bibnamedelima{~}%
+  \def\bibnamedelimb{ }%
+  \def\bibnamedelimc{ }%
+  \def\bibnamedelimd{ }%
+  \def\bibnamedelimi{ }%
+  \def\bibinitperiod{.}%
+  \def\bibinitdelim{~}%
+  \def\bibinithyphendelim{.-}}    
+\newcommand*{\makename}[2]{\begingroup\makenamesetup\xdef#1{#2}\endgroup}
+
+\newcommand*{\boldname}[3]{%
+  \def\lastname{#1}%
+  \def\firstname{#2}%
+  \def\firstinit{#3}}
+\boldname{}{}{}
+
+% Patch new definitions
+\renewcommand{\mkbibnamegiven}[1]{%
+  \ifboolexpr{ ( test {\ifdefequal{\firstname}{\namepartgiven}} or test {\ifdefequal{\firstinit}{\namepartgiven}} ) and test {\ifdefequal{\lastname}{\namepartfamily}} }
+  {\mkbibbold{#1}}{#1}%
+}
+
+\renewcommand{\mkbibnamefamily}[1]{%
+  \ifboolexpr{ ( test {\ifdefequal{\firstname}{\namepartgiven}} or test {\ifdefequal{\firstinit}{\namepartgiven}} ) and test {\ifdefequal{\lastname}{\namepartfamily}} }
+  {\mkbibbold{#1}}{#1}%
+}
+
+\boldname{Lassmann}{Timo}{T.}
+
+
+\DeclareBibliographyCategory{important}
+
+\AtEveryBibitem{%
+  \ifcategory{important}%
+    {\bfseries}%
+    {}%
+  }
+
+% Add books to 'important' category in preamble
+\addtocategory{important}{%
+finn-2006-pfam,
+lassmann-2007-autom,
+andersson-2014,
+forrest-2014
+arner-2015-trans,
+djebali-2012-lands-trans,
+baynam-2016-rare-undiag,
+dunham-2012-dna,
+harrow-2012-gencod,
+ravasi-2010-atlas-combin,
+itoh2012automated,
+suzuki2009transcriptional,
+schmidl-2014-trans-enhan,
+takahashi20125,
+djebali-2012-lands-trans,
+dunham-2012-integ-encyc,
+takahashi-2012-end-center,
+itoh-2012-autom-workf,
+suzuki-2009-trans-networ,
+arner-2015-trans-enhan,
+arner-2015-trans-enhan 
+}
+
+
+
+
+
+
+\renewcommand*{\bibfont}{\normalsize}
+\SetLabelAlign{parright}{\parbox[t]{\labelwidth}{\raggedleft#1}}
+
+
+\linespread{1.25}
+
+
+%\geometry{a4paper,
+%,
+%}
+
+
+
+\usepackage[hang]{caption}
+\DeclareCaptionFormat{upper}{#1#2\uppercase{#3}\par}
+\captionsetup{format=plain,labelfont={bf},textfont={normalsize},figurename=Figure,tablename=TABLE,singlelinecheck=off,justification=raggedright} %format = upper
+
+%%% fancy sections
+\usepackage{titlesec}
+\usepackage[normalem]{ulem}
+
+\setcounter{secnumdepth}{4}
+
+\titleformat{\section}{\large\bfseries}{}{0.0em}{}
+\titleformat{\subsection}{\bfseries\itshape\uppercase}{}{0.0em}{}
+\titleformat{\subsubsection}{\itshape}{}{0em}{\uline}
+%\titleformat{\subsubsubsection}{\normalfont\normalsize\selectfont\itshape}{\thesubsubsubsection}{0.5em}{}
+\titleformat{\paragraph}[runin]{\itshape}{}{0em}{}[:\enspace] 
+
+\titlespacing*{\section}{0pt}{0pt}{6pt}
+\titlespacing*{\subsection}{0pt}{0pt}{0pt}
+\titlespacing*{\subsubsection}{0pt}{0pt}{0pt}
+\titlespacing*{\paragraph}{0pt}{*0}{*0}
+
+
+\renewcommand{\footnotesize}{\normalzise}
+
+\setlength{\parindent}{0cm}
+
+
+
+%%%
+\newcolumntype{L}[1]{>{\raggedright\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+\newcolumntype{C}[1]{>{\centering\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+\newcolumntype{R}[1]{>{\raggedleft\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+
+
+% head and foot
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+%\setlength{\headheight}{5.0pt}
+
+%\setlength{\footskip}{50.99991pt}
+
+\renewcommand{\thefootnote}{\alph{footnote}}
+\lhead{}
+\chead{}
+\rhead{}
+
+
+
+
+%\makeatother
+%\newlength{\myheight}
+\lfoot{}
+\cfoot{}
+\rfoot{}%\footnotesize Page \thepage}
+\renewcommand\headrulewidth{0pt}
+\renewcommand\footrulewidth{0pt}
+%%%
+
+
