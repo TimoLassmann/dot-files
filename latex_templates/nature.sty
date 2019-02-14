@@ -150,22 +150,22 @@
 %% sans serif font.  Tables should all be moved to the end of the document
 %% manually.  
 
-\renewenvironment{figure}{\let\caption\NAT@figcaption}{}
-    
-\newcommand{\NAT@figcaption}[2][]{\AtEndDocument{%
-    \refstepcounter{figure}
-    \ifthenelse{\value{figure}=1}{
-        \newpage\noindent%
-%        \rule{\textwidth}{1pt}
-    }{
-        \par\vfill
-    }
-    \sffamily\noindent\textbf{Figure \arabic{figure}}\hspace{1em}#2}
-    }
+%% \renewenvironment{figure}{\let\caption\NAT@figcaption}{}
 
-\renewenvironment{table}{\@float{table}[p]\sffamily}{\end@float}
+%% \newcommand{\NAT@figcaption}[2][]{\AtEndDocument{%
+%%     \refstepcounter{figure}
+%%     \ifthenelse{\value{figure}=1}{
+%%       \newpage\noindent%
+%%       %        \rule{\textwidth}{1pt}
+%%     }{
+%%       \par\vfill
+%%     }
+%%     \sffamily\noindent\textbf{Figure \arabic{figure}}\hspace{1em}#2}
+%% }
+
+%\renewenvironment{table}{\@float{table}[p]\sffamily}{\end@float}
 
 %% ignore all \includegraphics commands in the document
-\AtBeginDocument{\let\includegraphics\NAT@ignore}
+%\AtBeginDocument{\let\includegraphics\NAT@ignore}
 
-\newcommand{\NAT@ignore}[2][]{}
+%\newcommand{\NAT@ignore}[2][]{}

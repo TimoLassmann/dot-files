@@ -12,6 +12,73 @@
 
 * testung 
 
+  #+BEGIN_SRC emacs-lisp
+(defun tl/substring-replace (old-str new-str beg end)
+  "Return a new string where a subsection of OLD-STR has been replaced with NEW-STR beginning at position BEG and ending at END."
+  (concat (substring old-str 0 beg) new-str (substring old-str end)))
+
+(defun tl/getvar (var-name)
+  "Return value of a variable or environment variable specified by VAR-NAME."
+  (or (getenv var-name) (eval (read var-name))))
+
+(defun tl/substr-variables (str)
+  "Replace shell-like '$VAR' and '${variables}' in STR with the equivalent environment variables or Elisp variables.  For instance: $HOME/.emacs.d could return /home/howard/.emacs.d -- Keep in mind that this is just a string, it does not do any validation to see if any files exist."
+
+  ;; This function recursively calls this function with more and more
+  ;; embedded variables substituted out, until no more variables are
+  ;; found, and then it returns the results.
+  ;;
+  ;; Begin by checking to see if the string starts with ~ ...
+  (if (string-prefix-p "~/" str)
+      (tl/substr-variables
+       (concat (getenv "HOME") (substring str 1)))
+
+    ;; Variables can either be simple $BLAH or ${some-larger}...
+    (let ((s (or (string-match "${\\([^ }]*\\)}" str)
+                 (string-match "$\\([A-z_]*\\)" str)))
+          (e (match-end 0)))
+      (if (not s)             ; No $ matches?
+          str                 ; Then just return the string.
+        (tl/substr-variables  ; Recursively call with first var sub'd
+         (tl/substring-replace str (tl/getvar (match-string 1 str)) s e))))))
+(defun tl/mkdir (path)
+  "Create a directory specified by PATH, which can contain embedded environment variables and Emacs variables, e.g. '$HOME/Work/foobar'."
+  (make-directory (tl/get-path path) t))
+
+(defun tl/get-files (path &optional full)
+  "Return list of files that match the glob pattern, PATH.  Allowing shell-like variable substitution from the environment, like $HOME, or from variables defined by `setq'.  If FULL is specified, return absolute pathnames for each file."
+  (let ((subbed-path (tl/substr-variables path)))
+    (condition-case nil
+        (directory-files (file-name-directory subbed-path)
+                         full
+                         (eshell-glob-regexp
+                          (file-name-nondirectory subbed-path)))
+      (error '()))))
+
+(defun tl/copy-files (from to files)
+  "Copy some files FROM a directory TO another directory, where FILES is a list of names."
+  (mapcar (lambda (file)
+            (copy-file (tl/get-path from file)
+                       (tl/get-path to) t))     files))
+
+
+(defun tl/get-path (path &rest extra)
+  "Return a file specification based on PATH.  We should expand this function so that glob patterns work when specifying the parent, but shouldn't worry about matching any particular file.  All EXTRA parameters are appended separated with / characters."
+  (let ((file-parts (cons (tl/substr-variables path) extra)))
+    (mapconcat 'identity file-parts "/")))
+
+(defconst dot-files-src  (file-name-directory (or load-file-name buffer-file-name)))
+(message "The name of this buffer is: %s." dot-files-src)
+(defun tl/install-tex-templates ()
+  "Copies .sty .bst etc files in a directory for tex to find."
+  (interactive)
+  (tl/mkdir "$HOME/texmf/tex/latex")
+  (tl/mkdir "$HOME/texmf/bibtex/bst")
+  (tl/copy-files "${dot-files-src}/latex_templates/" "$HOME/texmf/tex/latex/" (tl/get-files "${dot-files-src}/latex_templates/*sty"))
+  )
+  
+  #+END_SRC
+
 
 #+BEGIN_SRC sh
 

@@ -11,7 +11,7 @@
 
 (defun tl/substring-replace (old-str new-str beg end)
   "Return a new string where a subsection of OLD-STR has been replaced with NEW-STR beginning at position BEG and ending at END."
-   (concat (substring old-str 0 beg) new-str (substring old-str end)))
+  (concat (substring old-str 0 beg) new-str (substring old-str end)))
 
 
 (defun tl/getvar (var-name)
@@ -105,12 +105,12 @@ If FULL is specified, return absolute pathnames for each file."
 
 (defun tl/mksymlink (orig link)
   "Create symbolic line to ORIG.  If LINK is an existing link, it is deleted first.  LINK could also refer to a directory.  Note: Both parameters are strings that can accept embedded environment and Lisp variables, e.g. '$HOME/Work/foo.el' and '${user-emacs-directory}/elisp/bar.el' ."
-   
+  
 
-   (let ((orig-file (tl/get-path orig))
-         (link-file (tl/get-path link)))
-     (message "got into /mksymlink %s" orig-file )
-   (message "got into /mksymlink %s" (file-symlink-p link-file))
+  (let ((orig-file (tl/get-path orig))
+        (link-file (tl/get-path link)))
+    (message "got into /mksymlink %s" orig-file )
+    (message "got into /mksymlink %s" (file-symlink-p link-file))
     (if (not (file-symlink-p link-file))
         (make-symbolic-link orig-file link-file t))))
 

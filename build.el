@@ -23,6 +23,21 @@
 ;; The Script Part ... here we do all the building and compilation work.
 
 
+(defun tl/install-tex-templates ()
+  "Copies .sty .bst etc files in a directory for tex to find."
+  (interactive)
+  (tl/mkdir "$HOME/texmf/tex/latex")
+  (tl/mkdir "$HOME/texmf/bibtex/bst")
+
+  (message "done making texmf dirs.")
+  (tl/copy-files "${dot-files-src}/latex_templates/" "$HOME/texmf/tex/latex/" (tl/get-files "${dot-files-src}/latex_templates/*.sty"))
+  (tl/copy-files "${dot-files-src}/latex_templates/" "$HOME/texmf/tex/latex/" (tl/get-files "${dot-files-src}/latex_templates/*.cls"))
+  (tl/copy-files "${dot-files-src}/latex_templates/" "$HOME/texmf/tex/latex/" (tl/get-files "${dot-files-src}/latex_templates/*.ldf"))
+
+  (tl/copy-files "${dot-files-src}/latex_templates/" "$HOME/texmf/bibtex/bst/" (tl/get-files "${dot-files-src}/latex_templates/*.bst"))
+  (message "done mcopying files across.")
+  )
+
 
 (defun tl/build-dot-files ()
   "Compile and deploy 'init files' in this directory."
@@ -31,7 +46,7 @@
   ;; Initially create some of the destination directories
   ;;(ha/mkdir "$HOME/.oh-my-zsh/themes")
   ;;(tl/mkdir "${tl/emacs-directory}/elisp")
-  ;;(tl/mkdir "${tl/emacs-directory}/latex_templates") 
+  ;;(tl/mkdir "${tl/emacs-directory}/latex_templates")
   (tl/mkdir "$HOME/bin")
   (tl/mkdir "$HOME/backup")
   (tl/tangle-files "${dot-files-src}/*.org")
@@ -41,15 +56,15 @@
   (tl/mksymlinks "${dot-files-src}/elisp"
                  "${tl/emacs-directory}/elisp")
   (message "done Make links to el files.")
-  
+
   ;; copy my latex templates
   (tl/mksymlinks "${dot-files-src}/latex_templates"
                  "${tl/emacs-directory}/latex_templates")
-  
+
   (tl/mksymlinks "${dot-files-src}/templates"
                  "${tl/emacs-directory}/templates")
-  
-                 
+
+
 
   ;; Just link the entire directory instead of copying the snippets:
   ;;(ha/mksymlink  "${dot-files-src}/snippets"
@@ -103,6 +118,10 @@
 ;;      (require 'init-main))))
 
 (tl/build-dot-files)  ;; Do it
+(shell-command "echo dot-files done")
+(tl/install-tex-templates)
+
+(shell-command "echo latex templates done")
 (kill-emacs)
 (provide 'dot-files)
 ;;; build.el ends here
