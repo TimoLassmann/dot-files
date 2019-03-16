@@ -40,7 +40,7 @@
   for daily (=d=), weekly (=w=) or monthly (=m=) backups. 
 
   #+BEGIN_SRC sh :exports both :results none :noweb yes :tangle ~/bin/backup_rsync.sh :shebang #!/bin/bash
-    targets=($HOME/code $HOME/Dropbox/work $HOME/Dropbox/life $HOME/Dropbox/travel)
+    targets=($HOME/code $HOME/work $HOME/life $HOME/travel)
 
 
     backup_daily()
