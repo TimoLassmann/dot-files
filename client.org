@@ -206,9 +206,22 @@ add some missing fonts..
   
 
 * Powerline stuff
+** Nyan mode
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package nyan-mode
+       :ensure t
+       :config
+       (progn
+         (nyan-mode)
+         (nyan-stop-animation))
+       )
+
+   #+END_SRC
+
 ** space-line 
 
-#+BEGIN_SRC emacs-lisp
+   #+BEGIN_SRC emacs-lisp
 (use-package spaceline
   :ensure t
   :config
