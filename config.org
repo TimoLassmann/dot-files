@@ -16,8 +16,15 @@
   
   #+BEGIN_SRC emacs-lisp
     (setq gc-cons-threshold 16777216)
-    (setq gc-cons-percentage 0.1)
+
+    (setq gc-cons-percentage 0.6)
+
+    (setq  message-log-max 16384)
+
   #+END_SRC
+
+
+
 
 * Package Manager
   To start we need the package "package" 
@@ -404,7 +411,7 @@
    #+END_SRC
 
 
-
+ 
 ** Helm 
 
    #+BEGIN_EXAMPLE emacs-lisp
@@ -457,7 +464,7 @@
      (use-package avy
        :ensure t
        :bind
-       ("M-s" . avy-goto-char))
+       ("M-s" . avy-goto-char-timer))
    #+END_SRC
 
 ** Swoop 
@@ -504,6 +511,7 @@
        :init
        (setq recentf-max-menu-items 25
              recentf-auto-cleanup 'never
+             recentf-max-saved-items 50
              recentf-keep '(file-remote-p file-readable-p))
        (recentf-mode 1)
        (let ((last-ido "~/.emacs.d/ido.last"))
@@ -511,6 +519,20 @@
            (delete-file last-ido)))
 
        :bind ("C-c f r" . recentf-open-files))
+
+
+(defun ido-recentf-open ()
+  "Use `ido-completing-read' to \\[find-file] a recent file"
+  (interactive)
+  (if (find-file (ido-completing-read "Find recent file: " recentf-list))
+      (message "Opening file...")
+    (message "Aborting")))
+
+(global-set-key (kbd "C-x C-r") 'ido-recentf-open)
+
+
+
+
    #+END_SRC
 ** IDO
 
@@ -1416,6 +1438,8 @@
     #+BEGIN_SRC emacs-lisp
       (setq compilation-scroll-output t)
     #+END_SRC
+
+
 
 *** ggtags
 
