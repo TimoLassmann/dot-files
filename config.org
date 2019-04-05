@@ -550,7 +550,13 @@
        (add-to-list 'completion-ignored-extensions ".pyc"))
 
    #+END_SRC
+   ido-completing-read+
+   #+BEGIN_SRC emacs-lisp
+     (use-package ido-completing-read+
+       :config
+       (ido-ubiquitous-mode))
 
+   #+END_SRC
    FLX package
 
    #+BEGIN_SRC emacs-lisp
