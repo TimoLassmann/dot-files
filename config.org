@@ -47,7 +47,6 @@
   #+END_SRC
 
 * General Settings
-
 ** Init File Support
 
    Load up a collection of enhancements to Emacs Lisp, including [[https://github.com/magnars/dash.el][dash]],
@@ -122,7 +121,16 @@
      (no-easy-keys 1)
 
    #+END_SRC
+** Turn off  mouse 
 
+   #+BEGIN_SRC emacs-lisp 
+     (use-package disable-mouse
+       :ensure t 
+       :demand t)
+
+     (global-disable-mouse-mode)
+
+   #+END_SRC
 ** Diminish 
 
    #+BEGIN_SRC emacs-lisp
