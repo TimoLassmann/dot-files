@@ -296,6 +296,8 @@ First let's start the work nodes
 
 #+BEGIN_SRC shell :exports code :results none
   pdsh -a sudo systemctl enable slurmd.service
+  pdsh -a sudo systemctl stop slurmd.service
+
   pdsh -a sudo systemctl start slurmd.service
 
 #+END_SRC
@@ -306,6 +308,7 @@ Now let's see if we can start the server node:
 
 #+BEGIN_SRC shell :exports code :results none
   sudo systemctl enable slurmctld.service
+  sudo systemctl stop slurmctld.service
   sudo systemctl start slurmctld.service
   sudo systemctl status slurmctld.service
 
@@ -332,7 +335,6 @@ Sometimes the nodes appear to have low memory. To fix this:
 
   update NodeName=node-3 State=DOWN Reason="undraining"
   update NodeName=node-3 State=RESUME
-
 
   update NodeName=node-4 State=DOWN Reason="undraining"
   update NodeName=node-4 State=RESUME

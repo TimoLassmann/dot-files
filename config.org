@@ -919,6 +919,12 @@
        :ensure t)
    #+END_SRC
 
+   Use minted package for code: 
+
+   #+BEGIN_SRC emacs-lisp
+     (setq org-latex-listings 'minted)
+   #+END_SRC
+  
 ** Flyspell
    Enable spell-checking in Org-mode.
    #+BEGIN_SRC emacs-lisp
@@ -1066,10 +1072,10 @@
          (setq texcmd "jobname=$(basename %f | sed 's/\.tex//');latexmk -xelatex -shell-escape -quiet %f && mkdir -p latex.d && mv ${jobname}.* latex.d/. && mv latex.d/${jobname}.{org,pdf,fdb_latexmk,aux} .")
          ;; pdflatex -> .pdf
          (if (string-match "LATEX_CMD: pdflatex" (buffer-string))
-             (setq texcmd "latexmk -pdflatex='pdflatex -interaction nonstopmode' -pdf -bibtex -f %f"))
+             (setq texcmd "latexmk -pdflatex='pdflatex -shell-escape -interaction nonstopmode' -pdf -bibtex -f %f"))
          ;; xelatex -> .pdf
          (if (string-match "LATEX_CMD: xelatex" (buffer-string))
-             (setq texcmd "latexmk -pdflatex='xelatex -interaction nonstopmode' -pdf -bibtex -f  %f"))
+             (setq texcmd "latexmk -pdflatex='xelatex -shell-escape -interaction nonstopmode' -pdf -bibtex -f  %f"))
          ;; LaTeX compilation command
          (setq org-latex-pdf-process (list texcmd))))
 
@@ -1078,6 +1084,7 @@
      (unless (boundp 'org-latex-classes)
        (setq org-latex-classes nil))
    #+END_SRC
+
 
 ** NHMRC project grant
 
