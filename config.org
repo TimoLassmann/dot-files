@@ -557,13 +557,13 @@
        (ido-everywhere 1)
        (add-to-list 'completion-ignored-extensions ".pyc"))
 
-   #+END_SRC
+       #+END_SRC
    ido-completing-read+
    #+BEGIN_SRC emacs-lisp
      (use-package ido-completing-read+
+       :ensure t
        :config
        (ido-ubiquitous-mode))
-
    #+END_SRC
    FLX package
 
