@@ -22,7 +22,7 @@
 
   #+NAME: users 
   #+BEGIN_SRC bash 
-    users=(alexia richard denise genevieve vanessa cathrine sarra jenefer melvin)
+    users=(alexia richard denise genevieve vanessa catherine sarra jenefer melvin)
   #+END_SRC
 
 
@@ -86,7 +86,7 @@ sudo addgroup analysis
 
     sudo mkdir -p /data/raw 
     sudo mkdir -p /data/workspace 
-
+    sudo chown -R root:analysis /data
   #+END_SRC
 
   Mount the shares :
