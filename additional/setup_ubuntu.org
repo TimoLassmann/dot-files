@@ -11,11 +11,86 @@
 #+BEGIN_SRC bash 
 
 
-  sudo add-apt-repository universe
-  sudo apt update
-  sudo apt upgrade -y
-  sudo apt install autoconf libtool gcc pkg-config git screen zsh libcairo2-dev emacs 
+    sudo add-apt-repository universe
+    sudo apt update
+    sudo apt upgrade -y
+    sudo apt  install zsh autoconf libtool make cmake git screen zsh r-base libboost-all-dev nfs-common nfs-kernel-server
+
 #+END_SRC
+
+* Add users 
+
+  #+NAME: users 
+  #+BEGIN_SRC bash 
+    users=(alexia richard denise genevieve vanessa cathrine sarra jenefer melvin)
+  #+END_SRC
+
+
+  #+BEGIN_SRC bash -n :tangle add_user.sh :shebang #!/usr/bin/env bash :noweb yes
+    DIR=`pwd`
+    USERNAME=
+    PASSWORD="password"
+    function usage()
+    {
+
+        printf "This script will add users to a linux system.\n\n" ;
+        printf "The default password is password and needs to be changed by the user.\n\n";
+        printf "usage: $0 -n <user name> \n\n" ;
+        exit 1;
+    }
+
+    while getopts n:  opt
+    do
+
+        case ${opt} in
+            n) USERNAME=${OPTARG};;
+            ,*) usage;;
+        esac
+    done
+    if [ "${USERNAME}" == "" ]; then usage; fi
+
+    echo "Creating user $USERNAME"
+    sudo adduser $USERNAME --gecos "$USERNAME,NA,NA,NA" --disabled-password
+    echo "$USERNAME:password" | sudo chpasswd
+
+
+    sudo usermod -a -G analysis  $USERNAME
+
+
+    sudo usermod  -g analysis $USERNAME
+  #+END_SRC
+
+  #+BEGIN_SRC bash -n :tangle add_all_users.sh :shebang #!/usr/bin/env bash :noweb yes
+    <<users>>
+
+    echo "Current number of users: ${#users[*]}"
+
+    echo "Users:"
+    for item in ${users[*]}
+    do
+        printf "\t%s\n" $item
+        ./add_user.sh -n $item
+    done
+
+
+  #+END_SRC  
+
+  #+BEGIN_SRC bash 
+
+    ./add_all_users.sh
+  #+END_SRC
+
+* mounting NFS volumes 
+
+  #+BEGIN_SRC 
+
+sudo mount 192.168.1.12:/data /data      
+
+  #+END_SRC
+
+
+
+
 Slurm: 
 #+BEGIN_SRC bash
   sudo apt install slurmd slurmctld slurm-client 

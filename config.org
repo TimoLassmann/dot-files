@@ -66,6 +66,16 @@
        :ensure t)
    #+END_SRC
 
+** Trace for obsolete packages 
+
+   #+BEGIN_SRC emacs-lisp
+     (defun debug-on-load-obsolete (filename)
+       (when (equal (car (last (split-string filename "[/\\]") 2))
+                    "obsolete")
+         (debug)))
+     (add-to-list 'after-load-functions #'debug-on-load-obsolete)
+
+   #+END_SRC
 ** Whoami 
    
    #+BEGIN_SRC emacs-lisp
@@ -1643,7 +1653,7 @@
 
    and make sure the path below points to the same =HEAD= directory!
 
-   #+BEGIN_SRC emacs-lisp
+   #+BEGIN_EXAMPLE emacs-lisp
 
      (cond
       ((string-equal system-type "windows-nt") ; Microsoft Windows
@@ -1725,19 +1735,19 @@
      Yokohama Institute,1-7-22 Suehiro-cho,
      Tsurumi-ku, Yokohama, 230-0045 JAPAN")
        )
-   #+END_SRC
+   #+END_EXAMPLE
 
 
 
    Spell check 
 
-   #+BEGIN_SRC emacs-lisp
+   #+BEGIN_EXAMPLE emacs-lisp
      (add-hook 'mu4e-compose-mode-hook
                'flyspell-mode)
      (add-hook 'message-mode-hook 'turn-on-orgtbl)
      (add-hook 'message-mode-hook 'turn-on-orgstruct++)
      (add-hook 'mu4e-compose-mode-hook 'turn-off-auto-fill)
-   #+END_SRC
+   #+END_EXAMPLE
  
 * TRAMP
 
@@ -1841,11 +1851,13 @@
 
 * PDF tools
 
-  #+BEGIN_SRC emacs-lisp
+  
+#+BEGIN_SRC emacs-lisp
+
 
 
     (use-package pdf-tools
-      :pin manual ;; manually update
+
       :config
       ;; initialise
       (pdf-tools-install)
@@ -1855,8 +1867,7 @@
       (setq pdf-annot-activate-created-annotations t)
       ;; use normal isearch
       (define-key pdf-view-mode-map (kbd "C-s") 'isearch-forward))
-  #+END_SRC
-
+#+END_SRC
 * End
 
 
