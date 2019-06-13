@@ -50,15 +50,13 @@
     if [ "${USERNAME}" == "" ]; then usage; fi
 
     echo "Creating user $USERNAME"
-    sudo adduser $USERNAME --gecos "$USERNAME,NA,NA,NA" --disabled-password
+
+    sudo useradd  -b /data/workspace/ -g analysis -m $USERNAME
+    
     echo "$USERNAME:password" | sudo chpasswd
 
 
-    sudo usermod -a -G analysis  $USERNAME
-
-
-    sudo usermod  -g analysis $USERNAME
-  #+END_SRC
+    #+END_SRC
 
   #+BEGIN_SRC bash -n :tangle add_all_users.sh :shebang #!/usr/bin/env bash :noweb yes
     <<users>>
@@ -74,33 +72,55 @@
 
 
   #+END_SRC  
-
+  Create group analysis and add users 
   #+BEGIN_SRC bash 
-
+sudo addgroup analysis
     ./add_all_users.sh
   #+END_SRC
 
 * mounting NFS volumes 
 
-  #+BEGIN_SRC 
+  Create mount points 
 
-sudo mount 192.168.1.12:/data /data      
+  #+BEGIN_SRC bash 
+
+    sudo mkdir -p /data/raw 
+    sudo mkdir -p /data/workspace 
+
+  #+END_SRC
+
+  Mount the shares :
+  #+BEGIN_SRC bash
+    sudo mount honas03-tkiprod01.ichr.uwa.edu.au:/HOGRD01_RAWData /data/raw 
+    sudo mount honas03-tkiprod01.ichr.uwa.edu.au:/HOGRD01_WorkSpace /data/workspace
+
+  #+END_SRC
+
+  Unmount:
+
+  #+BEGIN_SRC bash
+    sudo umount /data/raw 
+    sudo umount /data/workspace 
+  #+END_SRC
+
+  To automatically mount disks when booting the machine add these lines to fstab: 
+
+honas03-tkiprod01.ichr.uwa.edu.au:/HOGRD01_RAWData /data/raw  nfs defaults 0 0
+honas03-tkiprod01.ichr.uwa.edu.au:/HOGRD01_WorkSpace /data/workspace nfs defaults 0 0
+
+
+
+
+  Slurm: 
+  #+BEGIN_SRC bash
+    sudo apt install slurmd slurmctld slurm-client 
 
   #+END_SRC
 
 
+  After this you should be able to see all nodes using the =sinfo= command. 
 
-
-Slurm: 
-#+BEGIN_SRC bash
-  sudo apt install slurmd slurmctld slurm-client 
-
-#+END_SRC
-
-
-   After this you should be able to see all nodes using the =sinfo= command. 
-
- sudo scontrol 
+  sudo scontrol 
 
   update NodeName=hohpc98 State=DOWN Reason="undraining"
   update NodeName=hohpc98 State=RESUME
