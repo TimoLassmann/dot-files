@@ -8,15 +8,21 @@
 #+LATEX_CMD: pdflatex
 * Introduction 
   Essentials: 
-#+BEGIN_SRC bash 
+  #+BEGIN_SRC bash 
 
 
     sudo add-apt-repository universe
     sudo apt update
     sudo apt upgrade -y
-    sudo apt  install zsh autoconf libtool make cmake git screen zsh r-base libboost-all-dev nfs-common nfs-kernel-server
+    sudo apt  install zsh autoconf libtool make cmake git screen zsh r-base libboost-all-dev nfs-common nfs-kernel-server gdebi-core 
 
-#+END_SRC
+  #+END_SRC
+
+  R-studio 
+  #+BEGIN_SRC bash 
+    wget https://download1.rstudio.org/desktop/bionic/amd64/rstudio-1.2.1335-amd64.deb
+    sudo gdebi rstudio-1.2.1335-amd64.deb
+  #+END_SRC
 
 * Add users 
 
@@ -109,18 +115,3 @@ honas03-tkiprod01.ichr.uwa.edu.au:/HOGRD01_RAWData /data/raw  nfs defaults 0 0
 honas03-tkiprod01.ichr.uwa.edu.au:/HOGRD01_WorkSpace /data/workspace nfs defaults 0 0
 
 
-
-
-  Slurm: 
-  #+BEGIN_SRC bash
-    sudo apt install slurmd slurmctld slurm-client 
-
-  #+END_SRC
-
-
-  After this you should be able to see all nodes using the =sinfo= command. 
-
-  sudo scontrol 
-
-  update NodeName=hohpc98 State=DOWN Reason="undraining"
-  update NodeName=hohpc98 State=RESUME
