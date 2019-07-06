@@ -1104,7 +1104,7 @@
    #+BEGIN_SRC emacs-lisp
      (add-to-list 'org-latex-classes
                   '("CV"
-                    "\\documentclass[10pt]{article}
+                    "\\documentclass[11pt]{article}
           \\usepackage{\\string~\"/.emacs.d/latex_templates/cv\"}
           [NO-DEFAULT-PACKAGES]
           [NO-PACKAGES]"
