@@ -1,0 +1,267 @@
+\ProvidesPackage{cv}
+
+\usepackage{geometry}
+ \geometry{
+ a4paper,
+ total={210mm,297mm},
+ left=20mm,
+ right=20mm,
+ top=27mm,
+ bottom=22mm,
+ headheight=15mm
+ %hmargin=14mm,
+ %vmargin=20mm,
+% head=0ex,foot=05ex
+ }
+ 
+%\usepackage{cmbright}
+%\setmainfont{Times New Roman}
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{caption}
+\usepackage{longtable}
+\usepackage{booktabs}
+\usepackage{enumitem}
+\usepackage{tcolorbox}
+
+\usepackage{filecontents}
+\setlist[enumerate]{labelwidth=20pt,labelindent=0pt,leftmargin=*,labelsep=5pt,align=left,topsep=2pt, parsep=2pt, itemsep=2pt}
+\setlist[itemize]{labelwidth=20pt,labelindent=0pt,leftmargin=*,labelsep=5pt,align=left,topsep=2pt, parsep=2pt, itemsep=0pt}
+
+
+\usepackage{pgfplots}
+\usepackage{setspace}
+\usepackage{listings}
+\usepackage{hyperref}
+\usepackage{textcomp}
+\usepackage{verbatim}
+\usepackage{color}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usepackage{lipsum}
+\usepackage{calc}
+\usepackage{booktabs}
+\usepackage{float}
+\usepackage{tkz-euclide}
+\usetikzlibrary{decorations.text}
+\usetikzlibrary{shapes,arrows, positioning, calc}
+\usetikzlibrary{backgrounds}
+\usetikzlibrary{plotmarks}
+
+\usepackage{lipsum}
+\usepackage{wrapfig}
+\usepackage{etaremune}
+
+
+\usepackage[natbib=true,style=nature,maxnames=100, minnames=1,hyperref=auto,backref=true,backend=bibtex,sorting=ydnt,dashed=false]{biblatex}
+
+\newcommand{\footref}[1]{\let\thefootnote\relax\footfullcite{ #1}} 
+
+
+\usepackage{xpatch}
+
+
+
+\def\makenamesetup{%
+  \def\bibnamedelima{~}%
+  \def\bibnamedelimb{ }%
+  \def\bibnamedelimc{ }%
+  \def\bibnamedelimd{ }%
+  \def\bibnamedelimi{ }%
+  \def\bibinitperiod{.}%
+  \def\bibinitdelim{~}%
+  \def\bibinithyphendelim{.-}}    
+\newcommand*{\makename}[2]{\begingroup\makenamesetup\xdef#1{#2}\endgroup}
+
+\newcommand*{\boldname}[3]{%
+  \def\lastname{#1}%
+  \def\firstname{#2}%
+  \def\firstinit{#3}}
+\boldname{}{}{}
+
+% Patch new definitions
+\renewcommand{\mkbibnamegiven}[1]{%
+  \ifboolexpr{ ( test {\ifdefequal{\firstname}{\namepartgiven}} or test {\ifdefequal{\firstinit}{\namepartgiven}} ) and test {\ifdefequal{\lastname}{\namepartfamily}} }
+  {\mkbibbold{#1}}{#1}%
+}
+
+\renewcommand{\mkbibnamefamily}[1]{%
+  \ifboolexpr{ ( test {\ifdefequal{\firstname}{\namepartgiven}} or test {\ifdefequal{\firstinit}{\namepartgiven}} ) and test {\ifdefequal{\lastname}{\namepartfamily}} }
+  {\mkbibbold{#1}}{#1}%
+}
+
+\boldname{Lassmann}{Timo}{T.}
+
+
+
+\renewbibmacro*{date}{}
+\renewbibmacro*{date+extrayear}{}
+\renewbibmacro*{issue+date}{}
+\newcommand*{\bibyear}{}
+
+
+\defbibenvironment{bibliography}
+  {\list
+     {\iffieldequals{year}{\bibyear}
+        {}
+        {\printfield{year}%
+         \savefield{year}{\bibyear}}}
+     {\setlength{\topsep}{0pt}% layout parameters based on moderncvstyleclassic.sty
+      \setlength{\labelwidth}{30pt}%
+      \setlength{\labelsep}{20pt}%
+      \setlength{\itemsep}{\bibitemsep}%
+      \leftmargin\labelwidth%
+      \advance\leftmargin\labelsep}%
+      \sloppy\clubpenalty4000\widowpenalty4000}
+  {\endlist}
+  {\item}
+
+\usepackage{fancyvrb,listings}
+\definecolor{gogetit}{HTML}{6C8B9F}
+\definecolor{backgroundgrey}{RGB}{237,237,237}
+
+\definecolor{grantblue}{RGB}{5,99,193}
+
+\hypersetup{
+  colorlinks   = true,
+  linkcolor    = grantblue,   
+  citecolor    = grantblue,
+  urlcolor     = grantblue
+}
+
+\DefineBibliographyStrings{english}{%
+  backrefpage = {page},% originally "cited on page"
+  backrefpages = {pages},% originally "cited on pages"
+}
+
+\renewcommand*{\bibfont}{\normalsize}
+\SetLabelAlign{parright}{\parbox[t]{\labelwidth}{\raggedleft#1}}
+
+
+\graphicspath{{../images/}{../../images/}}
+
+
+
+\linespread{1.0}
+
+
+%\geometry{a4paper,
+%,
+%}
+
+\DeclareCaptionFormat{upper}{#1#2\uppercase{#3}\par}
+\captionsetup{format=plain,labelfont={bf},textfont={normalsize},figurename=Figure,tablename=TABLE,singlelinecheck=off,justification=raggedright} %format = upper
+
+%%% fancy sections
+\usepackage{titlesec}
+\usepackage[normalem]{ulem}
+%\titleformat{\chapter}{\headingfont\LARGE\bfseries\scshape\color{color1}}{\thechapter}{1em}{}[\titlerule]
+
+%\renewcommand{\thesection}{\Alph{section}.}
+
+%\titleformat{\section}[hang]{\sffamily\color{IndianRed3}\bfseries\scshape\filleft\lsstyle}{}{2em}{#1\quad\rule[-0.25cm]{1.5pt}{1cm}\rlap{\qquad\Huge \thesection}}%
+
+%\titleformat{\section}{\large\bfseries}{\Alph{section}.}{1em}{}
+%\titleformat{\subsection}[wrap]{\normalfont\bfseries}{}{1em}{}
+
+%\titleformat{\subsection}{\color{red}\normalsize\bfseries}{\thesubsection}{1em}{}
+%\titleformat{\subsubsection}{\normalsize\itshape}{\thesubsubsection}{1em}{}
+\setcounter{secnumdepth}{4}
+\renewcommand\thesubsection{\arabic{subsection}.}
+\renewcommand\thesubsubsection{\arabic{subsection}.\arabic{subsubsection}.} 
+%\renewcommand\thesubsubsubsection{\arabic{subsection}.\arabic{subsubsection}.\arabic{subsubsubsection}.}
+
+\titleformat{\section}{\Large\scshape}{}{0.0em}{}
+\titleformat{\subsection}[runin]{\bfseries}{}{0.0em}{}[\enspace] 
+\titleformat{\subsubsection}{\itshape}{}{0em}{\uline}
+%\titleformat{\subsubsubsection}{\normalfont\normalsize\selectfont\itshape}{\thesubsubsubsection}{0.5em}{}
+\titleformat{\paragraph}[runin]{\itshape}{}{0em}{\uline}[:\enspace] 
+
+
+
+% {left spacing}{before spacing} { after spacing} [right]
+
+%\titlespacing*{\section}{0pt}{12pt plus 4pt minus 2pt}{12pt plus 4pt minus 2pt }
+%\titlespacing*{\subsection}{0pt}{12pt plus 4pt minus 2pt}{0pt plus 4pt minus 2pt }
+\titlespacing*{\section}{0pt}{12pt}{8pt}
+\titlespacing*{\subsection}{0pt}{*0}{*0}
+\titlespacing*{\subsubsection}{0pt}{0pt}{0pt}
+%\titlespacing*{\subsubsection}{0pt}{0.1cm}{0.1cm}
+%\titlespacing*{\subsubsubsection}{0pt}{*0}{0.1cm}
+\titlespacing*{\paragraph}{0pt}{*0}{*0}
+
+
+\setlength{\parindent}{0cm}
+
+
+
+\renewcommand{\maketitle}{
+
+\begin{center}
+
+  {\Large\bfseries\@title}
+\end{center}
+}
+
+%%%
+\newcolumntype{L}[1]{>{\raggedright\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+\newcolumntype{C}[1]{>{\centering\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+\newcolumntype{R}[1]{>{\raggedleft\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+
+
+% head and foot
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+%\setlength{\headheight}{5.0pt}
+
+%\setlength{\footskip}{50.99991pt}
+
+\lhead{}
+\chead{}
+\rhead{} 
+
+
+
+
+%\makeatother
+%\newlength{\myheight}
+\lfoot{\color{gray}{\footnotesize \@author, \@date} }
+\cfoot{}
+\rfoot{\color{gray}{\footnotesize Page \thepage}}
+\renewcommand\headrulewidth{0pt}
+\renewcommand\footrulewidth{0pt}
+%%%
+
+
+
+\newcommand{\boldintro}[1]{
+\noindent{\textbf{#1:}}
+}
+
+
+\newenvironment{grayblock}{ \begin{tcolorbox}[width=\textwidth,colback={black!10!white}]}{\end{tcolorbox}} 
+
+
+\newenvironment{notes}{ \begin{tcolorbox}[colback=red!5!white,colframe=red!75!black,title=Notes, width=\textwidth,colback={red!10!white},arc=2pt,boxrule=2pt]}{\end{tcolorbox}} 
+
+
+\makeatletter
+\def\parsecomma#1,#2\endparsecomma{\def\page@x{#1}\def\page@y{#2}}
+\tikzdeclarecoordinatesystem{page}{
+    \parsecomma#1\endparsecomma
+    \pgfpointanchor{current page}{north east}
+    % Save the upper right corner
+    \pgf@xc=\pgf@x%
+    \pgf@yc=\pgf@y%
+    % save the lower left corner
+    \pgfpointanchor{current page}{south west}
+    \pgf@xb=\pgf@x%
+    \pgf@yb=\pgf@y%
+    % Transform to the correct placement
+    \pgfmathparse{(\pgf@xc-\pgf@xb)/2.*\page@x+(\pgf@xc+\pgf@xb)/2.}
+    \expandafter\pgf@x\expandafter=\pgfmathresult pt
+    \pgfmathparse{(\pgf@yc-\pgf@yb)/2.*\page@y+(\pgf@yc+\pgf@yb)/2.}
+    \expandafter\pgf@y\expandafter=\pgfmathresult pt
+}
+\makeatother

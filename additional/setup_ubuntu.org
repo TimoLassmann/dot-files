@@ -14,10 +14,19 @@
     sudo add-apt-repository universe
     sudo apt update
     sudo apt upgrade -y
-    sudo apt  install zsh autoconf libtool make cmake git screen zsh r-base libboost-all-dev nfs-common nfs-kernel-server gdebi-core 
+    sudo apt  install zsh autoconf libtool make cmake git screen zsh r-base libboost-all-dev nfs-common nfs-kernel-server gdebi-core libpoppler-dev libpoppler-glib-dev libpoppler-private-dev xrdp valgrind exuberant-ctags global
+
+
 
   #+END_SRC
 
+Desktop... 
+
+#+BEGIN_SRC bash 
+sudo apt install ubuntu-desktop
+
+#+END_SRC
+(maybe a reboot is necessary) 
   R-studio 
   #+BEGIN_SRC bash 
     wget https://download1.rstudio.org/desktop/bionic/amd64/rstudio-1.2.1335-amd64.deb
@@ -113,5 +122,6 @@ sudo addgroup analysis
 
 honas03-tkiprod01.ichr.uwa.edu.au:/HOGRD01_RAWData /data/raw  nfs defaults 0 0
 honas03-tkiprod01.ichr.uwa.edu.au:/HOGRD01_WorkSpace /data/workspace nfs defaults 0 0
+
 
 

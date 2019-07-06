@@ -933,6 +933,9 @@
 
    #+BEGIN_SRC emacs-lisp
      (setq org-latex-listings 'minted)
+     (setq org-latex-minted-options
+           '(("frame" "lines") ("linenos=true")))
+
    #+END_SRC
   
 ** Flyspell
@@ -1070,7 +1073,7 @@
    Latex templates
    #+BEGIN_SRC emacs-lisp
 
-     (setq org-latex-listings t)
+     
 
      ;;(setq org-latex-to-pdf-process '("xelatex %f && bibtex %f && xelatex %f && xelatex %f"))
      (defun sk-latexmk-cmd (backend)
@@ -1093,6 +1096,23 @@
 
      (unless (boundp 'org-latex-classes)
        (setq org-latex-classes nil))
+   #+END_SRC
+
+
+** CV 
+
+   #+BEGIN_SRC emacs-lisp
+     (add-to-list 'org-latex-classes
+                  '("CV"
+                    "\\documentclass[10pt]{article}
+          \\usepackage{\\string~\"/.emacs.d/latex_templates/cv\"}
+          [NO-DEFAULT-PACKAGES]
+          [NO-PACKAGES]"
+                    ("\\section{%s}" . "\\section*{%s}")
+                    ("\\subsection{%s}" . "\\subsection*{%s}")
+                    ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+                    ("\\paragraph{%s}" . "\\paragraph*{%s}")
+                    ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
    #+END_SRC
 
 
@@ -1160,7 +1180,6 @@
 
 
 
-
 ** Nature style paper 
 
    #+BEGIN_SRC emacs-lisp
@@ -1189,6 +1208,22 @@
                     ("\\paragraph{%s}" . "\\paragraph*{%s}")
                     ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
    #+END_SRC
+
+** Bioinformatics paper 
+
+   #+BEGIN_SRC emacs-lisp
+     (add-to-list 'org-latex-classes '("bioinfo"
+                                       "\\documentclass{bioinfo}
+      [NO-DEFAULT-PACKAGES]
+      [PACKAGES]
+      [EXTRA]"
+                                       ("\\section{%s}" . "\\section*{%s}")
+                                       ("\\subsection{%s}" . "\\subsection*{%s}")
+                                       ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+                                       ("\\paragraph{%s}" . "\\paragraph*{%s}")
+                                       ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
+   #+END_SRC
+
 
 ** Internal report
    #+BEGIN_SRC emacs-lisp
@@ -1752,14 +1787,14 @@
 * TRAMP
 
   #+BEGIN_SRC emacs-lisp
-    (use-package tramp
-      :ensure t
-      :config
-      (with-eval-after-load 'tramp-cache
-        (setq tramp-persistency-file-name "~/.emacs.d/tramp"))
-      (setq tramp-default-method "ssh")
-      (setq tramp-use-ssh-controlmaster-options nil) 
-      (message "tramp-loaded"))
+      (use-package tramp
+        :ensure t
+        :config
+        (with-eval-after-load 'tramp-cache
+          (setq tramp-persistency-file-name "~/.emacs.d/tramp"))
+        (setq tramp-default-method "ssh")
+        (setq tramp-use-ssh-controlmaster-options nil) 
+        (message "tramp-loaded"))
   #+END_SRC
  
 * Autoinsert templates 
