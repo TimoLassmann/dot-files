@@ -106,9 +106,8 @@ sudo addgroup analysis
 
   Mount the shares :
   #+BEGIN_SRC bash
-    sudo mount honas03-tkiprod01.ichr.uwa.edu.au:/HOGRD01_RAWData /data/raw 
-    sudo mount honas03-tkiprod01.ichr.uwa.edu.au:/HOGRD01_WorkSpace /data/workspace
-
+    sudo mount -t nfs -o noatime,vers=3,proto=tcp,rsize=1048576,wsize=1048576,timeo=10000,hard,intr,nolock honas03-tkiprod01.ichr.uwa.edu.au:/HOGRD01_RAWData /data/raw 
+    sudo mount -t nfs -o noatime,vers=3,proto=tcp,rsize=1048576,wsize=1048576,timeo=10000,hard,intr,nolock honas03-tkiprod01.ichr.uwa.edu.au:/HOGRD01_WorkSpace /data/workspace
   #+END_SRC
 
   Unmount:
@@ -120,8 +119,32 @@ sudo addgroup analysis
 
   To automatically mount disks when booting the machine add these lines to fstab: 
 
-honas03-tkiprod01.ichr.uwa.edu.au:/HOGRD01_RAWData /data/raw  nfs defaults 0 0
-honas03-tkiprod01.ichr.uwa.edu.au:/HOGRD01_WorkSpace /data/workspace nfs defaults 0 0
+* Fix X2GO
+
+To get rstudio to work with x2go(note that is works via ssh -X <server> rstudio  and the server / browser version)
+
+edit:
+
+#+BEGIN_EXAMPLE bash 
+sudo emacs /etc/x2go/x2goagent.options
+#+END_EXAMPLE
+
+and un-comment this line: 
+
+X2GO_NXAGENT_DEFAULT_OPTIONS+=" -extension GLX" 
 
 
 
+
+
+
+* Install new(er) R version 
+
+#+BEGIN_SRC bash 
+sudo apt install apt-transport-https software-properties-common
+sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E298A3A825C0D65DFD57CBB651716619E084DAB9
+sudo add-apt-repository 'deb https://cloud.r-project.org/bin/linux/ubuntu bionic-cran35/'
+sudo apt update
+sudo apt install r-base
+
+#+END_SRC
