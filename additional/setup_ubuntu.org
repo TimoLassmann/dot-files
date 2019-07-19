@@ -1,4 +1,4 @@
-#+TITLE:  Common commands to install missing packages 
+#+TITLE:  Notes on setting up an Ubuntu 18 server
 #+AUTHOR: Timo Lassmann
 #+EMAIL:  timo.lassmann@telethonkids.org.au
 #+DATE:   2019-01-16
@@ -6,6 +6,9 @@
 #+OPTIONS:  toc:nil
 #+OPTIONS: H:4
 #+LATEX_CMD: pdflatex
+#+PROPERTY: header-args:bash   :eval never-export
+
+
 * Introduction 
   Essentials: 
   #+BEGIN_SRC bash 
@@ -14,19 +17,20 @@
     sudo add-apt-repository universe
     sudo apt update
     sudo apt upgrade -y
-    sudo apt  install zsh autoconf libtool make cmake git screen zsh r-base libboost-all-dev nfs-common nfs-kernel-server gdebi-core libpoppler-dev libpoppler-glib-dev libpoppler-private-dev xrdp valgrind exuberant-ctags global
-
-
-
+    sudo apt install zsh autoconf libtool make cmake git screen zsh r-base libboost-all-dev nfs-common nfs-kernel-server gdebi-core libpoppler-dev libpoppler-glib-dev libpoppler-private-dev xrdp valgrind exuberant-ctags global
+    sudo apt install libcurl4-openssl-dev
+    sudo apt install libxml2-dev
+    sudo apt install python-pip
+    sudo apt install python-numpy
   #+END_SRC
 
-Desktop... 
+  Desktop... 
 
-#+BEGIN_SRC bash 
-sudo apt install ubuntu-desktop
+  #+BEGIN_SRC bash 
+    sudo apt install ubuntu-desktop
 
-#+END_SRC
-(maybe a reboot is necessary) 
+  #+END_SRC
+  (maybe a reboot is necessary) 
   R-studio 
   #+BEGIN_SRC bash 
     wget https://download1.rstudio.org/desktop/bionic/amd64/rstudio-1.2.1335-amd64.deb
@@ -67,11 +71,11 @@ sudo apt install ubuntu-desktop
     echo "Creating user $USERNAME"
 
     sudo useradd  -b /data/workspace/ -g analysis -m $USERNAME
-    
+
     echo "$USERNAME:password" | sudo chpasswd
 
 
-    #+END_SRC
+  #+END_SRC
 
   #+BEGIN_SRC bash -n :tangle add_all_users.sh :shebang #!/usr/bin/env bash :noweb yes
     <<users>>
@@ -89,7 +93,7 @@ sudo apt install ubuntu-desktop
   #+END_SRC  
   Create group analysis and add users 
   #+BEGIN_SRC bash 
-sudo addgroup analysis
+    sudo addgroup analysis
     ./add_all_users.sh
   #+END_SRC
 
@@ -121,17 +125,17 @@ sudo addgroup analysis
 
 * Fix X2GO
 
-To get rstudio to work with x2go(note that is works via ssh -X <server> rstudio  and the server / browser version)
+  To get rstudio to work with x2go(note that is works via ssh -X <server> rstudio  and the server / browser version)
 
-edit:
+  edit:
 
-#+BEGIN_EXAMPLE bash 
-sudo emacs /etc/x2go/x2goagent.options
-#+END_EXAMPLE
+  #+BEGIN_EXAMPLE bash 
+  sudo emacs /etc/x2go/x2goagent.options
+  #+END_EXAMPLE
 
-and un-comment this line: 
+  and un-comment this line: 
 
-X2GO_NXAGENT_DEFAULT_OPTIONS+=" -extension GLX" 
+  X2GO_NXAGENT_DEFAULT_OPTIONS+=" -extension GLX" 
 
 
 
@@ -140,11 +144,107 @@ X2GO_NXAGENT_DEFAULT_OPTIONS+=" -extension GLX"
 
 * Install new(er) R version 
 
-#+BEGIN_SRC bash 
-sudo apt install apt-transport-https software-properties-common
-sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E298A3A825C0D65DFD57CBB651716619E084DAB9
-sudo add-apt-repository 'deb https://cloud.r-project.org/bin/linux/ubuntu bionic-cran35/'
-sudo apt update
-sudo apt install r-base
+  #+BEGIN_SRC bash 
+    sudo apt install apt-transport-https software-properties-common
+    sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E298A3A825C0D65DFD57CBB651716619E084DAB9
+    sudo add-apt-repository 'deb https://cloud.r-project.org/bin/linux/ubuntu bionic-cran35/'
+    sudo apt update
+    sudo apt install r-base
 
-#+END_SRC
+  #+END_SRC
+
+* Install docker.io 
+
+
+  #+BEGIN_SRC bash
+
+    sudo apt  install docker.io
+
+
+  #+END_SRC
+
+
+  Create daemon file: 
+
+  sudo emacs /etc/docker/daemon.json
+  #+BEGIN_SRC bash 
+
+    {
+        "log-level":        "error",
+        "graph": "/data/scratch/docker",
+        "storage-driver":   "overlay2"
+    }
+
+  #+END_SRC
+
+* Slurm 
+
+  #+BEGIN_SRC bash 
+
+    sudo apt install slurmctld slurmd 
+
+  #+END_SRC
+
+  This will install the slurm daemon, server munge stuff and create a slurm user. Also the following directories are creates: 
+
+  =/var/run/slurm-llnl= 
+  =/var/spool/slurmd= 
+  and
+  =/etc/slurm-llnl/= 
+
+  Last time I tired this the ownership permissions on =/var/spool/slurmd/= were set incorrectly. To fix this: 
+
+  #+BEGIN_SRC bash 
+    sudo chown slurm:slurm /var/spool/slurmd
+  #+END_SRC
+
+  Slurm requires two configuration files to be places in the =/etc/slurm-llnl/= directory: 
+
+  1) cgroup.conf
+
+  CgroupAutomount=yes
+  CgroupReleaseAgentDir="/etc/slurm-llnl/cgroup" 
+
+  ConstrainCores=yes 
+  ConstrainDevices=yes
+  ConstrainRAMSpace=yes
+
+  2) the slurm configuration files. 
+
+  Unfortunately the html configuration tool does not work with the ubuntu slurm version.  The following modifications are necessary: 
+
+  ClusterName=compute-cluster
+  ControlMachine=hogrd01
+
+  and make sure the parameters below point to the directories above: 
+
+  SlurmctldPidFile=/var/run/slurm-llnl/slurmctld.pid
+  SlurmctldPort=6817
+  SlurmdPidFile=/var/run/slurm-llnl/slurmd.pid
+  SlurmdPort=6818
+  SlurmdSpoolDir=/var/spool/slurmd
+
+  StateSaveLocation=/var/spool/slurmd
+
+
+  Then start daemon / server: 
+
+  #+BEGIN_SRC bash 
+
+    sudo systemctl enable slurmd
+    sudo systemctl enable slurmctld 
+
+    sudo systemctl start slurmd
+    sudo systemctl start slurmctld 
+
+  #+END_SRC
+
+
+  To shut down: 
+
+  #+BEGIN_SRC bash 
+    sudo systemctl stop slurmd
+    sudo systemctl stop slurmctld 
+
+
+  #+END_SRC

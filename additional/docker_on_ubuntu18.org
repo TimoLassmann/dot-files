@@ -1,0 +1,83 @@
+#+TITLE:  Setting up docker on ubuntu 
+#+AUTHOR: Timo Lassmann
+#+EMAIL:  timo.lassmann@telethonkids.org.au
+#+DATE:   2019-07-18
+#+LATEX_CLASS: report
+#+OPTIONS:  toc:nil
+#+OPTIONS: H:4
+#+LATEX_CMD: pdflatex
+
+* Introduction 
+* Install docker via snap - problems 
+
+#+BEGIN_SRC bash 
+
+sudo snap install docker
+
+snap services docker
+  sudo groupadd docker
+  sudo usermod -aG docker $USER
+
+
+#+END_SRC
+
+Log out and restart docker daemon: 
+
+#+BEGIN_SRC bash 
+
+sudo snap restart docker
+
+#+END_SRC
+
+
+Edit config file to change default storage directory. 
+
+#+BEGIN_SRC txt 
+
+{
+    "log-level":        "error",
+    "graph": "/data/scratch",
+    "storage-driver":   "overlay2"
+}
+
+
+#+END_SRC
+
+
+
+
+
+Log out and restart docker daemon: 
+
+#+BEGIN_SRC bash 
+
+sudo snap restart docker
+
+#+END_SRC
+
+p
+* Install docker.io 
+
+
+  #+BEGIN_SRC bash
+
+sudo apt  install docker.io
+
+  
+  #+END_SRC
+
+
+Create daemon file: 
+
+sudo emacs /etc/docker/daemon.json
+#+BEGIN_SRC bash 
+
+{
+    "log-level":        "error",
+    "graph": "/data/scratch/docker",
+    "storage-driver":   "overlay2"
+}
+
+
+
+#+END_SRC
