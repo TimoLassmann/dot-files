@@ -1,5 +1,4 @@
 #+TITLE:  Notes on setting up an Ubuntu 18 server
-
 #+AUTHOR: Timo Lassmann
 #+EMAIL:  timo.lassmann@telethonkids.org.au
 #+DATE:   2019-01-16
@@ -8,9 +7,20 @@
 #+OPTIONS: H:4
 #+LATEX_CMD: pdflatex
 #+PROPERTY: header-args:bash   :eval never-export
+#+PROPERTY: header-args:java   :eval never-export
 
+#+BEGIN_SRC emacs-lisp  :results none :exports none 
+
+  (setq org-latex-listings 'minted)
+  (setq org-latex-minted-options
+        '(("frame" "lines") ("linenos=true")("breaklines")))
+
+
+#+END_SRC
 
 * Introduction 
+  This document describes how to set up a ubuntu 18 server for computational biology work.
+
   Essentials: 
   #+BEGIN_SRC bash 
 
@@ -23,6 +33,7 @@
     sudo apt install -y python-pip
     sudo apt install -y python-numpy
     sudo apt install -y rpm
+    sudo apt install -y cifs-utils samba smbclient
     sudo apt-get install -y \
          build-essential \
          libssl-dev \
@@ -31,6 +42,7 @@
          squashfs-tools \
          libseccomp-dev \
          pkg-config
+
   #+END_SRC
 
   Desktop... 
@@ -159,6 +171,11 @@
 
   To automatically mount disks when booting the machine add these lines to fstab: 
 
+* mounting samba (?) 
+
+#+BEGIN_SRC bash
+sudo mount.cifs -o username=XXXXXX,domain=ichr.uwa.edu.au,uid=,gid=analysis //ichr.uwa.edu.au/file\ workspace/Instruments/MiniSeq  dfs-drive
+#+END_SRC
 * Fix X2GO
 
   To get rstudio to work with x2go(note that is works via ssh -X <server> rstudio  and the server / browser version)
@@ -172,8 +189,6 @@
   and un-comment this line: 
 
   X2GO_NXAGENT_DEFAULT_OPTIONS+=" -extension GLX" 
-
-
 
 
 
@@ -238,45 +253,51 @@
 
   1) cgroup.conf
 
-  CgroupAutomount=yes
-  CgroupReleaseAgentDir="/etc/slurm-llnl/cgroup" 
+  #+BEGIN_SRC text 
+    CgroupAutomount=yes
+    CgroupReleaseAgentDir="/etc/slurm-llnl/cgroup" 
 
-  ConstrainCores=yes 
-  ConstrainDevices=yes
-  ConstrainRAMSpace=yes
+    ConstrainCores=yes 
+    ConstrainDevices=yes
+    ConstrainRAMSpace=yes
 
+  #+END_SRC
+  
   2) the slurm configuration files. 
 
   Unfortunately the html configuration tool does not work with the ubuntu slurm version.  The following modifications are necessary: 
 
-  ClusterName=compute-cluster
-  ControlMachine=hogrd01
+  #+BEGIN_SRC text 
+    ClusterName=compute-cluster
+    ControlMachine=hogrd01
+  #+END_SRC
 
   and make sure the parameters below point to the directories above: 
 
-  SlurmctldPidFile=/var/run/slurm-llnl/slurmctld.pid
-  SlurmctldPort=6817
-  SlurmdPidFile=/var/run/slurm-llnl/slurmd.pid
-  SlurmdPort=6818
-  SlurmdSpoolDir=/var/spool/slurmd
+  #+BEGIN_SRC text 
+    SlurmctldPidFile=/var/run/slurm-llnl/slurmctld.pid
+    SlurmctldPort=6817
+    SlurmdPidFile=/var/run/slurm-llnl/slurmd.pid
+    SlurmdPort=6818
+    SlurmdSpoolDir=/var/spool/slurmd
 
-  StateSaveLocation=/var/spool/slurmd
+    StateSaveLocation=/var/spool/slurmd
 
-
+  #+END_SRC
   AND 
 
-  # SCHEDULING
-  #DefMemPerCPU=0
-  FastSchedule=1
-  #MaxMemPerCPU=0
-  #SchedulerTimeSlice=30
-  SchedulerType=sched/backfill
-  SelectType=select/cons_res
-  SelectTypeParameters=CR_Core_Memory
+  #+BEGIN_SRC text
+    # SCHEDULING
+    #DefMemPerCPU=0
+    FastSchedule=1
+    #MaxMemPerCPU=0
+    #SchedulerTimeSlice=30
+    SchedulerType=sched/backfill
+    SelectType=select/cons_res
+    SelectTypeParameters=CR_Core_Memory
 
+  #+END_SRC
   The last  line in necessary 4 memory based scheduling to work! 
-
-
 
 
   Then start daemon / server: 
@@ -301,9 +322,31 @@
 
   #+END_SRC
 
+* Singularity
+
+
+  #+BEGIN_SRC bash
+
+    export VERSION=3.2.1 && # adjust this as necessary \
+
+        wget https://github.com/sylabs/singularity/releases/download/v${VERSION}/singularity-${VERSION}.tar.gz && \
+            tar -xzf singularity-${VERSION}.tar.gz && \
+            cd singularity
+
+
+  #+END_SRC
+
+  Install
+
+  #+BEGIN_SRC bash
+
+    ./mconfig && \
+        make -C builddir && \
+        sudo make -C builddir install
 
 
 
+  #+END_SRC
 
 * udocker 
 
@@ -321,132 +364,150 @@
 
   place =udocker=  somewhere in the path. 
 
-  Execute cromwell jobs like this: 
+
+  IMPORTANT: by default udocker will store images in the user's home directory =~/.udocker/=. To use a different location:
 
   #+BEGIN_SRC bash
+    export UDOCKER_DIR="/data/scratch/udocker"
+  #+END_SRC
 
+  Execute cromwell jobs like this: 
+
+  #+BEGIN_SRC bash    
     java -jar -Dconfig.file=/home/timo/testslurm/testing_crom.conf  -Dbackend.default=slurm -Ddocker.hash-lookup.enabled=false ~/program/cromwell-44.jar run Optimus.wdl  -i m1_run.json
   #+END_SRC
 
 
+  Workaround (?) for being unable to pull images from google cloud:
+  #+BEGIN_SRC bash
+    docker save centos:7 > centos
+    udocker load -i centos
 
-
+  #+END_SRC
 
 
 
 
 * example cromwell config file
 
-#+BEGIN_EXAMPLE conf
-include required(classpath("application"))
+  #+BEGIN_SRC java
+    include required(classpath("application"))
 
 
-docker {
-  hash-lookup {
-    enable = false
-  }
-}
-
-backend {
-  default = "slurm"
-  providers {
-    slurm {
-      actor-factory = "cromwell.backend.impl.sfs.config.ConfigBackendLifecycleActorFactory"
-      config {
-        script-epilogue = "sleep 30"
-        concurrent-job-limit = 10
-        run-in-background = true
-        runtime-attributes = """
-        Int cpu = 1
-        Int? gpu
-        Int? time
-        Int? memory_mb
-        String? slurm_partition
-        String? slurm_account
-        String? slurm_extra_param
-        String? docker        
-        """
-
-
-        submit = """
-        sbatch \
-        --export=ALL \
-        --wait \        
-        -J ${job_name} \
-        -D ${cwd} \
-        -o ${out} \
-        -e ${err} \
-        ${"-t " + time*60} \
-        -n 1 \
-        --ntasks-per-node=1 \
-        ${true="--cpus-per-task=" false="" defined(cpu)}${cpu} \
-        ${true="--mem=" false="" defined(memory_mb)}${memory_mb}\
-        ${"-p " + slurm_partition} \
-        ${"--account " + slurm_account} \
-        ${"--gres gpu:" + gpu} \
-        ${slurm_extra_param} \
-        --wrap "/bin/bash ${script}"
-        """
-
-        submit-docker = """
-        # Pull the image using the head node, in case our workers don't have network access
-        udocker pull ${docker}
-        sbatch \
-           --export=ALL \
-           --wait \
-           -J ${job_name} \
-           -D ${cwd} \
-           -o ${out} \
-           -e ${err} \
-           ${"-t " + time*60} \
-           -n 1 \
-           --ntasks-per-node=1 \
-           ${true="--cpus-per-task=" false="" defined(cpu)}${cpu} \
-           ${true="--mem=" false="" defined(memory_mb)}${memory_mb}\
-           ${"-p " + slurm_partition} \
-           ${"--account " + slurm_account} \
-           ${"--gres gpu:" + gpu} \
-           ${slurm_extra_param} \
-           --wrap "udocker run -v ${cwd}:${docker_cwd} ${docker} ${job_shell} ${docker_script}"
-        """
-
-        
-
-        kill = "scancel ${job_id}"
-        check-alive = "squeue -j ${job_id}"
-        job-id-regex = "Submitted batch job (\\d+).*"
-      }
+        docker {
+        hash-lookup {
+            enable = false
+                }
     }
 
-  }
-}
+    backend {
+        default = "slurm"
+            providers {
+            slurm {
+                actor-factory = "cromwell.backend.impl.sfs.config.ConfigBackendLifecycleActorFactory"
+                config {
+                    script-epilogue = "sleep 30"
+                    concurrent-job-limit = 10
+                    run-in-background = true
+                    runtime-attributes = """
+              Int cpu = 1
+              Int? gpu
+              Int? time
+              Int? memory_mb
+              String? slurm_partition
+              String? slurm_account
+              String? slurm_extra_param
+              String? docker        
+              """
+
+
+                    submit = """
+              sbatch \
+              --export=ALL \
+              --wait \        
+              -J ${job_name} \
+              -D ${cwd} \
+              -o ${out} \
+              -e ${err} \
+              ${"-t " + time*60} \
+              -n 1 \
+              --ntasks-per-node=1 \
+              ${true="--cpus-per-task=" false="" defined(cpu)}${cpu} \
+              ${true="--mem=" false="" defined(memory_mb)}${memory_mb}\
+              ${"-p " + slurm_partition} \
+              ${"--account " + slurm_account} \
+              ${"--gres gpu:" + gpu} \
+              ${slurm_extra_param} \
+              --wrap "/bin/bash ${script}"
+              """
+
+                    submit-docker = """
+              # Pull the image using the head node, in case our workers don't have network access
+              udocker pull ${docker}
+              sbatch \
+                 --export=ALL \
+                 --wait \
+                 -J ${job_name} \
+                 -D ${cwd} \
+                 -o ${out} \
+                 -e ${err} \
+                 ${"-t " + time*60} \
+                 -n 1 \
+                 --ntasks-per-node=1 \
+                 ${true="--cpus-per-task=" false="" defined(cpu)}${cpu} \
+                 ${true="--mem=" false="" defined(memory_mb)}${memory_mb}\
+                 ${"-p " + slurm_partition} \
+                 ${"--account " + slurm_account} \
+                 ${"--gres gpu:" + gpu} \
+                 ${slurm_extra_param} \
+                 --wrap "udocker run -v ${cwd}:${docker_cwd} ${docker} ${job_shell} ${docker_script}"
+              """
 
 
 
+                    kill = "scancel ${job_id}"
+                    check-alive = "squeue -j ${job_id}"
+                    job-id-regex = "Submitted batch job (\\d+).*"
+                }
+            }
 
-services {
-  LoadController {
-    class = "cromwell.services.loadcontroller.impl.LoadControllerServiceActor"
-    config {
-      # disable it (for login nodes on Stanford SCG, Sherlock)
-      control-frequency = 21474834 seconds
+        }
     }
-  }
-}
 
 
 
-system {
-  abort-jobs-on-terminate = true
-  graceful-server-shutdown = true
-}
 
-call-caching {
-  enabled = false
-  invalidate-bad-cache-results = true
-}
+    services {
+        LoadController {
+            class = "cromwell.services.loadcontroller.impl.LoadControllerServiceActor"
+                config {
+                # disable it (for login nodes on Stanford SCG, Sherlock)
+                control-frequency = 21474834 seconds
+            }
+        }
+    }
 
-#+END_EXAMPLE
+
+
+    system {
+        abort-jobs-on-terminate = true
+            graceful-server-shutdown = true
+            }
+
+    call-caching {
+        enabled = false
+            invalidate-bad-cache-results = true
+            }
+
+
+  #+END_SRC
+    
+
+
+
+
+
+
 
 
 
