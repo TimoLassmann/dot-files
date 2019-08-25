@@ -1,4 +1,4 @@
-\ProvidesPackage{NHMRC_grant}
+\ProvidesPackage{NHMRC_investigator}
 
 \def\grantname#1{\def\@grantname{#1}}
 \def\ApplicationID#1{\def\@ApplicationID{#1}}
@@ -90,46 +90,7 @@
 
 % Add books to 'important' category in preamble
 \addtocategory{important}{%
-  lassmann-2007-autom,
-andersson-2014,
-forrest-2014,
-arner-2015-trans,
-djebali-2012-lands-trans,
-baynam-2016-rare-undiag,
-dunham-2012-dna,
-harrow-2012-gencod,
-itoh2012automated,
-takahashi20125,
-hon2017atlas,
-taruscio2015undiagnosed,
-ravasi-2010-atlas-combin,
-schmidl-2014-trans-enhan,
-okazaki2002analysis,
-carninci2003targeting,
-carninci2005transcriptional,
-katayama2005antisense,
-carrieri2012long,
-suzuki2009transcriptional,
-faulkner2009regulated,
-fort2014deep,
-carninci2006genome,
-frith2006evolutionary,
-frith2008code,
-vitezic2010building,
-lizio2015mapping,
-morikawa2014differential,
-rackham2016predictive,
-andersson-2014-atlas-activ,
-forrest-2014-promot-level,
-arner-2015-trans-enhan,
-hon-2017-atlas-human,
-dunham-2012-integ-encyc,
-itoh-2012-autom-workf,
-anderson-2018-phenot-centr,
-baynam-2016-rare-undiag,
-baynam-2017-improv-diagn,
-boycott-2019-diagn-all,
-}
+  }
 
 
 
@@ -276,7 +237,7 @@ boycott-2019-diagn-all,
 %\setlength{\footskip}{50.99991pt}
 
 \renewcommand{\thefootnote}{\alph{footnote}}
-\lhead{\vspace{8mm} \vfill {\hspace{1.6cm} \bfseries \@grantname}\\  \hfill  Application ID: \@ApplicationID  \\ \hfill CIA Surname: \@CIASurname }
+\lhead{\vspace{8mm} \vfill {\hspace{0.5cm} \bfseries \@grantname}\\  \hfill  Application ID: \@ApplicationID  \\ \hfill CIA Surname: \@CIASurname }
 \chead{}
 \rhead{}
 

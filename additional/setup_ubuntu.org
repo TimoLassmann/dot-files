@@ -42,7 +42,8 @@
          squashfs-tools \
          libseccomp-dev \
          pkg-config
-
+    sudo apt install -y h5utils hdf5-tools libhdf4-0 libmatheval1
+    sudo apt install -y libhdf5-dev hdf5-helpers libaec-dev libhdf5-cpp-100
   #+END_SRC
 
   Desktop... 

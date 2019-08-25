@@ -1146,6 +1146,22 @@
 
    #+END_SRC
 
+** NHMRC Investigator
+
+   #+BEGIN_SRC emacs-lisp
+     (add-to-list 'org-latex-classes
+                  '("NHMRC_investigator_grant"
+                    "\\documentclass[12pt,table,names]{article}
+     \\usepackage{\\string~\"/.emacs.d/latex_templates/NHMRC_investigator\"}
+     [NO-DEFAULT-PACKAGES]
+     [NO-PACKAGES]"
+                    ("\\section{%s}" . "\\section*{%s}")
+                    ("\\subsection{%s}" . "\\subsection*{%s}")
+                    ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+                    ("\\paragraph{%s}" . "\\paragraph*{%s}")
+                    ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
+   #+END_SRC
+   
 ** ARC Discovery Grant
 
    Main grant 
