@@ -32,6 +32,8 @@
   #+BEGIN_SRC emacs-lisp
     (require 'package)
 
+    (setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3")
+
     (setq package-archives '(("org" . "https://orgmode.org/elpa/")
                              ("gnu" . "https://elpa.gnu.org/packages/")
                              ("melpa"     . "https://melpa.org/packages/")))

@@ -44,26 +44,26 @@ sudo apt install emacs25 pdsh git autoconf automake clang llvm libtool cmake
     StrictHostKeyChecking no
     Host node-1 
     User ubuntu
-    Hostname 192.168.1.12
+    Hostname 192.168.1.28
     IdentityFile ~/.ssh/pawsey.key
     Host node-2
-    Hostname 192.168.1.7
+    Hostname 192.168.1.18
     User ubuntu
     IdentityFile ~/.ssh/pawsey.key
     Host node-3
-    Hostname 192.168.1.5
+    Hostname 192.168.1.15
     User ubuntu
     IdentityFile ~/.ssh/pawsey.key
     Host node-4
-    Hostname 192.168.1.14
+    Hostname 192.168.1.9
     User ubuntu
     IdentityFile ~/.ssh/pawsey.key
     Host node-5
-    Hostname 192.168.1.10
+    Hostname 192.168.1.7
     User ubuntu
     IdentityFile ~/.ssh/pawsey.key
     Host node-6
-    Hostname 192.168.1.9
+    Hostname 192.168.1.5
     User ubuntu
     IdentityFile ~/.ssh/pawsey.key
   #+END_SRC
@@ -170,7 +170,10 @@ remunge
 * Slurm 
 
   Setup for a basic slurm scheduler. The setup below is minimal but works.  
-
+  Install slurm
+#+BEGIN_SRC bash 
+  pdsh -a sudo apt install slurmctld slurmd -yq
+#+END_SRC
 ** Generate a slurm config file 
 
    Generate a slurm config file using this web-form: 
@@ -216,12 +219,12 @@ remunge
 
      sudo -- sh -c 'cat > /etc/hosts  << "EOF"
      127.0.0.1 localhost
-     192.168.1.12 node-1
-     192.168.1.7 node-2
-     192.168.1.5 node-3
-     192.168.1.14 node-4
-     192.168.1.10 node-5
-     192.168.1.9 node-6
+     192.168.1.29 node-1
+     192.168.1.18 node-2
+     192.168.1.15 node-3
+     192.168.1.9 node-4
+     192.168.1.7 node-5
+     192.168.1.5 node-6
      # The following lines are desirable for IPv6 capable hosts
      ::1 ip6-localhost ip6-loopback
      fe00::0 ip6-localnet
@@ -270,12 +273,12 @@ chmod 755 /var/spool/slurmctld
      sudo chown slurm: /etc/slurm-llnl/slurm.conf
      sudo -- sh -c 'cat > /etc/hosts  << "EOF"
      127.0.0.1 localhost
-     192.168.1.12 node-1
-     192.168.1.7 node-2
-     192.168.1.5 node-3
-     192.168.1.14 node-4
-     192.168.1.10 node-5
-     192.168.1.9 node-6
+     192.168.1.29 node-1
+     192.168.1.18 node-2
+     192.168.1.15 node-3
+     192.168.1.9 node-4
+     192.168.1.7 node-5
+     192.168.1.5 node-6
 
      # The following lines are desirable for IPv6 capable hosts
      ::1 ip6-localhost ip6-loopback
@@ -365,20 +368,20 @@ Sometimes the nodes appear to have low memory. To fix this:
     sudo apt-get install -yq nfs-kernel-server
 
     sudo -- sh -c 'cat > /etc/exports  << "EOF"
+        /data 192.168.1.18(rw,sync,no_subtree_check)
+        /data 192.168.1.15(rw,sync,no_subtree_check)
+        /data 192.168.1.9(rw,sync,no_subtree_check)
         /data 192.168.1.7(rw,sync,no_subtree_check)
         /data 192.168.1.5(rw,sync,no_subtree_check)
-        /data 192.168.1.14(rw,sync,no_subtree_check)
-        /data 192.168.1.10(rw,sync,no_subtree_check)
-        /data 192.168.1.9(rw,sync,no_subtree_check)
-
     EOF'
+
     sudo /etc/init.d/rpcbind restart
     sudo /etc/init.d/nfs-kernel-server restart
     sudo exportfs -r
 
     pdsh -a sudo mkdir /data
     pdsh -a sudo chown -R ubuntu:ubuntu /data 
-    pdsh -a sudo mount 192.168.1.12:/data /data      
+    pdsh -a sudo mount 192.168.1.29:/data /data      
 
     pdsh -a ls /data 
 
@@ -405,12 +408,21 @@ pdsh -a sudo gpasswd -a $USER docker
 
   #+BEGIN_SRC shell :exports code :results none 
 
-    sudo add-apt-repository ppa:marutter/rrutter3.5
-
-    sudo apt install r-api-3.5
-    pdsh -a sudo add-apt-repository ppa:marutter/rrutter3.5
+    sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E298A3A825C0D65DFD57CBB651716619E084DAB9
+    sudo add-apt-repository 'deb https://cloud.r-project.org/bin/linux/ubuntu bionic-cran35/'
+    pdsh -a sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E298A3A825C0D65DFD57CBB651716619E084DAB9
+    pdsh -a "sudo add-apt-repository 'deb https://cloud.r-project.org/bin/linux/ubuntu bionic-cran35/'"
     pdsh -a sudo apt update 
-    pdsh -a sudo apt install -yq default-jdk r-api-3.5 libxml2-dev libcurl4-openssl-dev openssl libssl-dev  libssh2-1-dev git 
+
+    sudo apt install r-base -yq 
+    pdsh -a sudo apt install r-base -yq
+
+
+    sudo apt install build-essential -yq
+    pdsh -a sudo apt install build-essential -yq
+
+    pdsh -a sudo apt install -yq default-jdk libxml2-dev libcurl4-openssl-dev openssl libssl-dev  libssh2-1-dev git 
+    pdsh -a "sudo apt-get install -yq libhdf5-dev"
   #+END_SRC
 
 * Install R packages 
@@ -419,13 +431,13 @@ pdsh -a sudo gpasswd -a $USER docker
   escaped.
 
   #+BEGIN_SRC sh
-    pdsh -a "sudo apt-get install -yq libhdf5-dev"
+
     pdsh -a "sudo R -e 'install.packages(c(\"Seurat\",\"tidyverse\",\"optparse\",\"reshape2\",\"devtools\",\"reshape\"), repos=\"http://cran.us.r-project.org\", Ncpus = 16)'"
     pdsh -a "sudo R -e 'source(\"https://bioconductor.org/biocLite.R\");biocLite(\"GSVA\")'"
     pdsh -a "sudo R -e 'source(\"https://bioconductor.org/biocLite.R\");biocLite(\"biomaRt\")'"
     pdsh -a "sudo R -e 'source(\"https://bioconductor.org/biocLite.R\");biocLite(\"DropletUtils\")'"
     pdsh -a "sudo R -e 'source(\"https://bioconductor.org/biocLite.R\");biocLite(\"ensembldb\")'"
-n    pdsh -a "sudo R -e 'source(\"https://bioconductor.org/biocLite.R\");biocLite(\"EnsDb.Hsapiens.v86\")'"
+    pdsh -a "sudo R -e 'source(\"https://bioconductor.org/biocLite.R\");biocLite(\"EnsDb.Hsapiens.v86\")'"
     pdsh -a "sudo R -e 'source(\"https://bioconductor.org/biocLite.R\");biocLite(\"EnsDb.Mmusculus.v79\")'"
     pdsh -a "sudo R -e 'devtools::install_github(\"dviraran/SingleR\")'"
     pdsh -a "sudo R -e 'source(\"https://bioconductor.org/biocLite.R\");biocLite(\"scater\")'"
@@ -435,7 +447,7 @@ n    pdsh -a "sudo R -e 'source(\"https://bioconductor.org/biocLite.R\");biocLit
 
   #+RESULTS:
 
- #+BEGIN_SRC sh
+ #+Begin_SRC sh
    sudo apt-get install -yq libhdf5-dev
    sudo R -e 'install.packages(c("Seurat","tidyverse","optparse","reshape2","devtools","reshape"),dependencies = TRUE, repos="http://cran.us.r-project.org", Ncpus = 16)'
    sudo R -e 'source("https://bioconductor.org/biocLite.R");biocLite("GSVA")'

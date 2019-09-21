@@ -174,9 +174,12 @@
 
 * mounting samba (?) 
 
+
 #+BEGIN_SRC bash
-sudo mount.cifs -o username=XXXXXX,domain=ichr.uwa.edu.au,uid=,gid=analysis //ichr.uwa.edu.au/file\ workspace/Instruments/MiniSeq  dfs-drive
+
+sudo mount.cifs -o username=XXXXX,workgroup=ichr.uwa.edu.au,domain=ichr.uwa.edu.au,uid=,gid=analysis  //ichr.uwa.edu.au/file\ workspace/Instruments/MiniSeq   dfs-drive
 #+END_SRC
+
 
 * Scratch drive
 
