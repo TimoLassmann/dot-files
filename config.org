@@ -784,6 +784,7 @@
    #+BEGIN_SRC emacs-lisp
      ;;(setq org-refile-targets '((org-agenda-files :maxlevel . 3)))
      (setq org-refile-targets '(("~/work/work-todo.org" :maxlevel . 2)
+                                ("~/work/work-todo-archive.org" :maxlevel . 2)
                                 ("~/life/life-todo.org" :maxlevel . 2)
                                 ))
      (setq org-refile-use-outline-path 'file)
