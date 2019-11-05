@@ -51,10 +51,57 @@ EOT
 #+END_SRC
 
 ** testing R 
+   Here is an example R script that prints it's inputs and the session information 
 
-#+BEGIN_SRC bash -n :tangle test_R_script.R :shebang #!/usr/bin/env R :noweb yes :exports code :results none
-  sessionInfo()
-#+END_SRC
+
+   #+BEGIN_SRC R -n :tangle test_R_script.R :shebang #!/usr/bin/env Rscript :noweb yes :exports code :results none
+     library(optparse)
+     sessionInfo()
+     dark <- FALSE;
+     error <- 0;
+     option_list = list(
+
+
+
+       make_option(c("-i", "--input"),
+                   type="character",
+                   default=NULL,
+                   help="The input.",
+                   metavar="character"),
+       make_option(c("-o", "--output"),
+                   type="character",
+                   default=NULL,
+                   help="The output.",
+                   metavar="character")
+     );
+
+     opt_parser <- OptionParser(option_list=option_list,
+                                description = "\nTest for running R scripts using slurm.",
+                                epilogue = "Example:\n\n  ./test_R_script.R -i <aaaa> -b <bbbbb>\n\n");
+
+
+
+     opt <- parse_args(opt_parser)
+
+
+
+     if (is.null(opt$input)){
+       print_help(opt_parser)
+       stop("Missing benign file!\n", call.=FALSE)
+     }
+     if (is.null(opt$output)){
+       print_help(opt_parser)
+       stop("Missing pathogenic file!\n", call.=FALSE)
+     }
+     my_in <-  opt$input
+     my_out <-  opt$output
+
+     to_print = paste("INPUT=",my_in);
+     message(to_print);
+     to_print = paste("OUTPUT=",my_out);
+     message(to_print);
+     sessionInfo()
+   #+END_SRC
 
 #+BEGIN_SRC bash -n :tangle test_wrapper_R.sh :shebang #!/usr/bin/env bash :noweb yes :exports code :results none
 
@@ -90,7 +137,7 @@ sbatch <<EOT
 #SBATCH -o slurm.%N.%j.out # STDOUT
 #SBATCH -e slurm.%N.%j.err # STDERR
 
-./test_R_script.R
+./test_R_script.R -i $INPUT -o $OUTPUT
 
 exit 0
 EOT
