@@ -899,6 +899,7 @@
         (makefile . t)
         (latex . t)
         (java . t)
+        (clojure . t)
         ))
 
    #+END_SRC

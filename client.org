@@ -292,12 +292,12 @@ A package called fancy-battery will be used if we are in GUI emacs, otherwise th
 
 * Rainbow
 
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_EXAMPLE emacs-lisp
 (use-package rainbow-mode
   :ensure t
   :init
     (add-hook 'prog-mode-hook 'rainbow-mode))
-#+END_SRC
+#+END_EXAMPLE
 
 The end. 
 

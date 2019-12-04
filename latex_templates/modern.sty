@@ -11,7 +11,7 @@
 \usepackage{CJKutf8}
 
 \usepackage{minted}
-
+\usepackage[style=british]{csquotes}
 
 \usemintedstyle{emacs}
 
@@ -74,10 +74,10 @@
 
 %% bibliography formatting 
 \renewcommand\bibfont{\scriptsize}
-\setbeamercolor*{bibliography entry title}{fg=darkgrey}
-\setbeamercolor*{bibliography entry author}{fg=darkgrey}
-\setbeamercolor*{bibliography entry location}{fg=darkgrey}
-\setbeamercolor*{bibliography entry note}{fg=darkgrey}
+%\setbeamercolor*{bibliography entry title}{fg=darkgrey}
+%\setbeamercolor*{bibliography entry author}{fg=darkgrey}
+%\setbeamercolor*{bibliography entry location}{fg=darkgrey}
+%\setbeamercolor*{bibliography entry note}{fg=darkgrey}
 \setbeamertemplate{frametitle continuation}[from second]
 \setbeamertemplate{bibliography item}{}
 
@@ -131,3 +131,13 @@
     \pgfmathparse{(\pgf@yc-\pgf@yb)/2.*\page@y+(\pgf@yc+\pgf@yb)/2.}
     \expandafter\pgf@y\expandafter=\pgfmathresult pt
 }
+
+
+\def\signed #1{{\leavevmode\unskip\nobreak\hfil\penalty50\hskip1em
+  \hbox{}\nobreak\hfill #1%
+  \parfillskip=0pt \finalhyphendemerits=0 \endgraf}}
+
+\newsavebox\mybox
+\newenvironment{aquote}[1]
+  {\savebox\mybox{#1}\begin{quote}\openautoquote\hspace*{-.7ex}}
+  {\unskip\closeautoquote\vspace*{1mm}\signed{\usebox\mybox}\end{quote}}
