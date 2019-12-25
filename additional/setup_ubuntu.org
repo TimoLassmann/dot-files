@@ -503,8 +503,7 @@ sudo service docker stop
 
 
   #+END_SRC
-
-
+  
 * Singularity
 
 

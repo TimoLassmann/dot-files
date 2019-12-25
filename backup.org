@@ -206,3 +206,12 @@ EOF
   #+END_SRC
 
 
+
+* House keeping
+  To remove unwanted files from the backup
+
+#+BEGIN_SRC sh :results none 
+  cd rsync 
+  find . -name  "vgcore.*" -print0 | xargs -0 -I {} mv {} ~/tmp
+  #+END_SRC
+
