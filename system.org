@@ -1,0 +1,30 @@
+#+TITLE:  System settings 
+#+AUTHOR: Timo Lassmann
+#+EMAIL:  timo.lassmann@telethonkids.org.au
+#+DATE:   2020-01-19
+#+LATEX_CLASS: report
+#+OPTIONS:  toc:nil
+#+OPTIONS: H:4
+#+LATEX_CMD: pdflatex
+#+PROPERTY: header-args :eval never
+* Introduction 
+  
+  Disable core dumps 
+  #+BEGIN_SRC sh 
+
+    echo "ulimit -c 0 > /dev/null 2>&1" > /etc/profile.d/disable-coredumps.sh
+  #+END_SRC
+
+  Disable searching repos on mistype ...
+
+ 
+  #+BEGIN_SRC sh
+
+
+    sudo dnf remove PackageKit-command-not-found
+  #+END_SRC
+
+
+
+
+

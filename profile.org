@@ -47,7 +47,7 @@
   #+BEGIN_SRC sh
     if which valgrind >/dev/null 2>&1
     then
-        alias val="valgrind --leak-check=yes --show-leak-kinds=all"
+        alias val="valgrind --leak-check=yes --show-leak-kinds=all --exit-on-first-error=yes --error-exitcode=1"
     fi
   #+END_SRC
 
