@@ -66,5 +66,10 @@
   #+BEGIN_SRC sh
     alias e='emacsclient -q -c --alternate-editor='
     alias es='emacsclient -e "(kill-emacs)"'
-
   #+END_SRC
+
+  python alias
+
+#+BEGIN_SRC sh
+  alias python='/usr/bin/python3'
+#+END_SRC
