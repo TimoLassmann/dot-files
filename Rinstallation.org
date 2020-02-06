@@ -1,0 +1,75 @@
+#+TITLE:  R installation 
+#+AUTHOR: Timo Lassmann
+#+EMAIL:  timo.lassmann@telethonkids.org.au
+#+DATE:   2020-02-06
+#+LATEX_CLASS: report
+#+OPTIONS:  toc:nil
+#+OPTIONS: H:4
+#+LATEX_CMD: pdflatex
+#+PROPERTY: header-args:bash :eval never
+#+PROPERTY: header-args:R :eval never
+
+#+BEGIN_SRC emacs-lisp  :results none :exports none 
+  (setq org-latex-listings 'minted)
+  (setq org-latex-minted-options
+        '(("frame" "lines") ("linenos=true")("breaklines")))
+#+END_SRC
+
+
+* Introduction 
+  
+  I seem to keep having trouble with R installations on a number of my machines. Let's try and fix this here.
+
+* Installing R locally 
+
+  Get the R source 
+
+  #+BEGIN_SRC bash 
+    mkdir -p programs 
+    cd programs 
+    wget https://cran.r-project.org/src/base/R-3/R-3.6.2.tar.gz
+  #+END_SRC
+
+  Configure: 
+
+  #+BEGIN_SRC bash
+    ./configure --prefix ~/
+    make
+    make install
+  #+END_SRC
+
+
+* Setup R environment
+  
+
+** Renviron 
+  Set the tmp + local lib directory:
+  #+BEGIN_SRC text :tangle ~/.Renviron
+    TMPDIR='~/tmp'
+    R_LIBS_USER='~/local/R_libs'
+  #+END_SRC
+
+** Rprofile 
+
+   Make sure R knows about the user and base libraries: 
+
+   #+BEGIN_SRC R :tangle ~/.Rprofile
+     set_lib_paths <- function(lib_vec) {
+       lib_vec <- normalizePath(lib_vec, mustWork = TRUE)
+       shim_fun <- .libPaths
+       shim_env <- new.env(parent = environment(shim_fun))
+       shim_env$.Library <- character()
+       shim_env$.Library.site <- character()
+       environment(shim_fun) <- shim_env
+       shim_fun(lib_vec)
+     }
+     set_lib_paths(c("~/local/R_libs","~/lib/R/library"))
+   #+END_SRC
+
+
+
+
+
+
+
+* Install packages
