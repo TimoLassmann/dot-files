@@ -38,7 +38,18 @@
     make install
   #+END_SRC
 
+  Some packages need a recent version of aclocal, part of automake.
 
+#+BEGIN_SRC bash
+
+cd programs 
+wget https://ftp.gnu.org/gnu/automake/automake-1.16.tar.gz 
+tar -zxvf automake-1.16.tar.gz
+cd automake-1.16
+./bootstrap
+./configure --prefix ~/
+
+#+END_SRC
 * Setup R environment
   
 
@@ -73,3 +84,30 @@
 
 
 * Install packages
+  
+  Install bioconductor etc... 
+
+  #+BEGIN_SRC R
+    install.packages(c("httpuv"))
+    install.packages("cowplot")
+
+    if (!requireNamespace("BiocManager", quietly = TRUE))
+      install.packages("BiocManager")
+
+    BiocManager::install("devtools")
+    BiocManager::install("tximport")
+    BiocManager::install("biomaRt")
+    BiocManager::install("DESeq2")
+    BiocManager::install("rhdf5")
+
+    devtools::install_github("pachterlab/sleuth")
+  #+END_SRC
+
+
+
+
+
+
+
+
+
