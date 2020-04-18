@@ -19,6 +19,7 @@ nametrans = lambda folder: {'sent' : 'Sent Items' , 'trash' : 'Deleted Items',
 
 
 [Repository Remote-office365]
+auth_mechanisms = GSSAPI, CRAM-MD5, PLAIN, LOGIN, XOAUTH2
 type = IMAP
 remoteuser = timo.lassmann@telethonkids.org.au
 remotepasseval = mailpasswd("office365")
@@ -30,3 +31,5 @@ sslcacertfile = /etc/ssl/certs/ca-bundle.trust.crt
 nametrans = lambda folder: { 'Sent Items':'sent', 'Deleted Items' : 'trash' ,
                             }.get(folder, folder)
 folderfilter = lambda folder: folder in ['INBOX','Sent Items','Deleted Items', 'Drafts', 'Junk E-Mail','Archive']
+
+

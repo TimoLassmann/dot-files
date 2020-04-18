@@ -22,12 +22,20 @@
 
 * Installing R locally 
 
+
+  #+BEGIN_SRC bash 
+    sudo dnf install readline-devel 
+
+  #+END_SRC
   Get the R source 
 
   #+BEGIN_SRC bash 
+    mkdir -p ~/local/R_libs
     mkdir -p programs 
     cd programs 
-    wget https://cran.r-project.org/src/base/R-3/R-3.6.2.tar.gz
+    wget https://cran.r-project.org/src/base/R-3/R-3.6.3.tar.gz
+    tar -zxvf R-3.6.3.tar.gz  
+    cd R-3.6.3
   #+END_SRC
 
   Configure: 
@@ -40,25 +48,28 @@
 
   Some packages need a recent version of aclocal, part of automake.
 
-#+BEGIN_SRC bash
+  #+BEGIN_SRC bash
 
-cd programs 
-wget https://ftp.gnu.org/gnu/automake/automake-1.16.tar.gz 
-tar -zxvf automake-1.16.tar.gz
-cd automake-1.16
-./bootstrap
-./configure --prefix ~/
+    cd programs 
+    wget https://ftp.gnu.org/gnu/automake/automake-1.16.tar.gz 
+    tar -zxvf automake-1.16.tar.gz
+    cd automake-1.16
+    ./bootstrap
+    ./configure --prefix ~/
 
-#+END_SRC
+  #+END_SRC
+
 * Setup R environment
   
 
 ** Renviron 
-  Set the tmp + local lib directory:
-  #+BEGIN_SRC text :tangle ~/.Renviron
-    TMPDIR='~/tmp'
-    R_LIBS_USER='~/local/R_libs'
-  #+END_SRC
+   Set the tmp + local lib directory:
+   #+BEGIN_SRC text :tangle ~/.Renviron
+     TMP='/home/user/tmp'
+     TEMP='/home/user/tmp'
+     TMPDIR='/home/user/tmp'
+     R_LIBS_USER='~/local/R_libs'
+   #+END_SRC
 
 ** Rprofile 
 
@@ -74,7 +85,7 @@ cd automake-1.16
        environment(shim_fun) <- shim_env
        shim_fun(lib_vec)
      }
-     set_lib_paths(c("~/local/R_libs","~/lib/R/library"))
+     set_lib_paths(c("~/local/R_libs","~/lib64/R/library"))
    #+END_SRC
 
 
@@ -87,21 +98,64 @@ cd automake-1.16
   
   Install bioconductor etc... 
 
+  NOTE: for larger packages it might be necessary to increase the size of =/tmp= :
+
+  #+BEGIN_SRC bash 
+    sudo mount -o remount,size=5G /tmp/
+  #+END_SRC
+  
   #+BEGIN_SRC R
-    install.packages(c("httpuv"))
-    install.packages("cowplot")
+
+
+    packages = c("httpuv",
+                 "cowplot",
+                 "tidyverse",
+                 "viridis",
+                 "ggplot2",
+                 "ggforce",
+                 "UpSetR",
+                 "MVA",
+                 "wesanderson",
+                 "randomForest");
+
+    ## Now load or install&load all
+    package.check <- lapply(
+      packages,
+      FUN = function(x) {
+        if (!require(x, character.only = TRUE)) {
+          install.packages(x, dependencies = TRUE)
+          library(x, character.only = TRUE)
+        }
+      }
+    )
+
 
     if (!requireNamespace("BiocManager", quietly = TRUE))
       install.packages("BiocManager")
 
-    BiocManager::install("devtools")
-    BiocManager::install("tximport")
-    BiocManager::install("biomaRt")
-    BiocManager::install("DESeq2")
-    BiocManager::install("rhdf5")
+    BiocManager::install(c("devtools",
+                           "BSgenome",
+                           "tximport",
+                           "biomaRt",
+                           "DESeq2",
+                           "rhdf5",
+                           "CAGEr",
+                           "tximportData",
+                           "BiocParallel",
+                           "apeglm",
+                           "ReportingTools",
+                           "AnnotationDbi",
+                           "org.Hs.eg.db",
+                           "org.Mm.eg.db",
+                           "rtracklayer"))
+    BiocManager::install(c("BSgenome.Hsapiens.UCSC.hg38",
+                           "BSgenome.Hsapiens.NCBI.GRCh38"))
+    BiocManager::install("BSgenome.Mmusculus.UCSC.mm10")
 
     devtools::install_github("pachterlab/sleuth")
   #+END_SRC
+    
+
 
 
 

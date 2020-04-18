@@ -123,6 +123,7 @@ arner-2015-trans-enhan,
 andersson-2014-atlas-activ,
 lassmann-2005-kalig,
 lassmann-2008-kalig,
+lassmann-2019-kalig,
 lassmann-2005-autom-asses,
 kouno-2019-c1-cage,
 }
@@ -139,8 +140,7 @@ kouno-2019-c1-cage,
 
 \graphicspath{{../images/}{../../images/}}
 
-
-\linespread{1.1}
+\linespread{1.3}
 
 
 %\geometry{a4paper,
@@ -173,11 +173,40 @@ kouno-2019-c1-cage,
 %\renewcommand\thesubsubsubsection{\arabic{subsection}.\arabic{subsubsection}.\arabic{subsubsubsection}.}
 
 
-\titleformat{\section}{\Large\scshape}{}{0.0em}{}
-\titleformat{\subsection}[runin]{\bfseries}{}{0.0em}{}[\enspace] 
+
+\titleformat{\section}{\LARGE\scshape}{}{}{}
+\titleformat{\subsection}{\Large\bfseries}{}{}{}
 \titleformat{\subsubsection}{\itshape}{}{0em}{\uline}
 %\titleformat{\subsubsubsection}{\normalfont\normalsize\selectfont\itshape}{\thesubsubsubsection}{0.5em}{}
 \titleformat{\paragraph}[runin]{\itshape}{}{0em}{\uline}[:\enspace] 
+
+
+             
+
+\titleformat{\subsection}[block] %command
+              {\bfseries
+                \tikz[overlay] \shade[left color=black!10!white,right color=black!20!white] (0,-1ex) rectangle (\textwidth,1em);}%} %format
+              {} %label
+              {1.0em} %sep
+              {} %before
+              [] %after
+              %\titlespacing{\section}{0pt}{10pt}{5pt}
+\titleformat{\subsubsection}[block] %command
+              {\selectfont\bfseries\itshape
+                \tikz[overlay] \shade[left color=black!10!white,right color=black!20!white] (0,-1ex) rectangle (\textwidth,1em);}%} %format
+              {} %label
+              {2em} %sep
+              {} %before
+              [] %after
+              %\titlespacing{\section}{0pt}{10pt}{5pt}
+
+              
+
+%\titleformat{\section}{\color{grantblue}\normalfont\large\selectfont\bfseries}{\Alph{section}.}{0.25em}{}
+%\titleformat{\subsection}{\color{grantblue}\selectfont\bfseries\uppercase}{\thesubsection}{0.25em}{}
+%\titleformat{\subsubsection}{\color{grantblue}\normalfont\normalsize\selectfont\itshape}{\thesubsubsection}{0.5em}{}
+%\titleformat{\subsubsubsection}{\normalfont\normalsize\selectfont\itshape}{\thesubsubsubsection}{0.5em}{}
+\titleformat{\paragraph}[runin]{\normalfont\normalsize\bfseries\itshape}{}{0em}{}[:\enspace] 
 
 
 
@@ -185,8 +214,8 @@ kouno-2019-c1-cage,
 
 %\titlespacing*{\section}{0pt}{12pt plus 4pt minus 2pt}{12pt plus 4pt minus 2pt }
 %\titlespacing*{\subsection}{0pt}{12pt plus 4pt minus 2pt}{0pt plus 4pt minus 2pt }
-\titlespacing*{\section}{0pt}{12pt}{8pt}
-\titlespacing*{\subsection}{0pt}{*0}{*0}
+%\titlespacing*{\section}{0pt}{12pt}{8pt}
+%\titlespacing*{\subsection}{0pt}{10pt}{10pt}
 \titlespacing*{\subsubsection}{0pt}{0pt}{0pt}
 %\titlespacing*{\subsubsection}{0pt}{0.1cm}{0.1cm}
 %\titlespacing*{\subsubsubsection}{0pt}{*0}{0.1cm}

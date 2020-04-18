@@ -557,7 +557,6 @@
 ** IDO
 
    #+BEGIN_SRC emacs-lisp
-
      (use-package ido
        :ensure t
        :init  (setq ido-enable-flex-matching t
@@ -577,8 +576,8 @@
        :config
        (ido-ubiquitous-mode))
    #+END_SRC
-   FLX package
 
+   FLX package
    #+BEGIN_SRC emacs-lisp
      (use-package flx-ido
        :ensure t
@@ -589,7 +588,6 @@
    #+END_SRC
 
    Vertical mode 
-
    #+BEGIN_SRC emacs-lisp
      (use-package ido-vertical-mode
        :ensure t
@@ -642,8 +640,7 @@
    #+END_SRC
 
 
-** Counsel 
-
+** Counsel
    Counsel tramp 
    #+BEGIN_SRC emacs-lisp
      (use-package counsel-tramp
@@ -1592,10 +1589,6 @@
         (sp-pair "'" nil :actions :rem)
         (sp-pair "`" nil :actions :rem)
         :init (add-hook 'c-mode-hook 'smartparens-mode))
-
-
-
-
     #+END_SRC
 
 *** smart scan
@@ -1636,7 +1629,6 @@
     #+BEGIN_SRC emacs-lisp
       (use-package clean-aindent-mode
         :ensure t 
-
         :init 
         (add-hook 'prog-mode-hook 'clean-aindent-mode)
         )
@@ -1670,8 +1662,15 @@
      (setq compilation-read-command nil)
    #+END_SRC
 
-** ESS (emacs speaks statistics... ).
+** ESS  (emacs speaks statistics... ) and R 
+   
+   I prefer to have my own R installation locally (see Rinstallation.org). Let's let emacs know about this: 
+   
+   #+BEGIN_SRC emacs-lisp
+     (setq-default inferior-R-program-name "/home/user/bin/R")
+   #+END_SRC
 
+   Default ESS config: 
    #+BEGIN_SRC emacs-lisp
      (use-package ess
        :ensure t
@@ -1854,7 +1853,6 @@
   #+BEGIN_SRC emacs-lisp
 
     (setenv "LD_LIBRARY_PATH" "/usr/local/lib")
-
     ;;(setenv "PATH"
     ;;        (concat
     ;;         "/usr/local/bin:/usr/local/sbin:"
@@ -1905,14 +1903,9 @@
   #+END_SRC
 
 * PDF tools
-
   
 #+BEGIN_SRC emacs-lisp
-
-
-
     (use-package pdf-tools
-
       :config
       ;; initialise
       (pdf-tools-install)
@@ -1923,6 +1916,7 @@
       ;; use normal isearch
       (define-key pdf-view-mode-map (kbd "C-s") 'isearch-forward))
 #+END_SRC
+
 * End
 
 
