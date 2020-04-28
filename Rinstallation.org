@@ -107,7 +107,9 @@
   #+BEGIN_SRC R
 
 
-    packages = c("httpuv",
+    packages = c("pheatmap",
+                 "seqinr",
+                 "httpuv",
                  "cowplot",
                  "tidyverse",
                  "viridis",

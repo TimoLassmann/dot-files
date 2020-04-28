@@ -6,6 +6,8 @@
 #+OPTIONS:  toc:nil
 #+OPTIONS: H:4
 #+LATEX_CMD: pdflatex
+#+PROPERTY: header-args:bash :eval never
+
 
 * Introduction
   Here is my implementation of a backup strategy outlined by Mark Sanborn (https://www.marksanborn.net/howto/use-rsync-for-daily-weekly-and-full-monthly-backups/).
@@ -15,7 +17,7 @@
 * To get started
 
   Firstly create the target directories for the backups: 
-  #+BEGIN_SRC sh :results none 
+  #+BEGIN_SRC bash :results none 
     mkdir rsync
     cd rsync 
     mkdir daily 
@@ -33,13 +35,13 @@
 
   To run the backup script:
 
-  #+BEGIN_SRC sh :results none 
+  #+BEGIN_SRC bash :results none 
     backup_rsync.sh -m <d|w|m>  
   #+END_SRC
 
   for daily (=d=), weekly (=w=) or monthly (=m=) backups. 
 
-  #+BEGIN_SRC sh :exports both :results none :noweb yes :tangle ~/bin/backup_rsync.sh :shebang #!/bin/bash
+  #+BEGIN_SRC bash :exports both :results none :noweb yes :tangle ~/bin/backup_rsync.sh :shebang #!/bin/bash
     targets=($HOME/code $HOME/work $HOME/life $HOME/travel)
 
 
@@ -210,8 +212,35 @@ EOF
 * House keeping
   To remove unwanted files from the backup
 
-#+BEGIN_SRC sh :results none 
+#+BEGIN_SRC bash :results none 
   cd rsync 
   find . -name  "vgcore.*" -print0 | xargs -0 -I {} mv {} ~/tmp
   #+END_SRC
+
+
+* Mounting disks 
+  
+  To mount disks always to same location. 
+
+  1) figure out the UUID of disk:
+
+  #+BEGIN_SRC bash
+    sudo blkid
+  #+END_SRC
+
+  Record UUID and TYPE 
+  2) create mount point 
+
+  #+BEGIN_SRC bash 
+
+    mkdir -p /mnt/DISKXXXX 
+  #+END_SRC
+
+  3) mount 
+
+  #+BEGIN_SRC bash 
+    mount -t btrfs --uuid 40c13e5c-fe47-45e9-a88f-6ca33320b7b3 /mnt/removable 
+  #+END_SRC
+
+
 
