@@ -29,7 +29,7 @@
 
 #+BEGIN_SRC shell 
 sudo apt update -yq 
-sudo apt install emacs25 pdsh git autoconf automake clang llvm libtool cmake 
+sudo apt install emacs pdsh git autoconf automake clang llvm libtool cmake 
 #+END_SRC
 
 
@@ -68,6 +68,37 @@ sudo apt install emacs25 pdsh git autoconf automake clang llvm libtool cmake
     IdentityFile ~/.ssh/pawsey.key
   #+END_SRC
 
+  or: 
+
+  #+BEGIN_SRC shell :tangle ssh_config_nimbus  :exports code :results none
+    StrictHostKeyChecking no
+    Host rare-1 
+    User ubuntu
+    Hostname 192.168.1.6
+    IdentityFile ~/.ssh/pawsey.key
+    Host rare-2
+    Hostname 192.168.1.22
+    User ubuntu
+    IdentityFile ~/.ssh/pawsey.key
+    Host rare-3
+    Hostname 192.168.1.27
+    User ubuntu
+    IdentityFile ~/.ssh/pawsey.key
+    Host rare-4
+    Hostname 192.168.1.20
+    User ubuntu
+    IdentityFile ~/.ssh/pawsey.key
+    Host rare-5
+    Hostname 192.168.1.36
+    User ubuntu
+    IdentityFile ~/.ssh/pawsey.key
+    Host rare-6
+    Hostname 192.168.1.16
+    User ubuntu
+    IdentityFile ~/.ssh/pawsey.key
+  #+END_SRC
+
+
   Then copy to content to ~/.ssh/config 
 
 
@@ -80,6 +111,7 @@ sudo apt-get install pdsh
 
 #+END_SRC
   Especially add nodes in the /etc/genders file:  
+
 
   sudo vi /etc/genders
 
@@ -159,11 +191,11 @@ pdsh -a 'ip a | grep 192.168'
 Testing!!! 
 #+BEGIN_SRC shell 
 munge -n | unmunge
-munge -n | ssh node-2 unmunge
-munge -n | ssh node-3 unmunge
-munge -n | ssh node-4 unmunge
-munge -n | ssh node-5 unmunge
-munge -n | ssh node-6 unmunge
+munge -n | ssh rare-2 unmunge
+munge -n | ssh rare-3 unmunge
+munge -n | ssh rare-4 unmunge
+munge -n | ssh rare-5 unmunge
+munge -n | ssh rare-6 unmunge
 remunge
 #+END_SRC
 
@@ -246,9 +278,9 @@ daemon can't write...)
 
 #+BEGIN_SRC shell 
 
-mkdir /var/spool/slurmctld
-chown slurm: /var/spool/slurmctld
-chmod 755 /var/spool/slurmctld
+mkdir /var/spool/slurmd
+chown slurm: /var/spool/slurmd
+chmod 755 /var/spool/slurmcd
 #+END_SRC
 
    The following script configures the head node, copies the above script to all

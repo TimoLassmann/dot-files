@@ -181,6 +181,10 @@ sudo mount.cifs -o username=XXXXX,workgroup=ichr.uwa.edu.au,domain=ichr.uwa.edu.
 #+END_SRC
 
 
+sudo mount.cifs -o username=XXXXX,workgroup=ichr.uwa.edu.au,domain=ichr.uwa.edu.au,uid=,gid=analysis  //ichr.uwa.edu.au/orgdata/ tmp_mount
+
+smb://ichr/orgdata/
+
 * Scratch drive
 
 

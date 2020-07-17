@@ -1315,7 +1315,7 @@
    #+BEGIN_SRC emacs-lisp
 
      ;;(setq compilation-scroll-output t)
-     (setq compile-command "make")
+     (setq compile-command "make -j 6")
      (setq compilation-scroll-output 'first-error)
      (setq compilation-always-kill t)
      (setq compilation-disable-input t)

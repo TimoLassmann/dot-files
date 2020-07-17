@@ -12,8 +12,8 @@
 
 #+BEGIN_SRC shell :tangle setup_fedora.sh :shebang #!/bin/bash :exports code :results none
 
-    sudo dnf update &&  sudo dnf install latexmk compat-giflib libtool zsh pass gnupg screen git-annex gnutls libjpeg-turbo-devel libjpeg-turbo libjpeg-turbo-utils libncurses* aspell aspell-de aspell-en ImageMagick-devel ImageMagick libXft libXft-devel libotf otf2 libotf-devel otf2-devel m17n-lib m17n-lib-devel gtk3-devel gtk3 nc otf2 libotf texlive powerline-fonts freetype freetype-devel xapian-core-devel libxapia* gmime-devel gmime cmake clang libxml2 libxml2-devel libncurses* libterminfo* libtermcap libtinfo libtinfo* ncurses* lcms* librsvg2 librsvg2-devel automake
-
+    sudo dnf update &&  sudo dnf install latexmk libtool zsh pass gnupg screen git-annex gnutls libjpeg-turbo-devel libjpeg-turbo libjpeg-turbo-utils libncurses* aspell aspell-de aspell-en ImageMagick-devel ImageMagick libXft libXft-devel libotf otf2 libotf-devel otf2-devel m17n-lib m17n-lib-devel gtk3-devel gtk3 nc otf2 libotf texlive powerline-fonts freetype freetype-devel xapian-core-devel libxapia* gmime-devel gmime cmake clang libxml2 libxml2-devel libncurses* libterminfo* libtermcap libtinfo libtinfo* ncurses* lcms* librsvg2 librsvg2-devel automake
+sudo dnf install libomp-devel libomp readline readline-devel 
 #+END_SRC
 
 

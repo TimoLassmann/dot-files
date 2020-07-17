@@ -118,8 +118,9 @@
                  "UpSetR",
                  "MVA",
                  "wesanderson",
-                 "randomForest");
-
+                 "xlsx",
+                 "randomForest",
+                 "extRemes");
     ## Now load or install&load all
     package.check <- lapply(
       packages,
