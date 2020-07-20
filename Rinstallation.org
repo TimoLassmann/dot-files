@@ -93,7 +93,7 @@
 
 
 
-
+   
 * Install packages
   
   Install bioconductor etc... 
@@ -105,7 +105,6 @@
   #+END_SRC
   
   #+BEGIN_SRC R
-
 
     packages = c("pheatmap",
                  "seqinr",
@@ -126,7 +125,7 @@
       packages,
       FUN = function(x) {
         if (!require(x, character.only = TRUE)) {
-          install.packages(x, dependencies = TRUE)
+          install.packages(x,Ncpus=8,clean=TRUE, dependencies = TRUE)
           library(x, character.only = TRUE)
         }
       }
@@ -136,8 +135,7 @@
     if (!requireNamespace("BiocManager", quietly = TRUE))
       install.packages("BiocManager")
 
-    BiocManager::install(c("devtools",
-                           "BSgenome",
+    BiocManager::install(c("BSgenome",
                            "tximport",
                            "biomaRt",
                            "DESeq2",
