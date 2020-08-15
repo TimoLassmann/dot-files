@@ -13,7 +13,7 @@
   #+BEGIN_SRC shell :tangle setup_fedora.sh :shebang #!/bin/bash :exports code :results none
 
     sudo dnf update
-    sudo dnf install latexmk libtool zsh pass gnupg screen git-annex gnutls libjpeg-turbo-devel libjpeg-turbo libjpeg-turbo-utils libncurses*
+    sudo dnf install latexmk libtool zsh pass agrep gnupg screen git-annex gnutls libjpeg-turbo-devel libjpeg-turbo libjpeg-turbo-utils libncurses*
     sudo dnf install aspell aspell-de aspell-en ImageMagick-devel ImageMagick libXft libXft-devel libotf otf2 libotf-devel otf2-devel
     sudo dnf install  m17n-lib m17n-lib-devel gtk3-devel gtk3 nc otf2 libotf powerline-fonts freetype freetype-devel xapian-core-devel libxapia*
     sudo dnf install  gmime-devel gmime cmake clang libxml2 libxml2-devel libncurses* ncurses* lcms* librsvg2 librsvg2-devel automake
@@ -37,6 +37,10 @@
     sudo dnf install v8 v8-devel  
     sudo dnf install proj proj-devel 
     sudo dnf install geos geos-devel
+
+    sudo dnf install libreoffice 
+    sudo dnf install mpich
+    sudo dnf install hdf5-mpich
   #+END_SRC
 
 

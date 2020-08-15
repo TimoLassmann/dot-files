@@ -541,14 +541,14 @@
        :bind ("C-c f r" . recentf-open-files))
 
 
-(defun ido-recentf-open ()
-  "Use `ido-completing-read' to \\[find-file] a recent file"
-  (interactive)
-  (if (find-file (ido-completing-read "Find recent file: " recentf-list))
-      (message "Opening file...")
-    (message "Aborting")))
+     (defun ido-recentf-open ()
+       "Use `ido-completing-read' to \\[find-file] a recent file"
+       (interactive)
+       (if (find-file (ido-completing-read "Find recent file: " recentf-list))
+           (message "Opening file...")
+         (message "Aborting")))
 
-(global-set-key (kbd "C-x C-r") 'ido-recentf-open)
+     (global-set-key (kbd "C-x C-r") 'ido-recentf-open)
 
 
 
@@ -568,7 +568,7 @@
        (ido-everywhere 1)
        (add-to-list 'completion-ignored-extensions ".pyc"))
 
-       #+END_SRC
+   #+END_SRC
    ido-completing-read+
    #+BEGIN_SRC emacs-lisp
      (use-package ido-completing-read+
@@ -1071,11 +1071,13 @@
    #+END_SRC
    End.
 
+** Org-download
+
 ** Latex templates
    Latex templates
    #+BEGIN_SRC emacs-lisp
 
-     
+
 
      ;;(setq org-latex-to-pdf-process '("xelatex %f && bibtex %f && xelatex %f && xelatex %f"))
      (defun sk-latexmk-cmd (backend)
@@ -1420,17 +1422,22 @@
      (use-package company
        :ensure t
        :init
+       (setq company-frontends '(company-pseudo-tooltip-frontend
+                                 company-echo-metadata-frontend))
        (setq company-dabbrev-ignore-case t
              company-show-numbers t)
        (add-hook 'after-init-hook 'global-company-mode)
        :config
-       (setq company-idle-delay 0.05)
+       (setq company-idle-delay 0.01)
        (setq company-minimum-prefix-length 3)
        (setq company-tooltip-align-annotations t)
-
-       (add-to-list 'company-backends 'company-math-symbols-unicode)
-       (add-to-list 'company-backends 'company-c-headers)
-       ;;(add-to-list 'company-backends 'company-shell)
+       (setq company-require-match nil) 
+       (setq company-eclim-auto-save nil)         
+       (setq company-dabbrev-downcase nil)        
+                                             ;(add-to-list 'company-backends 'company-math-symbols-unicode)
+                                             ;(add-to-list 'company-backends 'company-c-headers)
+                                             ;(add-to-list 'company-backends 'company-shell)
+       (add-to-list 'company-backends '(company-clang company-capf company-dabbrev company-c-headers))
        :bind ("C-:" . company-complete)  ; In case I don't want to wait
        :diminish company-mode)
 
@@ -1439,7 +1446,6 @@
        :config
        (company-quickhelp-mode 1))
 
-     (add-hook 'c-mode-hook 'company-mode)
 
      (use-package company-statistics
        :ensure t 
@@ -1452,8 +1458,22 @@
        (define-key company-active-map (kbd "C-p") #'company-select-previous)
        (define-key company-active-map (kbd "SPC") #'company-abort))
 
-   #+END_SRC
 
+
+
+
+     (setq company-global-modes '(
+                                  org-mode
+                                  c-mode
+                                  c++-mode
+                                  ))
+
+     (add-hook 'c-mode-hook
+               (lambda ()
+                 (set (make-local-variable 'company-backends) '(company-clang company-c-headers company-capf company-dabbrev ))))
+
+   #+END_SRC
+   I had to add the hook and local variable to stop company from selecting capf before clang. 
    To make this work properly, I need to manually specify the include paths by
    putting a =.dir-locals.el= into the source directory of my C code. I.e. most
    of the time this will be =src= and I need to point to
@@ -1667,7 +1687,7 @@
    I prefer to have my own R installation locally (see Rinstallation.org). Let's let emacs know about this: 
    
    #+BEGIN_SRC emacs-lisp
-     (setq-default inferior-R-program-name "/home/user/bin/R")
+     ;; (setq-default inferior-R-program-name "/home/user/bin/R")
    #+END_SRC
 
    Default ESS config: 
@@ -1676,7 +1696,13 @@
        :ensure t
        :init (require 'ess-site))
    #+END_SRC
+** Snakemake 
+   #+BEGIN_SRC emacs-lisp
+     (use-package snakemake-mode
+       :ensure t
+       )
 
+   #+END_SRC
 * Email 
 
 
@@ -1805,16 +1831,21 @@
 * TRAMP
 
   #+BEGIN_SRC emacs-lisp
-      (use-package tramp
-        :ensure t
-        :config
-        (with-eval-after-load 'tramp-cache
-          (setq tramp-persistency-file-name "~/.emacs.d/tramp"))
-        (setq tramp-default-method "ssh")
-        (setq tramp-use-ssh-controlmaster-options nil) 
-        (message "tramp-loaded"))
+    (use-package tramp
+      :ensure t
+      :config
+      (with-eval-after-load 'tramp-cache
+        (setq tramp-persistency-file-name "~/.emacs.d/tramp"))
+      (setq tramp-default-method "ssh")
+      (setq tramp-use-ssh-controlmaster-options nil) 
+      (message "tramp-loaded"))
   #+END_SRC
  
+#+BEGIN_SRC emacs-lisp
+ (use-package ssh
+      :ensure t
+)
+#+END_SRC
 * Autoinsert templates 
   
   Again from Howards Abrams: 
