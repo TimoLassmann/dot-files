@@ -25,7 +25,6 @@
 
 
 
-
 * Package Manager
   To start we need the package "package" 
 
@@ -488,7 +487,7 @@
    #+END_SRC
 
 ** Swoop 
-   #+BEGIN_SRC emacs-lisp
+ #+BEGIN_EXAMPLE emacs-lisp
 
      (use-package helm-swoop
        :bind (("C-c h o" . helm-swoop)
@@ -499,10 +498,10 @@
 
        ;; From helm-swoop to helm-multi-swoop-all
        (define-key helm-swoop-map (kbd "M-i") 'helm-multi-swoop-all-from-helm-swoop)
-
+  
        ;; Save buffer when helm-multi-swoop-edit complete
        (setq helm-multi-swoop-edit-save t)
-
+  
        ;; If this value is t, split window inside the current window
        (setq helm-swoop-split-with-multiple-windows t)
 
@@ -512,8 +511,8 @@
        ;; If nil, you can slightly boost invoke speed in exchange for text color
        (setq helm-swoop-speed-or-color t))
 
-   #+END_SRC
-
+#+END_EXAMPLE
+   
 ** Winner mode 
 
    #+BEGIN_SRC emacs-lisp
@@ -648,6 +647,97 @@
        )
    #+END_SRC
 
+
+** Company 
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package company-c-headers
+       :ensure t
+       )
+
+     (use-package company-math 
+       :ensure t
+       )
+
+     (use-package company-shell 
+       :ensure t
+       )
+
+
+     (use-package company
+       :ensure t
+       :init
+       (setq company-frontends '(company-pseudo-tooltip-frontend
+                                 company-echo-metadata-frontend))
+       (setq company-dabbrev-ignore-case t
+             company-show-numbers t)
+       (add-hook 'after-init-hook 'global-company-mode)
+       :config
+       (setq company-idle-delay 0.01)
+       (setq company-minimum-prefix-length 2)
+       (setq company-tooltip-align-annotations t)
+       (setq company-require-match nil) 
+       (setq company-eclim-auto-save nil)         
+       (setq company-dabbrev-downcase nil)        
+       (add-to-list 'company-backends '(company-gtags))
+       (add-to-list 'company-backends '(company-clang company-capf company-dabbrev company-c-headers))
+       :bind ("C-:" . company-complete)  ; In case I don't want to wait
+       :diminish company-mode)
+
+     (use-package company-quickhelp
+       :ensure t
+       :config
+       (company-quickhelp-mode 1))
+
+
+     (use-package company-statistics
+       :ensure t 
+       )
+
+     (with-eval-after-load 'company
+       (define-key company-active-map (kbd "M-n") nil)
+       (define-key company-active-map (kbd "M-p") nil)
+       (define-key company-active-map (kbd "C-n") #'company-select-next)
+       (define-key company-active-map (kbd "C-p") #'company-select-previous)
+       (define-key company-active-map (kbd "SPC") #'company-abort))
+
+
+     (setq company-global-modes '(
+                                  org-mode
+                                  c-mode
+                                  c++-mode
+                                  ))
+
+     (add-hook 'c-mode-hook
+               (lambda ()
+                 (set (make-local-variable 'company-backends) '(company-clang  company-gtags  (company-c-headers) company-dabbrev ))))
+
+   #+END_SRC
+   I had to add the hook and local variable to stop company from selecting capf before clang. 
+   To make this work properly, I need to manually specify the include paths by
+   putting a =.dir-locals.el= into the source directory of my C code. I.e. most
+   of the time this will be =src= and I need to point to
+   =../tldevel=. 
+
+   In addition add the include path to flycheck-clang! 
+
+   #+BEGIN_EXAMPLE emacs-lisp
+(
+ (c-mode . ((company-clang-arguments . ("-I../tldevel-1.2.8/"))))
+ (c-mode . ((company-c-headers-path-user . ("../tldevel-1.2.8/"))))
+ (c-mode . ((flycheck-clang-include-path . ("-I../tldevel-1.2.8/"))))
+ )
+
+   #+END_EXAMPLE
+
+#+BEGIN_SRC emacs-lisp
+                       ;( concat "-I" (list ( file-expand-wildcards "../*/")))
+  (mapcar 'car '((a b) (c d) (e f)))
+
+  ;(concat "-I" (list (file-expand-wildcards "../seqe*")))
+(list (format "%s/%s" "-I" (car (file-expand-wildcards "../seqe*"))))
+#+END_SRC
+   
 * Writing
 
 ** Flyspell config 
@@ -1406,86 +1496,7 @@
    #+END_SRC
    
 ** Auto Complete
-   #+BEGIN_SRC emacs-lisp
-     (use-package company-c-headers
-       :ensure t
-       )
-
-     (use-package company-math 
-       :ensure t
-       )
-
-     (use-package company-shell 
-       :ensure t
-       )
-
-     (use-package company
-       :ensure t
-       :init
-       (setq company-frontends '(company-pseudo-tooltip-frontend
-                                 company-echo-metadata-frontend))
-       (setq company-dabbrev-ignore-case t
-             company-show-numbers t)
-       (add-hook 'after-init-hook 'global-company-mode)
-       :config
-       (setq company-idle-delay 0.01)
-       (setq company-minimum-prefix-length 3)
-       (setq company-tooltip-align-annotations t)
-       (setq company-require-match nil) 
-       (setq company-eclim-auto-save nil)         
-       (setq company-dabbrev-downcase nil)        
-                                             ;(add-to-list 'company-backends 'company-math-symbols-unicode)
-                                             ;(add-to-list 'company-backends 'company-c-headers)
-                                             ;(add-to-list 'company-backends 'company-shell)
-       (add-to-list 'company-backends '(company-clang company-capf company-dabbrev company-c-headers))
-       :bind ("C-:" . company-complete)  ; In case I don't want to wait
-       :diminish company-mode)
-
-     (use-package company-quickhelp
-       :ensure t
-       :config
-       (company-quickhelp-mode 1))
-
-
-     (use-package company-statistics
-       :ensure t 
-       )
-
-     (with-eval-after-load 'company
-       (define-key company-active-map (kbd "M-n") nil)
-       (define-key company-active-map (kbd "M-p") nil)
-       (define-key company-active-map (kbd "C-n") #'company-select-next)
-       (define-key company-active-map (kbd "C-p") #'company-select-previous)
-       (define-key company-active-map (kbd "SPC") #'company-abort))
-
-
-
-
-
-     (setq company-global-modes '(
-                                  org-mode
-                                  c-mode
-                                  c++-mode
-                                  ))
-
-     (add-hook 'c-mode-hook
-               (lambda ()
-                 (set (make-local-variable 'company-backends) '(company-clang company-c-headers company-capf company-dabbrev ))))
-
-   #+END_SRC
-   I had to add the hook and local variable to stop company from selecting capf before clang. 
-   To make this work properly, I need to manually specify the include paths by
-   putting a =.dir-locals.el= into the source directory of my C code. I.e. most
-   of the time this will be =src= and I need to point to
-   =../tldevel=. 
-
-   In addition add the include path to flycheck-clang! 
-
-   #+BEGIN_EXAMPLE emacs-lisp
-   ((c-mode (eval setq company-clang-arguments (append company-clang-arguments '("-I../tldevel")))))
-   ((c-mode (eval setq  flycheck-clang-include-path (append  flycheck-clang-include-path '("-I../tldevel")))))      
-   #+END_EXAMPLE
-
+   
 ** hippie expand
 
 
@@ -1621,6 +1632,18 @@
 
     #+END_SRC
    
+*** semantic
+
+#+BEGIN_SRC emacs-lisp
+(use-package semantic
+:ensure t 
+)
+(global-semanticdb-minor-mode 1)
+(global-semantic-idle-scheduler-mode 1)
+
+(semantic-mode 1)
+
+#+END_SRC
 ** Indenting 
 
    SET BSD indent style
