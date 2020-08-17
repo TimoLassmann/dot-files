@@ -553,6 +553,7 @@
 
 
    #+END_SRC
+
 ** IDO
 
    #+BEGIN_SRC emacs-lisp
@@ -626,6 +627,7 @@
        ("M-X" . smex-major-mode-commands))
 
    #+END_SRC
+
 ** Ivy 
    #+BEGIN_SRC emacs-lisp
 
@@ -638,7 +640,6 @@
              ivy-count-format "%d/%d "))
    #+END_SRC
 
-
 ** Counsel
    Counsel tramp 
    #+BEGIN_SRC emacs-lisp
@@ -646,7 +647,6 @@
        :ensure t
        )
    #+END_SRC
-
 
 ** Company 
 
@@ -723,9 +723,9 @@
 
    #+BEGIN_EXAMPLE emacs-lisp
 (
- (c-mode . ((company-clang-arguments . ("-I../tldevel-1.2.8/"))))
- (c-mode . ((company-c-headers-path-user . ("../tldevel-1.2.8/"))))
- (c-mode . ((flycheck-clang-include-path . ("-I../tldevel-1.2.8/"))))
+ (c-mode . ((company-clang-arguments . ("-I."  "-I../tldevel-1.2.8/"))))
+ (c-mode . ((company-c-headers-path-user . ("." "../tldevel-1.2.8/"))))
+ (c-mode . ((flycheck-clang-include-path . ("-I." "-I../tldevel-1.2.8/"))))
  )
 
    #+END_EXAMPLE
@@ -1634,7 +1634,8 @@
    
 *** semantic
 
-#+BEGIN_SRC emacs-lisp
+
+#+EXAMPLE_SRC emacs-lisp
 (use-package semantic
 :ensure t 
 )
@@ -1643,7 +1644,7 @@
 
 (semantic-mode 1)
 
-#+END_SRC
+#+EXAMPLE_SRC
 ** Indenting 
 
    SET BSD indent style
@@ -1719,13 +1720,15 @@
        :ensure t
        :init (require 'ess-site))
    #+END_SRC
+
 ** Snakemake 
    #+BEGIN_SRC emacs-lisp
      (use-package snakemake-mode
        :ensure t
        )
-
    #+END_SRC
+
+
 * Email 
 
 

@@ -65,12 +65,17 @@
 ** Renviron 
    Set the tmp + local lib directory:
    #+BEGIN_SRC text :tangle ~/.Renviron
-     TMP='/home/user/tmp'
-     TEMP='/home/user/tmp'
-     TMPDIR='/home/user/tmp'
      R_LIBS_USER='~/local/R_libs'
    #+END_SRC
 
+Took this out: never works as expected. 
+
+Instead when installing big packages resize =/tmp/=.
+
+TMP='/home/user/tmp'
+     TEMP='/home/user/tmp'
+     TMPDIR='/home/user/tmp'
+     
 ** Rprofile 
 
    Make sure R knows about the user and base libraries: 
