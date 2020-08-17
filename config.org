@@ -487,32 +487,32 @@
    #+END_SRC
 
 ** Swoop 
- #+BEGIN_EXAMPLE emacs-lisp
+   #+BEGIN_EXAMPLE emacs-lisp
 
-     (use-package helm-swoop
-       :bind (("C-c h o" . helm-swoop)
-              ("C-c s" . helm-multi-swoop-all))
-       :config
-       ;; When doing isearch, hand the word over to helm-swoop
-       (define-key isearch-mode-map (kbd "M-i") 'helm-swoop-from-isearch)
+       (use-package helm-swoop
+         :bind (("C-c h o" . helm-swoop)
+                ("C-c s" . helm-multi-swoop-all))
+         :config
+         ;; When doing isearch, hand the word over to helm-swoop
+         (define-key isearch-mode-map (kbd "M-i") 'helm-swoop-from-isearch)
 
-       ;; From helm-swoop to helm-multi-swoop-all
-       (define-key helm-swoop-map (kbd "M-i") 'helm-multi-swoop-all-from-helm-swoop)
-  
-       ;; Save buffer when helm-multi-swoop-edit complete
-       (setq helm-multi-swoop-edit-save t)
-  
-       ;; If this value is t, split window inside the current window
-       (setq helm-swoop-split-with-multiple-windows t)
+         ;; From helm-swoop to helm-multi-swoop-all
+         (define-key helm-swoop-map (kbd "M-i") 'helm-multi-swoop-all-from-helm-swoop)
 
-       ;; Split direcion. 'split-window-vertically or 'split-window-horizontally
-       (setq helm-swoop-split-direction 'split-window-vertically)
+         ;; Save buffer when helm-multi-swoop-edit complete
+         (setq helm-multi-swoop-edit-save t)
 
-       ;; If nil, you can slightly boost invoke speed in exchange for text color
-       (setq helm-swoop-speed-or-color t))
+         ;; If this value is t, split window inside the current window
+         (setq helm-swoop-split-with-multiple-windows t)
 
-#+END_EXAMPLE
-   
+         ;; Split direcion. 'split-window-vertically or 'split-window-horizontally
+         (setq helm-swoop-split-direction 'split-window-vertically)
+
+         ;; If nil, you can slightly boost invoke speed in exchange for text color
+         (setq helm-swoop-speed-or-color t))
+
+  #+END_EXAMPLE
+
 ** Winner mode 
 
    #+BEGIN_SRC emacs-lisp
@@ -730,13 +730,13 @@
 
    #+END_EXAMPLE
 
-#+BEGIN_SRC emacs-lisp
-                       ;( concat "-I" (list ( file-expand-wildcards "../*/")))
-  (mapcar 'car '((a b) (c d) (e f)))
+   #+BEGIN_SRC emacs-lisp
+                                             ;( concat "-I" (list ( file-expand-wildcards "../*/")))
+     (mapcar 'car '((a b) (c d) (e f)))
 
-  ;(concat "-I" (list (file-expand-wildcards "../seqe*")))
-(list (format "%s/%s" "-I" (car (file-expand-wildcards "../seqe*"))))
-#+END_SRC
+                                             ;(concat "-I" (list (file-expand-wildcards "../seqe*")))
+     (list (format "%s/%s" "-I" (car (file-expand-wildcards "../seqe*"))))
+   #+END_SRC
    
 * Writing
 
@@ -1053,6 +1053,18 @@
    #+BEGIN_SRC emacs-lisp
      (setq org-src-window-setup 'current-window)
    #+END_SRC
+
+** Bullets
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package org-superstar
+       :ensure t
+       :init 
+       (add-hook 'org-mode-hook (lambda () (org-superstar-mode 1)))
+       )
+
+   #+END_SRC
+
 
 ** Image preview 
 
@@ -1425,6 +1437,17 @@
        :config
        (setq-default flycheck-disabled-checkers '(emacs-lisp-checkdoc)))
 
+
+     (use-package flycheck-clang-analyzer
+       :ensure t
+       :after flycheck
+       :config (flycheck-clang-analyzer-setup))
+
+     (use-package flycheck-clang-tidy
+       :after flycheck
+       :hook
+       (flycheck-mode . flycheck-clang-tidy-setup)
+       )
    #+END_SRC
 
 ** Line Numbering 
@@ -1495,7 +1518,6 @@
                  'indent-defun nil 'local))
    #+END_SRC
    
-** Auto Complete
    
 ** hippie expand
 
@@ -1635,16 +1657,16 @@
 *** semantic
 
 
-#+EXAMPLE_SRC emacs-lisp
-(use-package semantic
-:ensure t 
-)
-(global-semanticdb-minor-mode 1)
-(global-semantic-idle-scheduler-mode 1)
+    #+EXAMPLE_SRC emacs-lisp
+    (use-package semantic
+    :ensure t 
+    )
+    (global-semanticdb-minor-mode 1)
+    (global-semantic-idle-scheduler-mode 1)
 
-(semantic-mode 1)
+    (semantic-mode 1)
 
-#+EXAMPLE_SRC
+    #+EXAMPLE_SRC
 ** Indenting 
 
    SET BSD indent style
@@ -1727,7 +1749,6 @@
        :ensure t
        )
    #+END_SRC
-
 
 * Email 
 
@@ -1867,11 +1888,11 @@
       (message "tramp-loaded"))
   #+END_SRC
  
-#+BEGIN_SRC emacs-lisp
- (use-package ssh
+  #+BEGIN_SRC emacs-lisp
+    (use-package ssh
       :ensure t
-)
-#+END_SRC
+      )
+  #+END_SRC
 * Autoinsert templates 
   
   Again from Howards Abrams: 
@@ -1961,7 +1982,7 @@
 
 * PDF tools
   
-#+BEGIN_SRC emacs-lisp
+  #+BEGIN_SRC emacs-lisp
     (use-package pdf-tools
       :config
       ;; initialise
@@ -1972,7 +1993,7 @@
       (setq pdf-annot-activate-created-annotations t)
       ;; use normal isearch
       (define-key pdf-view-mode-map (kbd "C-s") 'isearch-forward))
-#+END_SRC
+  #+END_SRC
 
 * End
 
