@@ -99,6 +99,7 @@
    #+END_SRC
 
 * Color Theme
+
   
   Use the color theme project by following [[http://www.nongnu.org/color-theme/][these instructions]].
   We now can do =M-x color-theme-<TAB> RET=
@@ -138,7 +139,7 @@ add some missing fonts..
            '(org-block
              ((t (:background "#122028"))))
            '(org-block-end-line
-             ((t (:foreground "#008ED1" :background "#002E41"))))))
+             ((t (:foreground "#008ED1" :background "#002E41" ))))))
   #+END_SRC
 
   New theme.
@@ -206,7 +207,6 @@ add some missing fonts..
   
 * Company 
 
-
 Change color scheme of company ( based on: https://github.com/jcs090218/jcs-emacs/blob/master/.emacs.jcs/jcs-plugin.el) 
    #+BEGIN_SRC emacs-lisp
      (defun tl-company-color-setup ()
@@ -241,6 +241,22 @@ Change color scheme of company ( based on: https://github.com/jcs090218/jcs-emac
      (tl-company-color-setup)
        #+END_SRC
 
+* Avy
+
+  #+BEGIN_SRC emacs-lisp
+    (defun tl-avy-color-setup ()
+      "Sets up the color sheme for `avy-mode'."
+
+      (custom-set-faces
+       '(avy-lead-face   ((t (:background "#002E41" :foreground "red"))))
+       '(avy-lead-face-0 ((t (:background "#002E41" :foreground "white"))))
+       '(avy-lead-face-1 ((t (:background "#002E41" :foreground "yellow"))))
+       '(avy-lead-face-2 ((t (:background "#002E41" :foreground "white"))))
+       ))
+
+    (tl-avy-color-setup)
+
+  #+END_SRC
 * Powerline stuff
 ** Nyan mode
 
