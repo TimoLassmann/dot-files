@@ -207,6 +207,7 @@ add some missing fonts..
   
 * Company 
 
+
 Change color scheme of company ( based on: https://github.com/jcs090218/jcs-emacs/blob/master/.emacs.jcs/jcs-plugin.el) 
    #+BEGIN_SRC emacs-lisp
      (defun tl-company-color-setup ()
@@ -229,7 +230,7 @@ Change color scheme of company ( based on: https://github.com/jcs090218/jcs-emac
           ((((type x)) (:inherit company-tooltip :weight bold))
            (t (:background "#002E41" :foreground "#008ED1"))))
         ;; Formatting of types characted 
-        '(company-tooltip-common-selection  ((t (:background "#002E41" :foreground "red"))))
+        '(company-tooltip-common-selection  ((t (:background "#002E41" :foreground "#c70000"))))
 
         '(company-template-field ((t (:background "#002E41" :foreground "#FF4500"))))
 
@@ -241,17 +242,18 @@ Change color scheme of company ( based on: https://github.com/jcs090218/jcs-emac
      (tl-company-color-setup)
        #+END_SRC
 
+
 * Avy
+
 
   #+BEGIN_SRC emacs-lisp
     (defun tl-avy-color-setup ()
       "Sets up the color sheme for `avy-mode'."
-
       (custom-set-faces
-       '(avy-lead-face   ((t (:background "#002E41" :foreground "red"))))
-       '(avy-lead-face-0 ((t (:background "#002E41" :foreground "white"))))
-       '(avy-lead-face-1 ((t (:background "#002E41" :foreground "yellow"))))
-       '(avy-lead-face-2 ((t (:background "#002E41" :foreground "white"))))
+       '(avy-lead-face   ((t (:background "#99d1ce" :foreground "#c70000"))))
+       '(avy-lead-face-0 ((t (:background "#99d1ce" :foreground "#FF4500"))))
+       '(avy-lead-face-1 ((t (:background "#99d1ce" :foreground "#C35214"))))
+       '(avy-lead-face-2 ((t (:background "#99d1ce" :foreground "white"))))
        ))
 
     (tl-avy-color-setup)
@@ -332,24 +334,28 @@ A package called fancy-battery will be used if we are in GUI emacs, otherwise th
   Let's make the cursor more noticeable whenever the window scrolls
   (which seems to be the time when I need to visually look for it):
 
+
   #+BEGIN_SRC emacs-lisp
-(use-package beacon
-  :ensure t
-  :defer  t
-  :diminish 'beacon-mode
-  :init  (beacon-mode +1)
-)
+    (use-package beacon
+      :custom
+      (beacon-push-mark 10)
+      (beacon-color "#c70000")
+      (beacon-blink-delay 0.3)
+      (beacon-blink-duration 0.3)
+      :config
+      (beacon-mode)
+      (global-hl-line-mode 1))
 
   #+END_SRC
 
 * Rainbow
 
-#+BEGIN_EXAMPLE emacs-lisp
+  #+BEGIN_SRC emacs-lisp
 (use-package rainbow-mode
   :ensure t
   :init
-    (add-hook 'prog-mode-hook 'rainbow-mode))
-#+END_EXAMPLE
-
+    (add-hook 'org-mode-hook 'rainbow-mode))  
+  #+END_SRC
 The end. 
+
 
