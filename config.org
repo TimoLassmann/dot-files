@@ -12,6 +12,7 @@
 # \Author{Timo La\ss mann}
 # \DocumentID{src_sh[:value verbatim]{shasum -a 256 config.org | awk '{print $1}' }}
 
+
 * To speed things up 
   
   #+BEGIN_SRC emacs-lisp
@@ -47,6 +48,11 @@
       (package-install 'use-package))
   #+END_SRC
 
+  #+BEGIN_SRC emacs-lisp
+    (setq use-package-always-ensure t)
+    (setq use-package-verbose t)
+  #+END_SRC  
+ 
 * General Settings
 ** Init File Support
 
@@ -57,14 +63,14 @@
      (require 'cl)
 
      (use-package dash
-       :ensure t
+       
        :config (eval-after-load "dash" '(dash-enable-font-lock)))
 
      (use-package s
-       :ensure t)
+       )
 
      (use-package f
-       :ensure t)
+       )
    #+END_SRC
 
 ** Trace for obsolete packages 
@@ -109,6 +115,7 @@
       (scroll-bar-mode -1)
       (mouse-wheel-mode -1)
     #+END_SRC
+
 *** Disable bell 
     #+BEGIN_SRC emacs-lisp 
       (setq ring-bell-function 'ignore)
@@ -127,26 +134,24 @@
 ** Turn off arrow keys
 
    #+BEGIN_SRC emacs-lisp 
-
      (require 'no-easy-keys)
      (no-easy-keys 1)
-
    #+END_SRC
+
 ** Turn off  mouse 
 
    #+BEGIN_SRC emacs-lisp 
      (use-package disable-mouse
-       :ensure t 
+        
        :demand t)
-
      (global-disable-mouse-mode)
-
    #+END_SRC
+
 ** Diminish 
 
    #+BEGIN_SRC emacs-lisp
      (use-package diminish 
-       :ensure t 
+        
        :demand t)
    #+END_SRC
 
@@ -162,7 +167,7 @@
    According to this article, I get better functionality than the redo+ plugin (which I can’t seem to get working well).
    #+BEGIN_SRC emacs-lisp
      (use-package undo-tree
-       :ensure t
+       
        :diminish
        :init
        (global-undo-tree-mode 1)
@@ -260,7 +265,7 @@
    Lets us use asynchronous processes wherever possible, pretty useful.
    #+BEGIN_SRC emacs-lisp
      (use-package async
-       :ensure t
+       
        :init (dired-async-mode 1))
    #+END_SRC
 
@@ -272,7 +277,7 @@
    This makes sure that everything can be a project.
    #+BEGIN_SRC emacs-lisp
      (use-package projectile
-       :ensure t
+       
        :diminish
        :init
        (projectile-mode 1))
@@ -383,7 +388,7 @@
    It’s beautiful
    #+BEGIN_SRC emacs-lisp
      (use-package which-key
-       :ensure t
+       
        :diminish which-key-mode
        :config
        (which-key-mode))
@@ -397,7 +402,7 @@
    This magnificent package takes care of this issue. It’s unnoticeable if you have <3 panes open, but with 3 or more, upon pressing C-x o you will notice how your buffers turn a solid color and each buffer is asigned a letter (the list below shows the letters, you can modify them to suit your liking), upon pressing a letter asigned to a window, your will be taken to said window, easy to remember, quick to use and most importantly, it annihilates a big issue I had with emacs. An alternative is ace-window, however by default it also changes the behaviour of C-x o even if only 2 windows are open, this is bad, it also works less well with exwm for some reason.
    #+BEGIN_SRC emacs-lisp
      (use-package switch-window
-       :ensure t
+       
        :config
        (setq switch-window-input-style 'minibuffer)
        (setq switch-window-increase 4)
@@ -435,7 +440,7 @@
 
    #+BEGIN_EXAMPLE emacs-lisp
    (use-package helm
-     :ensure t
+     
      :bind
      ("C-x C-f" . 'helm-find-files)
      ("C-x C-b" . 'helm-buffers-list)
@@ -479,11 +484,17 @@
 
 ** Avy 
 
+
    #+BEGIN_SRC emacs-lisp
      (use-package avy
-       :ensure t
-       :bind
-       ("M-s" . avy-goto-char-timer))
+:config
+ (global-set-key (kbd "M-s") 'avy-goto-char-timer)
+  (global-set-key (kbd "C-:") 'avy-goto-char)
+  (global-set-key (kbd "C-'") 'avy-goto-char-2)
+  (global-set-key (kbd "M-g f") 'avy-goto-line)
+  (global-set-key (kbd "M-g w") 'avy-goto-word-1)
+  (global-set-key (kbd "M-g e") 'avy-goto-word-0))
+
    #+END_SRC
 
 ** Swoop 
@@ -517,7 +528,7 @@
 
    #+BEGIN_SRC emacs-lisp
      (use-package winner
-       :ensure t
+       
        :init (winner-mode 1))
    #+END_SRC
 
@@ -558,7 +569,7 @@
 
    #+BEGIN_SRC emacs-lisp
      (use-package ido
-       :ensure t
+       
        :init  (setq ido-enable-flex-matching t
                     ido-ignore-extensions t
                     ido-use-virtual-buffers t
@@ -572,7 +583,7 @@
    ido-completing-read+
    #+BEGIN_SRC emacs-lisp
      (use-package ido-completing-read+
-       :ensure t
+       
        :config
        (ido-ubiquitous-mode))
    #+END_SRC
@@ -580,7 +591,7 @@
    FLX package
    #+BEGIN_SRC emacs-lisp
      (use-package flx-ido
-       :ensure t
+       
        :init (setq ido-enable-flex-matching t
                    ido-use-faces nil)
        :config (flx-ido-mode 1))
@@ -590,7 +601,7 @@
    Vertical mode 
    #+BEGIN_SRC emacs-lisp
      (use-package ido-vertical-mode
-       :ensure t
+       
        :init               ; I like up and down arrow keys:
        (setq ido-vertical-define-keys 'C-n-C-p-up-and-down)
        :config
@@ -621,7 +632,7 @@
 ** SMEX 
    #+BEGIN_SRC emacs-lisp
      (use-package smex
-       :ensure t
+       
        :init (smex-initialize)
        :bind ("M-x" . smex)
        ("M-X" . smex-major-mode-commands))
@@ -632,40 +643,41 @@
    #+BEGIN_SRC emacs-lisp
 
      (use-package ivy
-       :ensure t
+  
        :config
-       (setq ivy-use-virtual-buffers t
-             enable-recursive-minibuffers t
-             ivy-wrap t 
-             ivy-count-format "%d/%d "))
+       (setq 
+        ivy-height 10
+        ivy-use-virtual-buffers t
+        enable-recursive-minibuffers t
+        ivy-wrap t 
+        ivy-count-format "%d/%d "))
    #+END_SRC
 
 ** Counsel
    Counsel tramp 
    #+BEGIN_SRC emacs-lisp
-     (use-package counsel-tramp
-       :ensure t
-       )
+     (use-package counsel-tramp)
    #+END_SRC
+
 
 ** Company 
 
    #+BEGIN_SRC emacs-lisp
      (use-package company-c-headers
-       :ensure t
+       
        )
 
      (use-package company-math 
-       :ensure t
+       
        )
 
      (use-package company-shell 
-       :ensure t
+       
        )
 
 
      (use-package company
-       :ensure t
+       
        :init
        (setq company-frontends '(company-pseudo-tooltip-frontend
                                  company-echo-metadata-frontend))
@@ -685,13 +697,13 @@
        :diminish company-mode)
 
      (use-package company-quickhelp
-       :ensure t
+       
        :config
        (company-quickhelp-mode 1))
 
 
      (use-package company-statistics
-       :ensure t 
+        
        )
 
      (with-eval-after-load 'company
@@ -758,7 +770,7 @@
 
    #+BEGIN_SRC emacs-lisp 
      (use-package flyspell
-       :ensure t
+       
        :diminish flyspell-mode
        :init
        (add-hook 'prog-mode-hook 'flyspell-prog-mode)
@@ -1018,7 +1030,7 @@
 
    #+BEGIN_SRC emacs-lisp
      (use-package htmlize
-       :ensure t)
+       )
    #+END_SRC
 
    Use minted package for code: 
@@ -1058,7 +1070,7 @@
 
    #+BEGIN_SRC emacs-lisp
      (use-package org-superstar
-       :ensure t
+       
        :init 
        (add-hook 'org-mode-hook (lambda () (org-superstar-mode 1)))
        )
@@ -1126,8 +1138,8 @@
 ** Org-ref
 
    #+BEGIN_SRC emacs-lisp
-     (use-package org-ref
-       :ensure t)
+(use-package org-ref
+  )
    #+END_SRC
 
    Make =supercite= the default citation type:
@@ -1163,13 +1175,11 @@
            org-ref-default-bibliography '("~/work/bibliography/references.bib")
            org-ref-pdf-directory "~/work/bibliography/bibtex-pdfs/")
 
-
-
    #+END_SRC
 
    #+BEGIN_SRC emacs-lisp
+     
      (setq org-ref-completion-library 'org-ref-ivy-cite)
-
    #+END_SRC
    End.
 
@@ -1430,7 +1440,7 @@
    Flycheck 
    #+BEGIN_SRC emacs-lisp 
      (use-package flycheck
-       :ensure t
+       
        :init
        (add-hook 'after-init-hook 'global-flycheck-mode)
        (add-hook 'c-mode-hook (lambda () (setq flycheck-clang-language-standard "c11")))
@@ -1439,12 +1449,12 @@
 
 
      (use-package flycheck-clang-analyzer
-       :ensure t
+       
        :after flycheck
        :config (flycheck-clang-analyzer-setup))
 
      (use-package flycheck-clang-tidy
-       :ensure t
+       
        :after flycheck
        :hook
        (flycheck-mode . flycheck-clang-tidy-setup)
@@ -1458,7 +1468,7 @@
 
    #+BEGIN_SRC emacs-lisp
      (use-package linum-relative
-       :ensure t
+       
        :config
        (setq linum-relative-current-symbol "")
        (add-hook 'prog-mode-hook 'linum-relative-mode))
@@ -1470,7 +1480,7 @@
 
    #+BEGIN_SRC emacs-lisp
      (use-package magit
-       :ensure t
+       
        :commands magit-status magit-blame
        :init
        (defadvice magit-status (around magit-fullscreen activate)
@@ -1544,20 +1554,20 @@
    
    #+BEGIN_SRC emacs-lisp
      (use-package yasnippet
-       :ensure t
+       
        :diminish
        :init
        (yas-global-mode 1)
        :config
        (use-package yasnippet-snippets
-         :ensure t)
+         )
        (yas-reload-all));
    #+END_SRC
 
 ** Comments
    #+BEGIN_SRC emacs-lisp
      (use-package smart-comment
-       :ensure t
+       
        :bind ("M-;" . smart-comment))
    #+End_SRC
 
@@ -1585,7 +1595,7 @@
 
     #+BEGIN_SRC emacs-lisp
       (use-package ggtags
-        :ensure t
+        
         :init
         (add-hook 'c-mode-common-hook
                   (lambda ()
@@ -1623,7 +1633,7 @@
 
     #+BEGIN_SRC emacs-lisp
       (use-package counsel-gtags
-        :ensure t
+        
         ;;:bind (
         ;;   ("M-t" . counsel-gtags-find-definition)
         ;; ("M-r" . counsel-gtags-find-reference)
@@ -1641,7 +1651,7 @@
 
     #+BEGIN_SRC emacs-lisp
       (use-package smartparens
-        :ensure t
+        
         :config
         (sp-pair "'" nil :actions :rem)
         (sp-pair "`" nil :actions :rem)
@@ -1652,7 +1662,7 @@
 
     #+BEGIN_SRC emacs-lisp
       (use-package smartscan
-        :ensure t
+        
         :bind ("M-n" . smartscan-symbol-go-forward)
         ("M-p" . smartscan-symbol-go-backward))
 
@@ -1663,7 +1673,7 @@
 
     #+EXAMPLE_SRC emacs-lisp
     (use-package semantic
-    :ensure t 
+     
     )
     (global-semanticdb-minor-mode 1)
     (global-semantic-idle-scheduler-mode 1)
@@ -1698,7 +1708,7 @@
 
     #+BEGIN_SRC emacs-lisp
       (use-package clean-aindent-mode
-        :ensure t 
+         
         :init 
         (add-hook 'prog-mode-hook 'clean-aindent-mode)
         )
@@ -1708,7 +1718,7 @@
 
     #+BEGIN_SRC emacs-lisp
       (use-package dtrt-indent 
-        :ensure t
+        
         :init 
         (dtrt-indent-mode 1)
         (setq dtrt-indent-verbosity 0)
@@ -1719,7 +1729,7 @@
 
     #+BEGIN_SRC emacs-lisp
       (use-package ws-butler
-        :ensure t 
+         
         :init
         (add-hook 'c-mode-common-hook 'ws-butler-mode)
         )
@@ -1743,14 +1753,14 @@
    Default ESS config: 
    #+BEGIN_SRC emacs-lisp
      (use-package ess
-       :ensure t
+       
        :init (require 'ess-site))
    #+END_SRC
 
 ** Snakemake 
    #+BEGIN_SRC emacs-lisp
      (use-package snakemake-mode
-       :ensure t
+       
        )
    #+END_SRC
 
@@ -1883,7 +1893,7 @@
 
   #+BEGIN_SRC emacs-lisp
     (use-package tramp
-      :ensure t
+      
       :config
       (with-eval-after-load 'tramp-cache
         (setq tramp-persistency-file-name "~/.emacs.d/tramp"))
@@ -1894,7 +1904,7 @@
  
   #+BEGIN_SRC emacs-lisp
     (use-package ssh
-      :ensure t
+      
       )
   #+END_SRC
 
@@ -1903,7 +1913,7 @@
   Again from Howards Abrams: 
   #+BEGIN_SRC emacs-lisp
     (use-package autoinsert
-      :ensure t
+      
       :init
       (setq auto-insert-directory (tl/emacs-subdirectory "templates/"))
       ;; Don't want to be prompted before insertion:
