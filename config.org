@@ -12,7 +12,6 @@
 # \Author{Timo La\ss mann}
 # \DocumentID{src_sh[:value verbatim]{shasum -a 256 config.org | awk '{print $1}' }}
 
-
 * To speed things up 
   
   #+BEGIN_SRC emacs-lisp
@@ -23,7 +22,6 @@
     (setq  message-log-max 16384)
 
   #+END_SRC
-
 
 
 * Package Manager
@@ -388,10 +386,11 @@
 ** Aggressive Auto Indention
    
    #+BEGIN_SRC emacs-lisp
-     (use-package aggressive-indent-mode
-     :config 
-     (global-aggressive-indent-mode 1)
-     )
+     (use-package aggressive-indent
+       :config 
+       (setq global-aggressive-indent-mode 1)
+       )
+
 
 
    #+END_SRC
@@ -939,8 +938,7 @@ Prescient
                    ("C-n" . company-select-next)
                    ("C-p" . company-select-previous))))
 
-  (use-package company-statistics
-      :straight t
+  (use-package company-statistics      
       :init
       (company-statistics-mode))
 
@@ -1735,22 +1733,6 @@ Prescient
    #+END_SRC
 
    magit end.    
-** hippie expand
-
-
-   #+BEGIN_SRC emacs-lisp
-     (global-set-key (kbd "M-/") 'hippie-expand)
-
-     (setq hippie-expand-try-functions-list
-           '(try-expand-dabbrev
-             try-expand-dabbrev-all-buffers
-             try-expand-dabbrev-from-kill
-             try-complete-file-name-partially
-             try-complete-file-name
-             try-expand-all-abbrevs
-             try-expand-list
-             try-expand-line))
-   #+END_SRC
 
 ** Yasnippet
    
