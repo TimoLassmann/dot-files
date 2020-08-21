@@ -41,6 +41,8 @@
     sudo dnf install libreoffice 
     sudo dnf install mpich
     sudo dnf install hdf5-mpich
+
+    sudo dnf install fzf ripgrep
   #+END_SRC
 
 
