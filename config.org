@@ -897,7 +897,9 @@ Prescient
 ** Company 
 
 #+BEGIN_SRC emacs-lisp
-(use-package company-c-headers)
+(use-package company-c-headers
+:ensure t 
+)
       (use-package company
         :ensure t
         :delight
