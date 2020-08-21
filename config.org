@@ -897,61 +897,62 @@ Prescient
 ** Company 
 
 #+BEGIN_SRC emacs-lisp
-    (use-package company
-      :ensure t
-      :delight
-      :custom
-      (company-auto-complete nil)
-      (company-dabbrev-code-everywhere t)
-      (company-dabbrev-code-modes t)
-      (company-dabbrev-code-other-buffers 'all)
-      (company-dabbrev-downcase nil)
-      (company-dabbrev-ignore-case t)
-      (company-dabbrev-other-buffers 'all)
-      (company-idle-delay 0.3)
-      (company-minimum-prefix-length 3)
-      (company-require-match nil)
-      (company-selection-wrap-around t)
-      (company-show-numbers t)
-      (company-transformers
-       '(company-sort-by-backend-importance
-         company-sort-prefer-same-case-prefix
-         company-sort-by-occurrence))
-      (company-tooltip-align-annotations t)
-      (company-tooltip-limit 10)
-      (company-tooltip-margin 1)
-      (company-tooltip-offset-display 'scrollbar)
-      :config
-      (global-company-mode 1)
+(use-package company-c-headers)
+      (use-package company
+        :ensure t
+        :delight
+        :custom
+        (company-auto-complete nil)
+        (company-dabbrev-code-everywhere t)
+        (company-dabbrev-code-modes t)
+        (company-dabbrev-code-other-buffers 'all)
+        (company-dabbrev-downcase nil)
+        (company-dabbrev-ignore-case t)
+        (company-dabbrev-other-buffers 'all)
+        (company-idle-delay 0.3)
+        (company-minimum-prefix-length 3)
+        (company-require-match nil)
+        (company-selection-wrap-around t)
+        (company-show-numbers t)
+        ;;(company-transformers
+         ;;'(company-sort-by-backend-importance
+  ;;         company-sort-prefer-same-case-prefix
+    ;;       company-sort-by-occurrence))
+        (company-tooltip-align-annotations t)
+        (company-tooltip-limit 10)
+        (company-tooltip-margin 1)
+        (company-tooltip-offset-display 'scrollbar)
+        :config
+        (global-company-mode 1)
 
-      (add-to-list 'company-backends '(company-clang
-                                       company-capf
-                                       company-dabbrev
-                                       company-c-headers
-                                       company-gtags))
-      :bind (:map company-mode-map
-                  ("M-/" . company-manual-begin)
-                  :map company-active-map
-                  (("M-/" . company-other-backend)
-                   ("<tab>" . company-complete-selection)
-                   ("<C-tab>" . company-complete-common-or-cycle)
-                   ("C-n" . company-select-next)
-                   ("C-p" . company-select-previous))))
+        (add-to-list 'company-backends '(company-clang
+                                         company-capf
+                                         company-dabbrev
+                                         company-c-headers
+                                         company-gtags))
+        :bind (:map company-mode-map
+                    ("M-/" . company-manual-begin)
+                    :map company-active-map
+                    (("M-/" . company-other-backend)
+                     ("<tab>" . company-complete-selection)
+                     ("<C-tab>" . company-complete-common-or-cycle)
+                     ("C-n" . company-select-next)
+                     ("C-p" . company-select-previous))))
 
-  (use-package company-statistics      
-      :init
-      (company-statistics-mode))
+    (use-package company-statistics      
+        :init
+        (company-statistics-mode))
 
 
-    (setq company-global-modes '(
-                                 org-mode
-                                 c-mode
-                                 c++-mode
-                                 ))
+      (setq company-global-modes '(
+                                   org-mode
+                                   c-mode
+                                   c++-mode
+                                   ))
 
-    (add-hook 'c-mode-hook
-              (lambda ()
-                (set (make-local-variable 'company-backends) '(company-clang  company-gtags  (company-c-headers) company-dabbrev ))))
+      (add-hook 'c-mode-hook
+                (lambda ()
+                  (set (make-local-variable 'company-backends) '(company-clang  company-gtags  company-c-headers company-dabbrev ))))
 
 #+END_SRC
 
