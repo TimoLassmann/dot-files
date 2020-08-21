@@ -81,8 +81,8 @@
                     "obsolete")
          (debug)))
      (add-to-list 'after-load-functions #'debug-on-load-obsolete)
-
    #+END_SRC
+
 ** Whoami 
    
    #+BEGIN_SRC emacs-lisp
@@ -241,14 +241,78 @@
      (setq gnutls-min-prime-bits 4096)
    #+END_SRC
 
-** Turn off sleep mode 
+** Turn off some default key-bindings 
    I keep hitting this by accidental
    #+BEGIN_SRC emacs-lisp 
      (global-unset-key (kbd "C-z"))
+     (global-unset-key (kbd "C-x C-z"))
+     (global-unset-key (kbd "C-h h"))
    #+END_SRC
 
+** Recentf 
+   #+BEGIN_SRC emacs-lisp
+     (use-package recentf
+       :custom
+       (recentf-save-file "~/.emacs.d/recentf")
+       (recentf-max-menu-items 10)
+       (recentf-max-saved-items 200)
+       (recentf-show-file-shortcuts-flag nil)
+       :config
+       (recentf-mode 1)
+       (add-to-list 'recentf-exclude
+                    (expand-file-name "~/.emacs.d/company-statistics-cache.el"))
+       ;; rename entries in recentf when moving files in dired
+       (defun rjs/recentf-rename-directory (oldname newname)
+         ;; oldname, newname and all entries of recentf-list should already
+         ;; be absolute and normalised so I think this can just test whether
+         ;; oldname is a prefix of the element.
+         (setq recentf-list
+               (mapcar (lambda (name)
+                         (if (string-prefix-p oldname name)
+                             (concat newname (substring name (length oldname)))
+                           name))
+                       recentf-list))
+         (recentf-cleanup))
+
+       (defun rjs/recentf-rename-file (oldname newname)
+         (setq recentf-list
+               (mapcar (lambda (name)
+                         (if (string-equal name oldname)
+                             newname
+                           oldname))
+                       recentf-list))
+         (recentf-cleanup))
+
+       (defun rjs/recentf-rename-notify (oldname newname &rest args)
+         (if (file-directory-p newname)
+             (rjs/recentf-rename-directory oldname newname)
+           (rjs/recentf-rename-file oldname newname)))
+
+       (advice-add 'dired-rename-file :after #'rjs/recentf-rename-notify)
+
+       (defun contrib/recentf-add-dired-directory ()
+         "Include Dired buffers in the list.  Particularly useful when
+          combined with a completion framework's ability to display virtual
+          buffers."
+         (when (and (stringp dired-directory)
+                    (equal "" (file-name-nondirectory dired-directory)))
+           (recentf-add-file dired-directory))))
+
+
+
+   #+END_SRC
+
+** Saveplace (remember point position)
+#+BEGIN_SRC emacs-lisp
+(use-package saveplace
+  :custom
+  (save-place-file "~/.emacs.d/saveplace")
+  :config
+  (save-place-mode 1))
+#+END_SRC
+
 * Basic Functionality 
-** Highligh current line
+** Highlight current line
 
    hl-line is awesome! It’s not very awesome in the terminal version of emacs though, so we don’t use that. Besides, it’s only used for programming.
    #+BEGIN_SRC emacs-lisp
@@ -270,17 +334,32 @@
    #+END_SRC
 
 ** Projectile
-
    Projectile is an awesome project manager, mostly because it recognizes directories with a .git directory as projects and helps you manage them accordingly.
    Enable projectile globally
 
    This makes sure that everything can be a project.
    #+BEGIN_SRC emacs-lisp
-     (use-package projectile
-       
-       :diminish
-       :init
-       (projectile-mode 1))
+(use-package projectile
+  :ensure t
+  ;; :delight '(:eval (concat " " (projectile-project-name)))
+  :delight
+  :custom
+  (projectile-project-search-path '("~/"))
+  (projectile-indexing-method 'alien)
+  (projectile-enable-caching t)
+  (projectile-completion-system 'ivy))
+
+(use-package counsel-projectile
+  :ensure t
+  :config
+  (add-to-list 'ivy-initial-inputs-alist '(counsel-projectile-switch-project . ""))
+  (counsel-projectile-mode 1)
+  ;; :bind-keymap ("M-s p" . projectile-command-map)
+  :bind (("M-s b" . counsel-projectile-switch-to-buffer)
+         ("M-s d" . counsel-projectile-find-dir)
+         ("M-s p" . (lambda ()
+                      (interactive)
+                      (counsel-projectile-switch-project 4)))))
    #+END_SRC
 
    Let projectile call make
@@ -304,6 +383,17 @@
          (insert (format-time-string format))))
 
      (global-set-key (kbd "C-c d") 'insert-date)
+   #+END_SRC
+
+** Aggressive Auto Indention
+   
+   #+BEGIN_SRC emacs-lisp
+     (use-package aggressive-indent-mode
+     :config 
+     (global-aggressive-indent-mode 1)
+     )
+
+
    #+END_SRC
 
 * Improvements
@@ -434,13 +524,24 @@
 
    #+END_SRC
 
-
  
-
 ** Ivy 
 
    This Ivy configuration is copied from Protesilaos Stavrou's old setup ( https://gitlab.com/protesilaos/dotfiles) 
 
+
+And here are some 'hidden' key bindings for making the most out of Ivy
+(find more in the official manual).
+
+| Key     | Function                | Description                                 |
+|---------+-------------------------+---------------------------------------------|
+| M-o     | ivy-dispatching-done    | Show actions for current match.             |
+| C-c C-o | ivy-occur               | Place the list in a standalone buffer.      |
+| C-M-m   | ivy-call                | Run command, keep minibuffer open.          |
+| M-i     | ivy-insert-current      | Insert match in the prompt.                 |
+| M-j     | ivy-yank-word           | Put word at point in the minibuffer prompt. |
+| S-SPC   | ivy-restrict-to-matches | Restrict list to prompt (and search anew).  |
+| C-SPC   | ivy-restrict-to-matches | My alias for the above.                     |
 
 #+BEGIN_SRC emacs-lisp
 (use-package ivy
@@ -634,7 +735,7 @@ Prescient
 
 #+END_SRC
 
-** AVY
+** Avy
 
 
    #+BEGIN_SRC emacs-lisp
@@ -683,8 +784,8 @@ Prescient
      (t . ivy-posframe-display-at-frame-center)))
   :config
   (ivy-posframe-mode 1))
-
 #+END_SRC
+
 ** Swoop 
    #+BEGIN_EXAMPLE emacs-lisp
 
@@ -722,36 +823,6 @@ Prescient
 
 * Completion
 
-** Recentf 
-   #+BEGIN_SRC emacs-lisp
-
-     (use-package recentf
-       :init
-       (setq recentf-max-menu-items 25
-             recentf-auto-cleanup 'never
-             recentf-max-saved-items 50
-             recentf-keep '(file-remote-p file-readable-p))
-       (recentf-mode 1)
-       (let ((last-ido "~/.emacs.d/ido.last"))
-         (when (file-exists-p last-ido)
-           (delete-file last-ido)))
-
-       :bind ("C-c f r" . recentf-open-files))
-
-
-     (defun ido-recentf-open ()
-       "Use `ido-completing-read' to \\[find-file] a recent file"
-       (interactive)
-       (if (find-file (ido-completing-read "Find recent file: " recentf-list))
-           (message "Opening file...")
-         (message "Aborting")))
-
-     (global-set-key (kbd "C-x C-r") 'ido-recentf-open)
-
-
-
-
-   #+END_SRC
 
 ** IDO
 
@@ -817,16 +888,6 @@ Prescient
 
    #+END_SRC
 
-** SMEX 
-   #+BEGIN_SRC emacs-lisp
-     (use-package smex
-       
-       :init (smex-initialize)
-       :bind ("M-x" . smex)
-       ("M-X" . smex-major-mode-commands))
-
-   #+END_SRC
-
 ** Counsel
    Counsel tramp 
    #+BEGIN_SRC emacs-lisp
@@ -836,69 +897,66 @@ Prescient
 
 ** Company 
 
-   #+BEGIN_SRC emacs-lisp
-     (use-package company-c-headers
-       
-       )
+#+BEGIN_SRC emacs-lisp
+    (use-package company
+      :ensure t
+      :delight
+      :custom
+      (company-auto-complete nil)
+      (company-dabbrev-code-everywhere t)
+      (company-dabbrev-code-modes t)
+      (company-dabbrev-code-other-buffers 'all)
+      (company-dabbrev-downcase nil)
+      (company-dabbrev-ignore-case t)
+      (company-dabbrev-other-buffers 'all)
+      (company-idle-delay 0.3)
+      (company-minimum-prefix-length 3)
+      (company-require-match nil)
+      (company-selection-wrap-around t)
+      (company-show-numbers t)
+      (company-transformers
+       '(company-sort-by-backend-importance
+         company-sort-prefer-same-case-prefix
+         company-sort-by-occurrence))
+      (company-tooltip-align-annotations t)
+      (company-tooltip-limit 10)
+      (company-tooltip-margin 1)
+      (company-tooltip-offset-display 'scrollbar)
+      :config
+      (global-company-mode 1)
 
-     (use-package company-math 
-       
-       )
+      (add-to-list 'company-backends '(company-clang
+                                       company-capf
+                                       company-dabbrev
+                                       company-c-headers
+                                       company-gtags))
+      :bind (:map company-mode-map
+                  ("M-/" . company-manual-begin)
+                  :map company-active-map
+                  (("M-/" . company-other-backend)
+                   ("<tab>" . company-complete-selection)
+                   ("<C-tab>" . company-complete-common-or-cycle)
+                   ("C-n" . company-select-next)
+                   ("C-p" . company-select-previous))))
 
-     (use-package company-shell 
-       
-       )
-
-
-     (use-package company
-       
-       :init
-       (setq company-frontends '(company-pseudo-tooltip-frontend
-                                 company-echo-metadata-frontend))
-       (setq company-dabbrev-ignore-case t
-             company-show-numbers t)
-       (add-hook 'after-init-hook 'global-company-mode)
-       :config
-       (setq company-idle-delay 0.01)
-       (setq company-minimum-prefix-length 2)
-       (setq company-tooltip-align-annotations t)
-       (setq company-require-match nil) 
-       (setq company-eclim-auto-save nil)         
-       (setq company-dabbrev-downcase nil)        
-       (add-to-list 'company-backends '(company-gtags))
-       (add-to-list 'company-backends '(company-clang company-capf company-dabbrev company-c-headers))
-       :bind ("C-:" . company-complete)  ; In case I don't want to wait
-       :diminish company-mode)
-
-     (use-package company-quickhelp
-       
-       :config
-       (company-quickhelp-mode 1))
-
-
-     (use-package company-statistics
-        
-       )
-
-     (with-eval-after-load 'company
-       (define-key company-active-map (kbd "M-n") nil)
-       (define-key company-active-map (kbd "M-p") nil)
-       (define-key company-active-map (kbd "C-n") #'company-select-next)
-       (define-key company-active-map (kbd "C-p") #'company-select-previous)
-       (define-key company-active-map (kbd "SPC") #'company-abort))
+  (use-package company-statistics
+      :straight t
+      :init
+      (company-statistics-mode))
 
 
-     (setq company-global-modes '(
-                                  org-mode
-                                  c-mode
-                                  c++-mode
-                                  ))
+    (setq company-global-modes '(
+                                 org-mode
+                                 c-mode
+                                 c++-mode
+                                 ))
 
-     (add-hook 'c-mode-hook
-               (lambda ()
-                 (set (make-local-variable 'company-backends) '(company-clang  company-gtags  (company-c-headers) company-dabbrev ))))
+    (add-hook 'c-mode-hook
+              (lambda ()
+                (set (make-local-variable 'company-backends) '(company-clang  company-gtags  (company-c-headers) company-dabbrev ))))
 
-   #+END_SRC
+#+END_SRC
+
    I had to add the hook and local variable to stop company from selecting capf before clang. 
    To make this work properly, I need to manually specify the include paths by
    putting a =.dir-locals.el= into the source directory of my C code. I.e. most
@@ -915,13 +973,14 @@ Prescient
  )
 
    #+END_EXAMPLE
-
+   Company Prescient 
    #+BEGIN_SRC emacs-lisp
-                                             ;( concat "-I" (list ( file-expand-wildcards "../*/")))
-     (mapcar 'car '((a b) (c d) (e f)))
+   (use-package company-prescient
+  :ensure t
+  :after (company prescient)
+  :config
+  (company-prescient-mode 1))
 
-                                             ;(concat "-I" (list (file-expand-wildcards "../seqe*")))
-     (list (format "%s/%s" "-I" (car (file-expand-wildcards "../seqe*"))))
    #+END_SRC
    
 * Writing
@@ -1675,38 +1734,7 @@ Prescient
 
    #+END_SRC
 
-   magit end. 
-** Aggressive Auto Indention
-   
-   Automatically indent without use of the tab found in this article, and seems to be quite helpful for many types of programming languages.
-   
-   To begin, we create a function that can indent a function by calling indent-region on the beginning and ending points of a function.
-   #+BEGIN_SRC emacs-lisp 
-     (defun indent-defun ()
-       "Indent current defun.
-     Do nothing if mark is active (to avoid deactivaing it), or if
-     buffer is not modified (to avoid creating accidental
-     modifications)."
-       (interactive)
-       (unless (or (region-active-p)
-                   buffer-read-only
-                   (null (buffer-modified-p)))
-         (let ((l (save-excursion (beginning-of-defun 1) (point)))
-               (r (save-excursion (end-of-defun 1) (point))))
-           (cl-letf (((symbol-function 'message) #'ignore))
-             (indent-region l r)))))
-   #+END_SRC
-   
-   Next, create a hook that will call the indent-defun with every command call:
-   
-   #+BEGIN_SRC emacs-lisp 
-     (defun activate-aggressive-indent ()
-       "Locally add `ha/indent-defun' to `post-command-hook'."
-       (add-hook 'post-command-hook
-                 'indent-defun nil 'local))
-   #+END_SRC
-   
-   
+   magit end.    
 ** hippie expand
 
 
@@ -1763,7 +1791,18 @@ Prescient
     #+END_SRC
 
 
+*** Indent style 
 
+  SET BSD indent style
+
+   #+BEGIN_SRC emacs-lisp
+
+     (add-hook 'c-mode-hook
+               '(lambda()
+                  (c-set-style "bsd")
+                  ))
+   #+END_SRC
+  
 *** ggtags
 
 
@@ -1855,60 +1894,14 @@ Prescient
     (semantic-mode 1)
 
     #+EXAMPLE_SRC
-** Indenting 
+*** Whitespace mode  
 
-   SET BSD indent style
-
-   #+BEGIN_SRC emacs-lisp
-
-     (add-hook 'c-mode-hook
-               '(lambda()
-                  (c-set-style "bsd")
-                  ))
-   #+END_SRC
-  
    Whitespace mode
 
    #+BEGIN_SRC emacs-lisp
      (global-set-key (kbd "C-c w") 'whitespace-mode)
      (add-hook 'prog-mode-hook (lambda () (interactive) (setq show-trailing-whitespace 1)))
    #+END_SRC
-
-   #+BEGIN_SRC emacs-lisp
-     (setq-default indent-tabs-mode nil)
-   #+END_SRC
-
-*** clean aindent mode
-
-    #+BEGIN_SRC emacs-lisp
-      (use-package clean-aindent-mode
-         
-        :init 
-        (add-hook 'prog-mode-hook 'clean-aindent-mode)
-        )
-    #+END_SRC
-
-*** dtrt indent mode
-
-    #+BEGIN_SRC emacs-lisp
-      (use-package dtrt-indent 
-        
-        :init 
-        (dtrt-indent-mode 1)
-        (setq dtrt-indent-verbosity 0)
-        )
-    #+END_SRC
-
-*** Whitespace bulter 
-
-    #+BEGIN_SRC emacs-lisp
-      (use-package ws-butler
-         
-        :init
-        (add-hook 'c-mode-common-hook 'ws-butler-mode)
-        )
-    #+END_SRC
-
 
 ** Don't ask for permission to run make
    Don't ask with make command to run...
