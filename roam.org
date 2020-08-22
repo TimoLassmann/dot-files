@@ -1,4 +1,4 @@
-#+TITLE:  
+#+TITLE:  Org-roam configuration 
 #+AUTHOR: Timo Lassmann
 #+EMAIL:  timo.lassmann@telethonkids.org.au
 #+DATE:   2020-08-19
@@ -28,7 +28,7 @@
 
 #+END_SRC
   #+RESULTS:
-  | org-roam-mode | x-wm-set-size-hint | global-flycheck-mode | global-company-mode | table--make-cell-map |
+  | org-roam-mode | global-flycheck-mode | x-wm-set-size-hint | table--make-cell-map |
 
 #+RESULTS:
 ** hide-mode-line
@@ -123,23 +123,99 @@
 
    #+end_example
 
-** org-ref
+** vanilla org-roam 
+
 #+BEGIN_SRC emacs-lisp
-  (use-package org-ref
-      ;; :init
-      ; code to run before loading org-ref
-      :config
-      (setq
-           org-ref-completion-library 'org-ref-ivy-cite
-           org-ref-get-pdf-filename-function 'org-ref-get-pdf-filename-helm-bibtex
-           org-ref-default-bibliography (list "~/work/bibliography/references.bib")
-           org-ref-bibliography-notes "~/work/roam/notes.org"
-           org-ref-note-title-format "* TODO %y - %t\n :PROPERTIES:\n  :Custom_ID: %k\n  :NOTER_DOCUMENT: %F\n :ROAM_KEY: cite:%k\n  :AUTHOR: %9a\n  :JOURNAL: %j\n  :YEAR: %y\n  :VOLUME: %v\n  :PAGES: %p\n  :DOI: %D\n  :URL: %U\n :END:\n\n"
-           org-ref-notes-directory "~/work/roam/"
-           org-ref-notes-function 'orb-edit-notes
-      ))
+(use-package org-roam
+      :ensure t
+      :hook
+      (after-init . org-roam-mode)
+      :custom
+   (org-roam-directory (concat (getenv "HOME") "/work/roam"))
+      ;;(org-roam-directory "/path/to/org-files/")
+      :bind (:map org-roam-mode-map
+              (("C-c n l" . org-roam)
+               ("C-c n f" . org-roam-find-file)
+               ("C-c n g" . org-roam-graph-show))
+              :map org-mode-map
+              (("C-c n i" . org-roam-insert))
+              (("C-c n I" . org-roam-insert-immediate))))
 
 #+END_SRC
+
+
+
+
+
+(use-package org-roam-bibtex
+  :requires bibtex-completion
+  :hook (org-roam-mode . org-roam-bibtex-mode)
+  :load-path "~/projects/org-roam-bibtex/"
+  :bind (:map org-roam-bibtex-mode-map
+         (("C-c m f" . orb-find-non-ref-file))
+         :map org-mode-map
+         (("C-c m t" . orb-insert-non-ref)
+          ("C-c m a" . orb-note-actions)))
+  :init
+  :custom
+  (orb-autokey-format "%a%y")
+  (orb-templates
+   `(("r" "ref" plain
+      (function org-roam-capture--get-point)
+      ""
+      :file-name "refs/${citekey}"
+      :head ,(s-join "\n"
+                     (list
+                      (concat "#+title: "
+                              orb-title-format)
+                      "#+roam_key: ${ref}"
+                      "#+created: %U"
+                      "#+last_modified: %U\n\n"))
+      :unnarrowed t)
+     ("p" "ref + physical" plain
+      (function org-roam-capture--get-point)
+      ""
+      :file-name "refs/${citekey}"
+      :head ,(s-join "\n"
+                     (list
+                      (concat "#+title: "
+                              orb-title-format)
+                      "#+roam_key: ${ref}"
+                      ""
+                      "* Notes :physical:")))
+     ("n" "ref + noter" plain
+      (function org-roam-capture--get-point)
+      ""
+      :file-name "refs/${citekey}"
+      :head ,(s-join "\n"
+                     (list
+                      (concat "#+title: "
+                              orb-title-format)
+                      "#+roam_key: ${ref}"
+                      ""
+                      "* Notes :noter:"
+                      ":PROPERTIES:"
+                      ":NOTER_DOCUMENT: %(orb-process-file-field \"${citekey}\")"
+                      ":NOTER_PAGE:"
+                      ":END:"))))))
+
+(use-package org-roam-server
+  :ensure t
+  :bind (:map org-roam-mode-map
+         (("C-c m G" . org-roam-server-mode)))
+  :config
+  (setq org-roam-server-host "127.0.0.1"
+        org-roam-server-port 8080
+        org-roam-server-export-inline-images t
+        org-roam-server-authenticate nil
+        org-roam-server-network-poll t
+        org-roam-server-network-arrows nil
+        org-roam-server-network-label-truncate t
+        org-roam-server-network-label-truncate-length 60
+        org-roam-server-network-label-wrap-length 20))
+
+: zp/org-roam-find-directory-testing
+
 
 
 
@@ -148,137 +224,9 @@
 
 
 
-
-**  org-roam
-
-   #+BEGIN_SRC emacs-lisp
-     (use-package org-roam
-       :ensure t
-       :hook (org-load . org-roam-mode)
-       :commands (org-roam-buffer-toggle-display
-                  org-roam-find-file
-                  org-roam-graph
-                  org-roam-insert
-                  org-roam-switch-to-buffer
-                  org-roam-dailies-date
-                  org-roam-dailies-today
-                  org-roam-dailies-tomorrow
-                  org-roam-dailies-yesterday)
-       :preface
-       ;; Set this to nil so we can later detect whether the user has set a custom
-       ;; directory for it, and default to `org-directory' if they haven't.
-       (defvar org-roam-directory nil)
-       :init
-       :config
-       (setq org-roam-directory (expand-file-name (or org-roam-directory "roam")
-                                                  org-directory)
-             org-roam-verbose nil  ; https://youtu.be/fn4jIlFwuLU
-             org-roam-buffer-no-delete-other-windows t ; make org-roam buffer sticky
-             org-roam-completion-system 'default
-             ))
-
-     ;; Normally, the org-roam buffer doesn't open until you explicitly call
-     ;; `org-roam'. If `+org-roam-open-buffer-on-find-file' is non-nil, the
-     ;; org-roam buffer will be opened for you when you use `org-roam-find-file'
-     ;; (but not `find-file', to limit the scope of this behavior).
-     (add-hook 'find-file-hook
-               (defun +org-roam-open-buffer-maybe-h ()
-                 (and +org-roam-open-buffer-on-find-file
-                      (memq 'org-roam-buffer--update-maybe post-command-hook)
-                      (not (window-parameter nil 'window-side)) ; don't proc for popups
-                      (not (eq 'visible (org-roam-buffer--visibility)))
-                      (with-current-buffer (window-buffer)
-                        (org-roam-buffer--get-create)))))
-
-     ;; Hide the mode line in the org-roam buffer, since it serves no purpose. This
-     ;; makes it easier to distinguish among other org buffers.
-     (add-hook 'org-roam-buffer-prepare-hook #'hide-mode-line-mode))
-
-
-     ;; Since the org module lazy loads org-protocol (waits until an org URL is
-     ;; detected), we can safely chain `org-roam-protocol' to it.
-     (use-package org-roam-protocol
-       :ensure t
-       :after org-protocol)
-
-
-     (use-package company-org-roam
-       :ensure t
-       :after org-roam
-       :config
-       (set-company-backend! 'org-mode '(company-org-roam company-yasnippet company-dabbrev)))
-   #+END_SRC
-
-   #+RESULTS:
-   | hide-mode-line-mode | org-roam-buffer--insert-title | org-roam-buffer--insert-backlinks | org-roam-buffer--insert-ref-links |
-
-** org-roam-bibtex 
-
-   #+BEGIN_SRC emacs-lisp
-
- (use-package org-roam-bibtex
-:ensure t
-  :after (org-roam)
-  :hook (org-roam-mode . org-roam-bibtex-mode)
-  :config
-  (setq org-roam-bibtex-preformat-keywords
-   '("=key=" "title" "url" "file" "author-or-editor" "keywords"))
-  (setq orb-templates
-        '(("r" "ref" plain (function org-roam-capture--get-point)
-           ""
-           :file-name "${slug}"
-           :head "#+TITLE: ${=key=}: ${title}\n#+ROAM_KEY: ${ref}
-
-- tags ::
-- keywords :: ${keywords}
-
-\n* ${title}\n  :PROPERTIES:\n  :Custom_ID: ${=key=}\n  :URL: ${url}\n  :AUTHOR: ${author-or-editor}\n  :NOTER_DOCUMENT: %(orb-process-file-field \"${=key=}\")\n  :NOTER_PAGE: \n  :END:\n\n"
-
-           :unnarrowed t))))
-   
-   #+END_SRC
-
-   #+RESULTS:
 
 ** 
 
-#+BEGIN_SRC emacs-lisp
-(use-package org-noter
-:ensure t
-  :after (:any org pdf-view)
-  :config
-  (setq
-   ;; The WM can handle splits
-   org-noter-notes-window-location 'other-frame
-   ;; Please stop opening frames
-   org-noter-always-create-frame nil
-   ;; I want to see the whole file
-   org-noter-hide-other nil
-   ;; Everything is relative to the main notes file
-   org-noter-notes-search-path (list org_notes)
-   )
-  )
-
-#+END_SRC
-
-#+RESULTS:
-: t
-
-#+BEGIN_SRC emacs-lisp 
-  ;; Since the org module lazy loads org-protocol (waits until an org URL is
-  ;; detected), we can safely chain `org-roam-protocol' to it.
-  (use-package org-roam-protocol
-    :ensure t
-    :after org-protocol)
-
-
-
-  (use-package company-org-roam
-    :ensure t
-    :after org-roam
-    :config
-    (set-company-backend! 'org-mode '(company-org-roam company-yasnippet company-dabbrev)))
-#+END_SRC
 
 #+RESULTS:
 : t

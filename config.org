@@ -395,6 +395,14 @@
 
    #+END_SRC
 
+** hide-mode-line
+
+#+BEGIN_SRC emacs-lisp
+  (use-package hide-mode-line
+  :ensure t
+    )
+#+END_SRC
+
 * Improvements
 ** Better beginning of line
 
@@ -896,65 +904,72 @@ Prescient
 
 ** Company 
 
-#+BEGIN_SRC emacs-lisp
-(use-package company-c-headers
-:ensure t 
-)
-      (use-package company
-        :ensure t
-        :delight
-        :custom
-        (company-auto-complete nil)
-        (company-dabbrev-code-everywhere t)
-        (company-dabbrev-code-modes t)
-        (company-dabbrev-code-other-buffers 'all)
-        (company-dabbrev-downcase nil)
-        (company-dabbrev-ignore-case t)
-        (company-dabbrev-other-buffers 'all)
-        (company-idle-delay 0.3)
-        (company-minimum-prefix-length 3)
-        (company-require-match nil)
-        (company-selection-wrap-around t)
-        (company-show-numbers t)
-        ;;(company-transformers
-         ;;'(company-sort-by-backend-importance
-  ;;         company-sort-prefer-same-case-prefix
-    ;;       company-sort-by-occurrence))
-        (company-tooltip-align-annotations t)
-        (company-tooltip-limit 10)
-        (company-tooltip-margin 1)
-        (company-tooltip-offset-display 'scrollbar)
-        :config
-        (global-company-mode 1)
+   #+BEGIN_SRC emacs-lisp
+     (use-package company-c-headers
+       :ensure t 
+       )
+     (use-package company
+       :ensure t
+       :delight
+       :custom
+       (company-auto-complete nil)
+       (company-dabbrev-code-everywhere t)
+       (company-dabbrev-code-modes t)
+       (company-dabbrev-code-other-buffers 'all)
+       (company-dabbrev-downcase nil)
+       (company-dabbrev-ignore-case t)
+       (company-dabbrev-other-buffers 'all)
+       (company-idle-delay 0.3)
+       (company-minimum-prefix-length 3)
+       (company-require-match nil)
+       (company-selection-wrap-around t)
+       (company-show-numbers t)
+       ;;(company-transformers
+       ;;'(company-sort-by-backend-importance
+       ;;         company-sort-prefer-same-case-prefix
+       ;;       company-sort-by-occurrence))
+       (company-tooltip-align-annotations t)
+       (company-tooltip-limit 10)
+       (company-tooltip-margin 1)
+       (company-tooltip-offset-display 'scrollbar)
+       :config
+       (global-company-mode 1)
 
-        (add-to-list 'company-backends '(company-clang
-                                         company-capf
-                                         company-dabbrev
-                                         company-c-headers
-                                         company-gtags))
-        :bind (:map company-mode-map
-                    ("M-/" . company-manual-begin)
-                    :map company-active-map
-                    (("M-/" . company-other-backend)
-                     ("<tab>" . company-complete-selection)
-                     ("<C-tab>" . company-complete-common-or-cycle)
-                     ("C-n" . company-select-next)
-                     ("C-p" . company-select-previous))))
+       (add-to-list 'company-backends '(company-org-roam
+                                        company-clang
+                                        company-capf
+                                        company-dabbrev
+                                        company-c-headers
+                                        company-gtags))
+       :bind (:map company-mode-map
+                   ("M-/" . company-manual-begin)
+                   :map company-active-map
+                   (("M-/" . company-other-backend)
+                    ("<tab>" . company-complete-selection)
+                    ("<C-tab>" . company-complete-common-or-cycle)
+                    ("C-n" . company-select-next)
+                    ("C-p" . company-select-previous))))
 
-    (use-package company-statistics      
-        :init
-        (company-statistics-mode))
+     (use-package company-statistics      
+       :init
+       (company-statistics-mode))
 
 
-      (setq company-global-modes '(
-                                   org-mode
-                                   c-mode
-                                   c++-mode
-                                   ))
+     (setq company-global-modes '(
+                                  org-mode
+                                  c-mode
+                                  c++-mode
+                                  ))
 
-      (add-hook 'c-mode-hook
-                (lambda ()
-                  (set (make-local-variable 'company-backends) '(company-clang  company-gtags  company-c-headers company-dabbrev ))))
+     (add-hook 'c-mode-hook
+               (lambda ()
+                 (set (make-local-variable 'company-backends) '(company-clang  company-gtags  company-c-headers company-dabbrev ))))
+
+(add-hook 'org-mode-hook
+               (lambda ()
+                 (set (make-local-variable 'company-backends) '(company-org-roam company-yasnippet company-dabbrev ))))
+
+
 
 #+END_SRC
 
@@ -1368,12 +1383,60 @@ Prescient
                'append)
 
    #+END_SRC
+   
+** Deft
+#+BEGIN_SRC emacs-lisp :eval never 
+  (use-package deft
+    :commands deft
+    :ensure t
+    :init
+    (setq deft-default-extension "org"
+          ;; de-couples filename and note title:
+          deft-use-filename-as-title nil
+          deft-use-filter-string-for-filename t
+          ;; disable auto-save
+          deft-auto-save-interval -1.0
+          ;; converts the filter string into a readable file-name using kebab-case:
+          deft-file-naming-rules
+          '((noslash . "-")
+            (nospace . "-")
+            (case-fn . downcase)))
+    :config
+    (add-to-list 'deft-extensions "tex")
+    )
+
+
+#+END_SRC
+
+** org-roam 
+  
+#+BEGIN_SRC emacs-lisp :eval never 
+(use-package org-roam
+      :ensure t
+      :hook
+      (after-init . org-roam-mode)
+      :custom
+   (org-roam-directory (concat (getenv "HOME") "/work/roam"))
+      ;;(org-roam-directory "/path/to/org-files/")
+      :bind (:map org-roam-mode-map
+              (("C-c n l" . org-roam)
+               ("C-c n f" . org-roam-find-file)
+               ("C-c n g" . org-roam-graph-show))
+              :map org-mode-map
+              (("C-c n i" . org-roam-insert))
+              (("C-c n I" . org-roam-insert-immediate))))
+
+(setq org-roam-completion-system 'ivy)
+(add-hook 'after-init-hook 'org-roam-mode)
+#+END_SRC
+
+
 
 ** Org-ref
 
-   #+BEGIN_SRC emacs-lisp
-(use-package org-ref
-  )
+  #+BEGIN_SRC emacs-lisp
+     (use-package org-ref
+       :ensure t)
    #+END_SRC
 
    Make =supercite= the default citation type:
@@ -1402,20 +1465,46 @@ Prescient
    Where are the refs?
 
    #+BEGIN_SRC emacs-lisp
-     (setq reftex-default-bibliography '("~/work/bibliography/references.bib"))
+          (setq reftex-default-bibliography '("~/work/bibliography/references.bib"))
 
-     ;; see org-ref for use of these variables
-     (setq org-ref-bibliography-notes "~/work/bibliography/notes.org"
-           org-ref-default-bibliography '("~/work/bibliography/references.bib")
-           org-ref-pdf-directory "~/work/bibliography/bibtex-pdfs/")
+          ;; see org-ref for use of these variables
+          (setq org-ref-bibliography-notes "~/work/roam/notes.org"
+                org-ref-default-bibliography '("~/work/bibliography/references.bib")
+                org-ref-pdf-directory "~/work/bibliography/bibtex-pdfs/")
+
+
+     (setq org-ref-note-title-format "* TODO %y - %t\n :PROPERTIES:\n  :Custom_ID: %k\n  :NOTER_DOCUMENT: %F\n :ROAM_KEY: cite:%k\n  :AUTHOR: %9a\n  :JOURNAL: %j\n  :YEAR: %y\n  :VOLUME: %v\n  :PAGES: %p\n  :DOI: %D\n  :URL: %U\n :END:\n\n"
+             org-ref-notes-directory "~/work/roam/"
+             org-ref-notes-function 'orb-edit-notes)
 
    #+END_SRC
 
    #+BEGIN_SRC emacs-lisp
-     
      (setq org-ref-completion-library 'org-ref-ivy-cite)
+
    #+END_SRC
    End.
+
+** Org-noter 
+
+#+BEGIN_SRC emacs-lisp :eval never 
+(use-package org-noter
+:ensure t
+  :after (:any org pdf-view)
+  :config
+  (setq
+   ;; The WM can handle splits
+   org-noter-notes-window-location 'other-frame
+   ;; Please stop opening frames
+   org-noter-always-create-frame nil
+   ;; I want to see the whole file
+   org-noter-hide-other nil
+   ;; Everything is relative to the main notes file
+   org-noter-notes-search-path (list (concat (getenv "HOME") "/work/roam")  )
+   )
+  )
+
+#+END_SRC
 
 ** Org-download
 
