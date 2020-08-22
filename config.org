@@ -726,6 +726,7 @@ Prescient
            ("C-SPC" . ivy-restrict-to-matches)))
 #+END_SRC
 
+
 ** Swiper
 #+BEGIN_SRC emacs-lisp
 (use-package swiper
@@ -906,6 +907,9 @@ Prescient
 
    #+BEGIN_SRC emacs-lisp
      (use-package company-c-headers
+       :ensure t 
+       )
+     (use-package company-org-roam
        :ensure t 
        )
      (use-package company
@@ -1108,13 +1112,14 @@ Prescient
    Directory, inbox ..
 
    #+BEGIN_SRC emacs-lisp
-     (setq org-directory "~/")
-     (defun org-file-path (filename)
-       "Return the absolute address of an org file, given its relative name."
-       (concat (file-name-as-directory org-directory) filename))
-     (setq org-index-file (org-file-path "/capture/inbox.org"))
-     (setq org-archive-location
-           (concat (org-file-path "archive.org") "::* From %s"))
+          (setq org-directory "~/")
+          (defun org-file-path (filename)
+            "Return the absolute address of an org file, given its relative name."
+            (concat (file-name-as-directory org-directory) filename))
+          (setq org-index-file (org-file-path "/capture/inbox.org"))
+     
+          (setq org-archive-location
+                (concat (org-file-path "archive.org") "::* From %s"))
    #+END_SRC
 
    Multiple files for agenda source:
@@ -1173,6 +1178,7 @@ Prescient
    #+BEGIN_SRC emacs-lisp
      (add-hook 'org-mode-hook 'visual-line-mode)
    #+END_SRC
+
 ** Capture
    Capture templates..
    #+BEGIN_SRC emacs-lisp
@@ -1383,9 +1389,12 @@ Prescient
                'append)
 
    #+END_SRC
+
+
+
    
 ** Deft
-#+BEGIN_SRC emacs-lisp :eval never 
+#+BEGIN_SRC emacs-lisp
   (use-package deft
     :commands deft
     :ensure t
@@ -1405,32 +1414,82 @@ Prescient
     (add-to-list 'deft-extensions "tex")
     )
 
+(setq deft-directory (concat (getenv "HOME") "/work/roam"))
 
 #+END_SRC
 
 ** org-roam 
   
-#+BEGIN_SRC emacs-lisp :eval never 
-(use-package org-roam
-      :ensure t
-      :hook
-      (after-init . org-roam-mode)
-      :custom
-   (org-roam-directory (concat (getenv "HOME") "/work/roam"))
-      ;;(org-roam-directory "/path/to/org-files/")
-      :bind (:map org-roam-mode-map
-              (("C-c n l" . org-roam)
-               ("C-c n f" . org-roam-find-file)
-               ("C-c n g" . org-roam-graph-show))
-              :map org-mode-map
-              (("C-c n i" . org-roam-insert))
-              (("C-c n I" . org-roam-insert-immediate))))
+#+BEGIN_SRC emacs-lisp  
+  (use-package org-roam
+    :ensure t
+    :hook
+    (after-init . org-roam-mode)
+    :custom
+    (org-roam-directory (concat (getenv "HOME") "/work/roam"))
+    ;;(org-roam-directory "/path/to/org-files/")
+    :config
+    (setq 
+     org-roam-dailies-directory (concat (getenv "HOME") "/work/roam")
+     org-roam-dailies-capture--header-default
+     "#+title: %<%Y-%m-%d>\n\n"
+     org-roam-dailies-capture-templates
+     '(("d" "daily" entry #'org-roam-capture--get-point
+        "* %?\n"
+        :add-created t)))
+    :bind (:map org-roam-mode-map
+                (("C-c m l" . org-roam)
+                 ("C-c m F" . org-roam-find-file)
+                 ("C-c m r" . org-roam-find-ref)
+                 ("C-c m ." . org-roam-find-directory)
+                 ("C-c m d" . org-roam-dailies-map)
+                 ("C-c m j" . org-roam-jump-to-index)
+                 ("C-c m b" . org-roam-switch-to-buffer)
+                 ("C-c m g" . org-roam-graph))
+                :map org-mode-map
+                (("C-c n i" . org-roam-insert))
+                (("C-c n I" . org-roam-insert-immediate))))
 
-(setq org-roam-completion-system 'ivy)
-(add-hook 'after-init-hook 'org-roam-mode)
+  (setq org-roam-completion-system 'ivy)
+
+  (setq org-roam-capture-templates
+        (quote (("d" "default" plain (function org-roam-capture--get-point) "%?" 
+                 :file-name "%<%Y%m%d%H%M%S>-${slug}"
+                 :head "#+title: ${title}\n#+created: %u\n#+last_modified: %U\n\n"
+                 :unnarrowed t)
+                ("r" "ref" plain
+                 (function org-roam-capture--get-point)
+                 ""
+                 :file-name "web/${slug}"
+                 :head "#+title: ${title}\n#+roam_key: ${ref}\n#+created: %u\n#+last_modified: %U\n\n"
+                 :unnarrowed t))))
+  (add-hook 'after-init-hook 'org-roam-mode)
+#+END_SRC
+
+  
 #+END_SRC
 
 
+
+
+** bibtex completion 
+
+This is important for org-roam-ref ...
+#+BEGIN_SRC emacs-lisp
+(use-package ivy-bibtex
+:ensure t
+)
+
+(autoload 'ivy-bibtex "ivy-bibtex" "" t)
+;; ivy-bibtex requires ivy's `ivy--regex-ignore-order` regex builder, which
+;; ignores the order of regexp tokens when searching for matching candidates.
+;; Add something like this to your init file:
+(setq ivy-re-builders-alist
+      '((ivy-bibtex . ivy--regex-ignore-order)
+        (t . ivy--regex-plus)))
+(setq bibtex-completion-bibliography
+      '("~/work/bibliography/references.bib"))
+#+END_SRC
 
 ** Org-ref
 
@@ -1465,49 +1524,106 @@ Prescient
    Where are the refs?
 
    #+BEGIN_SRC emacs-lisp
-          (setq reftex-default-bibliography '("~/work/bibliography/references.bib"))
+     (setq reftex-default-bibliography '("~/work/bibliography/references.bib"))
 
-          ;; see org-ref for use of these variables
-          (setq org-ref-bibliography-notes "~/work/roam/notes.org"
-                org-ref-default-bibliography '("~/work/bibliography/references.bib")
-                org-ref-pdf-directory "~/work/bibliography/bibtex-pdfs/")
+     ;; see org-ref for use of these variables
+     (setq org-ref-bibliography-notes "~/work/roam/notes.org"
+           org-ref-default-bibliography '("~/work/bibliography/references.bib")
+           org-ref-pdf-directory "~/work/bibliography/bibtex-pdfs/")
 
 
-     (setq org-ref-note-title-format "* TODO %y - %t\n :PROPERTIES:\n  :Custom_ID: %k\n  :NOTER_DOCUMENT: %F\n :ROAM_KEY: cite:%k\n  :AUTHOR: %9a\n  :JOURNAL: %j\n  :YEAR: %y\n  :VOLUME: %v\n  :PAGES: %p\n  :DOI: %D\n  :URL: %U\n :END:\n\n"
-             org-ref-notes-directory "~/work/roam/"
-             org-ref-notes-function 'orb-edit-notes)
+     ;;     (setq org-ref-note-title-format "* TODO %y - %t\n :PROPERTIES:\n  :NOTER_DOCUMENT: %F\n :AUTHOR: %9a\n  :JOURNAL: %j\n  :YEAR: %y\n  :VOLUME: %v\n  :PAGES: %p\n  :DOI: %D\n  :URL: %U\n :END:\n\n"
+     (setq   org-ref-notes-directory "~/work/roam/")
+     (setq  org-ref-notes-function 'orb-edit-notes)
 
    #+END_SRC
 
    #+BEGIN_SRC emacs-lisp
      (setq org-ref-completion-library 'org-ref-ivy-cite)
-
    #+END_SRC
    End.
 
+** Org-roam-bibtex 
+
+# #+begin_src emacs-lisp :tangle yes
+# (defvar orb-title-format "${author-or-editor-abbrev} (${date}).  ${title}."
+#   "Format of the title to use for `orb-templates'.")  
+# #+END_SRC
+
+#+begin_src emacs-lisp :tangle yes
+
+(defvar orb-title-format "${author-or-editor-abbrev} (${date}).  ${title}."
+  "Format of the title to use for `orb-templates'.")
+(use-package org-roam-bibtex
+  :requires bibtex-completion
+  :hook (org-roam-mode . org-roam-bibtex-mode)
+  :load-path "~/projects/org-roam-bibtex/"
+  :bind (:map org-roam-bibtex-mode-map
+         (("C-c m f" . orb-find-non-ref-file))
+         :map org-mode-map
+         (("C-c m t" . orb-insert-non-ref)
+          ("C-c m a" . orb-note-actions)))
+  :init
+  :custom
+  (orb-autokey-format "%a%y")
+  (orb-templates
+   `(("r" "ref" plain
+      (function org-roam-capture--get-point)
+      ""
+      :file-name "refs/${citekey}"
+      :head ,(s-join "\n"
+                     (list
+                      (concat "#+title: "
+                              orb-title-format)
+                      "#+roam_key: ${ref}"
+                      "#+created: %U"
+                      "#+last_modified: %U\n\n"))
+      :unnarrowed t)
+     ("p" "ref + physical" plain
+      (function org-roam-capture--get-point)
+      ""
+      :file-name "refs/${citekey}"
+      :head ,(s-join "\n"
+                     (list
+                      (concat "#+title: "
+                              orb-title-format)
+                      "#+roam_key: ${ref}"
+                      ""
+                      "* Notes :physical:")))
+     ("n" "ref + noter" plain
+      (function org-roam-capture--get-point)
+      ""
+      :file-name "refs/${citekey}"
+      :head ,(s-join "\n"
+                     (list
+                      (concat "#+title: "
+                              orb-title-format)
+                      "#+roam_key: ${ref}"
+                      ""
+                      "* Notes :noter:"
+                      ":PROPERTIES:"
+                      ":NOTER_DOCUMENT: %(orb-process-file-field \"${citekey}\")"
+                      ":NOTER_PAGE:"
+                      ":END:"))))))
+#+end_src
+
 ** Org-noter 
 
-#+BEGIN_SRC emacs-lisp :eval never 
+#+BEGIN_SRC emacs-lisp
 (use-package org-noter
 :ensure t
   :after (:any org pdf-view)
   :config
-  (setq
-   ;; The WM can handle splits
-   org-noter-notes-window-location 'other-frame
-   ;; Please stop opening frames
-   org-noter-always-create-frame nil
-   ;; I want to see the whole file
-   org-noter-hide-other nil
-   ;; Everything is relative to the main notes file
+(setq org-noter-hide-other t
+        org-noter-auto-save-last-location t
+        org-noter-doc-split-fraction '(0.57 0.43))
+
    org-noter-notes-search-path (list (concat (getenv "HOME") "/work/roam")  )
    )
-  )
 
 #+END_SRC
 
 ** Org-download
-
 ** Latex templates
    Latex templates
    #+BEGIN_SRC emacs-lisp
@@ -1632,7 +1748,6 @@ Prescient
    #+END_SRC
 
 
-
 ** Nature style paper 
 
    #+BEGIN_SRC emacs-lisp
@@ -1676,7 +1791,6 @@ Prescient
                                        ("\\paragraph{%s}" . "\\paragraph*{%s}")
                                        ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
    #+END_SRC
-
 
 ** Internal report
    #+BEGIN_SRC emacs-lisp
@@ -2147,38 +2261,6 @@ Prescient
     (use-package ssh
       
       )
-  #+END_SRC
-
-* Autoinsert templates 
-  
-  Again from Howards Abrams: 
-  #+BEGIN_SRC emacs-lisp
-    (use-package autoinsert
-      
-      :init
-      (setq auto-insert-directory (tl/emacs-subdirectory "templates/"))
-      ;; Don't want to be prompted before insertion:
-      (setq auto-insert-query nil)
-
-      (add-hook 'find-file-hook 'auto-insert)
-      (auto-insert-mode 1))
-
-  #+END_SRC
-
-  Use yes snippet for templates. 
-  
-  #+BEGIN_SRC emacs-lisp
-    (defun tl/autoinsert-yas-expand()
-      "Replace text in yasnippet template."
-      (yas-expand-snippet (buffer-string) (point-min) (point-max)))
-  #+END_SRC
-  
-  Set templates
-  
-  #+BEGIN_SRC emacs-lisp
-    (use-package autoinsert 
-      :config
-      (define-auto-insert "\\.org$" ["default-orgmode.org" tl/autoinsert-yas-expand]))
   #+END_SRC
   
 * Eshell
