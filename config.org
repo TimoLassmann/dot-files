@@ -1377,60 +1377,33 @@ Prescient
 
    #+END_SRC
 
-** Org-ref
+** deft 
 
-   #+BEGIN_SRC emacs-lisp
-(use-package org-ref
+   #+BEGIN_SRC emacs-lisp 
+  (use-package deft
+  :commands deft
+  :init
+  (setq deft-default-extension "org"
+        ;; de-couples filename and note title:
+        deft-use-filename-as-title nil
+        deft-use-filter-string-for-filename t
+        ;; disable auto-save
+        deft-auto-save-interval -1.0
+        ;; converts the filter string into a readable file-name using kebab-case:
+        deft-file-naming-rules
+        '((noslash . "-")
+          (nospace . "-")
+          (case-fn . downcase)))
+  :config
+  (add-to-list 'deft-extensions "tex")
   )
-;;Hack ....
-(defun org-ref-add-labels (start end)
-  "Add labels in the region from START to END.
-This is run by font-lock. START tends to be the beginning of the
-line, and END tends to be where the point is, so this function
-seems to work fine at recognizing labels by the regexps in
-`org-ref-label-regexps'."
-  (interactive "r")
-  (save-excursion
-    (save-match-data
-      (cl-loop for rx in org-ref-label-regexps
-	       do
-	       (goto-char start)
-	       (while (re-search-forward rx end t)
-		 (let ((label (match-string-no-properties 1)))
-		   ;; I don't know why this gets found, but some labels are
-		   ;; empty strings. we don't store these.
-		   (unless (string= "" label)
-		     ;; if the last end is the new end -1 we are adding to a
-		     ;; label, and should pop the old one off before adding the
-		     ;; new one.
-		     (when (eq  org-ref-last-label-end (- end 1))
-		       (pop org-ref-labels))
-		     (with-silent-modifications
-		       (put-text-property (match-beginning 1)
-					  (match-end 1)
-					  'org-ref-label t)
-		       (put-text-property (match-beginning 1)
-					  (match-end 1)
-					  'rear-nonsticky '(org-ref-label)))
-		     (when org-ref-label-debug
-		       (message "oral: adding %s" label))
 
-		     (cl-pushnew label
-			      org-ref-labels :test 'string=)
-		     ;; now store the last end so we can tell for the next run
-		     ;; if we are adding to a label.
-		     (setq org-ref-last-label-end end))))))))
+(setq    deft-directory (concat (getenv "HOME") "/work/roam/"))
+#+END_SRC
 
-   #+END_SRC
-
-   Make =supercite= the default citation type:
-   #+BEGIN_SRC emacs-lisp
-     (setq org-ref-default-citation-link "supercite")
-   #+END_SRC
-
+** Helm-bibtex
 
    Define format for bibtex entries
-
 
    #+BEGIN_SRC emacs-lisp
 
@@ -1444,32 +1417,98 @@ seems to work fine at recognizing labels by the regexps in
            bibtex-autokey-titlewords 2
            bibtex-autokey-titlewords-stretch 1
            bibtex-autokey-titleword-length 5)
+
+     (setq bibtex-completion-bibliography "~/work/bibliography/references.bib"
+           bibtex-completion-library-path "~/work/bibliography/bibtex-pdfs"
+           bibtex-completion-notes-path "~/work/bibliography/helm-bibtex-notes"
+           bibtex-completion-pdf-field "file")
+(use-package ivy-bibtex
+:ensure t
+)
+
    #+END_SRC
 
-   Where are the refs?
+
+** Org-ref
+
 
    #+BEGIN_SRC emacs-lisp
      (setq reftex-default-bibliography '("~/work/bibliography/references.bib"))
 
-     ;; see org-ref for use of these variables
-     (setq org-ref-bibliography-notes "~/work/bibliography/notes.org"
-           org-ref-default-bibliography '("~/work/bibliography/references.bib")
-           org-ref-pdf-directory "~/work/bibliography/bibtex-pdfs/")
-
-(setq bibtex-completion-bibliography "~/work/bibliography/references.bib"
-      bibtex-completion-library-path "~/work/bibliography/bibtex-pdfs"
-      bibtex-completion-notes-path "~/work/bibliography/helm-bibtex-notes")
-
-
    #+END_SRC
+
 
    #+BEGIN_SRC emacs-lisp
-     
-     (setq org-ref-completion-library 'org-ref-ivy-cite)
+(setq  notes-directory (concat (getenv "HOME") "/work/roam/"))
+
+     (use-package org-ref
+     :ensure t 
+     :config
+         (setq
+              org-ref-completion-library 'org-ref-ivy-cite
+              org-ref-get-pdf-filename-function 'org-ref-get-pdf-filename-helm-bibtex
+              org-ref-default-bibliography '("~/work/bibliography/references.bib")
+              org-ref-bibliography-notes "~/work/roam/notes.org"
+              org-ref-pdf-directory "~/work/bibliography/bibtex-pdfs/"
+
+              org-ref-notes-directory "~/work/roam/"
+              org-ref-notes-function 'orb-edit-notes
+              org-ref-default-citation-link "supercite"
+         )
+       )
+
+
+
+     ;;Hack ....
+     (defun org-ref-add-labels (start end)
+       "Add labels in the region from START to END.
+     This is run by font-lock. START tends to be the beginning of the
+     line, and END tends to be where the point is, so this function
+     seems to work fine at recognizing labels by the regexps in
+     `org-ref-label-regexps'."
+       (interactive "r")
+       (save-excursion
+         (save-match-data
+           (cl-loop for rx in org-ref-label-regexps
+              do
+              (goto-char start)
+              (while (re-search-forward rx end t)
+          (let ((label (match-string-no-properties 1)))
+            ;; I don't know why this gets found, but some labels are
+            ;; empty strings. we don't store these.
+            (unless (string= "" label)
+              ;; if the last end is the new end -1 we are adding to a
+              ;; label, and should pop the old one off before adding the
+              ;; new one.
+              (when (eq  org-ref-last-label-end (- end 1))
+                (pop org-ref-labels))
+              (with-silent-modifications
+                (put-text-property (match-beginning 1)
+                 (match-end 1)
+                 'org-ref-label t)
+                (put-text-property (match-beginning 1)
+                 (match-end 1)
+                 'rear-nonsticky '(org-ref-label)))
+              (when org-ref-label-debug
+                (message "oral: adding %s" label))
+
+              (cl-pushnew label
+                 org-ref-labels :test 'string=)
+              ;; now store the last end so we can tell for the next run
+              ;; if we are adding to a label.
+              (setq org-ref-last-label-end end))))))))
+
    #+END_SRC
+
+   Make =supercite= the default citation type:
+
+
+
+   Where are the refs?
+
    End.
 
-   Org roam 
+** Org roam 
 #+BEGIN_SRC emacs-lisp
 (use-package org-roam
       :ensure t
@@ -1486,7 +1525,7 @@ seems to work fine at recognizing labels by the regexps in
               (("C-c n I" . org-roam-insert-immediate))))
 #+END_SRC
 
-
+** Org-roam-bibtex 
 #+BEGIN_SRC emacs-lisp
 
 (use-package org-roam-bibtex
@@ -1517,6 +1556,7 @@ seems to work fine at recognizing labels by the regexps in
 :END:")))
 #+END_SRC
 
+** company-org-roam
 #+BEGIN_SRC emacs-lisp 
 
 (use-package company-org-roam
@@ -1527,13 +1567,26 @@ seems to work fine at recognizing labels by the regexps in
   (push 'company-org-roam company-backends))
 #+END_SRC
 
+** org-noter 
+
+
+
 #+BEGIN_SRC  emacs-lisp
+(setq
+   org_notes (concat (getenv "HOME") "/work/roam/")
+   deft-directory org_notes
+   org-roam-directory org_notes
+   )
   (use-package org-noter
-:ensure t
-  :config
-  (setq org-noter-hide-other t
-        org-noter-auto-save-last-location t
-        org-noter-doc-split-fraction '(0.57 0.43)))
+    :ensure t
+    :after (:any org pdf-view)
+    :config
+    (setq org-noter-hide-other t
+          org-noter-auto-save-last-location t
+          org-noter-doc-split-fraction '(0.57 0.43)
+          org-noter-notes-search-path  (list org_notes)))
+
+
 #+END_SRC
 
 
