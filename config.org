@@ -146,12 +146,12 @@ Package-Requires: ((dash "2.11.0") (htmlize "1.51") (helm "1.5.5") (helm-bibtex 
 
 ** Turn off  mouse 
 
-   #+BEGIN_SRC emacs-lisp 
-     (use-package disable-mouse
+   # #+BEGIN_SRC emacs-lisp 
+   #   (use-package disable-mouse
         
-       :demand t)
-     (global-disable-mouse-mode)
-   #+END_SRC
+   #     :demand t)
+   #   (global-disable-mouse-mode)
+   # #+END_SRC
 
 ** Diminish 
 
@@ -1567,9 +1567,7 @@ Prescient
   (push 'company-org-roam company-backends))
 #+END_SRC
 
-** org-noter 
-
-
+** Org-noter 
 
 #+BEGIN_SRC  emacs-lisp
 (setq
@@ -2309,6 +2307,8 @@ Prescient
       ;; use normal isearch
       (define-key pdf-view-mode-map (kbd "C-s") 'isearch-forward))
   #+END_SRC
+
+
 
 * End
 
