@@ -54,20 +54,28 @@
 * General Settings
 ** Init File Support
 
+Package-Requires: ((dash "2.11.0") (htmlize "1.51") (helm "1.5.5") (helm-bibtex "2.0.0") (ivy "0.8.0") (hydra "0.13.2") (key-chord "0") (s "1.10.0") (f "0.18.0")  (pdf-tools "0.7"))
+
    Load up a collection of enhancements to Emacs Lisp, including [[https://github.com/magnars/dash.el][dash]],
    [[https://github.com/magnars/s.el][s]] for string manipulation, and [[https://github.com/rejeep/f.el][f]] for file manipulation.
 
    #+BEGIN_SRC emacs-lisp
-     (require 'cl)
+(require 'cl-lib)
 
+     (require 'cl)
+(use-package cl-lib
+:ensure t
+)
      (use-package dash
        
        :config (eval-after-load "dash" '(dash-enable-font-lock)))
 
      (use-package s
+:ensure t
        )
 
      (use-package f
+:ensure t
        )
    #+END_SRC
 
@@ -1374,6 +1382,45 @@ Prescient
    #+BEGIN_SRC emacs-lisp
 (use-package org-ref
   )
+;;Hack ....
+(defun org-ref-add-labels (start end)
+  "Add labels in the region from START to END.
+This is run by font-lock. START tends to be the beginning of the
+line, and END tends to be where the point is, so this function
+seems to work fine at recognizing labels by the regexps in
+`org-ref-label-regexps'."
+  (interactive "r")
+  (save-excursion
+    (save-match-data
+      (cl-loop for rx in org-ref-label-regexps
+	       do
+	       (goto-char start)
+	       (while (re-search-forward rx end t)
+		 (let ((label (match-string-no-properties 1)))
+		   ;; I don't know why this gets found, but some labels are
+		   ;; empty strings. we don't store these.
+		   (unless (string= "" label)
+		     ;; if the last end is the new end -1 we are adding to a
+		     ;; label, and should pop the old one off before adding the
+		     ;; new one.
+		     (when (eq  org-ref-last-label-end (- end 1))
+		       (pop org-ref-labels))
+		     (with-silent-modifications
+		       (put-text-property (match-beginning 1)
+					  (match-end 1)
+					  'org-ref-label t)
+		       (put-text-property (match-beginning 1)
+					  (match-end 1)
+					  'rear-nonsticky '(org-ref-label)))
+		     (when org-ref-label-debug
+		       (message "oral: adding %s" label))
+
+		     (cl-pushnew label
+			      org-ref-labels :test 'string=)
+		     ;; now store the last end so we can tell for the next run
+		     ;; if we are adding to a label.
+		     (setq org-ref-last-label-end end))))))))
+
    #+END_SRC
 
    Make =supercite= the default citation type:
@@ -1409,6 +1456,11 @@ Prescient
            org-ref-default-bibliography '("~/work/bibliography/references.bib")
            org-ref-pdf-directory "~/work/bibliography/bibtex-pdfs/")
 
+(setq bibtex-completion-bibliography "~/work/bibliography/references.bib"
+      bibtex-completion-library-path "~/work/bibliography/bibtex-pdfs"
+      bibtex-completion-notes-path "~/work/bibliography/helm-bibtex-notes")
+
+
    #+END_SRC
 
    #+BEGIN_SRC emacs-lisp
@@ -1416,6 +1468,74 @@ Prescient
      (setq org-ref-completion-library 'org-ref-ivy-cite)
    #+END_SRC
    End.
+
+   Org roam 
+#+BEGIN_SRC emacs-lisp
+(use-package org-roam
+      :ensure t
+      :hook
+      (after-init . org-roam-mode)
+      :custom
+      (org-roam-directory "~/work/roam/")
+      :bind (:map org-roam-mode-map
+              (("C-c n l" . org-roam)
+               ("C-c n f" . org-roam-find-file)
+               ("C-c n g" . org-roam-graph-show))
+              :map org-mode-map
+              (("C-c n i" . org-roam-insert))
+              (("C-c n I" . org-roam-insert-immediate))))
+#+END_SRC
+
+
+#+BEGIN_SRC emacs-lisp
+
+(use-package org-roam-bibtex
+  :after org-roam
+  :hook (org-roam-mode . org-roam-bibtex-mode)
+  :bind (:map org-mode-map
+         (("C-c n a" . orb-note-actions))))
+
+(setq orb-preformat-keywords
+   '(("citekey" . "=key=") "title" "url" "file" "author-or-editor" "keywords"))
+
+(setq orb-templates
+      '(("r" "ref" plain (function org-roam-capture--get-point)
+         ""
+         :file-name "${citekey}"
+         :head "#+TITLE: ${citekey}: ${title}\n#+ROAM_KEY: ${ref}
+
+- tags ::
+- keywords :: ${keywords}
+
+ ${title}
+:PROPERTIES:
+:Custom_ID: ${citekey}
+:URL: ${url}
+:AUTHOR: ${author-or-editor}
+:NOTER_DOCUMENT: %(orb-process-file-field \"${citekey}\")
+:NOTER_PAGE:
+:END:")))
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp 
+
+(use-package company-org-roam
+  :ensure t
+  ;; You may want to pin in case the version from stable.melpa.org is not working 
+  ; :pin melpa
+  :config
+  (push 'company-org-roam company-backends))
+#+END_SRC
+
+#+BEGIN_SRC  emacs-lisp
+  (use-package org-noter
+:ensure t
+  :config
+  (setq org-noter-hide-other t
+        org-noter-auto-save-last-location t
+        org-noter-doc-split-fraction '(0.57 0.43)))
+#+END_SRC
+
 
 ** Org-download
 
@@ -2060,37 +2180,12 @@ Prescient
       )
   #+END_SRC
 
+
+
+
+
 * Autoinsert templates 
   
-  Again from Howards Abrams: 
-  #+BEGIN_SRC emacs-lisp
-    (use-package autoinsert
-      
-      :init
-      (setq auto-insert-directory (tl/emacs-subdirectory "templates/"))
-      ;; Don't want to be prompted before insertion:
-      (setq auto-insert-query nil)
-
-      (add-hook 'find-file-hook 'auto-insert)
-      (auto-insert-mode 1))
-
-  #+END_SRC
-
-  Use yes snippet for templates. 
-  
-  #+BEGIN_SRC emacs-lisp
-    (defun tl/autoinsert-yas-expand()
-      "Replace text in yasnippet template."
-      (yas-expand-snippet (buffer-string) (point-min) (point-max)))
-  #+END_SRC
-  
-  Set templates
-  
-  #+BEGIN_SRC emacs-lisp
-    (use-package autoinsert 
-      :config
-      (define-auto-insert "\\.org$" ["default-orgmode.org" tl/autoinsert-yas-expand]))
-  #+END_SRC
   
 * Eshell
 
