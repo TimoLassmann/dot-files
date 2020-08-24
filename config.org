@@ -401,6 +401,7 @@
        )
 
 
+(global-aggressive-indent-mode 1)
 
    #+END_SRC
 
@@ -2360,7 +2361,6 @@
       ;; use normal isearch
       (define-key pdf-view-mode-map (kbd "C-s") 'isearch-forward))
   #+END_SRC
-
 
 * End
 
