@@ -23,7 +23,6 @@
 
   #+END_SRC
 
-
 * Package Manager
   To start we need the package "package" 
 
@@ -1116,7 +1115,6 @@ Prescient
      ;;   (setq org-agenda-files (list org-index-file))
      (setq org-agenda-files '("~/capture"
                               "~/work"
-                              "~/planning"
                               "~/life"))
    #+END_SRC
 
@@ -1502,28 +1500,84 @@ Prescient
 
    Make =supercite= the default citation type:
 
-
-
    Where are the refs?
 
    End.
 
 ** Org roam 
-#+BEGIN_SRC emacs-lisp
-(use-package org-roam
-      :ensure t
-      :hook
-      (after-init . org-roam-mode)
-      :custom
-      (org-roam-directory "~/work/roam/")
-      :bind (:map org-roam-mode-map
-              (("C-c n l" . org-roam)
-               ("C-c n f" . org-roam-find-file)
-               ("C-c n g" . org-roam-graph-show))
-              :map org-mode-map
-              (("C-c n i" . org-roam-insert))
-              (("C-c n I" . org-roam-insert-immediate))))
+   #+BEGIN_SRC emacs-lisp
+     (use-package org-roam
+       :ensure t
+       :hook
+       (after-init . org-roam-mode)
+       :custom
+       (org-roam-directory "~/work/roam/")
+
+       :bind (:map org-roam-mode-map
+                   (("C-c m l" . org-roam)
+                    ("C-c m F" . org-roam-find-file)
+                    ("C-c m r" . org-roam-find-ref)
+                    ("C-c m ." . org-roam-find-directory)
+                    ("C-c m d" . org-roam-dailies-today)
+                    ("C-c m j" . org-roam-jump-to-index)
+                    ("C-c m b" . org-roam-switch-to-buffer)
+                    ("C-c m g" . org-roam-graph))
+                   :map org-mode-map
+                   (("C-c m i" . org-roam-insert)))
+       )
+
 #+END_SRC
+
+Templates: 
+
+#+BEGIN_SRC emacs-lisp
+    (setq org-roam-capture-templates
+          (quote (("d" "default" plain
+                   (function org-roam-capture--get-point)
+                   "%?"
+                   :file-name "%<%Y%m%d%H%M%S>-${slug}"
+                   :head "#+title: ${title}\n#+created: %u\n#+last_modified: %U\n\n"
+                   :unnarrowed t))
+                 )
+          )
+    (setq org-roam-capture-ref-templates
+          (quote (("r" "ref" plain
+                   (function org-roam-capture--get-point)
+                   ""
+                   :file-name "${slug}"
+                   :head "#+title: ${title}\n#+roam_key: ${ref}\n#+created: %u\n#+last_modified: %U\n\n"
+                   :unnarrowed t))
+                 )
+          )
+    (setq org-roam-dailies-capture-templates
+          (quote (("d" "daily" plain (function org-roam-capture--get-point) "* Today's todo\n%?\n"
+;;                   :immediate-finish t
+                   :add-created t 
+                   :file-name "dailies/%<%Y-%m-%d>"
+                   :head "#+TITLE: %<%Y-%m-%d>\n\n"))
+                 )
+          )
+        #+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+
+(require 'org-roam-protocol)
+(use-package org-roam-server
+  :ensure t
+  :bind (:map org-roam-mode-map
+         (("C-c m G" . org-roam-server-mode)))
+  :config
+  (setq org-roam-server-host "127.0.0.1"
+        org-roam-server-port 8080
+        org-roam-server-export-inline-images t
+        org-roam-server-authenticate nil
+        org-roam-server-network-poll t
+        org-roam-server-network-arrows nil
+        org-roam-server-network-label-truncate t
+        org-roam-server-network-label-truncate-length 60
+        org-roam-server-network-label-wrap-length 20))
+#+END_SRC
+
 
 ** Org-roam-bibtex 
 #+BEGIN_SRC emacs-lisp
@@ -1545,8 +1599,7 @@ Prescient
 
 - tags ::
 - keywords :: ${keywords}
-
- ${title}
+\n* ${title}
 :PROPERTIES:
 :Custom_ID: ${citekey}
 :URL: ${url}
@@ -1567,7 +1620,7 @@ Prescient
   (push 'company-org-roam company-backends))
 #+END_SRC
 
-** Org-noter 
+** Org- Noter
 
 #+BEGIN_SRC  emacs-lisp
 (setq
@@ -2231,12 +2284,7 @@ Prescient
       )
   #+END_SRC
 
-
-
-
-
 * Autoinsert templates 
-  
   
 * Eshell
 
@@ -2307,7 +2355,6 @@ Prescient
       ;; use normal isearch
       (define-key pdf-view-mode-map (kbd "C-s") 'isearch-forward))
   #+END_SRC
-
 
 
 * End
