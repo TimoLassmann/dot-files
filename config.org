@@ -53,28 +53,21 @@
 * General Settings
 ** Init File Support
 
-Package-Requires: ((dash "2.11.0") (htmlize "1.51") (helm "1.5.5") (helm-bibtex "2.0.0") (ivy "0.8.0") (hydra "0.13.2") (key-chord "0") (s "1.10.0") (f "0.18.0")  (pdf-tools "0.7"))
-
    Load up a collection of enhancements to Emacs Lisp, including [[https://github.com/magnars/dash.el][dash]],
    [[https://github.com/magnars/s.el][s]] for string manipulation, and [[https://github.com/rejeep/f.el][f]] for file manipulation.
 
    #+BEGIN_SRC emacs-lisp
-(require 'cl-lib)
 
-     (require 'cl)
-(use-package cl-lib
-:ensure t
-)
      (use-package dash
-       
+  
        :config (eval-after-load "dash" '(dash-enable-font-lock)))
 
      (use-package s
-:ensure t
+       :ensure t
        )
 
      (use-package f
-:ensure t
+       :ensure t
        )
    #+END_SRC
 
@@ -156,7 +149,7 @@ Package-Requires: ((dash "2.11.0") (htmlize "1.51") (helm "1.5.5") (helm-bibtex 
 
    #+BEGIN_SRC emacs-lisp
      (use-package diminish 
-        
+
        :demand t)
    #+END_SRC
 
@@ -172,7 +165,7 @@ Package-Requires: ((dash "2.11.0") (htmlize "1.51") (helm "1.5.5") (helm-bibtex 
    According to this article, I get better functionality than the redo+ plugin (which I can’t seem to get working well).
    #+BEGIN_SRC emacs-lisp
      (use-package undo-tree
-       
+
        :diminish
        :init
        (global-undo-tree-mode 1)
@@ -252,6 +245,15 @@ Package-Requires: ((dash "2.11.0") (htmlize "1.51") (helm "1.5.5") (helm-bibtex 
      (global-unset-key (kbd "C-z"))
      (global-unset-key (kbd "C-x C-z"))
      (global-unset-key (kbd "C-h h"))
+     (global-unset-key (kbd "C-x C-c"))
+
+
+     (defun tl/quit-emacs ()
+       "Kill the current buffer without prompting."
+       (interactive)
+       (save-buffers-kill-terminal))
+
+   #+END_SRC
    #+END_SRC
 
 ** Recentf 
@@ -308,13 +310,13 @@ Package-Requires: ((dash "2.11.0") (htmlize "1.51") (helm "1.5.5") (helm-bibtex 
    #+END_SRC
 
 ** Saveplace (remember point position)
-#+BEGIN_SRC emacs-lisp
-(use-package saveplace
-  :custom
-  (save-place-file "~/.emacs.d/saveplace")
-  :config
-  (save-place-mode 1))
-#+END_SRC
+   #+BEGIN_SRC emacs-lisp
+     (use-package saveplace
+       :custom
+       (save-place-file "~/.emacs.d/saveplace")
+       :config
+       (save-place-mode 1))
+   #+END_SRC
 
 * Basic Functionality 
 ** Highlight current line
@@ -334,7 +336,7 @@ Package-Requires: ((dash "2.11.0") (htmlize "1.51") (helm "1.5.5") (helm-bibtex 
    Lets us use asynchronous processes wherever possible, pretty useful.
    #+BEGIN_SRC emacs-lisp
      (use-package async
-       
+
        :init (dired-async-mode 1))
    #+END_SRC
 
@@ -344,27 +346,27 @@ Package-Requires: ((dash "2.11.0") (htmlize "1.51") (helm "1.5.5") (helm-bibtex 
 
    This makes sure that everything can be a project.
    #+BEGIN_SRC emacs-lisp
-(use-package projectile
-  :ensure t
-  ;; :delight '(:eval (concat " " (projectile-project-name)))
-  :delight
-  :custom
-  (projectile-project-search-path '("~/"))
-  (projectile-indexing-method 'alien)
-  (projectile-enable-caching t)
-  (projectile-completion-system 'ivy))
+     (use-package projectile
+       :ensure t
+       ;; :delight '(:eval (concat " " (projectile-project-name)))
+       :delight
+       :custom
+       (projectile-project-search-path '("~/"))
+       (projectile-indexing-method 'alien)
+       (projectile-enable-caching t)
+       (projectile-completion-system 'ivy))
 
-(use-package counsel-projectile
-  :ensure t
-  :config
-  (add-to-list 'ivy-initial-inputs-alist '(counsel-projectile-switch-project . ""))
-  (counsel-projectile-mode 1)
-  ;; :bind-keymap ("M-s p" . projectile-command-map)
-  :bind (("M-s b" . counsel-projectile-switch-to-buffer)
-         ("M-s d" . counsel-projectile-find-dir)
-         ("M-s p" . (lambda ()
-                      (interactive)
-                      (counsel-projectile-switch-project 4)))))
+     (use-package counsel-projectile
+       :ensure t
+       :config
+       (add-to-list 'ivy-initial-inputs-alist '(counsel-projectile-switch-project . ""))
+       (counsel-projectile-mode 1)
+       ;; :bind-keymap ("M-s p" . projectile-command-map)
+       :bind (("M-s b" . counsel-projectile-switch-to-buffer)
+              ("M-s d" . counsel-projectile-find-dir)
+              ("M-s p" . (lambda ()
+                           (interactive)
+                           (counsel-projectile-switch-project 4)))))
    #+END_SRC
 
    Let projectile call make
@@ -484,7 +486,7 @@ Package-Requires: ((dash "2.11.0") (htmlize "1.51") (helm "1.5.5") (helm-bibtex 
    It’s beautiful
    #+BEGIN_SRC emacs-lisp
      (use-package which-key
-       
+
        :diminish which-key-mode
        :config
        (which-key-mode))
@@ -498,7 +500,7 @@ Package-Requires: ((dash "2.11.0") (htmlize "1.51") (helm "1.5.5") (helm-bibtex 
    This magnificent package takes care of this issue. It’s unnoticeable if you have <3 panes open, but with 3 or more, upon pressing C-x o you will notice how your buffers turn a solid color and each buffer is asigned a letter (the list below shows the letters, you can modify them to suit your liking), upon pressing a letter asigned to a window, your will be taken to said window, easy to remember, quick to use and most importantly, it annihilates a big issue I had with emacs. An alternative is ace-window, however by default it also changes the behaviour of C-x o even if only 2 windows are open, this is bad, it also works less well with exwm for some reason.
    #+BEGIN_SRC emacs-lisp
      (use-package switch-window
-       
+
        :config
        (setq switch-window-input-style 'minibuffer)
        (setq switch-window-increase 4)
@@ -536,261 +538,261 @@ Package-Requires: ((dash "2.11.0") (htmlize "1.51") (helm "1.5.5") (helm-bibtex 
    This Ivy configuration is copied from Protesilaos Stavrou's old setup ( https://gitlab.com/protesilaos/dotfiles) 
 
 
-And here are some 'hidden' key bindings for making the most out of Ivy
-(find more in the official manual).
+   And here are some 'hidden' key bindings for making the most out of Ivy
+   (find more in the official manual).
 
-| Key     | Function                | Description                                 |
-|---------+-------------------------+---------------------------------------------|
-| M-o     | ivy-dispatching-done    | Show actions for current match.             |
-| C-c C-o | ivy-occur               | Place the list in a standalone buffer.      |
-| C-M-m   | ivy-call                | Run command, keep minibuffer open.          |
-| M-i     | ivy-insert-current      | Insert match in the prompt.                 |
-| M-j     | ivy-yank-word           | Put word at point in the minibuffer prompt. |
-| S-SPC   | ivy-restrict-to-matches | Restrict list to prompt (and search anew).  |
-| C-SPC   | ivy-restrict-to-matches | My alias for the above.                     |
+   | Key     | Function                | Description                                 |
+   |---------+-------------------------+---------------------------------------------|
+   | M-o     | ivy-dispatching-done    | Show actions for current match.             |
+   | C-c C-o | ivy-occur               | Place the list in a standalone buffer.      |
+   | C-M-m   | ivy-call                | Run command, keep minibuffer open.          |
+   | M-i     | ivy-insert-current      | Insert match in the prompt.                 |
+   | M-j     | ivy-yank-word           | Put word at point in the minibuffer prompt. |
+   | S-SPC   | ivy-restrict-to-matches | Restrict list to prompt (and search anew).  |
+   | C-SPC   | ivy-restrict-to-matches | My alias for the above.                     |
 
-#+BEGIN_SRC emacs-lisp
-(use-package ivy
-  :ensure t
-  :delight
-  :custom
-  (ivy-count-format "(%d/%d) ")
-  (ivy-height-alist '((t lambda (_caller) (/ (window-height) 4))))
-  (ivy-use-virtual-buffers t)
-  (ivy-wrap nil)
-  (ivy-re-builders-alist
-   '((counsel-M-x . ivy--regex-fuzzy)
-     (ivy-switch-buffer . ivy--regex-fuzzy)
-     (ivy-switch-buffer-other-window . ivy--regex-fuzzy)
-     (counsel-rg . ivy--regex-or-literal)
-     (t . ivy--regex-plus)))
-  (ivy-display-style 'fancy)
-  (ivy-use-selectable-prompt t)
-  (ivy-fixed-height-minibuffer nil)
-  (ivy-initial-inputs-alist
-   '((counsel-M-x . "^")
-     (ivy-switch-buffer . "^")
-     (ivy-switch-buffer-other-window . "^")
-     (counsel-describe-function . "^")
-     (counsel-describe-variable . "^")
-     (t . "")))
-  :config
-  (ivy-set-occur 'counsel-fzf 'counsel-fzf-occur)
-  (ivy-set-occur 'counsel-rg 'counsel-ag-occur)
-  (ivy-set-occur 'ivy-switch-buffer 'ivy-switch-buffer-occur)
-  (ivy-set-occur 'swiper 'swiper-occur)
-  (ivy-set-occur 'swiper-isearch 'swiper-occur)
-  (ivy-set-occur 'swiper-multi 'counsel-ag-occur)
-  (ivy-mode 1)
-  :hook
-  (ivy-occur-mode . hl-line-mode)
-  :bind (("<s-up>" . ivy-push-view)
-		 ("<s-down>" . ivy-switch-view)
-         ("C-S-r" . ivy-resume)
-         :map ivy-occur-mode-map
-         ("f" . forward-char)
-         ("b" . backward-char)
-         ("n" . ivy-occur-next-line)
-         ("p" . ivy-occur-previous-line)
-         ("<C-return>" . ivy-occur-press)))
-
-
-#+END_SRC
-
-Prescient 
-#+BEGIN_SRC emacs-lisp
-(use-package prescient
-  :ensure t
-  :custom
-  (prescient-history-length 200)
-  (prescient-save-file "~/.emacs.d/prescient-items")
-  (prescient-filter-method '(literal regexp))
-  :config
-  (prescient-persist-mode 1))
-
-(use-package ivy-prescient
-  :ensure t
-  :after (prescient ivy)
-  :custom
-  (ivy-prescient-sort-commands
-   '(:not counsel-grep
-          counsel-rg
-          counsel-switch-buffer
-          ivy-switch-buffer
-          swiper
-          swiper-multi))
-  (ivy-prescient-retain-classic-highlighting t)
-  (ivy-prescient-enable-filtering nil)
-  (ivy-prescient-enable-sorting t)
-  :config
-  (ivy-prescient-mode 1))
-
-#+END_SRC
-
-#+BEGIN_SRC emacs-lisp
+   #+BEGIN_SRC emacs-lisp
+     (use-package ivy
+       :ensure t
+       :delight
+       :custom
+       (ivy-count-format "(%d/%d) ")
+       (ivy-height-alist '((t lambda (_caller) (/ (window-height) 4))))
+       (ivy-use-virtual-buffers t)
+       (ivy-wrap nil)
+       (ivy-re-builders-alist
+        '((counsel-M-x . ivy--regex-fuzzy)
+          (ivy-switch-buffer . ivy--regex-fuzzy)
+          (ivy-switch-buffer-other-window . ivy--regex-fuzzy)
+          (counsel-rg . ivy--regex-or-literal)
+          (t . ivy--regex-plus)))
+       (ivy-display-style 'fancy)
+       (ivy-use-selectable-prompt t)
+       (ivy-fixed-height-minibuffer nil)
+       (ivy-initial-inputs-alist
+        '((counsel-M-x . "^")
+          (ivy-switch-buffer . "^")
+          (ivy-switch-buffer-other-window . "^")
+          (counsel-describe-function . "^")
+          (counsel-describe-variable . "^")
+          (t . "")))
+       :config
+       (ivy-set-occur 'counsel-fzf 'counsel-fzf-occur)
+       (ivy-set-occur 'counsel-rg 'counsel-ag-occur)
+       (ivy-set-occur 'ivy-switch-buffer 'ivy-switch-buffer-occur)
+       (ivy-set-occur 'swiper 'swiper-occur)
+       (ivy-set-occur 'swiper-isearch 'swiper-occur)
+       (ivy-set-occur 'swiper-multi 'counsel-ag-occur)
+       (ivy-mode 1)
+       :hook
+       (ivy-occur-mode . hl-line-mode)
+       :bind (("<s-up>" . ivy-push-view)
+              ("<s-down>" . ivy-switch-view)
+              ("C-S-r" . ivy-resume)
+              :map ivy-occur-mode-map
+              ("f" . forward-char)
+              ("b" . backward-char)
+              ("n" . ivy-occur-next-line)
+              ("p" . ivy-occur-previous-line)
+              ("<C-return>" . ivy-occur-press)))
 
 
-  (use-package counsel
-    :ensure t
-    :after ivy
-    :custom
-    (counsel-yank-pop-preselect-last t)
-    (counsel-yank-pop-separator "\n—————————\n")
-    (counsel-rg-base-command
-     "rg -SHn --no-heading --color never --no-follow --hidden %s")
-    (counsel-find-file-occur-cmd          ; TODO Simplify this
-     "ls -a | grep -i -E '%s' | tr '\\n' '\\0' | xargs -0 ls -d --group-directories-first")
-    :config
-    (defun prot/counsel-fzf-rg-files (&optional input dir)
-      "Run `fzf' in tandem with `ripgrep' to find files in the
-  present directory.  If invoked from inside a version-controlled
-  repository, then the corresponding root is used instead."
-      (interactive)
-      (let* ((process-environment
-              (cons (concat "FZF_DEFAULT_COMMAND=rg -Sn --color never --files --no-follow --hidden")
-                    process-environment))
-             (vc (vc-root-dir)))
-        (if dir
-            (counsel-fzf input dir)
-          (if (eq vc nil)
-              (counsel-fzf input default-directory)
-            (counsel-fzf input vc)))))
+   #+END_SRC
 
-    (defun prot/counsel-fzf-dir (arg)
-      "Specify root directory for `counsel-fzf'."
-      (prot/counsel-fzf-rg-files ivy-text
-                                 (read-directory-name
-                                  (concat (car (split-string counsel-fzf-cmd))
-                                          " in directory: "))))
+   Prescient 
+   #+BEGIN_SRC emacs-lisp
+     (use-package prescient
+       :ensure t
+       :custom
+       (prescient-history-length 200)
+       (prescient-save-file "~/.emacs.d/prescient-items")
+       (prescient-filter-method '(literal regexp))
+       :config
+       (prescient-persist-mode 1))
 
-    (defun prot/counsel-rg-dir (arg)
-      "Specify root directory for `counsel-rg'."
-      (let ((current-prefix-arg '(4)))
-        (counsel-rg ivy-text nil "")))
+     (use-package ivy-prescient
+       :ensure t
+       :after (prescient ivy)
+       :custom
+       (ivy-prescient-sort-commands
+        '(:not counsel-grep
+               counsel-rg
+               counsel-switch-buffer
+               ivy-switch-buffer
+               swiper
+               swiper-multi))
+       (ivy-prescient-retain-classic-highlighting t)
+       (ivy-prescient-enable-filtering nil)
+       (ivy-prescient-enable-sorting t)
+       :config
+       (ivy-prescient-mode 1))
 
-    ;; TODO generalise for all relevant file/buffer counsel-*?
-    (defun prot/counsel-fzf-ace-window (arg)
-      "Use `ace-window' on `prot/counsel-fzf-rg-files' candidate."
-      (ace-window t)
-      (let ((default-directory (if (eq (vc-root-dir) nil)
-                                   counsel--fzf-dir
-                                 (vc-root-dir))))
-        (if (> (length (aw-window-list)) 1)
-              (find-file arg)
-          (find-file-other-window arg))
-        (balance-windows (current-buffer))))
+   #+END_SRC
 
-    ;; Pass functions as appropriate Ivy actions (accessed via M-o)
-    (ivy-add-actions
-     'counsel-fzf
-     '(("r" prot/counsel-fzf-dir "change root directory")
-       ("g" prot/counsel-rg-dir "use ripgrep in root directory")
-       ("a" prot/counsel-fzf-ace-window "ace-window switch")))
+   #+BEGIN_SRC emacs-lisp
 
-    (ivy-add-actions
-     'counsel-rg
-     '(("r" prot/counsel-rg-dir "change root directory")
-       ("z" prot/counsel-fzf-dir "find file with fzf in root directory")))
 
-    (ivy-add-actions
-     'counsel-find-file
-     '(("g" prot/counsel-rg-dir "use ripgrep in root directory")
-       ("z" prot/counsel-fzf-dir "find file with fzf in root directory")))
+     (use-package counsel
+       :ensure t
+       :after ivy
+       :custom
+       (counsel-yank-pop-preselect-last t)
+       (counsel-yank-pop-separator "\n—————————\n")
+       (counsel-rg-base-command
+        "rg -SHn --no-heading --color never --no-follow --hidden %s")
+       (counsel-find-file-occur-cmd          ; TODO Simplify this
+        "ls -a | grep -i -E '%s' | tr '\\n' '\\0' | xargs -0 ls -d --group-directories-first")
+       :config
+       (defun prot/counsel-fzf-rg-files (&optional input dir)
+         "Run `fzf' in tandem with `ripgrep' to find files in the
+     present directory.  If invoked from inside a version-controlled
+     repository, then the corresponding root is used instead."
+         (interactive)
+         (let* ((process-environment
+                 (cons (concat "FZF_DEFAULT_COMMAND=rg -Sn --color never --files --no-follow --hidden")
+                       process-environment))
+                (vc (vc-root-dir)))
+           (if dir
+               (counsel-fzf input dir)
+             (if (eq vc nil)
+                 (counsel-fzf input default-directory)
+               (counsel-fzf input vc)))))
 
-    ;; Remove commands that only work with key bindings
-    (put 'counsel-find-symbol 'no-counsel-M-x t)
-    :bind (("M-x" . counsel-M-x)
-           ("C-x C-f" . counsel-find-file)
-           ;;("s-f" . counsel-find-file)
-           ;;("s-F" . find-file-other-window)
-           ("C-x b" . ivy-switch-buffer)
-           ;;("s-b" . ivy-switch-buffer)
-           ("C-x B" . counsel-switch-buffer-other-window)
-           ;;("s-B" . counsel-switch-buffer-other-window)
-           ("C-x d" . counsel-dired)
-           ;;("s-d" . counsel-dired)
-           ;;("s-D" . dired-other-window)
-           ("C-x C-r" . counsel-recentf)
-           ;;("s-r" . counsel-recentf)
-           ;;("s-y" . counsel-yank-pop)
-           ("C-h f" . counsel-describe-function)
-           ("C-h v" . counsel-describe-variable)
-           ("M-s r" . counsel-rg)
-           ("M-s g" . counsel-git-grep)
-           ("M-s l" . counsel-find-library)
-           ("M-s z" . prot/counsel-fzf-rg-files)
-           :map ivy-minibuffer-map
-           ("C-r" . counsel-minibuffer-history)
-           ("s-y" . ivy-next-line)        ; Avoid 2× `counsel-yank-pop'
-           ("C-SPC" . ivy-restrict-to-matches)))
-#+END_SRC
+       (defun prot/counsel-fzf-dir (arg)
+         "Specify root directory for `counsel-fzf'."
+         (prot/counsel-fzf-rg-files ivy-text
+                                    (read-directory-name
+                                     (concat (car (split-string counsel-fzf-cmd))
+                                             " in directory: "))))
+
+       (defun prot/counsel-rg-dir (arg)
+         "Specify root directory for `counsel-rg'."
+         (let ((current-prefix-arg '(4)))
+           (counsel-rg ivy-text nil "")))
+
+       ;; TODO generalise for all relevant file/buffer counsel-*?
+       (defun prot/counsel-fzf-ace-window (arg)
+         "Use `ace-window' on `prot/counsel-fzf-rg-files' candidate."
+         (ace-window t)
+         (let ((default-directory (if (eq (vc-root-dir) nil)
+                                      counsel--fzf-dir
+                                    (vc-root-dir))))
+           (if (> (length (aw-window-list)) 1)
+               (find-file arg)
+             (find-file-other-window arg))
+           (balance-windows (current-buffer))))
+
+       ;; Pass functions as appropriate Ivy actions (accessed via M-o)
+       (ivy-add-actions
+        'counsel-fzf
+        '(("r" prot/counsel-fzf-dir "change root directory")
+          ("g" prot/counsel-rg-dir "use ripgrep in root directory")
+          ("a" prot/counsel-fzf-ace-window "ace-window switch")))
+
+       (ivy-add-actions
+        'counsel-rg
+        '(("r" prot/counsel-rg-dir "change root directory")
+          ("z" prot/counsel-fzf-dir "find file with fzf in root directory")))
+
+       (ivy-add-actions
+        'counsel-find-file
+        '(("g" prot/counsel-rg-dir "use ripgrep in root directory")
+          ("z" prot/counsel-fzf-dir "find file with fzf in root directory")))
+
+       ;; Remove commands that only work with key bindings
+       (put 'counsel-find-symbol 'no-counsel-M-x t)
+       :bind (("M-x" . counsel-M-x)
+              ("C-x C-f" . counsel-find-file)
+              ;;("s-f" . counsel-find-file)
+              ;;("s-F" . find-file-other-window)
+              ("C-x b" . ivy-switch-buffer)
+              ;;("s-b" . ivy-switch-buffer)
+              ("C-x B" . counsel-switch-buffer-other-window)
+              ;;("s-B" . counsel-switch-buffer-other-window)
+              ("C-x d" . counsel-dired)
+              ;;("s-d" . counsel-dired)
+              ;;("s-D" . dired-other-window)
+              ("C-x C-r" . counsel-recentf)
+              ;;("s-r" . counsel-recentf)
+              ;;("s-y" . counsel-yank-pop)
+              ("C-h f" . counsel-describe-function)
+              ("C-h v" . counsel-describe-variable)
+              ("M-s r" . counsel-rg)
+              ("M-s g" . counsel-git-grep)
+              ("M-s l" . counsel-find-library)
+              ("M-s z" . prot/counsel-fzf-rg-files)
+              :map ivy-minibuffer-map
+              ("C-r" . counsel-minibuffer-history)
+              ("s-y" . ivy-next-line)        ; Avoid 2× `counsel-yank-pop'
+              ("C-SPC" . ivy-restrict-to-matches)))
+   #+END_SRC
 
 ** Swiper
-#+BEGIN_SRC emacs-lisp
-(use-package swiper
-  :ensure t
-  :after ivy
-  :custom
-  (swiper-action-recenter t)
-  (swiper-goto-start-of-match t)
-  (swiper-include-line-number-in-search t)
-  :bind (("C-s" . swiper)
-         ("M-s s" . swiper-multi)
-         ("M-s w" . swiper-thing-at-point)))
+   #+BEGIN_SRC emacs-lisp
+     (use-package swiper
+       :ensure t
+       :after ivy
+       :custom
+       (swiper-action-recenter t)
+       (swiper-goto-start-of-match t)
+       (swiper-include-line-number-in-search t)
+       :bind (("C-s" . swiper)
+              ("M-s s" . swiper-multi)
+              ("M-s w" . swiper-thing-at-point)))
 
 
-#+END_SRC
+   #+END_SRC
 
 ** Avy
 
 
    #+BEGIN_SRC emacs-lisp
      (use-package avy
-:config
- (global-set-key (kbd "M-SPC") 'avy-goto-char-timer)
-  (global-set-key (kbd "C-:") 'avy-goto-char)
-  (global-set-key (kbd "C-'") 'avy-goto-char-2)
-  (global-set-key (kbd "M-g f") 'avy-goto-line)
-  (global-set-key (kbd "M-g w") 'avy-goto-word-1)
-  (global-set-key (kbd "M-g e") 'avy-goto-word-0))
+       :config
+       (global-set-key (kbd "M-SPC") 'avy-goto-char-timer)
+       (global-set-key (kbd "C-:") 'avy-goto-char)
+       (global-set-key (kbd "C-'") 'avy-goto-char-2)
+       (global-set-key (kbd "M-g f") 'avy-goto-line)
+       (global-set-key (kbd "M-g w") 'avy-goto-word-1)
+       (global-set-key (kbd "M-g e") 'avy-goto-word-0))
 
    #+END_SRC
 
 ** Ivy extensions 
 
-#+BEGIN_SRC emacs-lisp
-(use-package ivy-rich
-  :ensure t
-  :custom
-  (ivy-rich-path-style 'abbreviate)
-  :config
-  (setcdr (assq t ivy-format-functions-alist)
-          #'ivy-format-function-line)
-  (ivy-rich-mode 1))
-#+END_SRC
+   #+BEGIN_SRC emacs-lisp
+     (use-package ivy-rich
+       :ensure t
+       :custom
+       (ivy-rich-path-style 'abbreviate)
+       :config
+       (setcdr (assq t ivy-format-functions-alist)
+               #'ivy-format-function-line)
+       (ivy-rich-mode 1))
+   #+END_SRC
 
-#+BEGIN_SRC emacs-lisp
-(use-package ivy-posframe
-  :ensure t
-  :delight
-  :custom
-  (ivy-posframe-parameters
-   '((left-fringe . 2)
-     (right-fringe . 2)
-     (internal-border-width . 2)
-     ))
-  (ivy-posframe-height-alist
-   '((swiper . 15)
-     (swiper-isearch . 15)
-     (t . 10)))
-  (ivy-posframe-display-functions-alist
-   '((complete-symbol . ivy-posframe-display-at-point)
-     (swiper . nil)
-     (swiper-isearch . nil)
-     (t . ivy-posframe-display-at-frame-center)))
-  :config
-  (ivy-posframe-mode 1))
-#+END_SRC
+   #+BEGIN_SRC emacs-lisp
+     (use-package ivy-posframe
+       :ensure t
+       :delight
+       :custom
+       (ivy-posframe-parameters
+        '((left-fringe . 2)
+          (right-fringe . 2)
+          (internal-border-width . 2)
+          ))
+       (ivy-posframe-height-alist
+        '((swiper . 15)
+          (swiper-isearch . 15)
+          (t . 10)))
+       (ivy-posframe-display-functions-alist
+        '((complete-symbol . ivy-posframe-display-at-point)
+          (swiper . nil)
+          (swiper-isearch . nil)
+          (t . ivy-posframe-display-at-frame-center)))
+       :config
+       (ivy-posframe-mode 1))
+   #+END_SRC
 
 ** Swoop 
    #+BEGIN_EXAMPLE emacs-lisp
@@ -823,7 +825,7 @@ Prescient
 
    #+BEGIN_SRC emacs-lisp
      (use-package winner
-       
+
        :init (winner-mode 1))
    #+END_SRC
 
@@ -834,7 +836,7 @@ Prescient
 
    #+BEGIN_SRC emacs-lisp
      (use-package ido
-       
+
        :init  (setq ido-enable-flex-matching t
                     ido-ignore-extensions t
                     ido-use-virtual-buffers t
@@ -848,7 +850,7 @@ Prescient
    ido-completing-read+
    #+BEGIN_SRC emacs-lisp
      (use-package ido-completing-read+
-       
+
        :config
        (ido-ubiquitous-mode))
    #+END_SRC
@@ -856,7 +858,7 @@ Prescient
    FLX package
    #+BEGIN_SRC emacs-lisp
      (use-package flx-ido
-       
+
        :init (setq ido-enable-flex-matching t
                    ido-use-faces nil)
        :config (flx-ido-mode 1))
@@ -866,7 +868,7 @@ Prescient
    Vertical mode 
    #+BEGIN_SRC emacs-lisp
      (use-package ido-vertical-mode
-       
+
        :init               ; I like up and down arrow keys:
        (setq ido-vertical-define-keys 'C-n-C-p-up-and-down)
        :config
@@ -903,67 +905,67 @@ Prescient
 
 ** Company 
 
-#+BEGIN_SRC emacs-lisp
-(use-package company-c-headers
-:ensure t 
-)
-      (use-package company
-        :ensure t
-        :delight
-        :custom
-        (company-auto-complete nil)
-        (company-dabbrev-code-everywhere t)
-        (company-dabbrev-code-modes t)
-        (company-dabbrev-code-other-buffers 'all)
-        (company-dabbrev-downcase nil)
-        (company-dabbrev-ignore-case t)
-        (company-dabbrev-other-buffers 'all)
-        (company-idle-delay 0.3)
-        (company-minimum-prefix-length 3)
-        (company-require-match nil)
-        (company-selection-wrap-around t)
-        (company-show-numbers t)
-        ;;(company-transformers
-         ;;'(company-sort-by-backend-importance
-  ;;         company-sort-prefer-same-case-prefix
-    ;;       company-sort-by-occurrence))
-        (company-tooltip-align-annotations t)
-        (company-tooltip-limit 10)
-        (company-tooltip-margin 1)
-        (company-tooltip-offset-display 'scrollbar)
-        :config
-        (global-company-mode 1)
+   #+BEGIN_SRC emacs-lisp
+     (use-package company-c-headers
+       :ensure t 
+       )
+     (use-package company
+       :ensure t
+       :delight
+       :custom
+       (company-auto-complete nil)
+       (company-dabbrev-code-everywhere t)
+       (company-dabbrev-code-modes t)
+       (company-dabbrev-code-other-buffers 'all)
+       (company-dabbrev-downcase nil)
+       (company-dabbrev-ignore-case t)
+       (company-dabbrev-other-buffers 'all)
+       (company-idle-delay 0.3)
+       (company-minimum-prefix-length 3)
+       (company-require-match nil)
+       (company-selection-wrap-around t)
+       (company-show-numbers t)
+       ;;(company-transformers
+       ;;'(company-sort-by-backend-importance
+       ;;         company-sort-prefer-same-case-prefix
+       ;;       company-sort-by-occurrence))
+       (company-tooltip-align-annotations t)
+       (company-tooltip-limit 10)
+       (company-tooltip-margin 1)
+       (company-tooltip-offset-display 'scrollbar)
+       :config
+       (global-company-mode 1)
 
-        (add-to-list 'company-backends '(company-clang
-                                         company-capf
-                                         company-dabbrev
-                                         company-c-headers
-                                         company-gtags))
-        :bind (:map company-mode-map
-                    ("M-/" . company-manual-begin)
-                    :map company-active-map
-                    (("M-/" . company-other-backend)
-                     ("<tab>" . company-complete-selection)
-                     ("<C-tab>" . company-complete-common-or-cycle)
-                     ("C-n" . company-select-next)
-                     ("C-p" . company-select-previous))))
+       (add-to-list 'company-backends '(company-clang
+                                        company-capf
+                                        company-dabbrev
+                                        company-c-headers
+                                        company-gtags))
+       :bind (:map company-mode-map
+                   ("M-/" . company-manual-begin)
+                   :map company-active-map
+                   (("M-/" . company-other-backend)
+                    ("<tab>" . company-complete-selection)
+                    ("<C-tab>" . company-complete-common-or-cycle)
+                    ("C-n" . company-select-next)
+                    ("C-p" . company-select-previous))))
 
-    (use-package company-statistics      
-        :init
-        (company-statistics-mode))
+     (use-package company-statistics      
+       :init
+       (company-statistics-mode))
 
 
-      (setq company-global-modes '(
-                                   org-mode
-                                   c-mode
-                                   c++-mode
-                                   ))
+     (setq company-global-modes '(
+                                  org-mode
+                                  c-mode
+                                  c++-mode
+                                  ))
 
-      (add-hook 'c-mode-hook
-                (lambda ()
-                  (set (make-local-variable 'company-backends) '(company-clang  company-gtags  company-c-headers company-dabbrev ))))
+     (add-hook 'c-mode-hook
+               (lambda ()
+                 (set (make-local-variable 'company-backends) '(company-clang  company-gtags  company-c-headers company-dabbrev ))))
 
-#+END_SRC
+   #+END_SRC
 
    I had to add the hook and local variable to stop company from selecting capf before clang. 
    To make this work properly, I need to manually specify the include paths by
@@ -983,11 +985,11 @@ Prescient
    #+END_EXAMPLE
    Company Prescient 
    #+BEGIN_SRC emacs-lisp
-   (use-package company-prescient
-  :ensure t
-  :after (company prescient)
-  :config
-  (company-prescient-mode 1))
+     (use-package company-prescient
+       :ensure t
+       :after (company prescient)
+       :config
+       (company-prescient-mode 1))
 
    #+END_SRC
    
@@ -1011,7 +1013,7 @@ Prescient
 
    #+BEGIN_SRC emacs-lisp 
      (use-package flyspell
-       
+
        :diminish flyspell-mode
        :init
        (add-hook 'prog-mode-hook 'flyspell-prog-mode)
@@ -1312,7 +1314,7 @@ Prescient
 
    #+BEGIN_SRC emacs-lisp
      (use-package org-superstar
-       
+
        :init 
        (add-hook 'org-mode-hook (lambda () (org-superstar-mode 1)))
        )
@@ -1380,26 +1382,26 @@ Prescient
 ** deft 
 
    #+BEGIN_SRC emacs-lisp 
-  (use-package deft
-  :commands deft
-  :init
-  (setq deft-default-extension "org"
-        ;; de-couples filename and note title:
-        deft-use-filename-as-title nil
-        deft-use-filter-string-for-filename t
-        ;; disable auto-save
-        deft-auto-save-interval -1.0
-        ;; converts the filter string into a readable file-name using kebab-case:
-        deft-file-naming-rules
-        '((noslash . "-")
-          (nospace . "-")
-          (case-fn . downcase)))
-  :config
-  (add-to-list 'deft-extensions "tex")
-  )
+     (use-package deft
+       :commands deft
+       :init
+       (setq deft-default-extension "org"
+             ;; de-couples filename and note title:
+             deft-use-filename-as-title nil
+             deft-use-filter-string-for-filename t
+             ;; disable auto-save
+             deft-auto-save-interval -1.0
+             ;; converts the filter string into a readable file-name using kebab-case:
+             deft-file-naming-rules
+             '((noslash . "-")
+               (nospace . "-")
+               (case-fn . downcase)))
+       :config
+       (add-to-list 'deft-extensions "tex")
+       )
 
-(setq    deft-directory (concat (getenv "HOME") "/work/roam/"))
-#+END_SRC
+     (setq    deft-directory (concat (getenv "HOME") "/work/roam/"))
+   #+END_SRC
 
 ** Helm-bibtex
 
@@ -1422,9 +1424,9 @@ Prescient
            bibtex-completion-library-path "~/work/bibliography/bibtex-pdfs"
            bibtex-completion-notes-path "~/work/bibliography/helm-bibtex-notes"
            bibtex-completion-pdf-field "file")
-(use-package ivy-bibtex
-:ensure t
-)
+     (use-package ivy-bibtex
+       :ensure t
+       )
 
    #+END_SRC
 
@@ -1439,22 +1441,22 @@ Prescient
 
 
    #+BEGIN_SRC emacs-lisp
-(setq  notes-directory (concat (getenv "HOME") "/work/roam/"))
+     (setq  notes-directory (concat (getenv "HOME") "/work/roam/"))
 
      (use-package org-ref
-     :ensure t 
-     :config
-         (setq
-              org-ref-completion-library 'org-ref-ivy-cite
-              org-ref-get-pdf-filename-function 'org-ref-get-pdf-filename-helm-bibtex
-              org-ref-default-bibliography '("~/work/bibliography/references.bib")
-              org-ref-bibliography-notes "~/work/roam/notes.org"
-              org-ref-pdf-directory "~/work/bibliography/bibtex-pdfs/"
+       :ensure t 
+       :config
+       (setq
+        org-ref-completion-library 'org-ref-ivy-cite
+        org-ref-get-pdf-filename-function 'org-ref-get-pdf-filename-helm-bibtex
+        org-ref-default-bibliography '("~/work/bibliography/references.bib")
+        org-ref-bibliography-notes "~/work/roam/notes.org"
+        org-ref-pdf-directory "~/work/bibliography/bibtex-pdfs/"
 
-              org-ref-notes-directory "~/work/roam/"
-              org-ref-notes-function 'orb-edit-notes
-              org-ref-default-citation-link "supercite"
-         )
+        org-ref-notes-directory "~/work/roam/"
+        org-ref-notes-function 'orb-edit-notes
+        org-ref-default-citation-link "supercite"
+        )
        )
 
 
@@ -1462,41 +1464,41 @@ Prescient
      ;;Hack ....
      (defun org-ref-add-labels (start end)
        "Add labels in the region from START to END.
-     This is run by font-lock. START tends to be the beginning of the
-     line, and END tends to be where the point is, so this function
-     seems to work fine at recognizing labels by the regexps in
-     `org-ref-label-regexps'."
+          This is run by font-lock. START tends to be the beginning of the
+          line, and END tends to be where the point is, so this function
+          seems to work fine at recognizing labels by the regexps in
+          `org-ref-label-regexps'."
        (interactive "r")
        (save-excursion
          (save-match-data
            (cl-loop for rx in org-ref-label-regexps
-              do
-              (goto-char start)
-              (while (re-search-forward rx end t)
-          (let ((label (match-string-no-properties 1)))
-            ;; I don't know why this gets found, but some labels are
-            ;; empty strings. we don't store these.
-            (unless (string= "" label)
-              ;; if the last end is the new end -1 we are adding to a
-              ;; label, and should pop the old one off before adding the
-              ;; new one.
-              (when (eq  org-ref-last-label-end (- end 1))
-                (pop org-ref-labels))
-              (with-silent-modifications
-                (put-text-property (match-beginning 1)
-                 (match-end 1)
-                 'org-ref-label t)
-                (put-text-property (match-beginning 1)
-                 (match-end 1)
-                 'rear-nonsticky '(org-ref-label)))
-              (when org-ref-label-debug
-                (message "oral: adding %s" label))
+                    do
+                    (goto-char start)
+                    (while (re-search-forward rx end t)
+                      (let ((label (match-string-no-properties 1)))
+                        ;; I don't know why this gets found, but some labels are
+                        ;; empty strings. we don't store these.
+                        (unless (string= "" label)
+                          ;; if the last end is the new end -1 we are adding to a
+                          ;; label, and should pop the old one off before adding the
+                          ;; new one.
+                          (when (eq  org-ref-last-label-end (- end 1))
+                            (pop org-ref-labels))
+                          (with-silent-modifications
+                            (put-text-property (match-beginning 1)
+                                               (match-end 1)
+                                               'org-ref-label t)
+                            (put-text-property (match-beginning 1)
+                                               (match-end 1)
+                                               'rear-nonsticky '(org-ref-label)))
+                          (when org-ref-label-debug
+                            (message "oral: adding %s" label))
 
-              (cl-pushnew label
-                 org-ref-labels :test 'string=)
-              ;; now store the last end so we can tell for the next run
-              ;; if we are adding to a label.
-              (setq org-ref-last-label-end end))))))))
+                          (cl-pushnew label
+                                      org-ref-labels :test 'string=)
+                          ;; now store the last end so we can tell for the next run
+                          ;; if we are adding to a label.
+                          (setq org-ref-last-label-end end))))))))
 
    #+END_SRC
 
@@ -1528,120 +1530,120 @@ Prescient
                    (("C-c m i" . org-roam-insert)))
        )
 
-#+END_SRC
+   #+END_SRC
 
-Templates: 
+   Templates: 
 
-#+BEGIN_SRC emacs-lisp
-    (setq org-roam-capture-templates
-          (quote (("d" "default" plain
-                   (function org-roam-capture--get-point)
-                   "\n* %?"
-                   :file-name "%<%Y%m%d%H%M%S>-${slug}"
-                   :head "#+title: ${title}\n#+created: %u\n#+last_modified: %U\n\n"
-                   :unnarrowed t))
-                 )
-          )
-    (setq org-roam-capture-ref-templates
-          (quote (("r" "ref" plain
-                   (function org-roam-capture--get-point)
-                   ""
-                   :file-name "${slug}"
-                   :head "#+title: ${title}\n#+roam_key: ${ref}\n#+created: %u\n#+last_modified: %U\n\n"
-                   :unnarrowed t))
-                 )
-          )
-    (setq org-roam-dailies-capture-templates
-          (quote (("d" "daily" plain (function org-roam-capture--get-point) "* %?\n"
-;;                   :immediate-finish t
-                   :add-created t 
-                   :file-name "dailies/%<%Y-%m-%d>"
-                   :head "#+TITLE: %<%Y-%m-%d>\n\n"))
-                 )
-          )
-        #+END_SRC
+   #+BEGIN_SRC emacs-lisp
+     (setq org-roam-capture-templates
+           (quote (("d" "default" plain
+                    (function org-roam-capture--get-point)
+                    "\n* %?"
+                    :file-name "%<%Y%m%d%H%M%S>-${slug}"
+                    :head "#+title: ${title}\n#+created: %u\n#+last_modified: %U\n\n"
+                    :unnarrowed t))
+                  )
+           )
+     (setq org-roam-capture-ref-templates
+           (quote (("r" "ref" plain
+                    (function org-roam-capture--get-point)
+                    ""
+                    :file-name "${slug}"
+                    :head "#+title: ${title}\n#+roam_key: ${ref}\n#+created: %u\n#+last_modified: %U\n\n"
+                    :unnarrowed t))
+                  )
+           )
+     (setq org-roam-dailies-capture-templates
+           (quote (("d" "daily" plain (function org-roam-capture--get-point) "* %?\n"
+                    ;;                   :immediate-finish t
+                    :add-created t 
+                    :file-name "dailies/%<%Y-%m-%d>"
+                    :head "#+TITLE: %<%Y-%m-%d>\n\n"))
+                  )
+           )
+   #+END_SRC
 
-#+BEGIN_SRC emacs-lisp
+   #+BEGIN_SRC emacs-lisp
 
-(require 'org-roam-protocol)
-(use-package org-roam-server
-  :ensure t
-  :bind (:map org-roam-mode-map
-         (("C-c m G" . org-roam-server-mode)))
-  :config
-  (setq org-roam-server-host "127.0.0.1"
-        org-roam-server-port 8080
-        org-roam-server-export-inline-images t
-        org-roam-server-authenticate nil
-        org-roam-server-network-poll t
-        org-roam-server-network-arrows nil
-        org-roam-server-network-label-truncate t
-        org-roam-server-network-label-truncate-length 60
-        org-roam-server-network-label-wrap-length 20))
-#+END_SRC
+     (require 'org-roam-protocol)
+     (use-package org-roam-server
+       :ensure t
+       :bind (:map org-roam-mode-map
+                   (("C-c m G" . org-roam-server-mode)))
+       :config
+       (setq org-roam-server-host "127.0.0.1"
+             org-roam-server-port 8080
+             org-roam-server-export-inline-images t
+             org-roam-server-authenticate nil
+             org-roam-server-network-poll t
+             org-roam-server-network-arrows nil
+             org-roam-server-network-label-truncate t
+             org-roam-server-network-label-truncate-length 60
+             org-roam-server-network-label-wrap-length 20))
+   #+END_SRC
 
 
 ** Org-roam-bibtex 
-#+BEGIN_SRC emacs-lisp
+   #+BEGIN_SRC emacs-lisp
 
-(use-package org-roam-bibtex
-  :after org-roam
-  :hook (org-roam-mode . org-roam-bibtex-mode)
-  :bind (:map org-mode-map
-         (("C-c n a" . orb-note-actions))))
+     (use-package org-roam-bibtex
+       :after org-roam
+       :hook (org-roam-mode . org-roam-bibtex-mode)
+       :bind (:map org-mode-map
+                   (("C-c n a" . orb-note-actions))))
 
-(setq orb-preformat-keywords
-   '(("citekey" . "=key=") "title" "url" "file" "author-or-editor" "keywords"))
+     (setq orb-preformat-keywords
+           '(("citekey" . "=key=") "title" "url" "file" "author-or-editor" "keywords"))
 
-(setq orb-templates
-      '(("r" "ref" plain (function org-roam-capture--get-point)
-         ""
-         :file-name "${citekey}"
-         :head "#+TITLE: ${citekey}: ${title}\n#+ROAM_KEY: ${ref}
+     (setq orb-templates
+           '(("r" "ref" plain (function org-roam-capture--get-point)
+              ""
+              :file-name "${citekey}"
+              :head "#+TITLE: ${citekey}: ${title}\n#+ROAM_KEY: ${ref}
 
-- tags ::
-- keywords :: ${keywords}
-\n* ${title}
-:PROPERTIES:
-:Custom_ID: ${citekey}
-:URL: ${url}
-:AUTHOR: ${author-or-editor}
-:NOTER_DOCUMENT: %(orb-process-file-field \"${citekey}\")
-:NOTER_PAGE:
-:END:\n%?")))
+     - tags ::
+     - keywords :: ${keywords}
+     \n* ${title}
+     :PROPERTIES:
+     :Custom_ID: ${citekey}
+     :URL: ${url}
+     :AUTHOR: ${author-or-editor}
+     :NOTER_DOCUMENT: %(orb-process-file-field \"${citekey}\")
+     :NOTER_PAGE:
+     :END:\n%?")))
 
-#+END_SRC
+   #+END_SRC
 
 ** company-org-roam
-#+BEGIN_SRC emacs-lisp 
+   #+BEGIN_SRC emacs-lisp 
 
-(use-package company-org-roam
-  :ensure t
-  ;; You may want to pin in case the version from stable.melpa.org is not working 
-  ; :pin melpa
-  :config
-  (push 'company-org-roam company-backends))
-#+END_SRC
+     (use-package company-org-roam
+       :ensure t
+       ;; You may want to pin in case the version from stable.melpa.org is not working 
+                                             ; :pin melpa
+       :config
+       (push 'company-org-roam company-backends))
+   #+END_SRC
 
 ** Org- Noter
 
-#+BEGIN_SRC  emacs-lisp
-(setq
-   org_notes (concat (getenv "HOME") "/work/roam/")
-   deft-directory org_notes
-   org-roam-directory org_notes
-   )
-  (use-package org-noter
-    :ensure t
-    :after (:any org pdf-view)
-    :config
-    (setq org-noter-hide-other t
-          org-noter-auto-save-last-location t
-          org-noter-doc-split-fraction '(0.57 0.43)
-          org-noter-notes-search-path  (list org_notes)))
+   #+BEGIN_SRC  emacs-lisp
+     (setq
+      org_notes (concat (getenv "HOME") "/work/roam/")
+      deft-directory org_notes
+      org-roam-directory org_notes
+      )
+     (use-package org-noter
+       :ensure t
+       :after (:any org pdf-view)
+       :config
+       (setq org-noter-hide-other t
+             org-noter-auto-save-last-location t
+             org-noter-doc-split-fraction '(0.67 0.33)
+             org-noter-notes-search-path  (list org_notes)))
 
 
-#+END_SRC
+   #+END_SRC
 
 
 ** Org-download
@@ -1901,7 +1903,7 @@ Templates:
    Flycheck 
    #+BEGIN_SRC emacs-lisp 
      (use-package flycheck
-       
+
        :init
        (add-hook 'after-init-hook 'global-flycheck-mode)
        (add-hook 'c-mode-hook (lambda () (setq flycheck-clang-language-standard "c11")))
@@ -1910,12 +1912,12 @@ Templates:
 
 
      (use-package flycheck-clang-analyzer
-       
+
        :after flycheck
        :config (flycheck-clang-analyzer-setup))
 
      (use-package flycheck-clang-tidy
-       
+
        :after flycheck
        :hook
        (flycheck-mode . flycheck-clang-tidy-setup)
@@ -1929,7 +1931,7 @@ Templates:
 
    #+BEGIN_SRC emacs-lisp
      (use-package linum-relative
-       
+
        :config
        (setq linum-relative-current-symbol "")
        (add-hook 'prog-mode-hook 'linum-relative-mode))
@@ -1941,7 +1943,7 @@ Templates:
 
    #+BEGIN_SRC emacs-lisp
      (use-package magit
-       
+
        :commands magit-status magit-blame
        :init
        (defadvice magit-status (around magit-fullscreen activate)
@@ -1968,7 +1970,7 @@ Templates:
    
    #+BEGIN_SRC emacs-lisp
      (use-package yasnippet
-       
+
        :diminish
        :init
        (yas-global-mode 1)
@@ -1981,7 +1983,7 @@ Templates:
 ** Comments
    #+BEGIN_SRC emacs-lisp
      (use-package smart-comment
-       
+
        :bind ("M-;" . smart-comment))
    #+End_SRC
 
@@ -2005,22 +2007,22 @@ Templates:
 
 *** Indent style 
 
-  SET BSD indent style
+    SET BSD indent style
 
-   #+BEGIN_SRC emacs-lisp
+    #+BEGIN_SRC emacs-lisp
 
-     (add-hook 'c-mode-hook
-               '(lambda()
-                  (c-set-style "bsd")
-                  ))
-   #+END_SRC
+      (add-hook 'c-mode-hook
+                '(lambda()
+                   (c-set-style "bsd")
+                   ))
+    #+END_SRC
   
 *** ggtags
 
 
     #+BEGIN_SRC emacs-lisp
       (use-package ggtags
-        
+
         :init
         (add-hook 'c-mode-common-hook
                   (lambda ()
@@ -2058,7 +2060,7 @@ Templates:
 
     #+BEGIN_SRC emacs-lisp
       (use-package counsel-gtags
-        
+
         ;;:bind (
         ;;   ("M-t" . counsel-gtags-find-definition)
         ;; ("M-r" . counsel-gtags-find-reference)
@@ -2076,7 +2078,7 @@ Templates:
 
     #+BEGIN_SRC emacs-lisp
       (use-package smartparens
-        
+
         :config
         (sp-pair "'" nil :actions :rem)
         (sp-pair "`" nil :actions :rem)
@@ -2087,7 +2089,7 @@ Templates:
 
     #+BEGIN_SRC emacs-lisp
       (use-package smartscan
-        
+
         :bind ("M-n" . smartscan-symbol-go-forward)
         ("M-p" . smartscan-symbol-go-backward))
 
@@ -2108,12 +2110,12 @@ Templates:
     #+EXAMPLE_SRC
 *** Whitespace mode  
 
-   Whitespace mode
+    Whitespace mode
 
-   #+BEGIN_SRC emacs-lisp
-     (global-set-key (kbd "C-c w") 'whitespace-mode)
-     (add-hook 'prog-mode-hook (lambda () (interactive) (setq show-trailing-whitespace 1)))
-   #+END_SRC
+    #+BEGIN_SRC emacs-lisp
+      (global-set-key (kbd "C-c w") 'whitespace-mode)
+      (add-hook 'prog-mode-hook (lambda () (interactive) (setq show-trailing-whitespace 1)))
+    #+END_SRC
 
 ** Don't ask for permission to run make
    Don't ask with make command to run...
@@ -2132,14 +2134,14 @@ Templates:
    Default ESS config: 
    #+BEGIN_SRC emacs-lisp
      (use-package ess
-       
+
        :init (require 'ess-site))
    #+END_SRC
 
 ** Snakemake 
    #+BEGIN_SRC emacs-lisp
      (use-package snakemake-mode
-       
+
        )
    #+END_SRC
 
@@ -2272,7 +2274,7 @@ Templates:
 
   #+BEGIN_SRC emacs-lisp
     (use-package tramp
-      
+
       :config
       (with-eval-after-load 'tramp-cache
         (setq tramp-persistency-file-name "~/.emacs.d/tramp"))
@@ -2283,7 +2285,7 @@ Templates:
  
   #+BEGIN_SRC emacs-lisp
     (use-package ssh
-      
+
       )
   #+END_SRC
 
@@ -2407,3 +2409,4 @@ Templates:
 
 
    End. 
+
