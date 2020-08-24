@@ -400,9 +400,7 @@
        (setq global-aggressive-indent-mode 1)
        )
 
-
-(global-aggressive-indent-mode 1)
-
+     (global-aggressive-indent-mode 1)
    #+END_SRC
 
 * Improvements
@@ -1530,7 +1528,7 @@
                    :map org-mode-map
                    (("C-c m i" . org-roam-insert)))
        )
-
+(setq org-roam-index-file "~/work/roam/Index.org")
    #+END_SRC
 
    Templates: 
