@@ -1115,6 +1115,8 @@ Prescient
      ;;   (setq org-agenda-files (list org-index-file))
      (setq org-agenda-files '("~/capture"
                               "~/work"
+                              "~/work/roam"
+                              "~/work/roam/dailies"
                               "~/life"))
    #+END_SRC
 
@@ -1534,7 +1536,7 @@ Templates:
     (setq org-roam-capture-templates
           (quote (("d" "default" plain
                    (function org-roam-capture--get-point)
-                   "%?"
+                   "\n* %?"
                    :file-name "%<%Y%m%d%H%M%S>-${slug}"
                    :head "#+title: ${title}\n#+created: %u\n#+last_modified: %U\n\n"
                    :unnarrowed t))
@@ -1550,7 +1552,7 @@ Templates:
                  )
           )
     (setq org-roam-dailies-capture-templates
-          (quote (("d" "daily" plain (function org-roam-capture--get-point) "* Today's todo\n%?\n"
+          (quote (("d" "daily" plain (function org-roam-capture--get-point) "* %?\n"
 ;;                   :immediate-finish t
                    :add-created t 
                    :file-name "dailies/%<%Y-%m-%d>"
