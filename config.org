@@ -1608,7 +1608,8 @@ Templates:
 :AUTHOR: ${author-or-editor}
 :NOTER_DOCUMENT: %(orb-process-file-field \"${citekey}\")
 :NOTER_PAGE:
-:END:")))
+:END:\n%?")))
+
 #+END_SRC
 
 ** company-org-roam
