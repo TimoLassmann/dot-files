@@ -394,14 +394,14 @@
 
 ** Aggressive Auto Indention
    
-   #+BEGIN_SRC emacs-lisp
-     (use-package aggressive-indent
-       :config 
-       (setq global-aggressive-indent-mode 1)
-       )
+   # #+BEGIN_SRC emacs-lisp
+   #   (use-package aggressive-indent
+   #     :config 
+   #     (setq global-aggressive-indent-mode 1)
+   #     )
 
-     (global-aggressive-indent-mode 1)
-   #+END_SRC
+   #   (global-aggressive-indent-mode 1)
+   # #+END_SRC
 
 * Improvements
 ** Better beginning of line
@@ -2015,7 +2015,8 @@
                    (c-set-style "bsd")
                    ))
     #+END_SRC
-  
+
+
 *** ggtags
 
 
@@ -2114,6 +2115,27 @@
     #+BEGIN_SRC emacs-lisp
       (global-set-key (kbd "C-c w") 'whitespace-mode)
       (add-hook 'prog-mode-hook (lambda () (interactive) (setq show-trailing-whitespace 1)))
+    #+END_SRC
+
+*** clean aindent mode
+
+    #+BEGIN_SRC emacs-lisp
+      (use-package clean-aindent-mode
+
+        :init 
+        (add-hook 'prog-mode-hook 'clean-aindent-mode)
+        )
+    #+END_SRC
+
+*** dtrt indent mode
+
+    #+BEGIN_SRC emacs-lisp
+      (use-package dtrt-indent 
+
+        :init 
+        (dtrt-indent-mode 1)
+        (setq dtrt-indent-verbosity 0)
+        )
     #+END_SRC
 
 ** Don't ask for permission to run make
