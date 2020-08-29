@@ -7,30 +7,18 @@
 a5paper,
 left=10mm,
 right=10mm,
-top=15mm,
-bottom=15mm,
+top=5mm,
+bottom=5mm,
 }
 
 
 \usepackage{bm}
 \usepackage{graphicx}
-\usepackage{fancyhdr}
-\pagestyle{fancy}
-\usepackage{tikz}
 \usepackage{hyperref}
 \usepackage{lipsum}
-
-\lfoot{}
-\cfoot{}
-\rfoot{Page \thepage}
 \twocolumn
 \setlength{\columnsep}{10mm}
 
-
-
 \renewcommand{\maketitle}{
- \@title
+ {\Large\scshape\@title}
 }
-
-
-\lfoot{\color{gray}{\footnotesize \@title \@author, \@date} }
