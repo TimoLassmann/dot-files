@@ -2,9 +2,9 @@
 
 rm ~/.emacs
 
-emacs -q  --debug-init --load "build.el" 
+emacs -q  --debug-init --load "build.el"
 
-texhash 
+texhash
 
 
 cat > ~/.emacs <<- EOM

@@ -1,0 +1,36 @@
+\ProvidesPackage{roamcard}
+
+%% \usepackage{lmodern}
+%% \usepackage[T1]{fontenc}
+\usepackage[landscape]{geometry}
+\geometry{
+a5paper,
+left=10mm,
+right=10mm,
+top=15mm,
+bottom=15mm,
+}
+
+
+\usepackage{bm}
+\usepackage{graphicx}
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\usepackage{tikz}
+\usepackage{hyperref}
+\usepackage{lipsum}
+
+\lfoot{}
+\cfoot{}
+\rfoot{Page \thepage}
+\twocolumn
+\setlength{\columnsep}{10mm}
+
+
+
+\renewcommand{\maketitle}{
+ \@title
+}
+
+
+\lfoot{\color{gray}{\footnotesize \@title \@author, \@date} }
