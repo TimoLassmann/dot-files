@@ -1846,6 +1846,7 @@
                     ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
    #+END_SRC
 
+
 ** Simple presentation
 
    #+BEGIN_SRC emacs-lisp
@@ -2409,7 +2410,6 @@
 		 '("\\.pdf\\'" . (lambda (file link)
 				   (org-pdftools-open link))))))
 #+END_SRC
-
 
 * End
 
