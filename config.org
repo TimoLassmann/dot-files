@@ -57,10 +57,10 @@
    [[https://github.com/magnars/s.el][s]] for string manipulation, and [[https://github.com/rejeep/f.el][f]] for file manipulation.
 
    #+BEGIN_SRC emacs-lisp
- 
-(use-package cl-lib
-:ensure t
-)
+
+     (use-package cl-lib
+       :ensure t
+       )
      (use-package dash
   
        :config (eval-after-load "dash" '(dash-enable-font-lock)))
@@ -1280,9 +1280,9 @@
    Use minted package for code: 
 
    #+BEGIN_SRC emacs-lisp
-  (setq org-latex-listings 'minted)
-  (setq org-latex-minted-options
-        '(("frame" "lines") ("linenos=true")("breaklines")))
+     (setq org-latex-listings 'minted)
+     (setq org-latex-minted-options
+           '(("frame" "lines") ("linenos=true")("breaklines")))
    #+END_SRC
   
 ** Flyspell
@@ -1528,7 +1528,7 @@
                    :map org-mode-map
                    (("C-c m i" . org-roam-insert)))
        )
-(setq org-roam-index-file "~/work/roam/Index.org")
+     (setq org-roam-index-file "~/work/roam/Index.org")
    #+END_SRC
 
    Templates: 
@@ -2397,19 +2397,19 @@
       (define-key pdf-view-mode-map (kbd "C-s") 'isearch-forward))
   #+END_SRC
 
-#+BEGIN_SRC emacs-lisp
-;; PDF links for org-mode
-(with-eval-after-load 'pdf-tools
-  (use-package org-pdftools
-    :config
-    ;; https://lists.gnu.org/archive/html/emacs-orgmode/2016-11/msg00169.html
-    ;; Before adding, remove it (to avoid clogging)
-    (delete '("\\.pdf\\'" . default) org-file-apps)
-    ;; https://lists.gnu.org/archive/html/emacs-orgmode/2016-11/msg00176.html
-    (add-to-list 'org-file-apps
-		 '("\\.pdf\\'" . (lambda (file link)
-				   (org-pdftools-open link))))))
-#+END_SRC
+  #+BEGIN_SRC emacs-lisp
+    ;; PDF links for org-mode
+    (with-eval-after-load 'pdf-tools
+      (use-package org-pdftools
+        :config
+        ;; https://lists.gnu.org/archive/html/emacs-orgmode/2016-11/msg00169.html
+        ;; Before adding, remove it (to avoid clogging)
+        (delete '("\\.pdf\\'" . default) org-file-apps)
+        ;; https://lists.gnu.org/archive/html/emacs-orgmode/2016-11/msg00176.html
+        (add-to-list 'org-file-apps
+                     '("\\.pdf\\'" . (lambda (file link)
+                                       (org-pdftools-open link))))))
+  #+END_SRC
 
 * End
 
@@ -2419,19 +2419,25 @@
   #+BEGIN_SRC emacs-lisp
 
 
-(if (daemonp)
-    (add-hook 'after-make-frame-functions
-              '(lambda (f)
-                 (with-selected-frame f
-                   (when (window-system f) (require 'init-client) ))))
-  (require 'init-client) )
+    (if (daemonp)
+        (add-hook 'after-make-frame-functions
+                  '(lambda (f)
+                     (with-selected-frame f
+                       (when (window-system f) (require 'init-client) ))))
+      (require 'init-client) )
 
 
 
   #+END_SRC
+
+  #+BEGIN_SRC emacs-lisp
+
+    (add-to-list 'custom-theme-load-path (tl/emacs-subdirectory "elisp"))
+  #+END_SRC
+
   
   #+BEGIN_SRC   emacs-lisp
-   (require 'init-local nil t)
+    (require 'init-local nil t)
   #+END_SRC
 
 
