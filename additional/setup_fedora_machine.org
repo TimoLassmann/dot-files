@@ -13,43 +13,116 @@
   #+BEGIN_SRC shell :tangle setup_fedora.sh :shebang #!/bin/bash :exports code :results none
 
     sudo dnf update
-    sudo dnf install latexmk libtool zsh pass agrep gnupg screen git-annex gnutls libjpeg-turbo-devel libjpeg-turbo libjpeg-turbo-utils libncurses*
-    sudo dnf install aspell aspell-de aspell-en ImageMagick-devel ImageMagick libXft libXft-devel libotf otf2 libotf-devel otf2-devel
-    sudo dnf install  m17n-lib m17n-lib-devel gtk3-devel gtk3 nc otf2 libotf powerline-fonts freetype freetype-devel xapian-core-devel libxapia*
-    sudo dnf install  gmime-devel gmime cmake clang libxml2 libxml2-devel libncurses* ncurses* lcms* librsvg2 librsvg2-devel automake
-    sudo dnf install libomp-devel libomp readline readline-devel 
+    sudo dnf install -y \
+         zsh \
+         pass \
+         agrep \
+         fzf \
+         ripgrep \
+         gnupg \
+         screen \
+         git \
+         git-annex \
+         git-lfs \
+         make \
+         cmake \
+         clang \
+         gcc \
+         gcc-c++ \
+         automake \
+         autoconf \
+         libtool \
+         pkgconf \
+         emacs \
+         global \
+         ctags \
+         global-ctags \
+         ctags-etags \
+         valgrind \
+         mpich \
+         hdf5 \
+         hdf5-mpich \
+         hdf5-devel \
+         latexmk \
+         texlive-scheme-full \
+         R \
+         R-devel \
+         libreoffice \
+         evolution \
+         evolution-ews \
+         evolution-devel \
+         inkscape \
+         ImageMagick \
+         ImageMagick-devel \
+         gnutls \
+         libjpeg-turbo-devel \
+         libjpeg-turbo \
+         libjpeg-turbo-utils \
+         libncurses* \
+         aspell \
+         aspell-de \
+         aspell-en \
+         libXft \
+         libXft-devel \
+         libotf \
+         otf2 \
+         libotf-devel \
+         otf2-devel \
+         m17n-lib \
+         m17n-lib-devel \
+         gtk3-devel \
+         gtk3 \
+         nc \
+         otf2 \
+         libotf \
+         powerline-fonts \
+         freetype \
+         freetype-devel \
+         xapian-core-devel \
+         libxapia* \
+         gmime-devel \
+         gmime \
+         libxml2 \
+         libxml2-devel \
+         libncurses* \
+         ncurses* \
+         lcms* \
+         librsvg2 \
+         librsvg2-devel \
+         libomp-devel \
+         libomp \
+         readline \
+         readline-devel \
+         libpng-devel \
+         poppler-devel \
+         poppler-glib-devel \
+         zlib-devel \
+         libcurl-devel \
+         openssl-devel \
+         bzip2-devel \
+         gdal \
+         gdal-devel \
+         udunits2 \
+         udunits2-devel \
+         v8 \
+         v8-devel \
+         proj \
+         proj-devel \
+         geos \
+         geos-devel
 
-    sudo dnf install emacs
-    sudo dnf install global
-    sudo dnf install ctags global-ctags ctags-etags
-    sudo dnf install valgrind 
 
-    sudo dnf install texlive-scheme-full
-    sudo dnf install autoconf automake gcc gcc-c++ libpng-devel make poppler-devel poppler-glib-devel zlib-devel pkgconf
-    sudo dnf install evolution evolution-ews evolution-devel 
-    sudo dnf install hdf5 hdf5-devel 
-
-    sudo dnf install R R-devel
-    sudo dnf install libcurl-devel openssl-devel bzip2-devel
-    sudo dnf install gdal gdal-devel 
-
-    sudo dnf install udunits2 udunits2-devel
-    sudo dnf install v8 v8-devel  
-    sudo dnf install proj proj-devel 
-    sudo dnf install geos geos-devel
-
-    sudo dnf install libreoffice 
-    sudo dnf install mpich
-    sudo dnf install hdf5-mpich
-
-    sudo dnf install fzf ripgrep
   #+END_SRC
 
 
-#+BEGIN_SRC emacs-lisp 
-(setq shr-external-browser "browse-url-firefox")
-#+END_SRC
+  #+BEGIN_SRC emacs-lisp 
+    (setq shr-external-browser "browse-url-firefox")
+  #+END_SRC
 
-#+RESULTS:
-: browse-url-firefox
+  #+RESULTS:
+  : browse-url-firefox
+
+ 
+
+
 

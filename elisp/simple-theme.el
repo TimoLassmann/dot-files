@@ -11,7 +11,7 @@
 ;;(set-face-attribute 'fixed-pitch nil :family "Monospace")
 
 
-(set-face-attribute 'default nil :height 160)
+(set-face-attribute 'default nil :height 140)
 
 (defgroup simple-theme nil
   "Simple theme."
