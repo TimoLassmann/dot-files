@@ -2,7 +2,7 @@
   "The basis for a my custom theme.")
 
 
-;; Delete this line only for testig 
+;; Delete this line only for testig
 
 ;;(set-face-attribute 'default nil :font "Iosevka Comfy-15")
 
@@ -97,7 +97,7 @@ Also bind `class' to ((class color) (min-colors 89))."
    '(font-lock-doc-face                  ((t (:inherit (font-lock-string-face)))))
    '(font-lock-function-name-face        ((t (:foreground "#1083be"))))
    '(font-lock-keyword-face              ((t (:foreground "#1a8da7"))))
-   '(font-lock-preprocessor-face         ((t (:inherit (font-lock-builtin-face)))))
+   '(font-lock-preprocessor-face         ((t (:foreground "#2aa889"))))
    '(font-lock-regexp-grouping-backslash ((t (:inherit (bold)))))
    '(font-lock-regexp-grouping-construct ((t (:inherit (bold)))))
    '(font-lock-string-face               ((t (:foreground "#10adee"))))
@@ -118,6 +118,12 @@ Also bind `class' to ((class color) (min-colors 89))."
 
    '(link ((t (:foreground "#1e8eb8" :underline t))))
    '(link-visited ((t (:foreground "#105f89"))))
+
+   '(flycheck-error   ((t (:underline (:style wave :color "#A6341B")))))
+   '(flycheck-warning ((t (:underline (:style wave :color "#8A7811")))))
+
+      '(eshell-prompt ((t (:weight bold  :foreground "#105f89"))))
+
 
    )
   )
