@@ -2,15 +2,6 @@
   "The basis for a my custom theme.")
 
 
-;; Delete this line only for testig
-
-;;(set-face-attribute 'default nil :font "Iosevka Comfy-15")
-
-;;(set-face-attribute 'variable-pitch nil :family "Sans Serif")
-
-;;(set-face-attribute 'fixed-pitch nil :family "Monospace")
-
-
 (set-face-attribute 'default nil :height 140)
 
 (defgroup simple-theme nil
@@ -72,7 +63,12 @@ Also bind `class' to ((class color) (min-colors 89))."
                                'variable-pitch 'default)))
      ,@body))
 
+
 (simple-with-color-variables
+  (custom-theme-set-variables
+   'simple
+   '(beacon-color "#A6341B"))
+
   (custom-theme-set-faces
    'simple
    '(default ((t (:foreground "#DCDCCC" :background "#000F14"))))
@@ -107,8 +103,6 @@ Also bind `class' to ((class color) (min-colors 89))."
    '(font-lock-warning-face              ((t (:weight bold :foreground "#A6341B"))))
    '(font-lock-negation-char-face        ((t (:inherit font-lock-warning-face))))
 
-   ;;'(highlight ((t (:background "#002333"))))
-
    '(highlight ((t (:background "#002333"))))
    '(mode-line ((t (:background "#001520" :box nil :foreground "#DCDCCC"))))
    '(mode-line-inactive ((t (:weight light :box nil :background "#001520" :foreground "#000000" :inherit (mode-line)))))
@@ -122,9 +116,9 @@ Also bind `class' to ((class color) (min-colors 89))."
    '(flycheck-error   ((t (:underline (:style wave :color "#A6341B")))))
    '(flycheck-warning ((t (:underline (:style wave :color "#8A7811")))))
 
-      '(eshell-prompt ((t (:weight bold  :foreground "#105f89"))))
+   '(eshell-prompt ((t (:weight bold  :foreground "#105f89"))))
 
-
+   `(ivy-posframe ((t (:background "#151F23"))))
    )
   )
 

@@ -1,6 +1,6 @@
-#+STARTUP: content indent 
+#+STARTUP: content indent
 #+TITLE:  Emacs Client Configuration File
-#+AUTHOR: Timo Lassmann 
+#+AUTHOR: Timo Lassmann
 #+LATEX_CLASS: report
 #+OPTIONS:  toc:nil
 #+OPTIONS: H:4
@@ -14,7 +14,7 @@
 \DocumentID{src_sh[:value verbatim]{shasum -a 256 config.org | awk '{print $1}' }}
 
 * Display Settings
-#+BEGIN_SRC emacs-lisp 
+#+BEGIN_SRC emacs-lisp
 
      (setq ring-bell-function 'ignore);; turn everything offf
 
@@ -28,7 +28,7 @@
 #+END_SRC
 
 * Font Settings
-  
+
 **  Set default font size..
    #+BEGIN_SRC emacs-lisp
      (set-face-attribute 'default nil :height 140)
@@ -101,11 +101,11 @@
 
 * Color Theme
 
-  
+
   Use the color theme project by following [[http://www.nongnu.org/color-theme/][these instructions]].
   We now can do =M-x color-theme-<TAB> RET=
 
-Let's see if I can improve the spacemacs theme 
+Let's see if I can improve the spacemacs theme
   #+BEGIN_SRC emacs-lisp
     (use-package gotham-theme
       :ensure t
@@ -135,21 +135,21 @@ Let's see if I can improve the spacemacs theme
       (funcall back))
 #+END_SRC
 
-  Activate theme 
+  Activate theme
   #+BEGIN_SRC emacs-lisp
        (tl/change-theme 'gotham 'tl/mod_background)
 #+END_SRC
 
 
-  
+
   #+BEGIN_SRC emacs-lisp
     (provide 'init-client)
   #+END_SRC
-  
-* Company 
+
+* Company
 
 
-Change color scheme of company ( based on: https://github.com/jcs090218/jcs-emacs/blob/master/.emacs.jcs/jcs-plugin.el) 
+Change color scheme of company ( based on: https://github.com/jcs090218/jcs-emacs/blob/master/.emacs.jcs/jcs-plugin.el)
    #+BEGIN_SRC emacs-lisp
      (defun tl-company-color-setup ()
        "Sets up the color sheme for `company-mode'."
@@ -161,16 +161,16 @@ Change color scheme of company ( based on: https://github.com/jcs090218/jcs-emac
         '(company-preview-search ((t (:inherit company-preview))))
 
         '(company-tooltip ((t (:background "#001E21" :foreground "#008ED1"))))
-        ;; Formatting of autocompleted text 
+        ;; Formatting of autocompleted text
         '(company-tooltip-selection ((t (:background "#002E41" :foreground "#00AEF1"))))
-        ;; formatting of function arguments etc.. 
+        ;; formatting of function arguments etc..
         '(company-tooltip-annotation ((t (:background "#001E21" :foreground "#C35214"))))
-        ;; formatting of selected function arguments etc.. 
+        ;; formatting of selected function arguments etc..
         '(company-tooltip-annotation-selection ((t (:background "#002E41" :foreground "#FF4500"))))
         '(company-tooltip-common
           ((((type x)) (:inherit company-tooltip :weight bold))
            (t (:background "#002E41" :foreground "#008ED1"))))
-        ;; Formatting of types characted 
+        ;; Formatting of types characted
         '(company-tooltip-common-selection  ((t (:background "#002E41" :foreground "#c70000"))))
 
         '(company-template-field ((t (:background "#002E41" :foreground "#FF4500"))))
@@ -215,7 +215,7 @@ Change color scheme of company ( based on: https://github.com/jcs090218/jcs-emac
 #+END_EXAMPLE
 
 
-** space-line 
+** space-line
 
    #+BEGIN_SRC emacs-lisp
 (use-package spaceline
@@ -280,7 +280,6 @@ A package called fancy-battery will be used if we are in GUI emacs, otherwise th
     (use-package beacon
       :custom
       (beacon-push-mark 10)
-      (beacon-color "#c70000")
       (beacon-blink-delay 0.3)
       (beacon-blink-duration 0.3)
       :config
@@ -295,7 +294,6 @@ A package called fancy-battery will be used if we are in GUI emacs, otherwise th
 (use-package rainbow-mode
   :ensure t
   :init
-    (add-hook 'org-mode-hook 'rainbow-mode))  
+    (add-hook 'org-mode-hook 'rainbow-mode))
   #+END_SRC
-The end. 
-
+The end.
