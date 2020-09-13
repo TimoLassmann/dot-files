@@ -27,6 +27,7 @@
   (custom-theme-set-faces
    'simple
    `(default ((,class :foreground ,fg :background ,bg)))
+   `(warning ((,class :foreground ,alert-second)))
    '(fringe ((t (:foreground "#DCDCCC" :background "#000F14"))))
 
    '(vertical-border ((t (:foreground "#166755"))))
@@ -118,6 +119,7 @@
    '(company-scrollbar-fg ((t (:background "#008ED1"))))
    '(company-scrollbar-bg ((t (:background "#151F23"))))
 
+   '(compilation-info ((t (:foreground "#008ED1" :weight bold))))
    '(org-block-begin-line ((t (:foreground "#008ED1" :background "#002E41" :extend t))))
    '(org-block-background ((t (:background "#000000" :extend t))))
    '(org-block            ((t (:background "#122022" :extend t))))

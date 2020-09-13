@@ -321,7 +321,6 @@
        (save-place-mode 1))
    #+END_SRC
 
-
 * Basic Functionality
 ** Highlight current line
 
