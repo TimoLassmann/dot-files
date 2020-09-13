@@ -107,37 +107,37 @@
 
 Let's see if I can improve the spacemacs theme
   #+BEGIN_SRC emacs-lisp
-    (use-package gotham-theme
-      :ensure t
-      :init (load-theme 'gotham t)
-      )
+    ;; (use-package gotham-theme
+    ;;   :ensure t
+    ;;   :init (load-theme 'gotham t)
+    ;;   )
 
-    (defun tl/mod_background ()
-      "Colors the block headers and footers to make them stand out more for dark themes"
-      (interactive)
-      (custom-set-faces
-       '(org-block-begin-line ((t (:foreground "#008ED1" :background "#002E41" :extend t))))
-       '(org-block-background ((t (:background "#000000" :extend t))))
-       '(org-block            ((t (:background "#122022" :extend t))))
-       '(org-block-end-line   ((t (:foreground "#008ED1" :background "#002E41" :extend t))))
-       '(org-level-1 ((t (:bold t :height 1.3  :foreground "#cb4b16" ))))
-       '(org-level-2 ((t (:bold t :height 1.2  :foreground "#b58900" ))))
-       '(org-level-3 ((t (:bold nil :height 1.1  :foreground "#2aa198"  ))))
-       '(org-level-4 ((t (:bold nil :height 1.0  :foreground "#00bdfa" ))))
-       )
-      )
+    ;; (defun tl/mod_background ()
+    ;;   "Colors the block headers and footers to make them stand out more for dark themes"
+    ;;   (interactive)
+    ;;   (custom-set-faces
+    ;;    '(org-block-begin-line ((t (:foreground "#008ED1" :background "#002E41" :extend t))))
+    ;;    '(org-block-background ((t (:background "#000000" :extend t))))
+    ;;    '(org-block            ((t (:background "#122022" :extend t))))
+    ;;    '(org-block-end-line   ((t (:foreground "#008ED1" :background "#002E41" :extend t))))
+    ;;    '(org-level-1 ((t (:bold t :height 1.3  :foreground "#cb4b16" ))))
+    ;;    '(org-level-2 ((t (:bold t :height 1.2  :foreground "#b58900" ))))
+    ;;    '(org-level-3 ((t (:bold nil :height 1.1  :foreground "#2aa198"  ))))
+    ;;    '(org-level-4 ((t (:bold nil :height 1.0  :foreground "#00bdfa" ))))
+    ;;    )
+    ;;   )
 
-    (deftheme tl/mod_gotham  "Sub-theme to beautify spacemacs")
+    ;; (deftheme tl/mod_gotham  "Sub-theme to beautify spacemacs")
 
-    (defun tl/change-theme (theme back)
-      "Changes the color scheme and reset the mode line."
-      (load-theme theme t)
-      (funcall back))
+    ;; (defun tl/change-theme (theme back)
+    ;;   "Changes the color scheme and reset the mode line."
+    ;;   (load-theme theme t)
+    ;;   (funcall back))
 #+END_SRC
 
   Activate theme
   #+BEGIN_SRC emacs-lisp
-       (tl/change-theme 'gotham 'tl/mod_background)
+    ;; (tl/change-theme 'gotham 'tl/mod_background)
 #+END_SRC
 
 
@@ -148,7 +148,7 @@ Let's see if I can improve the spacemacs theme
 
 * Company
 
-ema
+
 Change color scheme of company ( based on: https://github.com/jcs090218/jcs-emacs/blob/master/.emacs.jcs/jcs-plugin.el)
    # #+BEGIN_SRC emacs-lisp
    #   (defun tl-company-color-setup ()

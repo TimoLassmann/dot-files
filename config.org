@@ -2348,25 +2348,51 @@
   #+END_SRC
 
   #+BEGIN_SRC emacs-lisp
-    (use-package eshell
-      :init
-      (setq ;; eshell-buffer-shorthand t ...  Can't see Bug#19391
-       eshell-scroll-to-bottom-on-input 'all
-       eshell-error-if-no-glob t
-       eshell-hist-ignoredups t
-       eshell-save-history-on-exit t
-       eshell-prefer-lisp-functions nil
-       eshell-destroy-buffer-when-process-dies t))
-  #+END_SRC
 
-  #+BEGIN_SRC emacs-lisp
-    (use-package eshell
-      :init
-      (add-hook 'eshell-mode-hook
-                (lambda ()
-                  (add-to-list 'eshell-visual-commands "ssh")
-                  (add-to-list 'eshell-visual-commands "tail")
-                  (add-to-list 'eshell-visual-commands "top"))))
+        ;; (defun my/setup-eshell ()
+        ;;   (interactive)
+        ;;   ;; turn off semantic-mode in eshell buffers
+        ;;   (semantic-mode -1)
+        ;;   ;; turn off hl-line-mode
+        ;;   (hl-line-mode -1)
+        ;;   (define-key eshell-mode-map (kbd "C-r")
+        ;;     'counsel-esh-history))
+
+        (use-package eshell
+          :config
+          (defun ha/eshell-quit-or-delete-char (arg)
+            (interactive "p")
+            (if (and (eolp) (looking-back eshell-prompt-regexp))
+                (progn
+                  (eshell-life-is-too-much) ; Why not? (eshell/exit)
+                  (ignore-errors
+                    (delete-window)))
+              (delete-forward-char arg)))
+          :init
+          (setenv "PAGER" "cat")
+          (setq ;; eshell-buffer-shorthand t ...  Can't see Bug#19391
+           eshell-scroll-to-bottom-on-input 'all
+           eshell-error-if-no-glob t
+           eshell-hist-ignoredups t
+           eshell-cmpl-cycle-ignore-case t
+           eshell-cmpl-cycle-completions t
+           eshell-save-history-on-exit t
+           eshell-prefer-lisp-functions nil
+           eshell-destroy-buffer-when-process-dies t)
+          (add-hook 'eshell-mode-hook
+                    (lambda ()
+                      (add-to-list 'eshell-visual-commands "ssh")
+                      (add-to-list 'eshell-visual-commands "tail")
+                      (add-to-list 'eshell-visual-commands "top")
+                      (bind-keys :map eshell-mode-map
+                                 ("\C-d" . ha/eshell-quit-or-delete-char)
+                                 ("\C-r" . counsel-esh-history)
+    ))))
+
+
+    ;;    (add-hook 'eshell-mode-hook #'my/setup-eshell)
+
+
   #+END_SRC
 
   Alias
@@ -2376,12 +2402,11 @@
                                   (eshell/alias "ff" "find-file $1")
                                   (eshell/alias "emacs" "find-file $1")
                                   (eshell/alias "ee" "find-file-other-window $1")
-
                                   (eshell/alias "gd" "magit-diff-unstaged")
                                   (eshell/alias "gds" "magit-diff-staged")
                                   (eshell/alias "d" "dired $1")
                                   (eshell/alias "val" "valgrind --leak-check=yes --show-leak-kinds=all --exit-on-first-error=yes --error-exitcode=1 $*")
-                                    (setq-local global-hl-line-mode nil)
+                                  (setq-local global-hl-line-mode nil)
 
                                   ;; The 'ls' executable requires the Gnu version on the Mac
                                   (let ((ls (if (file-exists-p "/usr/local/bin/gls")
@@ -2389,6 +2414,30 @@
                                               "/bin/ls")))
                                     (eshell/alias "ll" (concat ls " -AlohG --color=always")))))
   #+END_SRC
+
+Shells everywhere (from H
+
+#+BEGIN_SRC emacs-lisp
+(defun eshell-here ()
+  "Opens up a new shell in the directory associated with the
+current buffer's file. The eshell is renamed to match that
+directory to make multiple eshell windows easier."
+  (interactive)
+  (let* ((parent (if (buffer-file-name)
+                     (file-name-directory (buffer-file-name))
+                   default-directory))
+         (height (/ (window-total-height) 3))
+         (name   (car (last (split-string parent "/" t)))))
+    (split-window-vertically (- height))
+    (other-window 1)
+    (eshell "new")
+    (rename-buffer (concat "*eshell: " name "*"))
+
+    (insert (concat "ls"))
+    (eshell-send-input)))
+
+(bind-key "C-!" 'eshell-here)
+#+END_SRC
 
 * PDF tools
 
@@ -2438,9 +2487,11 @@
 
   #+END_SRC
 
+* Load my custom theme
   #+BEGIN_SRC emacs-lisp
 
     (add-to-list 'custom-theme-load-path (tl/emacs-subdirectory "elisp"))
+    (load-theme 'simple t)
   #+END_SRC
 
 

@@ -16,7 +16,8 @@
         (bg "#000F14")
         (fg "#DCDCCC")
         (alert-main "#A6341B")
-        (alert-second "#8A7811")
+        ;;(alert-second "#8A7811")
+        (alert-second "#2aa889")
         (blue "#000077"))
 
   (custom-theme-set-variables
@@ -71,6 +72,28 @@
    `(flycheck-warning ((,class :underline (:style wave :color ,alert-second))))
 
    '(eshell-prompt ((t (:weight bold  :foreground "#105f89"))))
+   '(eshell-ls-executable ((t (:foreground "#2aa889"))))
+   '(eshell-ls-archive ((t (:foreground "#AAAAAA"))))
+   '(eshell-ls-backup ((t (:foreground "#1f5e8a" :weight bold))))
+   ;; '(eshell-ls-clutter ((t (:foreground base5))))
+   '(eshell-ls-directory ((t (:foreground "#1a99e7" :weight bold))))
+
+   ;; '(eshell-ls-missing ((t (:foreground red :weight bold))))
+   '(eshell-ls-product ((t (:foreground "#105f89"))))
+   ;; '(eshell-ls-readonly ((t (:foreground red))))
+   ;; '(eshell-ls-special ((t (:foreground orange :weight bold))))
+   ;; '(eshell-ls-symlink ((t (:foreground blue :weight bold))))
+   ;; '(eshell-ls-unreadable ((t (:foreground red))))
+
+
+   `(ivy-current-match ((,class :background "#002E41" :foreground ,alert-second)))
+   `(ivy-minibuffer-match-face-1 ((,class :foreground ,alert-main )))
+   `(ivy-minibuffer-match-face-2 ((,class :foreground ,alert-main )))
+   `(ivy-minibuffer-match-face-3 ((,class :foreground ,alert-main )))
+   `(ivy-minibuffer-match-face-4 ((,class :foreground ,alert-main )))
+   `(ivy-remote ((,class :foreground ,alert-main)))
+   `(ivy-grep-info ((,class :foreground "#008ED1")))
+
 
    '(ivy-posframe ((t (:background "#151F23"))))
 
@@ -94,6 +117,15 @@
    `(company-template-field ((,class :background "#002E41" :foreground ,alert-main)))
    '(company-scrollbar-fg ((t (:background "#008ED1"))))
    '(company-scrollbar-bg ((t (:background "#151F23"))))
+
+   '(org-block-begin-line ((t (:foreground "#008ED1" :background "#002E41" :extend t))))
+   '(org-block-background ((t (:background "#000000" :extend t))))
+   '(org-block            ((t (:background "#122022" :extend t))))
+   '(org-block-end-line   ((t (:foreground "#008ED1" :background "#002E41" :extend t))))
+   '(org-level-1 ((t (:bold t :height 1.3  :foreground "#1083be" ))))
+   '(org-level-2 ((t (:bold t :height 1.2  :foreground "#1078a2" ))))
+   '(org-level-3 ((t (:bold nil :height 1.1  :foreground "#106590"  ))))
+   '(org-level-4 ((t (:bold nil :height 1.0  :foreground "#105f89" ))))
 
    )
   )
