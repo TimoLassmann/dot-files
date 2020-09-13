@@ -12,66 +12,20 @@
   :tag "Simple theme")
 
 
-(defcustom simple-override-colors-alist '()
-  "Place to override default theme colors.
-You can override a subset of the theme's default colors by
-defining them in this alist."
-  :group 'simple-theme
-  :type '(alist
-          :key-type (string :tag "Name")
-          :value-type (string :tag " Hex")))
+  (let ((class '((class color) (min-colors 89)))
+        (bg "#000F14")
+        (fg "#DCDCCC")
+        (alert-main "#A6341B")
+        (alert-second "#8A7811")
+        (blue "#000077"))
 
-
-(defvar simple-use-variable-pitch nil
-  "When non-nil, use variable pitch face for some headings and titles.")
-
-(defvar simple-default-colors-alist
-  '(
-    ("bg" . "#000F14")
-    ("fg" . "#FFAA00")
-
-    ("a" . "#106590")
-    ("a" . "#10adee")
-    ("a" . "#105f89")
-    ("a" . "#1078a2")
-    ("a" . "#1083be")
-    ("a" . "#1a8da7")
-    ("a" . "#1a99e7")
-    ("a" . "#1f5e8a")
-    ("a" . "#1e8eb8")
-    ("a" . "#1050a0")
-    ("d" . "#103453")
-    ("d" . "#103450"))
-    "List of Zenburn colors.
-Each element has the form (NAME . HEX).
-
-`+N' suffixes indicate a color is lighter.
-`-N' suffixes indicate a color is darker.")
-
-
-
-(defmacro simple-with-color-variables (&rest body)
-  "`let' bind all colors defined in `simple-colors-alist' around BODY.
-Also bind `class' to ((class color) (min-colors 89))."
-  (declare (indent 0))
-  `(let ((class '((class color) (min-colors 89)))
-         ,@(mapcar (lambda (cons)
-                     (list (intern (car cons)) (cdr cons)))
-                   (append simple-default-colors-alist
-                           simple-override-colors-alist))
-         (z-variable-pitch (if simple-use-variable-pitch
-                               'variable-pitch 'default)))
-     ,@body))
-
-
-(simple-with-color-variables
   (custom-theme-set-variables
    'simple
-   '(beacon-color "#A6341B"))
+   `(beacon-color ,alert-main ))
 
   (custom-theme-set-faces
    'simple
-   '(default ((t (:foreground "#DCDCCC" :background "#000F14"))))
+   `(default ((,class :foreground ,fg :background ,bg)))
    '(fringe ((t (:foreground "#DCDCCC" :background "#000F14"))))
 
    '(vertical-border ((t (:foreground "#166755"))))
@@ -100,7 +54,7 @@ Also bind `class' to ((class color) (min-colors 89))."
    '(font-lock-constant-face             ((t (:foreground "#1a99e7"))))
    '(font-lock-type-face                 ((t (:foreground "#1f5e8a"))))
    '(font-lock-variable-name-face        ((t (:foreground "#1e8eb8"))))
-   '(font-lock-warning-face              ((t (:weight bold :foreground "#A6341B"))))
+   `(font-lock-warning-face              ((,class :weight bold :foreground ,alert-main)))
    '(font-lock-negation-char-face        ((t (:inherit font-lock-warning-face))))
 
    '(highlight ((t (:background "#002333"))))
@@ -113,16 +67,36 @@ Also bind `class' to ((class color) (min-colors 89))."
    '(link ((t (:foreground "#1e8eb8" :underline t))))
    '(link-visited ((t (:foreground "#105f89"))))
 
-   '(flycheck-error   ((t (:underline (:style wave :color "#A6341B")))))
-   '(flycheck-warning ((t (:underline (:style wave :color "#8A7811")))))
+   `(flycheck-error   ((,class :underline (:style wave :color ,alert-main))))
+   `(flycheck-warning ((,class :underline (:style wave :color ,alert-second))))
 
    '(eshell-prompt ((t (:weight bold  :foreground "#105f89"))))
 
-   `(ivy-posframe ((t (:background "#151F23"))))
+   '(ivy-posframe ((t (:background "#151F23"))))
+
+   `(avy-lead-face   ((,class :weight bold :background "#999999" :foreground ,alert-main)))
+   `(avy-lead-face-0 ((,class :weight bold :background "#999999" :foreground ,alert-main)))
+   `(avy-lead-face-1 ((,class :weight bold :background "#999999" :foreground ,alert-main)))
+   `(avy-lead-face-2 ((,class :weight bold :background "#999999" :foreground ,alert-main)))
+
+
+   '(company-preview ((t (:background "#002E41" :foreground "#008ED1" :underline t))))
+   '(company-preview-common ((t (:inherit company-preview))))
+   '(company-preview-search ((t (:inherit company-preview))))
+
+   '(company-tooltip ((t (:background "#151F23" :foreground "#008ED1"))))
+   `(company-tooltip-selection ((,class :background "#002E41" :foreground ,alert-second)))
+   `(company-tooltip-annotation ((,class :background "#151F23" :foreground ,alert-second)))
+   `(company-tooltip-annotation-selection ((,class :background "#002E41" :foreground ,alert-main)))
+   `(company-tooltip-common ((,class :background "#151F23" :foreground ,alert-main)))
+   `(company-tooltip-common-selection  ((,class :background "#002E41" :foreground ,alert-main)))
+
+   `(company-template-field ((,class :background "#002E41" :foreground ,alert-main)))
+   '(company-scrollbar-fg ((t (:background "#008ED1"))))
+   '(company-scrollbar-bg ((t (:background "#151F23"))))
+
    )
   )
-
-
 
 (provide-theme 'simple)
 

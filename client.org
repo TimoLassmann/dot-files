@@ -148,57 +148,49 @@ Let's see if I can improve the spacemacs theme
 
 * Company
 
-
+ema
 Change color scheme of company ( based on: https://github.com/jcs090218/jcs-emacs/blob/master/.emacs.jcs/jcs-plugin.el)
-   #+BEGIN_SRC emacs-lisp
-     (defun tl-company-color-setup ()
-       "Sets up the color sheme for `company-mode'."
+   # #+BEGIN_SRC emacs-lisp
+   #   (defun tl-company-color-setup ()
+   #     "Sets up the color sheme for `company-mode'."
 
-       (custom-set-faces
-        ;; '(company-echo ((t (:background "#002E41" :foreground "#008ED1" :underline t))))
-        '(company-preview ((t (:background "#002E41" :foreground "#008ED1" :underline t))))
-        '(company-preview-common ((t (:inherit company-preview))))
-        '(company-preview-search ((t (:inherit company-preview))))
+   #     (custom-set-faces
+   #      ;; '(company-echo ((t (:background "#002E41" :foreground "#008ED1" :underline t))))
+   #      '(company-preview ((t (:background "#002E41" :foreground "#008ED1" :underline t))))
+   #      '(company-preview-common ((t (:inherit company-preview))))
+   #      '(company-preview-search ((t (:inherit company-preview))))
 
-        '(company-tooltip ((t (:background "#001E21" :foreground "#008ED1"))))
-        ;; Formatting of autocompleted text
-        '(company-tooltip-selection ((t (:background "#002E41" :foreground "#00AEF1"))))
-        ;; formatting of function arguments etc..
-        '(company-tooltip-annotation ((t (:background "#001E21" :foreground "#C35214"))))
-        ;; formatting of selected function arguments etc..
-        '(company-tooltip-annotation-selection ((t (:background "#002E41" :foreground "#FF4500"))))
-        '(company-tooltip-common
-          ((((type x)) (:inherit company-tooltip :weight bold))
-           (t (:background "#002E41" :foreground "#008ED1"))))
-        ;; Formatting of types characted
-        '(company-tooltip-common-selection  ((t (:background "#002E41" :foreground "#c70000"))))
+   #      '(company-tooltip ((t (:background "#151F23" :foreground "#008ED1"))))
+   #      '(company-tooltip-selection ((t (:background "#002E41" :foreground "#8A7811"))))
+   #      '(company-tooltip-annotation ((t (:background "#151F23" :foreground "#8A7811"))))
+   #      '(company-tooltip-annotation-selection ((t (:background "#002E41" :foreground "#A6341B"))))
+   #      '(company-tooltip-common ((t (:background "#151F23" :foreground "#A6341B"))))
+   #      '(company-tooltip-common-selection  ((t (:background "#002E41" :foreground "#A6341B"))))
 
-        '(company-template-field ((t (:background "#002E41" :foreground "#FF4500"))))
+   #      '(company-template-field ((t (:background "#002E41" :foreground "#A6341B"))))
+   #      '(company-scrollbar-fg ((t (:background "#008ED1"))))
+   #      '(company-scrollbar-bg ((t (:background "#151F23"))))))
+   #   (tl-company-color-setup)
+   #     #+END_SRC
 
-                                             ;    '(Company-tooltip-common-selection
-                                             ;         ((((type x)) (:inherit company-tooltip-selection :weight bold))
-                                             ;         (t (:background "#002E41" :foreground "orange"))))
-        '(company-scrollbar-fg ((t (:background "#008ED1"))))
-        '(company-scrollbar-bg ((t (:background "#122028"))))))
-     (tl-company-color-setup)
-       #+END_SRC
+
 
 * Avy
 
 
-  #+BEGIN_SRC emacs-lisp
-    (defun tl-avy-color-setup ()
-      "Sets up the color sheme for `avy-mode'."
-      (custom-set-faces
-       '(avy-lead-face   ((t (:background "#99d1ce" :foreground "#c70000"))))
-       '(avy-lead-face-0 ((t (:background "#99d1ce" :foreground "#FF4500"))))
-       '(avy-lead-face-1 ((t (:background "#99d1ce" :foreground "#C35214"))))
-       '(avy-lead-face-2 ((t (:background "#99d1ce" :foreground "white"))))
-       ))
+  # #+BEGIN_SRC emacs-lisp
+  #   (defun tl-avy-color-setup ()
+  #     "Sets up the color sheme for `avy-mode'."
+  #     (custom-set-faces
+  #      '(avy-lead-face   ((t (:background "#99d1ce" :foreground "#c70000"))))
+  #      '(avy-lead-face-0 ((t (:background "#99d1ce" :foreground "#FF4500"))))
+  #      '(avy-lead-face-1 ((t (:background "#99d1ce" :foreground "#C35214"))))
+  #      '(avy-lead-face-2 ((t (:background "#99d1ce" :foreground "white"))))
+  #      ))
 
-    (tl-avy-color-setup)
+  #   (tl-avy-color-setup)
 
-  #+END_SRC
+  # #+END_SRC
 
 * Powerline stuff
 ** Nyan mode
