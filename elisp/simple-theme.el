@@ -12,13 +12,13 @@
   :tag "Simple theme")
 
 
-  (let ((class '((class color) (min-colors 89)))
-        (bg "#000F14")
-        (fg "#DCDCCC")
-        (alert-main "#A6341B")
-        ;;(alert-second "#8A7811")
-        (alert-second "#2aa889")
-        (blue "#000077"))
+(let ((class '((class color) (min-colors 89)))
+      (bg "#000F14")
+      (fg "#DCDCCC")
+      (alert-main "#A6341B")
+      ;;(alert-second "#8A7811")
+      (alert-second "#2aa889")
+      (blue "#000077"))
 
   (custom-theme-set-variables
    'simple
@@ -27,7 +27,9 @@
   (custom-theme-set-faces
    'simple
    `(default ((,class :foreground ,fg :background ,bg)))
+   `(error ((,class :foreground ,alert-main)))
    `(warning ((,class :foreground ,alert-second)))
+   `(shadow ((,class :foreground ,alert-second)))
    '(fringe ((t (:foreground "#DCDCCC" :background "#000F14"))))
 
    '(vertical-border ((t (:foreground "#166755"))))
@@ -129,8 +131,22 @@
    '(org-level-3 ((t (:bold nil :height 1.1  :foreground "#106590"  ))))
    '(org-level-4 ((t (:bold nil :height 1.0  :foreground "#105f89" ))))
 
+
+   '(mode-line ((t (:foreground "#599cab" :background "#091f2e" :box nil))))
+   '(mode-line-inactive ((t (:foreground "#245361" :background  "#11151c" :box nil))))
+   '(mode-line-highlight ((t (:foreground  "#99d1ce"))))
+   '(mode-line-buffer-id ((t (:weight bold))))
+
+
+   ;; '(powerline-active1 ((t (:foreground "#599cab" :background "#091f2e"))))
+   ;; '(powerline-active2 ((t (:foreground "#599cab" :background "#0a3749"))))
+   ;; '(powerline-inactive1 ((t (:foreground  "#245361" :background "#11151c"))))
+   ;; '(powerline-inactive2 ((t (:foreground  "#245361" :background "#091f2e"))))
+
+   '(query-replace ((t (:inherit highlight))))
    )
   )
+
 
 (provide-theme 'simple)
 
