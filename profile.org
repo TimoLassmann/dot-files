@@ -9,14 +9,14 @@
 #+DESCRIPTION: Global environment variables for all shells
 #+PROPERTY: header-args:sh :tangle ~/.profile :shebang #!/bin/sh :comments org
 
-* Introduction 
-  Should contain functions I often tend to use 
-  
+* Introduction
+  Should contain functions I often tend to use
+
   #+BEGIN_SRC sh
     OLDPATH=$PATH
     PATH=$HOME/bin
 
-    for DIR in /opt/local/bin /opt/local/sbin /usr/local/bin /usr/local/sbin
+    for DIR in /opt/local/bin /opt/local/sbin /usr/local/bin /usr/local/sbin $HOME/miniconda3/bin
     do
       if [ -d $DIR ]
       then
@@ -29,8 +29,8 @@
 
 
   Colorful ls...
-  
-  #+BEGIN_SRC sh 
+
+  #+BEGIN_SRC sh
     if which gls >/dev/null 2>&1
     then
         alias ls="gls --color"
@@ -42,8 +42,8 @@
   #+END_SRC
 
 
-  Valgrind options. 
-  
+  Valgrind options.
+
   #+BEGIN_SRC sh
     if which valgrind >/dev/null 2>&1
     then
@@ -51,7 +51,7 @@
     fi
   #+END_SRC
 
-  Emacs / editor 
+  Emacs / editor
 
 
 
@@ -61,7 +61,7 @@
 
   #+END_SRC
 
-  alias emacs 
+  alias emacs
 
   #+BEGIN_SRC sh
     alias e='emacsclient -q -c --alternate-editor='
@@ -71,5 +71,5 @@
   python alias
 
 #+BEGIN_SRC sh
-  alias python='/usr/bin/python3'
+  # alias python='/usr/bin/python3'
 #+END_SRC
