@@ -1524,6 +1524,8 @@
            )
    #+END_SRC
 
+   Org Roam protocol
+
    #+BEGIN_SRC emacs-lisp
 
      (require 'org-roam-protocol)
@@ -1543,7 +1545,23 @@
              org-roam-server-network-label-wrap-length 20))
    #+END_SRC
 
+   Additional setup:
 
+We need to create a file in =~/.local/share/applications/org-protocol.desktop=
+#+begin_example
+[Desktop Entry]
+Name=Org-Protocol
+Exec=emacsclient %u
+Icon=emacs-icon
+Type=Application
+Terminal=false
+MimeType=x-scheme-handler/org-protocol
+#+end_example
+
+   and run :
+   #+begin_example bash
+   xdg-mime default org-protocol.desktop x-scheme-handler/org-protocol
+   #+end_example
 ** Org-roam-bibtex
    #+BEGIN_SRC emacs-lisp
 
