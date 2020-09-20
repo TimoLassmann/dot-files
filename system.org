@@ -29,15 +29,24 @@
 
 * Install miniconda
 
-  #+BEGIN_SRC bash
+#+begin_example src
     wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
     bash Miniconda3-latest-Linux-x86_64.sh
-  #+END_SRC
+
+#+end_example
+
 
   This will add an entry into =.bashrc= to add =miniconda/bin/= to my =$PATH=. However since I'm using zsh I added this to my =.profile= read by =.zshrc= as part of my config ([[file:profile.org::*Introduction][Link to entry in .profile]]).
 
 ** Install DataLad
 
-   #+BEGIN_SRC bash
-  conda install -c conda-forge datalad
-#+END_SRC
+#+begin_example
+     conda install -c conda-forge datalad
+#+end_example
+
+
+Not being familiar with python, I figured out that I need to update on several of my machines:
+
+#+begin_example
+conda update -c conda-forge  datalad
+#+end_example
