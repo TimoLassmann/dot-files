@@ -120,6 +120,7 @@ Also bind `class' to ((class color) (min-colors 89))."
    '(magit-branch-local ((t (:foreground "#10adee"))))
    '(magit-tag          ((t (:foreground "#2aa889"))))
    '(magit-branch-current ((t (:foreground "#1a8da7"))))
+   '(magit-branch-remote    ((t (:foreground "#1083be"))))
    '(magit-section-heading ((t (:foreground "#10adee"))))
    '(magit-section-highlight ((t (:background  "#002E41"))))
    '(magit-diff-hunk-heading ((t (:foreground "#008ED1" :background "#002E41" :extend t))))
