@@ -559,6 +559,7 @@ And here are some 'hidden' key bindings for making the most out of Ivy
 #+BEGIN_SRC emacs-lisp
   (use-package ivy
     :ensure t
+    :diminish ivy-mode
     :delight
     :custom
     (ivy-count-format "(%d/%d) ")
@@ -779,6 +780,7 @@ Prescient
 #+BEGIN_SRC emacs-lisp
   (use-package ivy-posframe
     :ensure t
+    :diminish ivy-posframe-mode
     :delight
     :custom
     (ivy-posframe-parameters
@@ -1094,6 +1096,7 @@ load org mode
 
 #+BEGIN_SRC emacs-lisp
   (use-package org
+
     :init
 
     (setq org-startup-indented t)
@@ -1124,6 +1127,7 @@ load org mode
           org-return-follows-link t
           org-completion-use-ido t
           org-outline-path-complete-in-steps nil))
+
 
   (add-hook 'org-mode-hook 'visual-line-mode)
 #+END_SRC
@@ -1965,8 +1969,6 @@ magit end.
 
 #+BEGIN_SRC emacs-lisp
   (use-package yasnippet
-
-    :diminish
     :init
     (yas-global-mode 1)
     :config
@@ -2449,6 +2451,34 @@ Shells everywhere (from H
 #+END_SRC
 
 The end.
+
+* Mode-line
+
+#+BEGIN_SRC emacs-lisp
+  (use-package emacs
+
+  :config
+  (setq mode-line-percent-position '(-3 "%p"))
+  (setq mode-line-defining-kbd-macro
+        (propertize " Macro" 'face 'mode-line-emphasis))
+  (setq-default mode-line-format
+                '("%e"
+                  mode-line-front-space
+                  mode-line-mule-info
+                  mode-line-client
+                  mode-line-modified
+                  mode-line-remote
+                  mode-line-frame-identification
+                  mode-line-buffer-identification
+                  "  "
+                  mode-line-position
+                  (vc-mode vc-mode)
+                  " "
+                   mode-line-modes
+                  " "
+                  mode-line-misc-info
+                  mode-line-end-spaces)))
+#+END_SRC
 
 * Beacon
 Let's make the cursor more noticeable whenever the window scrolls

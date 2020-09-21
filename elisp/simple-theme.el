@@ -105,7 +105,7 @@ Also bind `class' to ((class color) (min-colors 89))."
    `(shadow ((t (:foreground ,alert-second))))
    '(fringe ((t (:foreground "#DCDCCC" :background "#000F14"))))
 
-   '(vertical-border ((t (:foreground "#166755"))))
+   '(vertical-border ((t (:foreground "#1a99e7")))) ;;"#166755"))))
 
    '(minibuffer-prompt ((t (:foreground "#1a8da7"))))
 
@@ -113,9 +113,9 @@ Also bind `class' to ((class color) (min-colors 89))."
 
    '(trailing-whitespace (( t (:background "#600D1A"))))
    ;;don't know what these do
-   '(window-divider ((t(:foreground "#306630"))))
-   '(window-divider-first-pixel ((t(:foreground "#106610"))))
-   '(window-divider-last-pixel ((t(:foreground "#309930"))))
+   '(window-divider ((t(:foreground "#1a99e7"))))
+   '(window-divider-first-pixel ((t(:foreground "#1a99e7"))))
+   '(window-divider-last-pixel ((t(:foreground "#1a99e7"))))
 
    '(magit-branch-local ((t (:foreground "#10adee"))))
    '(magit-tag          ((t (:foreground "#2aa889"))))
@@ -143,11 +143,11 @@ Also bind `class' to ((class color) (min-colors 89))."
    '(font-lock-negation-char-face        ((t (:inherit font-lock-warning-face))))
 
    '(highlight ((t (:background "#002333"))))
-   '(mode-line ((t (:background "#001520" :box nil :foreground "#DCDCCC"))))
-   '(mode-line-inactive ((t (:weight light :box nil :background "#001520" :foreground "#000000" :inherit (mode-line)))))
+   '(mode-line ((t (:background "#001520" :box nil  :box "#1a99e7"))))
+   '(mode-line-inactive ((t (:weight light :box nil :background "#001520" :foreground "#105f89" :inherit (mode-line)))))
    '(mode-line-emphasis ((t (:weight bold))))
    '(mode-line-highlight ((t (:box nil (t (:inherit (highlight)))))))
-   '(mode-line-buffer-id ((t (:weight bold :box nil))))
+   '(mode-line-buffer-id ((t (:weight bold :foreground "#1a99e7"))))
 
    '(link ((t (:foreground "#1e8eb8" :underline t))))
    '(link-visited ((t (:foreground "#105f89"))))
