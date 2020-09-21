@@ -1,7 +1,6 @@
 (deftheme simple
   "The basis for a my custom theme.")
 
-
 (set-face-attribute 'default nil :height 140)
 
 (defgroup simple-theme nil
@@ -118,6 +117,14 @@ Also bind `class' to ((class color) (min-colors 89))."
    '(window-divider-first-pixel ((t(:foreground "#106610"))))
    '(window-divider-last-pixel ((t(:foreground "#309930"))))
 
+   '(magit-branch-local ((t (:foreground "#10adee"))))
+   '(magit-tag          ((t (:foreground "#2aa889"))))
+   '(magit-branch-current ((t (:foreground "#1a8da7"))))
+   '(magit-section-heading ((t (:foreground "#10adee"))))
+   '(magit-section-highlight ((t (:background  "#002E41"))))
+   '(magit-diff-hunk-heading ((t (:foreground "#008ED1" :background "#002E41" :extend t))))
+   '(magit-diff-context-highlight ((t (:background "#122022" :extend t))))
+
 
    '(font-lock-builtin-face              ((t (:foreground "#106590"))))
    '(font-lock-comment-face              ((t (:foreground "#105f89" :italic t ))))
@@ -208,6 +215,7 @@ Also bind `class' to ((class color) (min-colors 89))."
    '(mode-line-inactive ((t (:foreground "#245361" :background  "#11151c" :box nil))))
    '(mode-line-highlight ((t (:foreground  "#99d1ce"))))
    '(mode-line-buffer-id ((t (:weight bold))))
+
 
 
    ;; '(powerline-active1 ((t (:foreground "#599cab" :background "#091f2e"))))
