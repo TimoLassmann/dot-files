@@ -2505,7 +2505,16 @@ Let's make the cursor more noticeable whenever the window scrolls
     (add-hook 'org-mode-hook 'rainbow-mode))
 #+END_SRC
 The end.
+* Font setting
 
+#+BEGIN_SRC emacs-lisp
+  (set-face-attribute 'default nil :font "Linux Biolinum")
+  (set-face-attribute 'fixed-pitch nil :font "FiraCode-12")
+  (set-face-attribute 'variable-pitch nil :font "SourceCodePro-16")
+
+
+#+END_SRC
+Hello here is a piece of text
 * End
 
 
