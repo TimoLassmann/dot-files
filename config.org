@@ -2524,6 +2524,27 @@ Run client
 
 
 #+END_SRC
+* Fonts
+
+#+BEGIN_SRC emacs-lisp
+    (defun eos/setup-fonts ()
+      (when (eq window-system 'x)
+        ;; default font and variable-pitch fonts
+        (set-face-attribute 'default nil
+                            :family "iosevkasparkle"
+
+                            :height 140)
+        (dolist (face '(mode-line mode-line-inactive minibuffer-prompt))
+          (set-face-attribute face nil :family "Iosevka"
+                              :height 140))
+        (set-face-attribute 'variable-pitch nil
+                            :family "DejaVu Sans" :height 140)
+        ;; font for all unicode characters
+        ;;(set-fontset-font t 'unicode "DejaVu Sans Mono" nil 'prepend)
+        ))
+
+  ;;(eos/setup-fonts)
+#+END_SRC
 
 * Load my custom theme
 #+BEGIN_SRC emacs-lisp
