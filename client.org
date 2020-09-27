@@ -31,7 +31,7 @@
 
 **  Set default font size..
    #+BEGIN_SRC emacs-lisp
-     (set-face-attribute 'default nil :height 140)
+     ;; (set-face-attribute 'default nil :height 140)
    #+END_SRC
 
 **  I love syntax highlighting.
