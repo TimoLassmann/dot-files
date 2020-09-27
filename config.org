@@ -133,6 +133,40 @@ Load up a collection of enhancements to Emacs Lisp, including [[https://github.c
   (prefer-coding-system 'utf-8)
 #+END_SRC
 
+*** Cursor settings
+
+Taken from Protesilaos Stavrou's emacs config (https://protesilaos.com/).
+
+#+BEGIN_SRC emacs-lisp
+  (setq-default cursor-type 'box)
+  (setq-default cursor-in-non-selected-windows '(bar . 2))
+  (setq-default blink-cursor-blinks 50)
+  (setq-default blink-cursor-interval nil) ; 0.75 would be my choice
+  (setq-default blink-cursor-delay 0.2)
+
+  (blink-cursor-mode -1)
+
+
+  (define-minor-mode prot/cursor-type-mode
+    "Toggle between static block and pulsing bar cursor."
+    :init-value nil
+    :global t
+    (if prot/cursor-type-mode
+        (progn
+          (setq-local blink-cursor-interval 0.75
+                      cursor-type '(bar . 2)
+                      cursor-in-non-selected-windows 'hollow)
+          (blink-cursor-mode 1))
+      (dolist (local '(blink-cursor-interval
+                       cursor-type
+                       cursor-
+                       in-non-selected-windows))
+        (kill-local-variable `,local))
+      (blink-cursor-mode -1)))
+
+
+#+END_SRC
+
 ** Turn off arrow keys
 
 #+BEGIN_SRC emacs-lisp
@@ -140,7 +174,7 @@ Load up a collection of enhancements to Emacs Lisp, including [[https://github.c
   (no-easy-keys 1)
 #+END_SRC
 
-** Turn off  mouse
+** Turn off mouse
 
 # #+BEGIN_SRC emacs-lisp
 #   (use-package disable-mouse
@@ -998,7 +1032,6 @@ Company Prescient
 #+END_SRC
 
 * Writing
-
 ** Flyspell config
 
 Installing aspell on linux:
@@ -1043,7 +1076,6 @@ Note in the config below I assume aspell is installed in =/usr/bin/= !.
 There is more stuff in Howard Abram's config but I'll leave this for now..
 
 
-
 ** Writegood mode
 This does not work - there is a wring gpg signature in melpa...
 
@@ -1061,7 +1093,6 @@ This does not work - there is a wring gpg signature in melpa...
 this mode will improve various aspects of writing.
 
 end.
-
 
 ** LangTool
 
@@ -1087,6 +1118,54 @@ To load:
 #+BEGIN_SRC emacs-lisp
   (require 'langtool)
   (setq langtool-language-tool-jar "/home/user/programs/langtool/LanguageTool-4.0/languagetool-commandline.jar")
+#+END_SRC
+
+** Olivetti mode config
+
+Taken from Protesilaos Stavrou's emacs config (https://protesilaos.com/),
+#+BEGIN_SRC emacs-lisp
+  (use-package olivetti
+    :ensure
+    :diminish
+    :config
+    (setq olivetti-body-width 0.7)
+    (setq olivetti-minimum-body-width 80)
+    (setq olivetti-recall-visual-line-mode-entry-state t)
+
+    (define-minor-mode prot/olivetti-mode
+      "Toggle buffer-local `olivetti-mode' with additional parameters.
+
+  Fringes are disabled.  The modeline is hidden, except for
+  `prog-mode' buffers (see `prot/mode-line-hidden-mode').  The
+  default typeface is set to a proportionately spaced family,
+  except for programming modes (see `prot/variable-pitch-mode').
+  The cursor becomes a blinking bar, per `prot/cursor-type-mode'."
+      :init-value nil
+      :global nil
+      (if prot/olivetti-mode
+          (progn
+            (olivetti-mode 1)
+            (set-window-fringes (selected-window) 0 0)
+            (prot/variable-pitch-mode 1)
+            (prot/cursor-type-mode 1)
+            (unless (derived-mode-p 'prog-mode)
+              (prot/mode-line-hidden-mode 1)))
+        (olivetti-mode -1)
+        (set-window-fringes (selected-window) nil) ; Use default width
+        (prot/variable-pitch-mode -1)
+        (prot/cursor-type-mode -1)
+        (unless (derived-mode-p 'prog-mode)
+          (prot/mode-line-hidden-mode -1))))
+    :bind ("C-c o" . prot/olivetti-mode))
+
+(define-minor-mode prot/mode-line-hidden-mode
+    "Toggle modeline visibility in the current buffer."
+    :init-value nil
+    :global nil
+    (if prot/mode-line-hidden-mode
+        (setq-local mode-line-format nil)
+      (kill-local-variable 'mode-line-format)
+      (force-mode-line-update)))
 #+END_SRC
 
 * Org-mode
@@ -2508,54 +2587,64 @@ The end.
 * Font setting
 
 #+BEGIN_SRC emacs-lisp
-  (set-face-attribute 'default nil :font "Linux Biolinum")
-  (set-face-attribute 'fixed-pitch nil :font "FiraCode-12")
-  (set-face-attribute 'variable-pitch nil :font "SourceCodePro-16")
-
-
-#+END_SRC
-Hello here is a piece of text
-* End
-
-
-Run client
-
-#+BEGIN_SRC emacs-lisp
-
-
-  (if (daemonp)
-      (add-hook 'after-make-frame-functions
-                '(lambda (f)
-                   (with-selected-frame f
-                     (when (window-system f) (require 'init-client) ))))
-    (require 'init-client) )
-
-
-
-#+END_SRC
-* Fonts
-
-#+BEGIN_SRC emacs-lisp
   (defun tl/setup-fonts ()
     (when (eq window-system 'x)
-      (set-face-attribute 'default nil :family "iosevka" :height 160 :weight 'regular)
-      (set-face-attribute 'variable-pitch nil :family "iosevka sans" :height 160)
-      (set-face-attribute 'fixed-pitch nil  :family "iosevka" :height 160)
+      ;; Main typeface
+      (set-face-attribute 'default nil :family "Iosevka" :height 160)
+      ;; Proportionately spaced typeface
+      (set-face-attribute 'variable-pitch nil :family "Iosevka Sparkle" :height 1.0)
+      ;; Monospaced typeface
+      (set-face-attribute 'fixed-pitch nil :family "Iosevka Fixed" :height 1.0)
 
       (dolist (face '(mode-line mode-line-inactive minibuffer-prompt))
         (set-face-attribute face nil :family "Iosevka term" :height 160))
 
       ))
 
-  ;; (tl/setup-fonts)
+  (tl/setup-fonts)
+
+  (use-package face-remap
+    :diminish buffer-face-mode            ; the actual mode
+    :commands prot/variable-pitch-mode
+    :config
+    (define-minor-mode prot/variable-pitch-mode
+      "Toggle `variable-pitch-mode', except for `prog-mode'."
+      :init-value nil
+      :global nil
+      (if prot/variable-pitch-mode
+          (unless (derived-mode-p 'prog-mode)
+            (variable-pitch-mode 1))
+        (variable-pitch-mode -1))))
 
 #+END_SRC
 
+
 * Load my custom theme
+
 #+BEGIN_SRC emacs-lisp
   (add-to-list 'custom-theme-load-path (tl/emacs-subdirectory "elisp"))
   (load-theme 'simple t)
 #+END_SRC
+
+
+* End
+
+#+BEGIN_SRC emacs-lisp
+
+
+  ;; (if (daemonp)
+  ;;     (add-hook 'after-make-frame-functions
+  ;;               '(lambda (f)
+  ;;                  (with-selected-frame f
+  ;;                    (when (window-system f) (require 'init-client) ))))
+  ;;   (require 'init-client) )
+
+
+
+#+END_SRC
+
+
+
 
 
 
