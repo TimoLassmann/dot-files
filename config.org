@@ -175,7 +175,7 @@ Taken from Protesilaos Stavrou's emacs config (https://protesilaos.com/).
           (interactive)
             ;;(when (eq window-system 'x)
             ;; Main typeface
-            (set-face-attribute 'default nil :family "Iosevka" :height 160)
+            (set-face-attribute 'default nil :family "Iosevka extended" :height 140)
             ;; Proportionately spaced typeface
             (set-face-attribute 'variable-pitch nil :family "Iosevka Aile" :height 1.1)
             ;; Monospaced typeface
@@ -1162,43 +1162,6 @@ To load:
 
 Taken from Protesilaos Stavrou's emacs config (https://protesilaos.com/),
 #+BEGIN_SRC emacs-lisp
-  (use-package olivetti
-    :ensure
-    :diminish
-    :config
-
-    (setq olivetti-body-width 0.7)
-    (setq olivetti-minimum-body-width 80)
-    (setq olivetti-recall-visual-line-mode-entry-state t)
-
-    (define-minor-mode prot/olivetti-mode
-      "Toggle buffer-local `olivetti-mode' with additional parameters.
-
-    Fringes are disabled.  The modeline is hidden, except for
-    `prog-mode' buffers (see `prot/mode-line-hidden-mode').  The
-    default typeface is set to a proportionately spaced family,
-    except for programming modes (see `prot/variable-pitch-mode').
-    The cursor becomes a blinking bar, per `prot/cursor-type-mode'."
-      :init-value nil
-      :global nil
-      (if prot/olivetti-mode
-          (progn
-            (olivetti-mode 1)
-            (tl/mode-hlline-hidden-mode 1)
-            (set-window-fringes (selected-window) 0 0)
-            (prot/variable-pitch-mode 1)
-            (prot/cursor-type-mode 1)
-            (unless (derived-mode-p 'prog-mode)
-              (prot/mode-line-hidden-mode 1)))
-        (olivetti-mode -1)
-                  (tl/mode-hlline-hidden-mode -1)
-        (set-window-fringes (selected-window) nil) ; Use default width
-        (prot/variable-pitch-mode -1)
-        (prot/cursor-type-mode -1)
-        (unless (derived-mode-p 'prog-mode)
-          (prot/mode-line-hidden-mode -1))))
-    :bind ("C-c o" . prot/olivetti-mode))
-
   (define-minor-mode prot/mode-line-hidden-mode
     "Toggle modeline visibility in the current buffer."
     :init-value nil
@@ -1215,6 +1178,45 @@ Taken from Protesilaos Stavrou's emacs config (https://protesilaos.com/),
     (if tl/mode-hlline-hidden-mode
         (setq-local global-hl-line-mode nil)
       (setq-local global-hl-line-mode 1)))
+
+
+  (use-package olivetti
+      :ensure
+      :diminish
+      :config
+
+      (setq olivetti-body-width 0.7)
+      (setq olivetti-minimum-body-width 80)
+      (setq olivetti-recall-visual-line-mode-entry-state t)
+
+      (define-minor-mode prot/olivetti-mode
+        "Toggle buffer-local `olivetti-mode' with additional parameters.
+
+      Fringes are disabled.  The modeline is hidden, except for
+      `prog-mode' buffers (see `prot/mode-line-hidden-mode').  The
+      default typeface is set to a proportionately spaced family,
+      except for programming modes (see `prot/variable-pitch-mode').
+      The cursor becomes a blinking bar, per `prot/cursor-type-mode'."
+        :init-value nil
+        :global nil
+        (if prot/olivetti-mode
+            (progn
+              (olivetti-mode 1)
+              (tl/mode-hlline-hidden-mode 1)
+              (set-window-fringes (selected-window) 0 0)
+              (prot/variable-pitch-mode 1)
+              (prot/cursor-type-mode 1)
+              (unless (derived-mode-p 'prog-mode)
+                (prot/mode-line-hidden-mode 1)))
+          (olivetti-mode -1)
+                    (tl/mode-hlline-hidden-mode -1)
+          (set-window-fringes (selected-window) nil) ; Use default width
+          (prot/variable-pitch-mode -1)
+          (prot/cursor-type-mode -1)
+          (unless (derived-mode-p 'prog-mode)
+            (prot/mode-line-hidden-mode -1))))
+      :bind ("C-c o" . prot/olivetti-mode))
+
 
 #+END_SRC
 
