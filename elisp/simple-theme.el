@@ -117,6 +117,11 @@ Also bind `class' to ((class color) (min-colors 89))."
    '(window-divider-first-pixel ((t(:foreground "#1a99e7"))))
    '(window-divider-last-pixel ((t(:foreground "#1a99e7"))))
 
+   `(compilation-mode-line-exit  ((t (:foreground ,alert-second))))
+   `(compilation-mode-line-fail  ((t (:foreground ,alert-main))))
+   `(compilation-mode-line-run ((t (:foreground ,alert-second))))
+
+
    '(magit-branch-local ((t (:foreground "#10adee"))))
    '(magit-tag          ((t (:foreground "#2aa889"))))
    '(magit-branch-current ((t (:foreground "#1a8da7"))))
