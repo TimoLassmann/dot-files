@@ -1,0 +1,224 @@
+\usetheme{default}
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx}
+\usepackage{pgfpages}
+\usepackage{lipsum}
+%\usepackage[default]{sourcesanspro}
+%\usepackage[T1]{fontenc}
+\beamertemplatenavigationsymbolsempty
+
+%\setbeamerfont{page number in head/foot}{size=\small}
+%\setbeamertemplate{footline}[frame number]
+\definecolor{offwhite}{RGB}{249,242,215}
+\definecolor{foreground}{RGB}{200,219,250}
+\definecolor{background}{RGB}{13,29,54}
+\definecolor{blue}{RGB}{107,174,214} % blue...
+\definecolor{gray}{RGB}{155,155,155}
+\definecolor{grey}{RGB}{155,155,155}
+
+\definecolor{subtitle}{RGB}{102,255,204}
+\definecolor{green}{RGB}{102,255,204} % green#F17478
+\definecolor{red}{RGB}{241,116,120}} % red
+
+ %%  #55545C srgb(33.4249%,33.0022%,36.2249%)
+ %%  #9B9DA8 srgb(60.9781%,61.5351%,65.774%)
+ %% #C8DBF3 srgb(78.5336%,85.98%,95.3246%)
+ %% #A47482 srgb(64.3244%,45.4719%,51.133%)
+ %%     #0D1D36 srgb(5.16518%,11.3848%,21.1139%)
+ %% 84470: (13.1907,29.035,53.821) #0D1D36 srgb(5.17281%,11.3863%,21.1063%)
+ %%    25190: (200.261,219.249,243.078) #C8DBF3 srgb(78.5336%,85.98%,95.3246%)
+ %%    13781: (71.8794,65.5409,67.1712) #484243 srgb(28.188%,25.7023%,26.3416%)
+ %%    13211: (152.7,153.385,162.658) #9999A3 srgb(59.8825%,60.1511%,63.7873%)
+ %%    10613: (136,132.903,120.794) #888579 srgb(53.3333%,52.1187%,47.3701%)
+ %%    9614: (97.3774,95.6148,101.704) #616066 srgb(38.1872%,37.496%,39.884%)
+ %%    9294: (187.486,197.712,206.479) #BBC6CE srgb(73.5241%,77.5341%,80.972%)
+ %%    7202: (111.07,114.121,140.132) #6F728C srgb(43.5569%,44.7532%,54.9538%)
+ %%    7154: (39.9805,48.6654,75.4708) #28314B srgb(15.6786%,19.0845%,29.5964%)
+ %%    6628: (122.467,133.195,155.051) #7A859B srgb(48.0262%,52.2332%,60.8042%)
+ %%    6284: (240.961,115.646,119.716) #F17478 srgb(94.4945%,45.3513%,46.9474%)
+ %%    3258: (164.14,167.553,196.56) #A4A8C5 srgb(64.3687%,65.7069%,77.0825%)
+ %%    2061: (149.537,97.9805,104.288) #966268 srgb(58.6419%,38.4237%,40.8972%)
+ %%    727: (173.93,121.553,137.21) #AE7A89 srgb(68.2078%,47.6677%,53.8079%)
+ %%    1.87411e+06: (13,29,53.9961) #0D1D36 srgb(5.09804%,11.3725%,21.1749%)
+
+
+%\definecolor{foreground}{RGB}{239,239,239}
+%\definecolor{background}{RGB}{11,11,11}
+%\definecolor{blue}{RGB}{10,87,206}
+\definecolor{darkgrey}{RGB}{108,108,108}
+%\definecolor{red}{RGB}{176,0,4}
+
+\linespread{1.2}
+
+\usepackage{amsmath}
+
+%\usepackage{ccfonts}
+\usepackage[T1]{fontenc}
+\usepackage{microtype}
+\DisableLigatures[f]{encoding = *, family = * }
+\usepackage[]{algorithm2e}
+
+
+\graphicspath{{../images/}{../../images/}}
+%\usepackage{concmath}
+
+
+\usepackage{listings}
+\usepackage[many]{tcolorbox}
+\usepackage{pgf}
+\usepackage{pgfplots}
+\usepgfplotslibrary{groupplots}
+
+\usepackage[thicklines]{cancel}
+
+
+\usepackage{tikz}
+\usepackage{tkz-euclide}
+\usetikzlibrary{backgrounds}
+\usetikzlibrary{positioning,calc,shadings}
+\usetikzlibrary{arrows,automata}
+\usetikzlibrary{decorations.text}
+\usetikzlibrary{shapes}
+\usetikzlibrary{decorations.pathmorphing}
+
+\usetikzlibrary{calc}
+%% \usepackage{cmbright}
+
+
+
+%% \usepackage[sfdefault]{roboto}  %% Option 'sfdefault' only if the base font of the document is to be sans serif
+%% \usepackage[T1]{fontenc}
+\usepackage{libertine}
+\usepackage{libertinust1math}
+\usepackage[T1]{fontenc}
+%% \usepackage[no-math]{fontspec} %-----------------------%  This exact order
+%% \defaultfontfeatures{%                                 %  of declarations
+%%   Scale=MatchLowercase, % needed here ...              %  is important for
+%% }                                                      %  single quotes not
+%% \setmonofont{Inconsolata LGC}                          %  to turn out curly
+%%                                                        %  ("typographic")
+%% \defaultfontfeatures{%                                 %  in verbatim blocks
+%%   Scale=MatchLowercase, % ... and here again           %  of Scheme code.
+%%   Mapping=tex-text,                                    %  Now the quote is
+%%   SmallCapsFeatures={LetterSpace=2.5,WordSpace=1.05},  %  upright and safely
+%% }                                                      %  copy-pasteable to
+%% \setmainfont{Linux Libertine O}                        %  the REPL without
+%% \setsansfont{Linux Biolinum O} %-----------------------%  giving errors.
+
+\tikzset{onslide/.code args={<#1>#2}{%
+  \only<#1>{\pgfkeysalso{#2}}%
+}}
+
+\tikzstyle{every picture}+=[remember picture]
+\tikzstyle{na} = [baseline=-.5ex]
+
+\usepackage[backend=bibtex,hyperref=true,
+            url=false,
+            isbn=false,
+            style=numeric,
+            maxcitenames=3,
+            maxbibnames=1,
+            block=none]{biblatex}
+\addbibresource{~/work/bibliography/references.bib}
+%\addbibresource{~/org/bibliography references/ref}
+%\renewcommand{\footnotesize}{\tiny}
+
+
+
+%\tikzstyle{every picture}+=[remember picture]
+%\tikzstyle{na} = [baseline=-.5ex]
+
+\usepackage{verbatim}
+%\usetikzlibrary{shapes,arrows}
+\usepackage{pdfrender}
+\usepackage{contour}
+\usepackage[outline]{contour}
+\contourlength{1pt}
+
+
+%\input{template/colors}
+
+\lstdefinestyle{customc}{
+ % belowcaptionskip=1\baselineskip,
+ % xleftmargin=\parindent,
+  language=C,
+  showstringspaces=false,
+  basicstyle=\footnotesize\ttfamily,
+  keywordstyle=\bfseries,
+  commentstyle=\itshape,
+  identifierstyle=\normalfont\bfseries,
+  stringstyle=\color{red},
+}
+
+\renewcommand\CancelColor{\color{red}}
+
+\makeatletter
+\newtcolorbox{tcbexample}[1][]{
+  %skin=beamer,
+  enhanced,
+  title=#1,
+  width=\paperwidth,
+  left=\Gm@lmargin,
+  right=\Gm@rmargin,
+  enlarge left by=-\Gm@lmargin,
+  enlarge right by=-\Gm@rmargin,
+  arc=0pt,
+  outer arc=0pt,
+  colback=grey,
+  boxrule=0pt,
+  colupper=foreground,
+  colbacktitle=grey!30!black
+}
+\makeatother
+
+
+\setbeamersize{text margin left=2cm}
+
+\setbeamersize{text margin right=2cm}
+%\setbeameroption{show notes on second screen}
+
+
+
+\setbeamertemplate{blocks}[rounded][shadow=true]
+%\setbeamercolor{structure}{fg=background}
+\setbeamercolor{structure}{fg=foreground}
+
+\setbeamercolor*{block title}{fg=background,bg= blue}
+\setbeamercolor*{block body}{fg= structure,bg= blue!25!background}
+
+\setbeamercolor*{block title alerted}{fg=background,bg= red!75!background}
+\setbeamercolor*{block body alerted}{fg= structure,bg= red!25!background}
+
+\setbeamercolor*{block title example}{fg=background,bg= green!75!background}
+\setbeamercolor*{block body example}{fg= structure,bg= green!25!background}
+
+
+% use those colors
+\setbeamercolor{titlelike}{fg=blue} %foreground}
+%\setbeamercolor{subtitle}{fg=green}
+\setbeamercolor{institute}{fg=grey}
+\setbeamercolor{author}{fg=grey}
+
+
+\setbeamercolor{normal text}{fg=foreground,bg=background}
+\setbeamercolor{item}{fg=foreground} % color of bullets
+\setbeamercolor{subitem}{fg=foreground}
+\setbeamercolor{itemize/enumerate subbody}{fg=foreground}
+\setbeamertemplate{itemize subitem}{{\textendash}}
+\setbeamerfont{itemize/enumerate subbody}{size=\footnotesize}
+\setbeamerfont{itemize/enumerate subitem}{size=\footnotesize}
+\setbeamerfont{bibliography}{size=\tiny}
+%\setbeamercolor{background}{background}
+
+\setbeamercolor*{bibliography entry title}{fg=darkgrey}
+\setbeamercolor*{bibliography entry author}{fg=darkgrey}
+\setbeamercolor*{bibliography entry location}{fg=darkgrey}
+\setbeamercolor*{bibliography entry note}{fg=darkgrey}
+
+\setbeamertemplate{bibliography item}[text]
+\setbeamercolor{bibliography item}{fg=darkgrey}
+\setbeamercolor{footnote}{fg=darkgrey}
+
+\setbeamertemplate{frametitle}[default][center]
+%\setbeamerfont{frametitle}{size=\large\bfseries }
+\setbeamerfont{footnote}{size=\tiny}

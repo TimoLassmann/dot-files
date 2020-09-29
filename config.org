@@ -177,7 +177,7 @@ Taken from Protesilaos Stavrou's emacs config (https://protesilaos.com/).
             ;; Main typeface
             (set-face-attribute 'default nil :family "Iosevka extended" :height 140)
             ;; Proportionately spaced typeface
-            (set-face-attribute 'variable-pitch nil :family "Iosevka Aile" :height 1.1)
+            (set-face-attribute 'variable-pitch nil :family "LinuxLibertine O" :height 1.5)
             ;; Monospaced typeface
             (set-face-attribute 'fixed-pitch nil :family "Iosevka Fixed" :height 1.0)
 
@@ -1978,6 +1978,21 @@ Special formatting for the ROPE sections.
                   "\\begin{frame}[fragile]\\frametitle{%s}"
                   "\\end{frame}")))
 #+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+  (add-to-list 'org-latex-classes
+               '("smallscreen"
+                 "\\documentclass[aspectratio=169,18pt,t]{beamer}
+  \\usepackage{\\string~\"/.emacs.d/latex_templates/smallscreen\"}
+  [NO-DEFAULT-PACKAGES]
+  [NO-PACKAGES]"
+                 ("\\section{%s}" . "\\section*{%s}")
+                 ("\\begin{frame}[fragile]\\frametitle{%s}"
+                  "\\end{frame}"
+                  "\\begin{frame}[fragile]\\frametitle{%s}"
+                  "\\end{frame}")))
+#+END_SRC
+
 
 ** Fancier presentation
 
