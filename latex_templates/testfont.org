@@ -1,0 +1,35 @@
+#+TITLE:  Analysis of time-course data hah ddd
+#+AUTHOR: Timo Lassmann
+#+LATEX_CLASS: smallscreen
+#+OPTIONS:  toc:nil
+#+OPTIONS: H:4
+#+LATEX_CMD: pdflatex
+
+* blah
+** First slide
+asda \title \date \today
+
+*red*
+
+T
+has been the basis of MIT’s entry-level
+computer science subject since 1980. We had been teaching this ma-
+terial for four years when the first edition was published, and twelve
+** adfsad
+\lipsum[2-4]
+
+** ADA
+\lipsum[2-4]
+
+*** But AAA
+
+Donkeyt
+
+* Second
+
+asda
+\lipsum[2-4]
+
+\lipsum[2-4]
+\lipsum[2-4]
+\lipsum[2-4]
