@@ -170,38 +170,42 @@ Taken from Protesilaos Stavrou's emacs config (https://protesilaos.com/).
 ** Font setting
 
 #+BEGIN_SRC emacs-lisp
-        (defun tl/setup-fonts ()
-            "Setup my fonts."
-          (interactive)
-            ;;(when (eq window-system 'x)
-            ;; Main typeface
-            (set-face-attribute 'default nil :family "Iosevka extended" :height 140)
-            ;; Proportionately spaced typeface
-            (set-face-attribute 'variable-pitch nil :family "LinuxLibertine O" :height 1.5)
-            ;; Monospaced typeface
-            (set-face-attribute 'fixed-pitch nil :family "Iosevka Fixed" :height 1.0)
 
-            (dolist (face '(mode-line mode-line-inactive minibuffer-prompt))
-              (set-face-attribute face nil :family "Iosevka term" :height 160))
+  (use-package emacs
+    :commands tl/setup-fonts
+    :config
+    (defun tl/setup-fonts ()
+      "Setup my fonts."
+      (interactive)
+      ;; Main typeface
+      (set-face-attribute 'default nil :family "Iosevka extended" :height 140)
+      ;; Proportionately spaced typeface
+      (set-face-attribute 'variable-pitch nil :family "LinuxLibertine O" :height 1.5)
+      ;; Monospaced typeface
+      (set-face-attribute 'fixed-pitch nil :family "Iosevka Fixed" :height 1.0)
 
-            )
+      (dolist (face '(mode-line mode-line-inactive minibuffer-prompt))
+        (set-face-attribute face nil :family "Iosevka term" :height 160))
+
+      )
 
 
 
-        (tl/setup-fonts)
+    (tl/setup-fonts)
+    )
 
-        (use-package face-remap
-          :diminish buffer-face-mode            ; the actual mode
-          :commands prot/variable-pitch-mode
-          :config
-          (define-minor-mode prot/variable-pitch-mode
-            "Toggle `variable-pitch-mode', except for `prog-mode'."
-            :init-value nil
-            :global nil
-            (if prot/variable-pitch-mode
-                (unless (derived-mode-p 'prog-mode)
-                  (variable-pitch-mode 1))
-              (variable-pitch-mode -1))))
+  (use-package face-remap
+    :diminish buffer-face-mode            ; the actual mode
+    :commands prot/variable-pitch-mode
+    :config
+    (define-minor-mode prot/variable-pitch-mode
+      "Toggle `variable-pitch-mode', except for `prog-mode'."
+      :init-value nil
+      :global nil
+      (if prot/variable-pitch-mode
+          (unless (derived-mode-p 'prog-mode)
+            (variable-pitch-mode 1))
+        (variable-pitch-mode -1))))
 
 #+END_SRC
 
