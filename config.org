@@ -65,7 +65,6 @@ Load up a collection of enhancements to Emacs Lisp, including [[https://github.c
     )
 
   (use-package f
-    :defer t
     :ensure t
     )
 #+END_SRC
@@ -231,7 +230,6 @@ Taken from Protesilaos Stavrou's emacs config (https://protesilaos.com/).
 
 #+BEGIN_SRC emacs-lisp
   (use-package diminish
-    :defer t
     :demand t)
 #+END_SRC
 
@@ -640,7 +638,6 @@ And here are some 'hidden' key bindings for making the most out of Ivy
 
 #+BEGIN_SRC emacs-lisp
   (use-package ivy
-    :defer t
     :ensure t
     :diminish ivy-mode
     :delight
@@ -691,7 +688,6 @@ And here are some 'hidden' key bindings for making the most out of Ivy
 Prescient
 #+BEGIN_SRC emacs-lisp
   (use-package prescient
-    :defer t
     :ensure t
     :custom
     (prescient-history-length 200)
@@ -701,7 +697,6 @@ Prescient
     (prescient-persist-mode 1))
 
   (use-package ivy-prescient
-    :defer t
     :ensure t
     :after (prescient ivy)
     :custom
@@ -724,7 +719,6 @@ Prescient
 
 
   (use-package counsel
-    :defer t
     :ensure t
     :after ivy
     :custom
@@ -822,7 +816,6 @@ Prescient
 ** Swiper
 #+BEGIN_SRC emacs-lisp
   (use-package swiper
-    :defer t
     :ensure t
     :after ivy
     :custom
@@ -841,7 +834,6 @@ Prescient
 
 #+BEGIN_SRC emacs-lisp
   (use-package avy
-    :defer t
     :config
     (global-set-key (kbd "M-SPC") 'avy-goto-char-timer)
     (global-set-key (kbd "C-:") 'avy-goto-char)
@@ -856,7 +848,6 @@ Prescient
 
 #+BEGIN_SRC emacs-lisp
   (use-package ivy-rich
-    :defer t
     :ensure t
     :custom
     (ivy-rich-path-style 'abbreviate)
@@ -868,7 +859,6 @@ Prescient
 
 #+BEGIN_SRC emacs-lisp
   (use-package ivy-posframe
-    :defer t
     :ensure t
     :diminish ivy-posframe-mode
     :delight
@@ -2696,11 +2686,6 @@ The end.
 
 
 #+END_SRC
-
-
-
-
-
 
 
 #+BEGIN_SRC   emacs-lisp
