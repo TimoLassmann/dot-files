@@ -15,7 +15,7 @@
 * To speed things up
 
 #+BEGIN_SRC emacs-lisp
-  (setq gc-cons-threshold 16777216)
+  (setq gc-cons-threshold (* 50 1000 1000))
 
   (setq gc-cons-percentage 0.6)
 
@@ -60,10 +60,12 @@ Load up a collection of enhancements to Emacs Lisp, including [[https://github.c
 
 
   (use-package s
+    :defer t
     :ensure t
     )
 
   (use-package f
+    :defer t
     :ensure t
     )
 #+END_SRC
@@ -229,7 +231,7 @@ Taken from Protesilaos Stavrou's emacs config (https://protesilaos.com/).
 
 #+BEGIN_SRC emacs-lisp
   (use-package diminish
-
+    :defer t
     :demand t)
 #+END_SRC
 
@@ -245,7 +247,7 @@ Taken from Protesilaos Stavrou's emacs config (https://protesilaos.com/).
 According to this article, I get better functionality than the redo+ plugin (which I can’t seem to get working well).
 #+BEGIN_SRC emacs-lisp
   (use-package undo-tree
-
+    :defer t
     :diminish
     :init
     (global-undo-tree-mode 1)
@@ -339,6 +341,7 @@ I keep hitting this by accidental
 ** Recentf
 #+BEGIN_SRC emacs-lisp
   (use-package recentf
+    :defer t
     :custom
     (recentf-save-file "~/.emacs.d/recentf")
     (recentf-max-menu-items 10)
@@ -392,6 +395,7 @@ I keep hitting this by accidental
 ** Saveplace (remember point position)
 #+BEGIN_SRC emacs-lisp
   (use-package saveplace
+    :defer t
     :custom
     (save-place-file "~/.emacs.d/saveplace")
     :config
@@ -418,7 +422,7 @@ hl-line is awesome! It’s not very awesome in the terminal version of emacs tho
 Lets us use asynchronous processes wherever possible, pretty useful.
 #+BEGIN_SRC emacs-lisp
   (use-package async
-
+    :defer t
     :init (dired-async-mode 1))
 #+END_SRC
 
@@ -429,6 +433,7 @@ Enable projectile globally
 This makes sure that everything can be a project.
 #+BEGIN_SRC emacs-lisp
   (use-package projectile
+    :defer t
     :ensure t
     ;; :delight '(:eval (concat " " (projectile-project-name)))
     :delight
@@ -439,6 +444,7 @@ This makes sure that everything can be a project.
     (projectile-completion-system 'ivy))
 
   (use-package counsel-projectile
+    :defer t
     :ensure t
     :config
     (add-to-list 'ivy-initial-inputs-alist '(counsel-projectile-switch-project . ""))
@@ -567,7 +573,7 @@ In order to use emacs, you don’t need to know how to use emacs. It’s self do
 It’s beautiful
 #+BEGIN_SRC emacs-lisp
   (use-package which-key
-
+    :defer t
     :diminish which-key-mode
     :config
     (which-key-mode))
@@ -581,7 +587,7 @@ switch-window
 This magnificent package takes care of this issue. It’s unnoticeable if you have <3 panes open, but with 3 or more, upon pressing C-x o you will notice how your buffers turn a solid color and each buffer is asigned a letter (the list below shows the letters, you can modify them to suit your liking), upon pressing a letter asigned to a window, your will be taken to said window, easy to remember, quick to use and most importantly, it annihilates a big issue I had with emacs. An alternative is ace-window, however by default it also changes the behaviour of C-x o even if only 2 windows are open, this is bad, it also works less well with exwm for some reason.
 #+BEGIN_SRC emacs-lisp
   (use-package switch-window
-
+    :defer t
     :config
     (setq switch-window-input-style 'minibuffer)
     (setq switch-window-increase 4)
@@ -634,6 +640,7 @@ And here are some 'hidden' key bindings for making the most out of Ivy
 
 #+BEGIN_SRC emacs-lisp
   (use-package ivy
+    :defer t
     :ensure t
     :diminish ivy-mode
     :delight
@@ -684,6 +691,7 @@ And here are some 'hidden' key bindings for making the most out of Ivy
 Prescient
 #+BEGIN_SRC emacs-lisp
   (use-package prescient
+    :defer t
     :ensure t
     :custom
     (prescient-history-length 200)
@@ -693,6 +701,7 @@ Prescient
     (prescient-persist-mode 1))
 
   (use-package ivy-prescient
+    :defer t
     :ensure t
     :after (prescient ivy)
     :custom
@@ -715,6 +724,7 @@ Prescient
 
 
   (use-package counsel
+    :defer t
     :ensure t
     :after ivy
     :custom
@@ -812,6 +822,7 @@ Prescient
 ** Swiper
 #+BEGIN_SRC emacs-lisp
   (use-package swiper
+    :defer t
     :ensure t
     :after ivy
     :custom
@@ -830,6 +841,7 @@ Prescient
 
 #+BEGIN_SRC emacs-lisp
   (use-package avy
+    :defer t
     :config
     (global-set-key (kbd "M-SPC") 'avy-goto-char-timer)
     (global-set-key (kbd "C-:") 'avy-goto-char)
@@ -844,6 +856,7 @@ Prescient
 
 #+BEGIN_SRC emacs-lisp
   (use-package ivy-rich
+    :defer t
     :ensure t
     :custom
     (ivy-rich-path-style 'abbreviate)
@@ -855,6 +868,7 @@ Prescient
 
 #+BEGIN_SRC emacs-lisp
   (use-package ivy-posframe
+    :defer t
     :ensure t
     :diminish ivy-posframe-mode
     :delight
@@ -908,7 +922,7 @@ Prescient
 
 #+BEGIN_SRC emacs-lisp
   (use-package winner
-
+    :defer t
     :init (winner-mode 1))
 #+END_SRC
 
@@ -987,9 +1001,11 @@ Counsel tramp
 
 #+BEGIN_SRC emacs-lisp
   (use-package company-c-headers
+    :defer t
     :ensure t
     )
   (use-package company
+    :defer t
     :ensure t
     :delight
     :custom
@@ -1031,6 +1047,7 @@ Counsel tramp
                  ("C-p" . company-select-previous))))
 
   (use-package company-statistics
+    :defer t
     :init
     (company-statistics-mode))
 
@@ -1066,6 +1083,7 @@ In addition add the include path to flycheck-clang!
 Company Prescient
 #+BEGIN_SRC emacs-lisp
   (use-package company-prescient
+    :defer t
     :ensure t
     :after (company prescient)
     :config
@@ -1092,7 +1110,7 @@ Note in the config below I assume aspell is installed in =/usr/bin/= !.
 
 #+BEGIN_SRC emacs-lisp
   (use-package flyspell
-
+    :defer t
     :diminish flyspell-mode
     :init
     (add-hook 'prog-mode-hook 'flyspell-prog-mode)
@@ -1185,41 +1203,41 @@ Taken from Protesilaos Stavrou's emacs config (https://protesilaos.com/),
 
 
   (use-package olivetti
-      :ensure
-      :diminish
-      :config
+    :ensure
+    :diminish
+    :config
 
-      (setq olivetti-body-width 0.7)
-      (setq olivetti-minimum-body-width 80)
-      (setq olivetti-recall-visual-line-mode-entry-state t)
+    (setq olivetti-body-width 0.7)
+    (setq olivetti-minimum-body-width 80)
+    (setq olivetti-recall-visual-line-mode-entry-state t)
 
-      (define-minor-mode prot/olivetti-mode
-        "Toggle buffer-local `olivetti-mode' with additional parameters.
+    (define-minor-mode prot/olivetti-mode
+      "Toggle buffer-local `olivetti-mode' with additional parameters.
 
       Fringes are disabled.  The modeline is hidden, except for
       `prog-mode' buffers (see `prot/mode-line-hidden-mode').  The
       default typeface is set to a proportionately spaced family,
       except for programming modes (see `prot/variable-pitch-mode').
       The cursor becomes a blinking bar, per `prot/cursor-type-mode'."
-        :init-value nil
-        :global nil
-        (if prot/olivetti-mode
-            (progn
-              (olivetti-mode 1)
-              (tl/mode-hlline-hidden-mode 1)
-              (set-window-fringes (selected-window) 0 0)
-              (prot/variable-pitch-mode 1)
-              (prot/cursor-type-mode 1)
-              (unless (derived-mode-p 'prog-mode)
-                (prot/mode-line-hidden-mode 1)))
-          (olivetti-mode -1)
-                    (tl/mode-hlline-hidden-mode -1)
-          (set-window-fringes (selected-window) nil) ; Use default width
-          (prot/variable-pitch-mode -1)
-          (prot/cursor-type-mode -1)
-          (unless (derived-mode-p 'prog-mode)
-            (prot/mode-line-hidden-mode -1))))
-      :bind ("C-c o" . prot/olivetti-mode))
+      :init-value nil
+      :global nil
+      (if prot/olivetti-mode
+          (progn
+            (olivetti-mode 1)
+            (tl/mode-hlline-hidden-mode 1)
+            (set-window-fringes (selected-window) 0 0)
+            (prot/variable-pitch-mode 1)
+            (prot/cursor-type-mode 1)
+            (unless (derived-mode-p 'prog-mode)
+              (prot/mode-line-hidden-mode 1)))
+        (olivetti-mode -1)
+        (tl/mode-hlline-hidden-mode -1)
+        (set-window-fringes (selected-window) nil) ; Use default width
+        (prot/variable-pitch-mode -1)
+        (prot/cursor-type-mode -1)
+        (unless (derived-mode-p 'prog-mode)
+          (prot/mode-line-hidden-mode -1))))
+    :bind ("C-c o" . prot/olivetti-mode))
 
 
 #+END_SRC
@@ -2607,27 +2625,27 @@ The end.
 #+BEGIN_SRC emacs-lisp
   (use-package emacs
 
-  :config
-  (setq mode-line-percent-position '(-3 "%p"))
-  (setq mode-line-defining-kbd-macro
-        (propertize " Macro" 'face 'mode-line-emphasis))
-  (setq-default mode-line-format
-                '("%e"
-                  mode-line-front-space
-                  mode-line-mule-info
-                  mode-line-client
-                  mode-line-modified
-                  mode-line-remote
-                  mode-line-frame-identification
-                  mode-line-buffer-identification
-                  "  "
-                  mode-line-position
-                  (vc-mode vc-mode)
-                  " "
-                   mode-line-modes
-                  " "
-                  mode-line-misc-info
-                  mode-line-end-spaces)))
+    :config
+    (setq mode-line-percent-position '(-3 "%p"))
+    (setq mode-line-defining-kbd-macro
+          (propertize " Macro" 'face 'mode-line-emphasis))
+    (setq-default mode-line-format
+                  '("%e"
+                    mode-line-front-space
+                    mode-line-mule-info
+                    mode-line-client
+                    mode-line-modified
+                    mode-line-remote
+                    mode-line-frame-identification
+                    mode-line-buffer-identification
+                    "  "
+                    mode-line-position
+                    (vc-mode vc-mode)
+                    " "
+                    mode-line-modes
+                    " "
+                    mode-line-misc-info
+                    mode-line-end-spaces)))
 #+END_SRC
 
 * Beacon
@@ -2667,7 +2685,7 @@ The end.
 
 #+BEGIN_SRC emacs-lisp
 
-
+  (setq gc-cons-threshold (* 2 1000 1000))
   ;; (if (daemonp)
   ;;     (add-hook 'after-make-frame-functions
   ;;               '(lambda (f)
