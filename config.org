@@ -860,6 +860,7 @@ Prescient
 #+BEGIN_SRC emacs-lisp
   (use-package ivy-posframe
     :ensure t
+    :after ivy
     :diminish ivy-posframe-mode
     :delight
     :custom
