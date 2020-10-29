@@ -1,0 +1,116 @@
+#+TITLE: Computational Biology, Genomics and AI
+#+SUBTITLE:  Strategic direction 2021-2026
+#+AUTHOR: Timo Lassmann, Feilman Fellow
+#+OPTIONS: H:2 toc:nil
+#+LATEX_CMD: pdflatex
+#+LATEX_CLASS: simplepresentation
+#+LATEX_CLASS_OPTIONS: [bigger]
+#+BEAMER_FRAME_LEVEL: 2
+#+BEAMER_HEADER: \institute{Telethon Kids Institute\\\url{https://www.telethonkids.org.au}}
+#+BEAMER_HEADER: \titlegraphic{\includegraphics[height=1.5cm]{../images/TKI-logo.jpg}}
+
+
+* Section 1
+** Quote test
+
+*** adad                                                          :B_quote:
+:PROPERTIES:
+:BEAMER_env: quote
+:END:
+  Please please please pass on our deep gratitude and appreciation to the lovely Liz, Jonathan and all the
+other beautiful, amazing staff at TKI who all ensured we had such a memorable, opulent weekend whilst having the opportunity to share our little girl's story and play a small part in enabling this vital research into undiagnosed diseases to continue.
+Much love xix
+** First
+- one
+    Please please please pass on our deep gratitude and appreciation to the lovely Liz, Jonathan and all the
+other beautiful, amazing staff at TKI who all ensured we had such a memorable, opulent weekend whilst having the opportunity to share our little girl's story and play a small part in enabling this vital research into undiagnosed diseases to continue.
+Much love xix
+- two 
+
+** Second
+** Block test
+
+*** TL                                                        :B_quotation:
+:PROPERTIES:
+:BEAMER_env: quotation
+:END:
+Red is blue
+
+
+*** EXAMPLE                                                :B_exampleblock:
+:PROPERTIES:
+:BEAMER_env: exampleblock
+:END:
+GAGA
+*** Normal Block                                                  :B_block:
+:PROPERTIES:
+:BEAMER_env: block
+:END:
+
+Normal block ...
+
+*** Alert                                                    :B_alertblock:
+:PROPERTIES:
+:BEAMER_env: alertblock
+:END:
+Oh dear
+
+** column test
+
+*** Column                                                  :B_block:BMCOL:
+:PROPERTIES:
+:BEAMER_col: 0.45
+:BEAMER_env: block
+:END:
+
+ASDA
+
+*** 2nd:                                                    :B_block:BMCOL:
+:PROPERTIES:
+:BEAMER_col: 0.45
+:BEAMER_env: block
+:END:
+FFFF 
+** Babel
+   :PROPERTIES:
+   :BEAMER_envargs: [t]
+   :END:
+*** COLOR???                                             :B_beamercolorbox:
+:PROPERTIES:
+:BEAMER_env: beamercolorbox
+:END:
+
+
+GAGA? 
+
+
+*** Octave code						      :BMCOL:B_block:
+    :PROPERTIES:
+    :BEAMER_col: 0.45
+    :BEAMER_env: block
+    :END:
+#+name: octaveexample
+#+begin_example :results output :exports both
+CAR 
+#+end_example
+
+*** The output						      :BMCOL:B_block:
+    :PROPERTIES:
+    :BEAMER_col: 0.4
+    :BEAMER_env: block
+    :BEAMER_envargs: <2->
+    :END:
+
+#+results: octaveexample
+#+begin_example
+A =
+
+   1   2
+   3   4
+
+x =
+
+  -1
+   1
+
+#+end_example

@@ -1982,17 +1982,27 @@ Special formatting for the ROPE sections.
 ** Simple presentation
 
 #+BEGIN_SRC emacs-lisp
-  (add-to-list 'org-latex-classes
-               '("simplepresentation"
-                 "\\documentclass[aspectratio=169,18pt,t]{beamer}
-  \\usepackage{\\string~\"/.emacs.d/latex_templates/simple\"}
-  [NO-DEFAULT-PACKAGES]
-  [NO-PACKAGES]"
-                 ("\\section{%s}" . "\\section*{%s}")
-                 ("\\begin{frame}[fragile]\\frametitle{%s}"
-                  "\\end{frame}"
-                  "\\begin{frame}[fragile]\\frametitle{%s}"
-                  "\\end{frame}")))
+    (add-to-list 'org-latex-classes
+  `("simplepresentation"
+                    ,(concat "\\documentclass[presentation]{beamer}\n"
+                             "\\usepackage{\\string~\"/.emacs.d/latex_templates/simple\"}"
+                             "[DEFAULT-PACKAGES]"
+                             "[PACKAGES]"
+                             "[EXTRA]\n")
+                    ("\\section{%s}" . "\\section*{%s}")
+                    ("\\subsection{%s}" . "\\subsection*{%s}")
+                    ("\\subsubsection{%s}" . "\\subsubsection*{%s}"))))
+
+    ;;              '("simplepresentation"
+    ;;                "\\documentclass[aspectratio=169,18pt,t]{beamer}
+    ;; \\usepackage{\\string~\"/.emacs.d/latex_templates/simple\"}
+    ;; [NO-DEFAULT-PACKAGES]
+    ;; [NO-PACKAGES]"
+    ;;                ("\\section{%s}" . "\\section*{%s}")
+    ;;                ("\\begin{frame}[fragile]\\frametitle{%s}"
+    ;;                 "\\end{frame}"
+    ;;                 "\\begin{frame}[fragile]\\frametitle{%s}"
+    ;;                 "\\end{frame}")))
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
@@ -2277,9 +2287,12 @@ Whitespace mode
   (add-hook 'prog-mode-hook (lambda () (interactive) (setq show-trailing-whitespace 1)))
 #+END_SRC
 
-This hook affects all documents, not just C...
+This hook only affects C..
 #+BEGIN_SRC emacs-lisp
-  (add-hook 'before-save-hook 'whitespace-cleanup)
+  (add-hook 'c-mode-hook
+            (lambda () (add-hook 'before-save-hook 'whitespace-cleanup)));
+    ;; Laura Patterson
+      ;; (add-hook 'before-save-hook 'whitespace-cleanup)
 #+END_SRC
 
 
