@@ -1,10 +1,9 @@
 #+TITLE: Computational Biology, Genomics and AI
 #+SUBTITLE:  Strategic direction 2021-2026
-#+AUTHOR: Timo Lassmann, Feilman Fellow
+#+AUTHOR: Timo La\ss mann, Feilman Fellow
 #+OPTIONS: H:2 toc:nil
 #+LATEX_CMD: pdflatex
 #+LATEX_CLASS: simplepresentation
-#+LATEX_CLASS_OPTIONS: [bigger]
 #+BEAMER_FRAME_LEVEL: 2
 #+BEAMER_HEADER: \institute{Telethon Kids Institute\\\url{https://www.telethonkids.org.au}}
 #+BEAMER_HEADER: \titlegraphic{\includegraphics[height=1.5cm]{../images/TKI-logo.jpg}}
@@ -20,7 +19,23 @@
   Please please please pass on our deep gratitude and appreciation to the lovely Liz, Jonathan and all the
 other beautiful, amazing staff at TKI who all ensured we had such a memorable, opulent weekend whilst having the opportunity to share our little girl's story and play a small part in enabling this vital research into undiagnosed diseases to continue.
 Much love xix
-** First
+
+#+BEGIN_SRC latex 
+  {\color{red} ffff}
+  {\color{darkred} ffff}
+$\Perm{n}{k}=\frac{n!}{(n-k)!}$ - permutation 
+
+$\binom nk=\Comb{n}{k}=\frac{n!}{k!(n-k)!}$ - combination
+#+END_SRC
+
+#+BEGIN_SRC latex 
+{\color{foreground} ffff}
+{\color{darkforeground} ffff}  
+#+END_SRC
+
+
+
+** First The quick brown fox jumpedn
 - one
     Please please please pass on our deep gratitude and appreciation to the lovely Liz, Jonathan and all the
 other beautiful, amazing staff at TKI who all ensured we had such a memorable, opulent weekend whilst having the opportunity to share our little girl's story and play a small part in enabling this vital research into undiagnosed diseases to continue.

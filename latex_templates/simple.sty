@@ -21,6 +21,30 @@
 %% \usetikzlibrary{decorations.pathmorphing}
 
 %% \usetikzlibrary{calc}
+%% \usepackage{libertine}
+%% \usepackage{libertinust1math}
+%% \usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[T1]{fontenc}
+
+%% \usepackage{cmbright}
+%% \usepackage[T1]{fontenc}
+
+\setbeamersize{text margin left=1.25cm}
+\setbeamersize{text margin right=1.25cm}
+
+\usefonttheme{default}
+
+
+\setbeamerfont{title}{size=\Huge,parent=structure,series=\scshape}
+
+%% \setbeamerfont{title}{series=\scshape}
+\setbeamerfont{subtitle}{size=\Large,series=\mdseries}
+\setbeamerfont{author}{series=\mdseries}
+%% \setbeamerfont{footline}{size={\fontsize{5}{7pt}\selectfont}}% originally also: shape=\itshape
+%% \setbeamercolor{footline}{fg=black}
+\setbeamerfont{frametitle}{size=\LARGE,series=\scshape}
+\setbeamerfont{framesubtitle}{parent=frametitle,size=\footnotesize}
 
 
 \definecolor{offwhite}{RGB}{249,242,215}
@@ -29,7 +53,8 @@
 \definecolor{blue}{RGB}{80,92,147}
 \definecolor{red}{RGB}{241,116,120} % red
 
-
+\definecolor{darkred}{RGB}{142,95,95}
+\definecolor{darkforeground}{RGB}{91,94,120}
 
 
 %% 42241: (0.315175,0.198444,0.521401) #000001 srgb(0.123598%,0.077821%,0.204471%)
@@ -63,24 +88,13 @@
  %%    2061: (149.537,97.9805,104.288) #966268 srgb(58.6419%,38.4237%,40.8972%)
  %%    727: (173.93,121.553,137.21) #AE7A89 srgb(68.2078%,47.6677%,53.8079%)
 %%    1.87411e+06: (13,29,53.9961) #0D1D36 srgb(5.09804%,11.3725%,21.1749%)
-%% \usepackage{lmodern}
-%% \renewcommand*\familydefault{\sfdefault} %% Only if the base font of the document is to be sans serif
-%% \usepackage[T1]{fontenc}
-
-\usefonttheme{structuresmallcapsserif}
-
-%% \usefonttheme{professionalfonts}
-%% \usefonttheme{serif}
-%% \usepackage{fontspec}
-%% \setmainfont{Helvetica Neue}
-%% \setbeamerfont{note page}{family*=pplx,size=\footnotesize} % Palatino for notes
 
 \beamertemplatenavigationsymbolsempty
 
 \setbeamercolor{normal text}{fg=foreground}
 \setbeamercolor{background canvas}{bg=background}
 \setbeamercolor{titlelike}{fg=red} %foreground}
-\setbeamerfont{title}{series=\scshape}
+
 \setbeamercolor{subtitle}{fg=blue}
 %% %% \setbeamercolor{institute}{fg=grey}
 %% %% \setbeamercolor{author}{fg=grey}
@@ -89,8 +103,8 @@
 \setbeamercolor{frametitle}{fg=red}
 
 \setbeamertemplate{blocks}[rounded][shadow=false]
-%% %\setbeamercolor{structure}{fg=background}
-%\setbeamercolor{structure}{fg=foreground}
+
+\setbeamercolor{structure}{fg=foreground}
 
 \setbeamercolor*{block title}{fg=background,bg= blue}
 \setbeamercolor*{block body}{fg= structure,bg= blue!25!background}
@@ -105,13 +119,13 @@
 
 
 
-%% \setbeamercolor{item}{fg=foreground} % color of bullets
-%% \setbeamercolor{subitem}{fg=foreground}
-%% \setbeamercolor{itemize/enumerate subbody}{fg=foreground}
-%% \setbeamertemplate{itemize subitem}{{\textendash}}
-%% \setbeamerfont{itemize/enumerate subbody}{size=\footnotesize}
-%% \setbeamerfont{itemize/enumerate subitem}{size=\footnotesize}
-%% \setbeamerfont{bibliography}{size=\tiny}
+\setbeamercolor{item}{fg=foreground} % color of bullets
+\setbeamercolor{subitem}{fg=foreground}
+\setbeamercolor{itemize/enumerate subbody}{fg=foreground}
+\setbeamertemplate{itemize subitem}{{\textendash}}
+\setbeamerfont{itemize/enumerate subbody}{size=\footnotesize}
+\setbeamerfont{itemize/enumerate subitem}{size=\footnotesize}
+\setbeamerfont{bibliography}{size=\tiny}
 
 
 %% \setbeamercolor*{bibliography entry title}{fg=darkgrey}
@@ -123,9 +137,6 @@
 %% \setbeamercolor{bibliography item}{fg=darkgrey}
 %% \setbeamercolor{footnote}{fg=darkgrey}
 
-%% \setbeamertemplate{frametitle}[default][center]
-%% %\setbeamerfont{frametitle}{size=\large\bfseries }
-%% \setbeamerfont{footnote}{size=\tiny}
 
 \defbeamertemplate*{title page}{lucid}
 { 
@@ -182,3 +193,4 @@
   identifierstyle=\normalfont\bfseries,
   stringstyle=\color{red},
 }
+

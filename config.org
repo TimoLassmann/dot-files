@@ -1991,7 +1991,7 @@ Special formatting for the ROPE sections.
                              "[EXTRA]\n")
                     ("\\section{%s}" . "\\section*{%s}")
                     ("\\subsection{%s}" . "\\subsection*{%s}")
-                    ("\\subsubsection{%s}" . "\\subsubsection*{%s}"))))
+                    ("\\subsubsection{%s}" . "\\subsubsection*{%s}")))
 
     ;;              '("simplepresentation"
     ;;                "\\documentclass[aspectratio=169,18pt,t]{beamer}
