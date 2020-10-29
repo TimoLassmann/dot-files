@@ -1490,27 +1490,30 @@ undef a key
 
 ** deft
 
-# #+BEGIN_SRC emacs-lisp
-#   (use-package deft
-#     :commands deft
-#     :init
-#     (setq deft-default-extension "org"
-#           ;; de-couples filename and note title:
-#           deft-use-filename-as-title nil
-#           deft-use-filter-string-for-filename t
-#           ;; disable auto-save
-#           deft-auto-save-interval -1.0
-#           ;; converts the filter string into a readable file-name using kebab-case:
-#           deft-file-naming-rules
-#           '((noslash . "-")
-#             (nospace . "-")
-#             (case-fn . downcase)))
-#     :config
-#     (add-to-list 'deft-extensions "tex")
-#     )
+#+BEGIN_SRC emacs-lisp
+  (use-package deft
+    :commands deft
+    :init
+    (setq deft-default-extension "org"
+          ;; de-couples filename and note title:
+          deft-use-filename-as-title nil
+          deft-use-filter-string-for-filename t
+          ;; disable auto-save
+          deft-auto-save-interval -1.0
+          ;; converts the filter string into a readable file-name using kebab-case:
+          deft-file-naming-rules
+          '((noslash . "-")
+            (nospace . "-")
+            (case-fn . downcase)))
+    :config
+    (add-to-list 'deft-extensions "tex")
+    )
 
-#   (setq    deft-directory (concat (getenv "HOME") "/work/roam/"))
-# #+END_SRC
+  (setq    deft-directory (concat (getenv "HOME") "/work/roam/"))
+#+END_SRC
+
+NOTE: in Emacs 27.1 the cl package has been deprecated. Therefore deft throws an error when called. To fix this find all =(require 'cl)= statements and replace with =(require 'cl-lib)=. E.g. by running =rg -F "(require 'cl)" -l=.
+
 
 ** Helm-bibtex
 
