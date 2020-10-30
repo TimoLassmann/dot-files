@@ -1,26 +1,59 @@
 \usetheme{default}
-%% \usepackage[utf8]{inputenc}
+\usepackage[utf8]{inputenc}
+
 \usepackage{graphicx}
-%% \usepackage{verbatim}
+\usepackage{verbatim}
 \usepackage{listings}
+\usepackage{amsmath}
+\usepackage{amssymb}
+%% \usepackage[usenames,dvipsnames,x11names]{xcolor}
+
 %% \usepackage[many]{tcolorbox}
-%% \usepackage{pgf}
-%% \usepackage{pgfplots}
-%% \usepgfplotslibrary{groupplots}
+\usepackage{pgf}
+\usepackage{pgfplots}
+\usepgfplotslibrary{groupplots}
 
 %% \usepackage[thicklines]{cancel}
+\usepackage{tikz}
+\usepackage{tkz-euclide}
+\usetikzlibrary{backgrounds}
+\usetikzlibrary{positioning}
+\usetikzlibrary{calc}
+\usetikzlibrary{shadings}
+\usetikzlibrary{arrows}
+\usetikzlibrary{automata}
+\usetikzlibrary{decorations.text}
+\usetikzlibrary{shapes}
+\usetikzlibrary{decorations.pathmorphing}
+\usetikzlibrary{calc}
+
+\usepackage[
+  backend=biber
+  hyperref=auto,
+  backref=true,
+  sorting=none,
+  style=nature,
+  isbn=false,
+  doi=false,
+  eprint=false,
+  url=false
+]{biblatex}
+\addbibresource{~/work/bibliography/references.bib}
+\renewcommand\bibfont{\scriptsize}
+
+\usepackage{hyperref}
+\hypersetup{
+  colorlinks   = true,
+  linkcolor    = red,
+  citecolor    = red,
+  urlcolor     = red
+}
+\DefineBibliographyStrings{english}{%
+  backrefpage = {page},% originally "cited on page"
+  backrefpages = {pages},% originally "cited on pages"
+}
 
 
-%% \usepackage{tikz}
-%% \usepackage{tkz-euclide}
-%% \usetikzlibrary{backgrounds}
-%% \usetikzlibrary{positioning,calc,shadings}
-%% \usetikzlibrary{arrows,automata}
-%% \usetikzlibrary{decorations.text}
-%% \usetikzlibrary{shapes}
-%% \usetikzlibrary{decorations.pathmorphing}
-
-%% \usetikzlibrary{calc}
 %% \usepackage{libertine}
 %% \usepackage{libertinust1math}
 %% \usepackage[T1]{fontenc}
@@ -34,20 +67,19 @@
 \setbeamersize{text margin right=1.25cm}
 
 \usefonttheme{default}
-
-
-\setbeamerfont{title}{size=\Huge,parent=structure,series=\scshape}
+\setbeamerfont{title}{size=\Huge,series=\scshape}
 
 %% \setbeamerfont{title}{series=\scshape}
 \setbeamerfont{subtitle}{size=\Large,series=\mdseries}
 \setbeamerfont{author}{series=\mdseries}
 %% \setbeamerfont{footline}{size={\fontsize{5}{7pt}\selectfont}}% originally also: shape=\itshape
 %% \setbeamercolor{footline}{fg=black}
-\setbeamerfont{frametitle}{size=\LARGE,series=\scshape}
+\setbeamerfont{frametitle}{size=\Huge,series=\scshape}
 \setbeamerfont{framesubtitle}{parent=frametitle,size=\footnotesize}
 
+\setbeamertemplate{frametitle}{
+\vspace*{5mm}\hspace*{2mm}\insertframetitle}
 
-\definecolor{offwhite}{RGB}{249,242,215}
 \definecolor{foreground}{RGB}{183,202,235}
 \definecolor{background}{RGB}{11,23,45}
 \definecolor{blue}{RGB}{80,92,147}
@@ -56,6 +88,194 @@
 \definecolor{darkred}{RGB}{142,95,95}
 \definecolor{darkforeground}{RGB}{91,94,120}
 
+\definecolor{codeBlue}{RGB}{16, 173, 238}
+
+\beamertemplatenavigationsymbolsempty
+
+\setbeamercolor{normal text}{fg=foreground}
+\setbeamercolor{background canvas}{bg=background}
+\setbeamercolor{titlelike}{fg=red} %foreground}
+
+\setbeamercolor{subtitle}{fg=blue}
+
+
+%% %% \setbeamercolor{institute}{fg=grey}
+\setbeamercolor{author}{fg=blue}
+
+
+\setbeamercolor{frametitle}{fg=red}
+\setbeamertemplate{blocks}[rounded][shadow=false]
+\setbeamercolor{structure}{fg=foreground}
+\setbeamercolor*{block title}{fg=red,bg= blue!25!background}
+\setbeamercolor*{block body}{fg= structure,bg= blue!25!background}
+
+\setbeamercolor*{block title alerted}{fg=foreground, bg= red!75!background}
+\setbeamercolor*{block body alerted}{fg=structure, bg= red!25!background}
+
+\setbeamercolor*{block title example}{fg=foreground, bg= darkgrey}
+\setbeamercolor*{block body example}{fg=lightgrey, bg= darkgrey}
+
+
+
+\setbeamercolor{item}{fg=foreground} % color of bullets
+\setbeamercolor{subitem}{fg=foreground}
+\setbeamercolor{itemize/enumerate subbody}{fg=foreground}
+\setbeamertemplate{itemize subitem}{{\textendash}}
+\setbeamerfont{itemize/enumerate subbody}{size=\footnotesize}
+\setbeamerfont{itemize/enumerate subitem}{size=\footnotesize}
+
+
+\setbeamerfont{bibliography}{size=\tiny}
+\setbeamercolor*{bibliography entry title}{fg=foreground}
+\setbeamercolor*{bibliography entry author}{fg=foreground}
+\setbeamercolor*{bibliography entry location}{fg=foreground}
+\setbeamercolor*{bibliography entry note}{fg=foreground}
+
+\setbeamertemplate{bibliography item}[text]
+%% \setbeamertemplate{bibliography item}{\insertbiblabel}
+\setbeamercolor{bibliography item}{fg=foreground}
+\setbeamercolor{footnote}{fg=foreground}
+
+
+\newcommand{\footref}[1]{\let\thefootnote\relax\footfullcite{ #1}}
+
+\defbeamertemplate*{title page}{lucid}
+{
+  \vfill
+    {\centering
+      \usebeamerfont{title}\usebeamercolor[fg]{title}\inserttitle
+      \par
+    }
+    %% \vskip1cm%
+    \vspace{0.25cm}
+    {\centering
+      \usebeamerfont{subtitle}\usebeamercolor[fg]{subtitle}\insertsubtitle
+      \par
+    }
+    \vspace{0.25cm}
+    {\centering
+      \usebeamerfont{author}\usebeamercolor[fg]{author}\insertauthor
+      \par
+    }
+  \vfill
+}
+
+
+\graphicspath{{../images/}{../../images/}}
+%\usepackage{concmath}
+
+
+
+
+
+\setbeamertemplate{frametitle continuation}[from second]
+\setbeamertemplate{bibliography item}{}
+
+
+
+
+\lstset{%
+  % Scheme syntax highlighter
+  breaklines=true,
+  %% backgroundcolor=\color{darkgray},
+  columns=fixed,
+  extendedchars=true,
+  upquote=true,
+  showstringspaces=false,
+  sensitive=false,
+  mathescape=true,
+  escapechar=~,
+  alsodigit={>,<,/,-,=,!,?,*},
+  alsoletter=',
+  morestring=[b]",
+  morecomment=[l];,
+  % Keyword list taken form functional.py in Pygments package:
+  morekeywords={lambda, define, if, else, cond, and, or, case,%
+    let, let*, letrec, begin, do, delay, set!, =>, quote,%
+    quasiquote, unquote, unquote-splicing, define-syntax, let-syntax,%
+    letrec-syntax, syntax-rules},
+  % If keywords are quoted, they must not be highlighted:
+  emph={'lambda, 'define, 'if, 'else, 'cond, 'and, 'or, 'case,%
+    'let, 'let*, 'letrec, 'begin, 'do, 'delay, 'set!, '=>, 'quote,%
+    'quasiquote, 'unquote, 'unquote-splicing, 'define-syntax, 'let-syntax,%
+    'letrec-syntax, 'syntax-rules},
+  emphstyle=\color{blue},
+  % Paint error red:
+  emph={[2]error},emphstyle=[2]\color{blue},%
+  % Builtins taken from functional.py:
+  emph={[3]*, +, -, /, <, <=, =, >, >=, abs, acos, angle,
+    append, apply, asin, assoc, assq, assv, atan,
+    boolean?, caaaar, caaadr, caaar, caadar, caaddr, caadr,
+    caar, cadaar, cadadr, cadar, caddar, cadddr, caddr,
+    cadr, call-with-current-continuation, call-with-input-file,
+    call-with-output-file, call-with-values, call/cc, car,
+    cdaaar, cdaadr, cdaar, cdadar, cdaddr, cdadr, cdar,
+    cddaar, cddadr, cddar, cdddar, cddddr, cdddr, cddr,
+    cdr, ceiling, char->integer, char-alphabetic?, char-ci<=?,
+    char-ci<?, char-ci=?, char-ci>=?, char-ci>?, char-downcase,
+    char-lower-case?, char-numeric?, char-ready?, char-upcase,
+    char-upper-case?, char-whitespace?, char<=?, char<?, char=?,
+    char>=?, char>?, char?, close-input-port, close-output-port,
+    complex?, cons, cos, current-input-port, current-output-port,
+    denominator, display, dynamic-wind, eof-object?, eq?,
+    equal?, eqv?, eval, even?, exact->inexact, exact?, exp,
+    expt, floor, for-each, force, gcd, imag-part,
+    inexact->exact, inexact?, input-port?, integer->char,
+    integer?, interaction-environment, lcm, length, list,
+    list->string, list->vector, list-ref, list-tail, list?,
+    load, log, magnitude, make-polar, make-rectangular,
+    make-string, make-vector, map, max, member, memq, memv,
+    min, modulo, negative?, newline, not, null-environment,
+    null?, number->string, number?, numerator, odd?,
+    open-input-file, open-output-file, output-port?, pair?,
+    peek-char, port?, positive?, procedure?, quotient,
+    rational?, rationalize, read, read-char, real-part, real?,
+    remainder, reverse, round, scheme-report-environment,
+    set-car!, set-cdr!, sin, sqrt, string, string->list,
+    string->number, string->symbol, string-append, string-ci<=?,
+    string-ci<?, string-ci=?, string-ci>=?, string-ci>?,
+    string-copy, string-fill!, string-length, string-ref,
+    string-set!, string<=?, string<?, string=?, string>=?,
+    string>?, string?, substring, symbol->string, symbol?,
+    tan, transcript-off, transcript-on, truncate, values,
+    vector, vector->list, vector-fill!, vector-length,
+    vector-ref, vector-set!, vector?, with-input-from-file,
+    with-output-to-file, write, write-char, zero?},
+  emphstyle=[3]\color{blue},%
+  %% basicstyle=\color{lightgray}\ttfamily,
+  basicstyle=\color{foreground}\footnotesize\ttfamily,
+  keywordstyle=\color{codeBlue}\bfseries,
+  identifierstyle=\color{foreground},
+  stringstyle=\color{white},
+  commentstyle=\color{white}\itshape,
+}
+
+\lstdefinelanguage{Lambda}{%
+  morekeywords={%
+    if,then,else,fix, % keywords go here
+  },%
+  morekeywords={[2]int},   % types go here
+  otherkeywords={:},
+  literate={% replace strings with symbols
+    {->}{{$\to$}}{2}
+    {lambda}{{{\color{codeBlue}\bfseries$\lambda$}}}{1}
+  },
+  %% basicstyle={\sffamily},
+  %% keywordstyle={\bfseries\color{green}},
+  %% keywordstyle={[2]\itshape}, % style for types
+  keepspaces,
+  mathescape % optional
+}[keywords,comments,strings]%
+
+
+
+
+
+%% \definecolor{darkgrey}{RGB}{85,85,95}
+%% \definecolor{lightgrey}{RGB}{155, 155, 165}
+\definecolor{lightgrey}{RGB}{145,163,176}
+\definecolor{darkgrey}{RGB}{54,69,79}
+%%    13781: (71.8794,65.5409,67.1712) #484243 srgb(28.188%,25.7023%,26.3416%)
 
 %% 42241: (0.315175,0.198444,0.521401) #000001 srgb(0.123598%,0.077821%,0.204471%)
 %%     1703: (0.719844,1.64591,3.31518) #010203 srgb(0.282292%,0.645457%,1.30007%)
@@ -68,129 +288,23 @@
 %%     1107: (178.409,193.226,222.634) #B2C1DF srgb(69.9641%,75.7748%,87.3075%)
 %%     1830: (183.455,202.222,234.887) #B7CAEB srgb(71.9432%,79.3027%,92.1126%)
 
- %%  #55545C srgb(33.4249%,33.0022%,36.2249%)
- %%  #9B9DA8 srgb(60.9781%,61.5351%,65.774%)
- %% #C8DBF3 srgb(78.5336%,85.98%,95.3246%)
- %% #A47482 srgb(64.3244%,45.4719%,51.133%)
- %%     #0D1D36 srgb(5.16518%,11.3848%,21.1139%)
- %% 84470: (13.1907,29.035,53.821) #0D1D36 srgb(5.17281%,11.3863%,21.1063%)
- %%    25190: (200.261,219.249,243.078) #C8DBF3 srgb(78.5336%,85.98%,95.3246%)
- %%    13781: (71.8794,65.5409,67.1712) #484243 srgb(28.188%,25.7023%,26.3416%)
- %%    13211: (152.7,153.385,162.658) #9999A3 srgb(59.8825%,60.1511%,63.7873%)
- %%    10613: (136,132.903,120.794) #888579 srgb(53.3333%,52.1187%,47.3701%)
- %%    9614: (97.3774,95.6148,101.704) #616066 srgb(38.1872%,37.496%,39.884%)
- %%    9294: (187.486,197.712,206.479) #BBC6CE srgb(73.5241%,77.5341%,80.972%)
- %%    7202: (111.07,114.121,140.132) #6F728C srgb(43.5569%,44.7532%,54.9538%)
- %%    7154: (39.9805,48.6654,75.4708) #28314B srgb(15.6786%,19.0845%,29.5964%)
- %%    6628: (122.467,133.195,155.051) #7A859B srgb(48.0262%,52.2332%,60.8042%)
- %%    6284: (240.961,115.646,119.716) #F17478 srgb(94.4945%,45.3513%,46.9474%)
- %%    3258: (164.14,167.553,196.56) #A4A8C5 srgb(64.3687%,65.7069%,77.0825%)
- %%    2061: (149.537,97.9805,104.288) #966268 srgb(58.6419%,38.4237%,40.8972%)
- %%    727: (173.93,121.553,137.21) #AE7A89 srgb(68.2078%,47.6677%,53.8079%)
+%%  #55545C srgb(33.4249%,33.0022%,36.2249%)
+%%  #9B9DA8 srgb(60.9781%,61.5351%,65.774%)
+%% #C8DBF3 srgb(78.5336%,85.98%,95.3246%)
+%% #A47482 srgb(64.3244%,45.4719%,51.133%)
+%%     #0D1D36 srgb(5.16518%,11.3848%,21.1139%)
+%% 84470: (13.1907,29.035,53.821) #0D1D36 srgb(5.17281%,11.3863%,21.1063%)
+%%    25190: (200.261,219.249,243.078) #C8DBF3 srgb(78.5336%,85.98%,95.3246%)
+%%    13781: (71.8794,65.5409,67.1712) #484243 srgb(28.188%,25.7023%,26.3416%)
+%%    13211: (152.7,153.385,162.658) #9999A3 srgb(59.8825%,60.1511%,63.7873%)
+%%    10613: (136,132.903,120.794) #888579 srgb(53.3333%,52.1187%,47.3701%)
+%%    9614: (97.3774,95.6148,101.704) #616066 srgb(38.1872%,37.496%,39.884%)
+%%    9294: (187.486,197.712,206.479) #BBC6CE srgb(73.5241%,77.5341%,80.972%)
+%%    7202: (111.07,114.121,140.132) #6F728C srgb(43.5569%,44.7532%,54.9538%)
+%%    7154: (39.9805,48.6654,75.4708) #28314B srgb(15.6786%,19.0845%,29.5964%)
+%%    6628: (122.467,133.195,155.051) #7A859B srgb(48.0262%,52.2332%,60.8042%)
+%%    6284: (240.961,115.646,119.716) #F17478 srgb(94.4945%,45.3513%,46.9474%)
+%%    3258: (164.14,167.553,196.56) #A4A8C5 srgb(64.3687%,65.7069%,77.0825%)
+%%    2061: (149.537,97.9805,104.288) #966268 srgb(58.6419%,38.4237%,40.8972%)
+%%    727: (173.93,121.553,137.21) #AE7A89 srgb(68.2078%,47.6677%,53.8079%)
 %%    1.87411e+06: (13,29,53.9961) #0D1D36 srgb(5.09804%,11.3725%,21.1749%)
-
-\beamertemplatenavigationsymbolsempty
-
-\setbeamercolor{normal text}{fg=foreground}
-\setbeamercolor{background canvas}{bg=background}
-\setbeamercolor{titlelike}{fg=red} %foreground}
-
-\setbeamercolor{subtitle}{fg=blue}
-%% %% \setbeamercolor{institute}{fg=grey}
-%% %% \setbeamercolor{author}{fg=grey}
-
-
-\setbeamercolor{frametitle}{fg=red}
-
-\setbeamertemplate{blocks}[rounded][shadow=false]
-
-\setbeamercolor{structure}{fg=foreground}
-
-\setbeamercolor*{block title}{fg=background,bg= blue}
-\setbeamercolor*{block body}{fg= structure,bg= blue!25!background}
-
-\setbeamercolor*{block title alerted}{fg=background,bg= red!75!background}
-\setbeamercolor*{block body alerted}{fg= structure,bg= red!25!background}
-
-\setbeamercolor*{block title example}{fg=background,bg= green!75!background}
-\setbeamercolor*{block body example}{fg= structure,bg= green!25!background}
-
-
-
-
-
-\setbeamercolor{item}{fg=foreground} % color of bullets
-\setbeamercolor{subitem}{fg=foreground}
-\setbeamercolor{itemize/enumerate subbody}{fg=foreground}
-\setbeamertemplate{itemize subitem}{{\textendash}}
-\setbeamerfont{itemize/enumerate subbody}{size=\footnotesize}
-\setbeamerfont{itemize/enumerate subitem}{size=\footnotesize}
-\setbeamerfont{bibliography}{size=\tiny}
-
-
-%% \setbeamercolor*{bibliography entry title}{fg=darkgrey}
-%% \setbeamercolor*{bibliography entry author}{fg=darkgrey}
-%% \setbeamercolor*{bibliography entry location}{fg=darkgrey}
-%% \setbeamercolor*{bibliography entry note}{fg=darkgrey}
-
-%% \setbeamertemplate{bibliography item}[text]
-%% \setbeamercolor{bibliography item}{fg=darkgrey}
-%% \setbeamercolor{footnote}{fg=darkgrey}
-
-
-\defbeamertemplate*{title page}{lucid}
-{ 
-  \vfill
-    {\centering
-      \usebeamerfont{title}\usebeamercolor[fg]{title}\inserttitle
-      \par
-    }
-    %% \vskip1cm%
-    {\centering
-      \usebeamerfont{subtitle}\usebeamercolor[fg]{subtitle}\insertsubtitle
-      \par
-    }
-    {\centering
-      \usebeamerfont{author}\usebeamercolor[fg]{author}\insertauthor
-      \par
-    }
-  \vfill
-}
-
-
-\graphicspath{{../images/}{../../images/}}
-%\usepackage{concmath}
-
-\usepackage[backend=bibtex,hyperref=true,
-            url=false,
-            isbn=false,
-            style=numeric,
-            maxcitenames=3,
-            maxbibnames=1,
-            block=none]{biblatex}
-\addbibresource{~/work/bibliography/references.bib}
-%\addbibresource{~/org/bibliography references/ref}
-%\renewcommand{\footnotesize}{\tiny}
-
-
-
-%\tikzstyle{every picture}+=[remember picture]
-%\tikzstyle{na} = [baseline=-.5ex]
-
-
-%\usetikzlibrary{shapes,arrows}
-
-%\input{template/colors}
-
-\lstdefinestyle{customc}{
- % belowcaptionskip=1\baselineskip,
- % xleftmargin=\parindent,
-  language=C,
-  showstringspaces=false,
-  basicstyle=\footnotesize\ttfamily,
-  keywordstyle=\bfseries,
-  commentstyle=\itshape,
-  identifierstyle=\normalfont\bfseries,
-  stringstyle=\color{red},
-}
-

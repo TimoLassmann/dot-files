@@ -2,14 +2,60 @@
 #+SUBTITLE:  Strategic direction 2021-2026
 #+AUTHOR: Timo La\ss mann, Feilman Fellow
 #+OPTIONS: H:2 toc:nil
+#+OPTIONS: tex:t
 #+LATEX_CMD: pdflatex
 #+LATEX_CLASS: simplepresentation
 #+BEAMER_FRAME_LEVEL: 2
-#+BEAMER_HEADER: \institute{Telethon Kids Institute\\\url{https://www.telethonkids.org.au}}
-#+BEAMER_HEADER: \titlegraphic{\includegraphics[height=1.5cm]{../images/TKI-logo.jpg}}
 
 
 * Section 1
+** Maths
+
+Foo bar \(f(x) = \frac{x^3}{n}\) chicken checken.
+
+
+Our best estimate of F(\nu) will be
+\[
+\hat{F}(\nu) = \frac{G(\nu)}{H(\nu)}.
+\]
+
+
+\begin{eqnarray*}
+\hat{f}(x) & \propto & \sum_{\nu} \frac{|F(\nu)H(\nu)|^2}{|N(\nu)|^2}
+           \frac{G(\nu)}{H(\nu)} e^{\frac{2 \pi i \nu x}{N}}\\
+           & \propto & \sum_{\nu} \frac{|F(\nu)|^2}{|N(\nu)|^2} H(\nu) H^*(\nu)
+           \frac{G(\nu)}{H(\nu)} e^{\frac{2 \pi i \nu x}{N}}\\
+           & \propto & \sum_{\nu} H^*(\nu) G(\nu) e^{\frac{2 \pi i \nu x}{N}}
+\end{eqnarray*}
+
+\footref{styczynski-2008-blosum-miscal}
+
+
+** Code
+
+#+begin_src Lambda
+Y := lambda g.(lambda x.g (x x)) (lambda x.g (x x))
+#+end_src
+
+#+begin_src C
+  int main(int argc, char *argv[])
+  {
+          fprintf(stdout,"%d %d",one, two , three, ahgsdjhasgdagsdjhagsjagdjasgdjasgdjagsdjagdja);
+          char tree = "tree";
+          return 0;
+  }
+#+end_src
+
+** List
+
+1) sad a
+2) adsa
+   - dffff
+   - ffff
+
+***
+
+
 ** Quote test
 
 *** adad                                                          :B_quote:
@@ -20,19 +66,24 @@
 other beautiful, amazing staff at TKI who all ensured we had such a memorable, opulent weekend whilst having the opportunity to share our little girl's story and play a small part in enabling this vital research into undiagnosed diseases to continue.
 Much love xix
 
-#+BEGIN_SRC latex 
+#+BEGIN_SRC latex
   {\color{red} ffff}
   {\color{darkred} ffff}
-$\Perm{n}{k}=\frac{n!}{(n-k)!}$ - permutation 
+
+#+END_SRC
+
+#+BEGIN_SRC latex
+{\color{foreground} ffff}
+{\color{darkforeground} ffff}
+#+END_SRC
+
+*** New section                                              :B_definition:
+:PROPERTIES:
+:BEAMER_env: definition
+:END:
+$\Perm{n}{k}=\frac{n!}{(n-k)!}$ - permutation
 
 $\binom nk=\Comb{n}{k}=\frac{n!}{k!(n-k)!}$ - combination
-#+END_SRC
-
-#+BEGIN_SRC latex 
-{\color{foreground} ffff}
-{\color{darkforeground} ffff}  
-#+END_SRC
-
 
 
 ** First The quick brown fox jumpedn
@@ -40,7 +91,7 @@ $\binom nk=\Comb{n}{k}=\frac{n!}{k!(n-k)!}$ - combination
     Please please please pass on our deep gratitude and appreciation to the lovely Liz, Jonathan and all the
 other beautiful, amazing staff at TKI who all ensured we had such a memorable, opulent weekend whilst having the opportunity to share our little girl's story and play a small part in enabling this vital research into undiagnosed diseases to continue.
 Much love xix
-- two 
+- two
 
 ** Second
 ** Block test
@@ -85,7 +136,7 @@ ASDA
 :BEAMER_col: 0.45
 :BEAMER_env: block
 :END:
-FFFF 
+FFFF
 ** Babel
    :PROPERTIES:
    :BEAMER_envargs: [t]
@@ -96,20 +147,20 @@ FFFF
 :END:
 
 
-GAGA? 
+GAGA?
 
 
-*** Octave code						      :BMCOL:B_block:
+*** Octave code                 :BMCOL:B_block:
     :PROPERTIES:
     :BEAMER_col: 0.45
     :BEAMER_env: block
     :END:
 #+name: octaveexample
 #+begin_example :results output :exports both
-CAR 
+CAR
 #+end_example
 
-*** The output						      :BMCOL:B_block:
+*** The output                  :BMCOL:B_block:
     :PROPERTIES:
     :BEAMER_col: 0.4
     :BEAMER_env: block
@@ -129,3 +180,61 @@ x =
    1
 
 #+end_example
+
+** Table example
+
+| asdasd | fasf af |
+|--------+---------|
+| asfa   | 45      |
+|        |  43     |
+
+
+*** Prooif                                                        :B_proof:
+:PROPERTIES:
+:BEAMER_env: proof
+:END:
+AFASFAD
+
+*** Theory                                                      :B_theorem:
+:PROPERTIES:
+:BEAMER_env: theorem
+:END:
+asdasd
+
+**                                                             :B_fullframe:
+:PROPERTIES:
+:BEAMER_env: fullframe
+:END:
+
+
+GAFASD A
+*** adfsd a                                                      :B_column:
+:PROPERTIES:
+:BEAMER_env: column
+:END:
+
+column?> B_columnb
+*** GGG                                                          :B_column:
+:PROPERTIES:
+:BEAMER_env: column
+:END:
+Another B_columnn
+
+
+** New slide with refs
+
+asdas supercite:abelson-1996-struc
+
+supercite:weinstein-2020-gener-probab
+
+supercite:trowbridge-1914
+
+** References
+\printbibliography
+
+#+LATEX: \tiny \color{red}
+#+BEGIN_SRC emacs-lisp :results output :exports results :eval yes
+  (princ (concat (format "Emacs version:\n%s\n" (emacs-version))
+                 (format "\norg version: %s\n" (org-version))))
+
+#+END_SRC

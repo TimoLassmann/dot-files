@@ -1391,9 +1391,10 @@ Htmlize required for reveal...
 Use minted package for code:
 
 #+BEGIN_SRC emacs-lisp
-  (setq org-latex-listings 'minted)
-  (setq org-latex-minted-options
-        '(("frame" "lines") ("linenos=true")("breaklines")))
+  (setq org-latex-listings t)
+   ;;   ;; (setq org-latex-listings 'minted)
+   ;;   (setq org-latex-minted-options
+   ;;         '(("frame" "lines") ("linenos=true")("breaklines")))
 #+END_SRC
 
 ** Flyspell
