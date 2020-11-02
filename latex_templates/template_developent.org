@@ -7,6 +7,11 @@
 #+LATEX_CLASS: simplepresentation
 #+BEAMER_FRAME_LEVEL: 2
 
+* COMMENT sdf
+- goals:
+
+  build best computational / lab team to investigate human disease.
+
 
 * Section 1
 ** Maths
