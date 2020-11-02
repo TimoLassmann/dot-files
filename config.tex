@@ -1,4 +1,4 @@
-% Created 2020-08-28 Fri 22:00
+% Created 2020-10-28 Wed 21:49
 % Intended LaTeX compiler: pdflatex
 \documentclass[12pt]{article}
 \usepackage{\string~"/.emacs.d/latex_templates/report"}
@@ -10,27 +10,27 @@
  pdftitle={Emacs Configuration File},
  pdfkeywords={},
  pdfsubject={},
- pdfcreator={Emacs 27.1 (Org mode 9.3.7)}, 
+ pdfcreator={Emacs 27.1 (Org mode 9.4)},
  pdflang={English}}
 \begin{document}
 
 \maketitle
 
 \section{To speed things up}
-\label{sec:orge22e969}
+\label{sec:orgeb0439c}
 
 \begin{minted}[frame=lines,linenos=true,breaklines]{common-lisp}
-(setq gc-cons-threshold 16777216)
+(setq gc-cons-threshold (* 50 1000 1000))
 
 (setq gc-cons-percentage 0.6)
 
-(setq  message-log-max 16384)
+(setq message-log-max 16384)
 
 \end{minted}
 
 \section{Package Manager}
-\label{sec:org8db6e51}
-To start we need the package ``package'' 
+\label{sec:orge5a5499}
+To start we need the package ``package''
 
 \begin{minted}[frame=lines,linenos=true,breaklines]{common-lisp}
 (require 'package)
@@ -57,33 +57,35 @@ Next let's make sure we have use-package
 \end{minted}
 
 \section{General Settings}
-\label{sec:org232b13e}
+\label{sec:org9a608b7}
 \subsection{Init File Support}
-\label{sec:orgdf8c053}
+\label{sec:org6b7bf1f}
 
 Load up a collection of enhancements to Emacs Lisp, including \href{https://github.com/magnars/dash.el}{dash},
 \href{https://github.com/magnars/s.el}{s} for string manipulation, and \href{https://github.com/rejeep/f.el}{f} for file manipulation.
 
 \begin{minted}[frame=lines,linenos=true,breaklines]{common-lisp}
 
-(use-package cl-lib
-:ensure t
-)
-     (use-package dash
 
-       :config (eval-after-load "dash" '(dash-enable-font-lock)))
+(use-package s
+  :defer t
+  :ensure t
+  )
 
-     (use-package s
-       :ensure t
-       )
-
-     (use-package f
-       :ensure t
-       )
+(use-package f
+  :ensure t
+  )
 \end{minted}
 
+;; (use-package cl-lib
+;;   :ensure t
+;;   )
+;; (use-package dash
+
+;;   :config (eval-after-load ``dash'' '(dash-enable-font-lock)))
+
 \subsection{Trace for obsolete packages}
-\label{sec:orgf386951}
+\label{sec:org6a3fb93}
 
 \begin{minted}[frame=lines,linenos=true,breaklines]{common-lisp}
 (defun debug-on-load-obsolete (filename)
@@ -94,7 +96,7 @@ Load up a collection of enhancements to Emacs Lisp, including \href{https://gith
 \end{minted}
 
 \subsection{Whoami}
-\label{sec:org8b83f6f}
+\label{sec:orgbb9175c}
 
 \begin{minted}[frame=lines,linenos=true,breaklines]{common-lisp}
 (setq user-full-name "Timo Lassmann"
@@ -102,7 +104,7 @@ Load up a collection of enhancements to Emacs Lisp, including \href{https://gith
 \end{minted}
 
 \subsection{Emacs directory}
-\label{sec:orgcb6e6f6}
+\label{sec:org9aefe85}
 
 \begin{minted}[frame=lines,linenos=true,breaklines]{common-lisp}
 (defconst tl/emacs-directory (concat (getenv "HOME") "/.emacs.d/"))
@@ -115,15 +117,15 @@ Load up a collection of enhancements to Emacs Lisp, including \href{https://gith
 \end{minted}
 
 \subsection{Basic looks}
-\label{sec:org21a0f5f}
+\label{sec:org11ebfb7}
 \subsubsection{remove startup screen}
-\label{sec:org6981c73}
+\label{sec:org685f4f5}
 \begin{minted}[frame=lines,linenos=true,breaklines]{common-lisp}
-(setq inhibit-startup-message t) 
+(setq inhibit-startup-message t)
 \end{minted}
 
 \subsubsection{remove bars ets}
-\label{sec:org91abcef}
+\label{sec:orgc4e1640}
 \begin{minted}[frame=lines,linenos=true,breaklines]{common-lisp}
 (tool-bar-mode -1)
 (menu-bar-mode -1)
@@ -132,13 +134,13 @@ Load up a collection of enhancements to Emacs Lisp, including \href{https://gith
 \end{minted}
 
 \subsubsection{Disable bell}
-\label{sec:org7788098}
+\label{sec:orgbf0c699}
 \begin{minted}[frame=lines,linenos=true,breaklines]{common-lisp}
 (setq ring-bell-function 'ignore)
 \end{minted}
 
 \subsubsection{UTF-8}
-\label{sec:org032637b}
+\label{sec:org83ef712}
 
 \begin{minted}[frame=lines,linenos=true,breaklines]{common-lisp}
 (setq locale-coding-system 'utf-8)
@@ -148,28 +150,105 @@ Load up a collection of enhancements to Emacs Lisp, including \href{https://gith
 (prefer-coding-system 'utf-8)
 \end{minted}
 
+\subsubsection{Cursor settings}
+\label{sec:orgd1ff701}
+
+Taken from Protesilaos Stavrou's emacs config (\url{https://protesilaos.com/}).
+
+\begin{minted}[frame=lines,linenos=true,breaklines]{common-lisp}
+(setq-default cursor-type 'box)
+(setq-default cursor-in-non-selected-windows '(bar . 2))
+(setq-default blink-cursor-blinks 50)
+(setq-default blink-cursor-interval nil) ; 0.75 would be my choice
+(setq-default blink-cursor-delay 0.2)
+
+(blink-cursor-mode -1)
+
+
+(define-minor-mode prot/cursor-type-mode
+  "Toggle between static block and pulsing bar cursor."
+  :init-value nil
+  :global t
+  (if prot/cursor-type-mode
+      (progn
+        (setq-local blink-cursor-interval 0.75
+                    cursor-type '(bar . 2)
+                    cursor-in-non-selected-windows 'hollow)
+        (blink-cursor-mode 1))
+    (dolist (local '(blink-cursor-interval
+                     cursor-type
+                     cursor-
+                     in-non-selected-windows))
+      (kill-local-variable `,local))
+    (blink-cursor-mode -1)))
+
+
+\end{minted}
+
+\subsection{Font setting}
+\label{sec:orgac389e6}
+
+\begin{minted}[frame=lines,linenos=true,breaklines]{common-lisp}
+
+(use-package emacs
+  :commands tl/setup-fonts
+  :config
+  (defun tl/setup-fonts ()
+    "Setup my fonts."
+    (interactive)
+    ;; Main typeface
+    (set-face-attribute 'default nil :family "Iosevka extended" :height 140)
+    ;; Proportionately spaced typeface
+    (set-face-attribute 'variable-pitch nil :family "LinuxLibertine O" :height 1.5)
+    ;; Monospaced typeface
+    (set-face-attribute 'fixed-pitch nil :family "Iosevka Fixed" :height 1.0)
+
+    (dolist (face '(mode-line mode-line-inactive minibuffer-prompt))
+      (set-face-attribute face nil :family "Iosevka term" :height 160))
+
+    )
+
+
+
+  (tl/setup-fonts)
+  )
+
+(use-package face-remap
+  :diminish buffer-face-mode            ; the actual mode
+  :commands prot/variable-pitch-mode
+  :config
+  (define-minor-mode prot/variable-pitch-mode
+    "Toggle `variable-pitch-mode', except for `prog-mode'."
+    :init-value nil
+    :global nil
+    (if prot/variable-pitch-mode
+        (unless (derived-mode-p 'prog-mode)
+          (variable-pitch-mode 1))
+      (variable-pitch-mode -1))))
+
+\end{minted}
+
 \subsection{Turn off arrow keys}
-\label{sec:org1d35e82}
+\label{sec:orgdb768f0}
 
 \begin{minted}[frame=lines,linenos=true,breaklines]{common-lisp}
 (require 'no-easy-keys)
 (no-easy-keys 1)
 \end{minted}
 
-\subsection{Turn off  mouse}
-\label{sec:orga87f215}
+\subsection{Turn off mouse}
+\label{sec:org3131597}
 
 \subsection{Diminish}
-\label{sec:org6f4cbfa}
+\label{sec:org259cc10}
 
 \begin{minted}[frame=lines,linenos=true,breaklines]{common-lisp}
-(use-package diminish 
-
+(use-package diminish
   :demand t)
 \end{minted}
 
 \subsection{Turn off auto-fill mode}
-\label{sec:org58e490c}
+\label{sec:orgb079f7e}
 
 \begin{minted}[frame=lines,linenos=true,breaklines]{common-lisp}
 (setq auto-fill-mode -1)
@@ -178,11 +257,11 @@ Load up a collection of enhancements to Emacs Lisp, including \href{https://gith
 \end{minted}
 
 \subsection{Undo / redo}
-\label{sec:org6e5305a}
+\label{sec:org38db542}
 According to this article, I get better functionality than the redo+ plugin (which I can’t seem to get working well).
 \begin{minted}[frame=lines,linenos=true,breaklines]{common-lisp}
 (use-package undo-tree
-
+  :defer t
   :diminish
   :init
   (global-undo-tree-mode 1)
@@ -194,7 +273,7 @@ According to this article, I get better functionality than the redo+ plugin (whi
 \end{minted}
 
 \subsection{Kill this buffer}
-\label{sec:org1fc8b8b}
+\label{sec:org92eea89}
 Assume that I always want to kill the current buffer when hitting C-x k.
 \begin{minted}[frame=lines,linenos=true,breaklines]{common-lisp}
 (defun tl/kill-current-buffer ()
@@ -205,7 +284,7 @@ Assume that I always want to kill the current buffer when hitting C-x k.
 \end{minted}
 
 \subsection{Tabs}
-\label{sec:org707ccae}
+\label{sec:org09bc98e}
 Never use tabs. Tabs are the devil’s whitespace.
 
 \begin{minted}[frame=lines,linenos=true,breaklines]{common-lisp}
@@ -215,7 +294,7 @@ Never use tabs. Tabs are the devil’s whitespace.
 \end{minted}
 
 \subsection{Location of mactex (if we are using mac - unlikely\ldots{}}
-\label{sec:org526bf45}
+\label{sec:org98c1ef9}
 Tell emacs about the mactex installation\ldots{}
 
 \begin{minted}[frame=lines,linenos=true,breaklines]{common-lisp}
@@ -225,7 +304,7 @@ Tell emacs about the mactex installation\ldots{}
 This should do it\ldots{}
 
 \subsection{Dired settings}
-\label{sec:orgbcdb8c9}
+\label{sec:org206337f}
 
 Taken from: \url{https://github.com/munen/emacs.d}
 
@@ -240,7 +319,7 @@ whereas a reuses the current buffer.
 \end{minted}
 
 \subsection{Path}
-\label{sec:org7551d26}
+\label{sec:orga8624a4}
 
 \begin{minted}[frame=lines,linenos=true,breaklines]{common-lisp}
 ;;(let ((path-from-shell (shell-command-to-string "/bin/bash -l -c 'echo $PATH'")))
@@ -254,7 +333,7 @@ whereas a reuses the current buffer.
 \end{minted}
 
 \subsection{Modernizing Emacs}
-\label{sec:org4954bbd}
+\label{sec:org18932c3}
 
 Found \href{https://github.com/wasamasa/dotemacs/blob/master/init.org\#init}{here} how to remove the warnings from the GnuTLS library when
 using HTTPS\ldots{} increase the minimum prime bits size:
@@ -263,7 +342,7 @@ using HTTPS\ldots{} increase the minimum prime bits size:
 \end{minted}
 
 \subsection{Turn off some default key-bindings}
-\label{sec:orgc7e6d7a}
+\label{sec:org5766f7b}
 I keep hitting this by accidental
 \begin{minted}[frame=lines,linenos=true,breaklines]{common-lisp}
 (global-unset-key (kbd "C-z"))
@@ -281,9 +360,10 @@ I keep hitting this by accidental
 \#+END\textsubscript{SRC}
 
 \subsection{Recentf}
-\label{sec:orgdf7f838}
+\label{sec:orgb428532}
 \begin{minted}[frame=lines,linenos=true,breaklines]{common-lisp}
 (use-package recentf
+  :defer t
   :custom
   (recentf-save-file "~/.emacs.d/recentf")
   (recentf-max-menu-items 10)
@@ -335,19 +415,22 @@ I keep hitting this by accidental
 \end{minted}
 
 \subsection{Saveplace (remember point position)}
-\label{sec:org2890388}
+\label{sec:org04e63c3}
 \begin{minted}[frame=lines,linenos=true,breaklines]{common-lisp}
 (use-package saveplace
+  :defer t
   :custom
   (save-place-file "~/.emacs.d/saveplace")
   :config
   (save-place-mode 1))
 \end{minted}
 
+
+
 \section{Basic Functionality}
-\label{sec:org829c4cf}
+\label{sec:org99bf088}
 \subsection{Highlight current line}
-\label{sec:orgaba1b97}
+\label{sec:org5b0aa0b}
 
 hl-line is awesome! It’s not very awesome in the terminal version of emacs though, so we don’t use that. Besides, it’s only used for programming.
 \begin{minted}[frame=lines,linenos=true,breaklines]{common-lisp}
@@ -355,29 +438,30 @@ hl-line is awesome! It’s not very awesome in the terminal version of emacs tho
 \end{minted}
 
 \subsection{yes-no to y-n}
-\label{sec:org6c0caaa}
+\label{sec:org9dc1237}
 \begin{minted}[frame=lines,linenos=true,breaklines]{common-lisp}
 (defalias 'yes-or-no-p 'y-or-n-p)
 \end{minted}
 
 \subsection{Async}
-\label{sec:org951275d}
+\label{sec:orgbf7a072}
 
 Lets us use asynchronous processes wherever possible, pretty useful.
 \begin{minted}[frame=lines,linenos=true,breaklines]{common-lisp}
 (use-package async
-
+  :defer t
   :init (dired-async-mode 1))
 \end{minted}
 
 \subsection{Projectile}
-\label{sec:org6fa0146}
+\label{sec:org8234084}
 Projectile is an awesome project manager, mostly because it recognizes directories with a .git directory as projects and helps you manage them accordingly.
 Enable projectile globally
 
 This makes sure that everything can be a project.
 \begin{minted}[frame=lines,linenos=true,breaklines]{common-lisp}
 (use-package projectile
+  :defer t
   :ensure t
   ;; :delight '(:eval (concat " " (projectile-project-name)))
   :delight
@@ -388,6 +472,7 @@ This makes sure that everything can be a project.
   (projectile-completion-system 'ivy))
 
 (use-package counsel-projectile
+  :defer t
   :ensure t
   :config
   (add-to-list 'ivy-initial-inputs-alist '(counsel-projectile-switch-project . ""))
@@ -407,7 +492,7 @@ Let projectile call make
 \end{minted}
 
 \subsection{Insert date}
-\label{sec:orga067124}
+\label{sec:org82de222}
 This is a piece of code from JorgenSchaefersEmacsConfig.
 \begin{minted}[frame=lines,linenos=true,breaklines]{common-lisp}
 (defun insert-date (prefix)
@@ -425,12 +510,12 @@ This is a piece of code from JorgenSchaefersEmacsConfig.
 \end{minted}
 
 \subsection{Aggressive Auto Indention}
-\label{sec:org002ebcd}
+\label{sec:orgb315f19}
 
 \section{Improvements}
-\label{sec:org103bbda}
+\label{sec:org38046b3}
 \subsection{Better beginning of line}
-\label{sec:org153420b}
+\label{sec:org52825d4}
 
 \begin{minted}[frame=lines,linenos=true,breaklines]{common-lisp}
 (defun smarter-move-beginning-of-line (arg)
@@ -462,11 +547,11 @@ point reaches the beginning or end of the buffer, stop there."
 \end{minted}
 
 \section{Terminal}
-\label{sec:orgcf158e7}
+\label{sec:orgaedd150}
 
 I have used urxvt for years, and I miss it sometimes, but ansi-term is enough for most of my tasks.
 \subsection{Default shell should be zsh}
-\label{sec:org62a25f5}
+\label{sec:org012277c}
 
 I don’t know why this is a thing, but asking me what shell to launch every single time I open a terminal makes me want to slap babies, this gets rid of it. This goes without saying but you can replace bash with your shell of choice.
 \begin{minted}[frame=lines,linenos=true,breaklines]{common-lisp}
@@ -478,7 +563,7 @@ I don’t know why this is a thing, but asking me what shell to launch every sin
 \end{minted}
 
 \subsection{Easy to remember keybinding}
-\label{sec:org27597e0}
+\label{sec:org52af06b}
 
 In loving memory of bspwm, Super + Enter opens a new terminal, old habits die hard.
 \begin{minted}[frame=lines,linenos=true,breaklines]{common-lisp}
@@ -486,7 +571,7 @@ In loving memory of bspwm, Super + Enter opens a new terminal, old habits die ha
 \end{minted}
 
 \section{Moving around}
-\label{sec:orgd92de63}
+\label{sec:orga71228a}
 
 One of the most important things about a text editor is how efficient
 you manage to be when using it, how much time do basic tasks take you
@@ -502,7 +587,7 @@ yourself the biggest favor and integrate those into your workflow.
 
 
 \subsection{scrolling and why does the screen move}
-\label{sec:org83a0b6a}
+\label{sec:orgdf335e8}
 
 I don’t know to be honest, but this little bit of code makes scrolling with emacs a lot nicer.
 \begin{minted}[frame=lines,linenos=true,breaklines]{common-lisp}
@@ -510,21 +595,21 @@ I don’t know to be honest, but this little bit of code makes scrolling with em
 \end{minted}
 
 \subsection{which-key and why I love emacs}
-\label{sec:orgc09a17c}
+\label{sec:org2e7d193}
 
 In order to use emacs, you don’t need to know how to use emacs. It’s self documenting, and coupled with this insanely useful package, it’s even easier. In short, after you start the input of a command and stop, pondering what key must follow, it will automatically open a non-intrusive buffer at the bottom of the screen offering you suggestions for completing the command, that’s it, nothing else.
 
 It’s beautiful
 \begin{minted}[frame=lines,linenos=true,breaklines]{common-lisp}
 (use-package which-key
-
+  :defer t
   :diminish which-key-mode
   :config
   (which-key-mode))
 \end{minted}
 
 \subsection{windows,panes and why I hate other-window}
-\label{sec:org201cad5}
+\label{sec:org62dee42}
 
 Some of us have large displays, others have tiny netbook screens, but regardless of your hardware you probably use more than 2 panes/windows at times, cycling through all of them with C-c o is annoying to say the least, it’s a lot of keystrokes and takes time, time you could spend doing something more productive.
 switch-window
@@ -532,7 +617,7 @@ switch-window
 This magnificent package takes care of this issue. It’s unnoticeable if you have <3 panes open, but with 3 or more, upon pressing C-x o you will notice how your buffers turn a solid color and each buffer is asigned a letter (the list below shows the letters, you can modify them to suit your liking), upon pressing a letter asigned to a window, your will be taken to said window, easy to remember, quick to use and most importantly, it annihilates a big issue I had with emacs. An alternative is ace-window, however by default it also changes the behaviour of C-x o even if only 2 windows are open, this is bad, it also works less well with exwm for some reason.
 \begin{minted}[frame=lines,linenos=true,breaklines]{common-lisp}
 (use-package switch-window
-
+  :defer t
   :config
   (setq switch-window-input-style 'minibuffer)
   (setq switch-window-increase 4)
@@ -545,7 +630,7 @@ This magnificent package takes care of this issue. It’s unnoticeable if you ha
 \end{minted}
 
 \subsection{Following window splits}
-\label{sec:org30239cd}
+\label{sec:org79ab75f}
 
 After you split a window, your focus remains in the previous one. This annoyed me so much I wrote these two, they take care of it.
 \begin{minted}[frame=lines,linenos=true,breaklines]{common-lisp}
@@ -567,9 +652,9 @@ After you split a window, your focus remains in the previous one. This annoyed m
 
 
 \subsection{Ivy}
-\label{sec:orgaa74583}
+\label{sec:orgbb2068e}
 
-This Ivy configuration is copied from Protesilaos Stavrou's old setup ( \url{https://gitlab.com/protesilaos/dotfiles}) 
+This Ivy configuration is copied from Protesilaos Stavrou's old setup ( \url{https://gitlab.com/protesilaos/dotfiles})
 
 
 And here are some 'hidden' key bindings for making the most out of Ivy
@@ -592,6 +677,7 @@ C-SPC & ivy-restrict-to-matches & My alias for the above.\\
 \begin{minted}[frame=lines,linenos=true,breaklines]{common-lisp}
 (use-package ivy
   :ensure t
+  :diminish ivy-mode
   :delight
   :custom
   (ivy-count-format "(%d/%d) ")
@@ -637,7 +723,7 @@ C-SPC & ivy-restrict-to-matches & My alias for the above.\\
 
 \end{minted}
 
-Prescient 
+Prescient
 \begin{minted}[frame=lines,linenos=true,breaklines]{common-lisp}
 (use-package prescient
   :ensure t
@@ -766,7 +852,7 @@ repository, then the corresponding root is used instead."
 \end{minted}
 
 \subsection{Swiper}
-\label{sec:org8ede04c}
+\label{sec:orge5afac3}
 \begin{minted}[frame=lines,linenos=true,breaklines]{common-lisp}
 (use-package swiper
   :ensure t
@@ -783,7 +869,7 @@ repository, then the corresponding root is used instead."
 \end{minted}
 
 \subsection{Avy}
-\label{sec:orgdb16f45}
+\label{sec:orgcee26b6}
 
 
 \begin{minted}[frame=lines,linenos=true,breaklines]{common-lisp}
@@ -799,7 +885,7 @@ repository, then the corresponding root is used instead."
 \end{minted}
 
 \subsection{Ivy extensions}
-\label{sec:orgd8b5635}
+\label{sec:orgc2ad601}
 
 \begin{minted}[frame=lines,linenos=true,breaklines]{common-lisp}
 (use-package ivy-rich
@@ -815,6 +901,8 @@ repository, then the corresponding root is used instead."
 \begin{minted}[frame=lines,linenos=true,breaklines]{common-lisp}
 (use-package ivy-posframe
   :ensure t
+  :after ivy
+  :diminish ivy-posframe-mode
   :delight
   :custom
   (ivy-posframe-parameters
@@ -836,7 +924,7 @@ repository, then the corresponding root is used instead."
 \end{minted}
 
 \subsection{Swoop}
-\label{sec:org81417b3}
+\label{sec:org97be216}
 \begin{verbatim}
 
 (use-package helm-swoop
@@ -864,18 +952,18 @@ repository, then the corresponding root is used instead."
 \end{verbatim}
 
 \subsection{Winner mode}
-\label{sec:org07fb807}
+\label{sec:orgf7a0324}
 
 \begin{minted}[frame=lines,linenos=true,breaklines]{common-lisp}
 (use-package winner
-
+  :defer t
   :init (winner-mode 1))
 \end{minted}
 
 \section{Completion}
-\label{sec:org5e25cec}
+\label{sec:org5ce00bc}
 \subsection{IDO}
-\label{sec:orgd7952c0}
+\label{sec:org7b7b0af}
 
 \begin{minted}[frame=lines,linenos=true,breaklines]{common-lisp}
 (use-package ido
@@ -908,7 +996,7 @@ FLX package
 
 \end{minted}
 
-Vertical mode 
+Vertical mode
 \begin{minted}[frame=lines,linenos=true,breaklines]{common-lisp}
 (use-package ido-vertical-mode
 
@@ -940,20 +1028,22 @@ Vertical mode
 \end{minted}
 
 \subsection{Counsel}
-\label{sec:orged39558}
-Counsel tramp 
+\label{sec:org1644d64}
+Counsel tramp
 \begin{minted}[frame=lines,linenos=true,breaklines]{common-lisp}
 (use-package counsel-tramp)
 \end{minted}
 
 \subsection{Company}
-\label{sec:org74ab1dd}
+\label{sec:org6bb5354}
 
 \begin{minted}[frame=lines,linenos=true,breaklines]{common-lisp}
 (use-package company-c-headers
-  :ensure t 
+  :defer t
+  :ensure t
   )
 (use-package company
+  :defer t
   :ensure t
   :delight
   :custom
@@ -994,7 +1084,8 @@ Counsel tramp
                ("C-n" . company-select-next)
                ("C-p" . company-select-previous))))
 
-(use-package company-statistics      
+(use-package company-statistics
+  :defer t
   :init
   (company-statistics-mode))
 
@@ -1011,25 +1102,26 @@ Counsel tramp
 
 \end{minted}
 
-I had to add the hook and local variable to stop company from selecting capf before clang. 
+I had to add the hook and local variable to stop company from selecting capf before clang.
 To make this work properly, I need to manually specify the include paths by
 putting a \texttt{.dir-locals.el} into the source directory of my C code. I.e. most
 of the time this will be \texttt{src} and I need to point to
-\texttt{../tldevel}. 
+\texttt{../tldevel}.
 
-In addition add the include path to flycheck-clang! 
+In addition add the include path to flycheck-clang!
 
 \begin{verbatim}
 (
- (c-mode . ((company-clang-arguments . ("-I."  "-I../tldevel-1.2.8/"))))
- (c-mode . ((company-c-headers-path-user . ("." "../tldevel-1.2.8/"))))
- (c-mode . ((flycheck-clang-include-path . ("-I." "-I../tldevel-1.2.8/"))))
- )
+(c-mode . ((company-clang-arguments . ("-I."  "-I../tldevel-1.2.8/"))))
+(c-mode . ((company-c-headers-path-user . ("." "../tldevel-1.2.8/"))))
+(c-mode . ((flycheck-clang-include-path . ("-I." "-I../tldevel-1.2.8/"))))
+)
 
 \end{verbatim}
-Company Prescient 
+Company Prescient
 \begin{minted}[frame=lines,linenos=true,breaklines]{common-lisp}
 (use-package company-prescient
+  :defer t
   :ensure t
   :after (company prescient)
   :config
@@ -1038,10 +1130,9 @@ Company Prescient
 \end{minted}
 
 \section{Writing}
-\label{sec:orgc4dcbac}
-
+\label{sec:org5395f2e}
 \subsection{Flyspell config}
-\label{sec:org2395797}
+\label{sec:orgc07d6bc}
 
 Installing aspell on linux:
 
@@ -1049,17 +1140,17 @@ Installing aspell on linux:
 apt install aspell aspell-en
 \end{verbatim}
 
-on mac: 
+on mac:
 
 \begin{verbatim}
-brew install aspell 
+brew install aspell
 \end{verbatim}
 
-Note in the config below I assume aspell is installed in \texttt{/usr/bin/} !. 
+Note in the config below I assume aspell is installed in \texttt{/usr/bin/} !.
 
 \begin{minted}[frame=lines,linenos=true,breaklines]{common-lisp}
 (use-package flyspell
-
+  :defer t
   :diminish flyspell-mode
   :init
   (add-hook 'prog-mode-hook 'flyspell-prog-mode)
@@ -1085,24 +1176,22 @@ Note in the config below I assume aspell is installed in \texttt{/usr/bin/} !.
 There is more stuff in Howard Abram's config but I'll leave this for now..
 
 
-
 \subsection{Writegood mode}
-\label{sec:org8aff807}
-This does not work - there is a wring gpg signature in melpa\ldots{} 
+\label{sec:org41218a6}
+This does not work - there is a wring gpg signature in melpa\ldots{}
 
-this mode will improve various aspects of writing. 
+this mode will improve various aspects of writing.
 
 end.
 
-
 \subsection{LangTool}
-\label{sec:org21f5027}
+\label{sec:org9638c21}
 
 I added the Emacs-langtool code from:
 
 \url{https://github.com/mhayashi1120/Emacs-langtool}
 
-To my \texttt{/elisp/} directory. 
+To my \texttt{/elisp/} directory.
 
 To install langtool install \texttt{maven} package, java 8 then:
 
@@ -1112,104 +1201,129 @@ git clone https://github.com/languagetool-org/languagetool.git
 ./build.sh languagetool-standalone package
 
 \end{verbatim}
-This does not work! 
+This does not work!
 
-I now simply download the pre-compiles zip package\ldots{} 
+I now simply download the pre-compiles zip package\ldots{}
 
-To load: 
+To load:
 \begin{minted}[frame=lines,linenos=true,breaklines]{common-lisp}
 (require 'langtool)
 (setq langtool-language-tool-jar "/home/user/programs/langtool/LanguageTool-4.0/languagetool-commandline.jar")
 \end{minted}
 
+\subsection{Olivetti mode config}
+\label{sec:org2bebb3e}
+
+Taken from Protesilaos Stavrou's emacs config (\url{https://protesilaos.com/}),
+\begin{minted}[frame=lines,linenos=true,breaklines]{common-lisp}
+(define-minor-mode prot/mode-line-hidden-mode
+  "Toggle modeline visibility in the current buffer."
+  :init-value nil
+  :global nil
+  (if prot/mode-line-hidden-mode
+      (setq-local mode-line-format nil)
+    (kill-local-variable 'mode-line-format)
+    (force-mode-line-update)))
+
+(define-minor-mode tl/mode-hlline-hidden-mode
+  "Toggle modeline visibility in the current buffer."
+  :init-value nil
+  :global nil
+  (if tl/mode-hlline-hidden-mode
+      (setq-local global-hl-line-mode nil)
+    (setq-local global-hl-line-mode 1)))
+
+
+(use-package olivetti
+  :ensure
+  :diminish
+  :config
+
+  (setq olivetti-body-width 0.7)
+  (setq olivetti-minimum-body-width 80)
+  (setq olivetti-recall-visual-line-mode-entry-state t)
+
+  (define-minor-mode prot/olivetti-mode
+    "Toggle buffer-local `olivetti-mode' with additional parameters.
+
+    Fringes are disabled.  The modeline is hidden, except for
+    `prog-mode' buffers (see `prot/mode-line-hidden-mode').  The
+    default typeface is set to a proportionately spaced family,
+    except for programming modes (see `prot/variable-pitch-mode').
+    The cursor becomes a blinking bar, per `prot/cursor-type-mode'."
+    :init-value nil
+    :global nil
+    (if prot/olivetti-mode
+        (progn
+          (olivetti-mode 1)
+          (tl/mode-hlline-hidden-mode 1)
+          (set-window-fringes (selected-window) 0 0)
+          (prot/variable-pitch-mode 1)
+          (prot/cursor-type-mode 1)
+          (unless (derived-mode-p 'prog-mode)
+            (prot/mode-line-hidden-mode 1)))
+      (olivetti-mode -1)
+      (tl/mode-hlline-hidden-mode -1)
+      (set-window-fringes (selected-window) nil) ; Use default width
+      (prot/variable-pitch-mode -1)
+      (prot/cursor-type-mode -1)
+      (unless (derived-mode-p 'prog-mode)
+        (prot/mode-line-hidden-mode -1))))
+  :bind ("C-c o" . prot/olivetti-mode))
+
+
+\end{minted}
+
 \section{Org-mode}
-\label{sec:org779785a}
+\label{sec:org1060563}
 \subsection{General setup}
-\label{sec:org3404712}
+\label{sec:orgb8d64a7}
 
 load org mode
 
 \begin{minted}[frame=lines,linenos=true,breaklines]{common-lisp}
 (use-package org
+
   :init
+
+  (setq org-startup-indented t)
+  (setq org-hide-leading-stars t)
+  (setq org-odd-level-only t)
+  (setq org-indent-mode t)
+  (setq org-startup-with-inline-images t)
+
+  (setq org-src-fontify-natively t)
+  (setq org-refile-use-outline-path 'file)
+  (setq org-refile-allow-creating-parent-nodes 'confirm)
+  (setq org-directory "~/work")
+  (setq org-log-into-drawer t)
+  (setq org-log-done 'time)
+
+  ;; Add the REPORT drawer
+  (setq org-drawers '("PROPERTIES" "CLOCK" "LOGBOOK" "REPORT"))
+  (setq org-agenda-files '("~/capture"
+                           "~/work"
+                           "~/work/roam"
+                           "~/work/roam/dailies"
+                           "~/life"))
+  (setq org-refile-targets '(("~/work/work-todo.org" :maxlevel . 2)
+                             ("~/work/work-todo-archive.org" :maxlevel . 2)
+                             ("~/life/life-todo.org" :maxlevel . 2)
+                             ))
   (setq org-use-speed-commands t
         org-return-follows-link t
         org-completion-use-ido t
         org-outline-path-complete-in-steps nil))
-\end{minted}
-
-Directory, inbox ..
-
-\begin{minted}[frame=lines,linenos=true,breaklines]{common-lisp}
-(setq org-directory "~/")
-(defun org-file-path (filename)
-  "Return the absolute address of an org file, given its relative name."
-  (concat (file-name-as-directory org-directory) filename))
-(setq org-index-file (org-file-path "/capture/inbox.org"))
-(setq org-archive-location
-      (concat (org-file-path "archive.org") "::* From %s"))
-\end{minted}
-
-Multiple files for agenda source:
-
-\begin{minted}[frame=lines,linenos=true,breaklines]{common-lisp}
-;;   (setq org-agenda-files (list org-index-file))
-(setq org-agenda-files '("~/capture"
-                         "~/work"
-                         "~/work/roam"
-                         "~/work/roam/dailies"
-                         "~/life"))
-\end{minted}
-
-Refile targets / create new targets if necessary
-
-\begin{minted}[frame=lines,linenos=true,breaklines]{common-lisp}
-;;(setq org-refile-targets '((org-agenda-files :maxlevel . 3)))
-(setq org-refile-targets '(("~/work/work-todo.org" :maxlevel . 2)
-                           ("~/work/work-todo-archive.org" :maxlevel . 2)
-                           ("~/life/life-todo.org" :maxlevel . 2)
-                           ))
-(setq org-refile-use-outline-path 'file)
-(setq org-refile-allow-creating-parent-nodes 'confirm)
-(setq org-refile-allow-creating-parent-nodes 'confirm)
-\end{minted}
-
-Drawers 
-\begin{minted}[frame=lines,linenos=true,breaklines]{common-lisp}
-(setq org-log-into-drawer t)
-
-;; Add the REPORT drawer
-(setq org-drawers '("PROPERTIES" "CLOCK" "LOGBOOK" "REPORT"))
-\end{minted}
-
-Hitting C-c C-x C-s will mark a todo as done and move it to an appropriate place
-in the archive.
-
-\begin{minted}[frame=lines,linenos=true,breaklines]{common-lisp}
-(defun tl/mark-done-and-archive ()
-  "Mark the state of an org-mode item as DONE and archive it."
-  (interactive)
-  (org-todo 'done)
-  (org-archive-subtree))
-
-;;    (define-key org-mode-map (kbd "C-c C-x C-s") 'tl/mark-done-and-archive)
 
 
-
-\end{minted}
-
-Record the time that a todo was archived.
-
-\begin{minted}[frame=lines,linenos=true,breaklines]{common-lisp}
-(setq org-log-done 'time)
-\end{minted}
-
-\begin{minted}[frame=lines,linenos=true,breaklines]{common-lisp}
 (add-hook 'org-mode-hook 'visual-line-mode)
 \end{minted}
 
+
+Record the time that a todo was archived.
+
 \subsection{Capture}
-\label{sec:org64ed8c7}
+\label{sec:orgdbd0244}
 Capture templates..
 \begin{minted}[frame=lines,linenos=true,breaklines]{common-lisp}
 (setq org-capture-templates
@@ -1223,18 +1337,18 @@ Capture templates..
                "* TODO %?\n%a   %:from %:fromname %:fromaddress" :prepend t :jump-to-captured t)
               ("p" "Daily Plan" plain (file+datetree "~/planning/daily-plan.org")
                "+ [ ] The 3 most important tasks [/]
-                - [ ] 
-                - [ ] 
-                - [ ] 
+                - [ ]
+                - [ ]
+                - [ ]
               + [ ] Other tasks that are in the system [/]
-                - [ ] 
+                - [ ]
               + [ ] ToDos which are not tracked by my system [/]
                 - [ ] " :immediate-finish t)
               )))
 \end{minted}
 
 \subsection{Taking Meeting Notes}
-\label{sec:org77861e5}
+\label{sec:org2cffde1}
 
 directly from \url{https://github.com/howardabrams/dot-files/blob/master/emacs-org.org})
 
@@ -1269,7 +1383,7 @@ Of course, I need an ‘undo’ feature when the meeting is over…
 End.
 
 \subsection{Coding}
-\label{sec:orge6c07f7}
+\label{sec:org87c399b}
 
 Allow babel to evaluate C \ldots{}
 
@@ -1280,7 +1394,7 @@ Allow babel to evaluate C \ldots{}
    (R . t)
    (dot . t)
    (emacs-lisp . t)
-   (shell . t) 
+   (shell . t)
    (awk . t)
    (makefile . t)
    (latex . t)
@@ -1305,7 +1419,7 @@ smart brackets in export
 
 Done.
 \subsection{Export}
-\label{sec:org7668c71}
+\label{sec:orgec5594b}
 
 Export packages\ldots{}
 
@@ -1321,7 +1435,7 @@ Htmlize required for reveal\ldots{}
   )
 \end{minted}
 
-Use minted package for code: 
+Use minted package for code:
 
 \begin{minted}[frame=lines,linenos=true,breaklines]{common-lisp}
 (setq org-latex-listings 'minted)
@@ -1330,14 +1444,14 @@ Use minted package for code:
 \end{minted}
 
 \subsection{Flyspell}
-\label{sec:orgabbb706}
+\label{sec:orgdbc3fd3}
 Enable spell-checking in Org-mode.
 \begin{minted}[frame=lines,linenos=true,breaklines]{common-lisp}
 (add-hook 'org-mode-hook 'flyspell-mode)
 \end{minted}
 
 \subsection{Color and display}
-\label{sec:org675e1bf}
+\label{sec:orgb6015ef}
 
 Use syntax highlighting in source blocks while editing.
 \begin{minted}[frame=lines,linenos=true,breaklines]{common-lisp}
@@ -1356,20 +1470,19 @@ new one (which shows the same information).
 \end{minted}
 
 \subsection{Bullets}
-\label{sec:orgedc3fc1}
+\label{sec:org42b5d43}
 
 \begin{minted}[frame=lines,linenos=true,breaklines]{common-lisp}
 (use-package org-superstar
 
-  :init 
+  :init
   (add-hook 'org-mode-hook (lambda () (org-superstar-mode 1)))
   )
 
 \end{minted}
 
-
 \subsection{Image preview}
-\label{sec:org59aaca7}
+\label{sec:orgef0ff3a}
 
 Inline images support:
 
@@ -1385,12 +1498,12 @@ Inline images support:
 
 
 (setq org-confirm-babel-evaluate nil)
-(add-hook 'org-babel-after-execute-hook 'org-display-inline-images)   
+(add-hook 'org-babel-after-execute-hook 'org-display-inline-images)
 (add-hook 'org-mode-hook 'org-display-inline-images)
 \end{minted}
 
 \subsection{Keybindings}
-\label{sec:orge3d61c6}
+\label{sec:orgbc1cad5}
 
 
 Standard bindings
@@ -1428,10 +1541,35 @@ undef a key
 \end{minted}
 
 \subsection{deft}
-\label{sec:org9c5a853}
+\label{sec:org6a16d37}
+
+\begin{minted}[frame=lines,linenos=true,breaklines]{common-lisp}
+(use-package deft
+  :commands deft
+  :init
+  (setq deft-default-extension "org"
+        ;; de-couples filename and note title:
+        deft-use-filename-as-title nil
+        deft-use-filter-string-for-filename t
+        ;; disable auto-save
+        deft-auto-save-interval -1.0
+        ;; converts the filter string into a readable file-name using kebab-case:
+        deft-file-naming-rules
+        '((noslash . "-")
+          (nospace . "-")
+          (case-fn . downcase)))
+  :config
+  (add-to-list 'deft-extensions "tex")
+  )
+
+(setq    deft-directory (concat (getenv "HOME") "/work/roam/"))
+\end{minted}
+
+NOTE: in Emacs 27.1 the cl package has been deprecated. Therefore deft throws an error when called. To fix this find all \texttt{(require 'cl)} statements and replace with \texttt{(require 'cl-lib)}. E.g. by running \texttt{rg -F "(require 'cl)" -l}.
+
 
 \subsection{Helm-bibtex}
-\label{sec:org6343578}
+\label{sec:org6ce8bad}
 
 Define format for bibtex entries
 
@@ -1460,7 +1598,7 @@ Define format for bibtex entries
 
 
 \subsection{Org-ref}
-\label{sec:org762937f}
+\label{sec:orgc607506}
 
 
 \begin{minted}[frame=lines,linenos=true,breaklines]{common-lisp}
@@ -1473,7 +1611,7 @@ Define format for bibtex entries
 (setq  notes-directory (concat (getenv "HOME") "/work/roam/"))
 
 (use-package org-ref
-  :ensure t 
+  :ensure t
   :config
   (setq
    org-ref-completion-library 'org-ref-ivy-cite
@@ -1538,31 +1676,31 @@ Where are the refs?
 End.
 
 \subsection{Org roam}
-\label{sec:org00ea2f7}
+\label{sec:org827a861}
 \begin{minted}[frame=lines,linenos=true,breaklines]{common-lisp}
-     (use-package org-roam
-       :ensure t
-       :hook
-       (after-init . org-roam-mode)
-       :custom
-       (org-roam-directory "~/work/roam/")
+(use-package org-roam
+  :ensure t
+  :hook
+  (after-init . org-roam-mode)
+  :custom
+  (org-roam-directory "~/work/roam/")
 
-       :bind (:map org-roam-mode-map
-                   (("C-c m l" . org-roam)
-                    ("C-c m F" . org-roam-find-file)
-                    ("C-c m r" . org-roam-find-ref)
-                    ("C-c m ." . org-roam-find-directory)
-                    ("C-c m d" . org-roam-dailies-today)
-                    ("C-c m j" . org-roam-jump-to-index)
-                    ("C-c m b" . org-roam-switch-to-buffer)
-                    ("C-c m g" . org-roam-graph))
-                   :map org-mode-map
-                   (("C-c m i" . org-roam-insert)))
-       )
+  :bind (:map org-roam-mode-map
+              (("C-c m l" . org-roam)
+               ("C-c m F" . org-roam-find-file)
+               ("C-c m r" . org-roam-find-ref)
+               ("C-c m ." . org-roam-find-directory)
+               ("C-c m d" . org-roam-dailies-today)
+               ("C-c m j" . org-roam-jump-to-index)
+               ("C-c m b" . org-roam-switch-to-buffer)
+               ("C-c m g" . org-roam-graph))
+              :map org-mode-map
+              (("C-c m i" . org-roam-insert)))
+  )
 (setq org-roam-index-file "~/work/roam/Index.org")
 \end{minted}
 
-Templates: 
+Templates:
 
 \begin{minted}[frame=lines,linenos=true,breaklines]{common-lisp}
 (setq org-roam-capture-templates
@@ -1586,12 +1724,14 @@ Templates:
 (setq org-roam-dailies-capture-templates
       (quote (("d" "daily" plain (function org-roam-capture--get-point) "* %?\n"
                ;;                   :immediate-finish t
-               :add-created t 
+               :add-created t
                :file-name "dailies/%<%Y-%m-%d>"
                :head "#+TITLE: %<%Y-%m-%d>\n\n"))
              )
       )
 \end{minted}
+
+Org Roam protocol
 
 \begin{minted}[frame=lines,linenos=true,breaklines]{common-lisp}
 
@@ -1612,9 +1752,25 @@ Templates:
         org-roam-server-network-label-wrap-length 20))
 \end{minted}
 
+Additional setup:
 
+We need to create a file in \texttt{\textasciitilde{}/.local/share/applications/org-protocol.desktop}
+\begin{verbatim}
+[Desktop Entry]
+Name=Org-Protocol
+Exec=emacsclient %u
+Icon=emacs-icon
+Type=Application
+Terminal=false
+MimeType=x-scheme-handler/org-protocol
+\end{verbatim}
+
+and run :
+\begin{verbatim}
+xdg-mime default org-protocol.desktop x-scheme-handler/org-protocol
+\end{verbatim}
 \subsection{Org-roam-bibtex}
-\label{sec:org500e4a3}
+\label{sec:org4a2588f}
 \begin{minted}[frame=lines,linenos=true,breaklines]{common-lisp}
 
 (use-package org-roam-bibtex
@@ -1646,19 +1802,19 @@ Templates:
 \end{minted}
 
 \subsection{company-org-roam}
-\label{sec:org89a78e0}
+\label{sec:org7aee398}
 \begin{minted}[frame=lines,linenos=true,breaklines]{common-lisp}
 
 (use-package company-org-roam
   :ensure t
-  ;; You may want to pin in case the version from stable.melpa.org is not working 
+  ;; You may want to pin in case the version from stable.melpa.org is not working
                                         ; :pin melpa
   :config
   (push 'company-org-roam company-backends))
 \end{minted}
 
-\subsection{Org- Noter}
-\label{sec:orge34521a}
+\subsection{Org-Noter}
+\label{sec:org8de70fd}
 
 \begin{minted}[frame=lines,linenos=true,breaklines]{common-lisp}
 (setq
@@ -1680,10 +1836,10 @@ Templates:
 
 
 \subsection{Org-download}
-\label{sec:org6db49cc}
+\label{sec:orgb8e1627}
 
 \subsection{Latex templates}
-\label{sec:orge40dfb6}
+\label{sec:orgcf56e66}
 Latex templates
 \begin{minted}[frame=lines,linenos=true,breaklines]{common-lisp}
 
@@ -1713,7 +1869,7 @@ Latex templates
 \end{minted}
 
 \subsection{CV}
-\label{sec:orgd2ceeb1}
+\label{sec:orgffa0f29}
 
 \begin{minted}[frame=lines,linenos=true,breaklines]{common-lisp}
 (add-to-list 'org-latex-classes
@@ -1730,7 +1886,7 @@ Latex templates
 \end{minted}
 
 \subsection{NHMRC project grant}
-\label{sec:orge0f613a}
+\label{sec:orgac80cb0}
 
 \begin{minted}[frame=lines,linenos=true,breaklines]{common-lisp}
 (add-to-list 'org-latex-classes
@@ -1745,7 +1901,7 @@ Latex templates
                ("\\paragraph{%s}" . "\\paragraph*{%s}")
                ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
 \end{minted}
-Rebuttal\ldots{} 
+Rebuttal\ldots{}
 \begin{minted}[frame=lines,linenos=true,breaklines]{common-lisp}
 (add-to-list 'org-latex-classes
              '("NHMRC_project_grant_rebuttal"
@@ -1762,7 +1918,7 @@ Rebuttal\ldots{}
 \end{minted}
 
 \subsection{NHMRC Investigator}
-\label{sec:org821b932}
+\label{sec:org9ed2a15}
 
 \begin{minted}[frame=lines,linenos=true,breaklines]{common-lisp}
 (add-to-list 'org-latex-classes
@@ -1779,9 +1935,9 @@ Rebuttal\ldots{}
 \end{minted}
 
 \subsection{ARC Discovery Grant}
-\label{sec:org5587e79}
+\label{sec:orga3563b7}
 
-Main grant 
+Main grant
 \begin{minted}[frame=lines,linenos=true,breaklines]{common-lisp}
 (add-to-list 'org-latex-classes
              '("ARC_discovery_grant"
@@ -1813,7 +1969,7 @@ Special formatting for the ROPE sections.
 
 
 \subsection{Nature style paper}
-\label{sec:orgdaa7d04}
+\label{sec:org23c74ff}
 
 \begin{minted}[frame=lines,linenos=true,breaklines]{common-lisp}
 (add-to-list 'org-latex-classes '("naturedef"
@@ -1843,7 +1999,7 @@ Special formatting for the ROPE sections.
 \end{minted}
 
 \subsection{Bioinformatics paper}
-\label{sec:org3e9a92b}
+\label{sec:orga805add}
 
 \begin{minted}[frame=lines,linenos=true,breaklines]{common-lisp}
 (add-to-list 'org-latex-classes '("bioinfo"
@@ -1860,7 +2016,7 @@ Special formatting for the ROPE sections.
 
 
 \subsection{Internal report}
-\label{sec:org9e49dab}
+\label{sec:org8be758c}
 \begin{minted}[frame=lines,linenos=true,breaklines]{common-lisp}
 (add-to-list 'org-latex-classes
              '("report"
@@ -1874,8 +2030,9 @@ Special formatting for the ROPE sections.
                ("\\paragraph{%s}" . "\\paragraph*{%s}")
                ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
 \end{minted}
+
 \subsection{RoamCard}
-\label{sec:org49dca5b}
+\label{sec:org66033ed}
 \begin{minted}[frame=lines,linenos=true,breaklines]{common-lisp}
 (add-to-list 'org-latex-classes
              '("roamcard"
@@ -1890,8 +2047,9 @@ Special formatting for the ROPE sections.
                ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
 \end{minted}
 
+
 \subsection{Simple presentation}
-\label{sec:org01e4d7a}
+\label{sec:orge3064f9}
 
 \begin{minted}[frame=lines,linenos=true,breaklines]{common-lisp}
 (add-to-list 'org-latex-classes
@@ -1907,8 +2065,23 @@ Special formatting for the ROPE sections.
                 "\\end{frame}")))
 \end{minted}
 
+\begin{minted}[frame=lines,linenos=true,breaklines]{common-lisp}
+(add-to-list 'org-latex-classes
+             '("smallscreen"
+               "\\documentclass[aspectratio=169,18pt,t]{beamer}
+\\usepackage{\\string~\"/.emacs.d/latex_templates/smallscreen\"}
+[NO-DEFAULT-PACKAGES]
+[NO-PACKAGES]"
+               ("\\section{%s}" . "\\section*{%s}")
+               ("\\begin{frame}[fragile]\\frametitle{%s}"
+                "\\end{frame}"
+                "\\begin{frame}[fragile]\\frametitle{%s}"
+                "\\end{frame}")))
+\end{minted}
+
+
 \subsection{Fancier presentation}
-\label{sec:orge2625c9}
+\label{sec:orgc7b3f81}
 
 \begin{minted}[frame=lines,linenos=true,breaklines]{common-lisp}
 
@@ -1923,15 +2096,15 @@ Special formatting for the ROPE sections.
                 "\\end{frame}")))
 
 \end{minted}
-end. 
+end.
 
 \section{Programming}
-\label{sec:org3039576}
+\label{sec:org4f9a0b7}
 
 General programming settings..
 
 \subsection{General}
-\label{sec:orgc4f5a25}
+\label{sec:orgbffdeac}
 
 I like shallow indentation, but tabs are displayed as 8 characters by default. This reduces that.
 
@@ -1961,7 +2134,7 @@ output.
 
 \end{minted}
 
-Flycheck 
+Flycheck
 \begin{minted}[frame=lines,linenos=true,breaklines]{common-lisp}
 (use-package flycheck
 
@@ -1989,12 +2162,12 @@ Flycheck
 \end{minted}
 
 \subsection{Line Numbering}
-\label{sec:org5bd63ab}
+\label{sec:orgd8c122e}
 
 \subsection{Magit}
-\label{sec:org46041d0}
+\label{sec:org6adca73}
 
-I played with this before.. 
+I played with this before..
 
 \begin{minted}[frame=lines,linenos=true,breaklines]{common-lisp}
 (use-package magit
@@ -2019,15 +2192,13 @@ I played with this before..
 
 \end{minted}
 
-magit end.    
+magit end.
 
 \subsection{Yasnippet}
-\label{sec:org975f4f4}
+\label{sec:orgd6cfc34}
 
 \begin{minted}[frame=lines,linenos=true,breaklines]{common-lisp}
 (use-package yasnippet
-
-  :diminish
   :init
   (yas-global-mode 1)
   :config
@@ -2037,7 +2208,7 @@ magit end.
 \end{minted}
 
 \subsection{Comments}
-\label{sec:org66a7f14}
+\label{sec:orgd6c7912}
 \begin{minted}[frame=lines,linenos=true,breaklines]{common-lisp}
 (use-package smart-comment
 
@@ -2045,9 +2216,9 @@ magit end.
 \end{minted}
 
 \subsection{C}
-\label{sec:org3e6a207}
+\label{sec:orgba52812}
 \subsubsection{compile}
-\label{sec:org4cf42cd}
+\label{sec:orgbf237de}
 
 \begin{minted}[frame=lines,linenos=true,breaklines]{common-lisp}
 (global-set-key (kbd "<f5>") (lambda ()
@@ -2065,7 +2236,7 @@ Follow compilation
 
 
 \subsubsection{Indent style}
-\label{sec:org7e7cfd8}
+\label{sec:org45419b6}
 
 SET BSD indent style
 
@@ -2079,7 +2250,7 @@ SET BSD indent style
 
 
 \subsubsection{ggtags}
-\label{sec:org8c0d199}
+\label{sec:orgadc1108}
 
 
 \begin{minted}[frame=lines,linenos=true,breaklines]{common-lisp}
@@ -2119,7 +2290,7 @@ SET BSD indent style
 \end{minted}
 
 \subsubsection{Counsel-gtags}
-\label{sec:orgfc4faa3}
+\label{sec:org339fee4}
 
 \begin{minted}[frame=lines,linenos=true,breaklines]{common-lisp}
 (use-package counsel-gtags
@@ -2130,7 +2301,7 @@ SET BSD indent style
   ;;("M-s" . counsel-gtags-find-symbol)
   ;; ("M-," . counsel-gtags-go-backward)
   ;; )
-  :init 
+  :init
   (add-hook 'c-mode-hook 'counsel-gtags-mode)
   (add-hook 'c++-mode-hook 'counsel-gtags-mode)
   )
@@ -2138,7 +2309,7 @@ SET BSD indent style
 \end{minted}
 
 \subsubsection{Smartparens}
-\label{sec:org863c440}
+\label{sec:org38f6672}
 
 \begin{minted}[frame=lines,linenos=true,breaklines]{common-lisp}
 (use-package smartparens
@@ -2150,7 +2321,7 @@ SET BSD indent style
 \end{minted}
 
 \subsubsection{smart scan}
-\label{sec:org5a91dd6}
+\label{sec:orgd678473}
 
 \begin{minted}[frame=lines,linenos=true,breaklines]{common-lisp}
 (use-package smartscan
@@ -2161,7 +2332,7 @@ SET BSD indent style
 \end{minted}
 
 \subsubsection{semantic}
-\label{sec:org5d5fc00}
+\label{sec:org2bbb77e}
 
 
 \#+EXAMPLE\textsubscript{SRC} emacs-lisp
@@ -2175,7 +2346,7 @@ SET BSD indent style
 
 \#+EXAMPLE\textsubscript{SRC}
 \subsubsection{Whitespace mode}
-\label{sec:orgd338016}
+\label{sec:orgebd3c91}
 
 Whitespace mode
 
@@ -2184,46 +2355,52 @@ Whitespace mode
 (add-hook 'prog-mode-hook (lambda () (interactive) (setq show-trailing-whitespace 1)))
 \end{minted}
 
+This hook affects all documents, not just C\ldots{}
+\begin{minted}[frame=lines,linenos=true,breaklines]{common-lisp}
+(add-hook 'before-save-hook 'whitespace-cleanup)
+\end{minted}
+
+
 \subsubsection{clean aindent mode}
-\label{sec:org302e211}
+\label{sec:orge8c76a3}
 
 \begin{minted}[frame=lines,linenos=true,breaklines]{common-lisp}
 (use-package clean-aindent-mode
 
-  :init 
+  :init
   (add-hook 'prog-mode-hook 'clean-aindent-mode)
   )
 \end{minted}
 
 \subsubsection{dtrt indent mode}
-\label{sec:org5bab403}
+\label{sec:orgde80bd8}
 
 \begin{minted}[frame=lines,linenos=true,breaklines]{common-lisp}
-(use-package dtrt-indent 
+(use-package dtrt-indent
 
-  :init 
+  :init
   (dtrt-indent-mode 1)
   (setq dtrt-indent-verbosity 0)
   )
 \end{minted}
 
 \subsection{Don't ask for permission to run make}
-\label{sec:org80e5d85}
+\label{sec:org76b4f37}
 Don't ask with make command to run\ldots{}
 \begin{minted}[frame=lines,linenos=true,breaklines]{common-lisp}
 (setq compilation-read-command nil)
 \end{minted}
 
 \subsection{ESS  (emacs speaks statistics\ldots{} ) and R}
-\label{sec:orgeedb7cc}
+\label{sec:org2b197b5}
 
-I prefer to have my own R installation locally (see Rinstallation.org). Let's let emacs know about this: 
+I prefer to have my own R installation locally (see Rinstallation.org). Let's let emacs know about this:
 
 \begin{minted}[frame=lines,linenos=true,breaklines]{common-lisp}
 ;; (setq-default inferior-R-program-name "/home/user/bin/R")
 \end{minted}
 
-Default ESS config: 
+Default ESS config:
 \begin{minted}[frame=lines,linenos=true,breaklines]{common-lisp}
 (use-package ess
 
@@ -2231,7 +2408,7 @@ Default ESS config:
 \end{minted}
 
 \subsection{Snakemake}
-\label{sec:org69e1a3b}
+\label{sec:orgd2d1644}
 \begin{minted}[frame=lines,linenos=true,breaklines]{common-lisp}
 (use-package snakemake-mode
 
@@ -2239,11 +2416,11 @@ Default ESS config:
 \end{minted}
 
 \section{Email}
-\label{sec:orgb5b7735}
+\label{sec:orgd37fdba}
 
 
 \subsection{Mu4e}
-\label{sec:org12ed89f}
+\label{sec:org7f43a30}
 
 On a mac install mu via brew:
 
@@ -2268,7 +2445,7 @@ and make sure the path below points to the same \texttt{HEAD} directory!
   (progn
     ;;  (add-to-list 'load-path "~/programs/mu/mu4e")
     (add-to-list 'load-path "/usr/share/emacs/site-lisp/mu4e")
-    (add-to-list 'load-path "/usr/local/share/emacs/site-lisp/mu4e")   
+    (add-to-list 'load-path "/usr/local/share/emacs/site-lisp/mu4e")
     ;;         (setq mu4e-mu-binary "/usr/local/bin/mu")
     )))
 
@@ -2276,7 +2453,7 @@ and make sure the path below points to the same \texttt{HEAD} directory!
 
 ;;  (add-to-list 'load-path "~/programs/mu/mu4e")
 
-;;         (add-to-list 'load-path "/usr/local/share/emacs/site-lisp/mu/mu4e")   
+;;         (add-to-list 'load-path "/usr/local/share/emacs/site-lisp/mu/mu4e")
 
 ;; the modules
 ;;(if (file-exists-p mu4e-mu-binary)
@@ -2325,7 +2502,7 @@ University of Western Australia
 Telethon Kids Institute
 Northern Entrance, Perth Children's Hospital
 15 Hospital Avenue, Nedlands, Western Australia, 6009
-PO Box 855, West Perth, Western Australia, 6872 
+PO Box 855, West Perth, Western Australia, 6872
 
 https://scholar.google.com.au/citations?user=7fZs_tEAAAAJ&hl=en
 
@@ -2339,7 +2516,7 @@ Tsurumi-ku, Yokohama, 230-0045 JAPAN")
 
 
 
-Spell check 
+Spell check
 
 \begin{verbatim}
 (add-hook 'mu4e-compose-mode-hook
@@ -2350,7 +2527,7 @@ Spell check
 \end{verbatim}
 
 \section{TRAMP}
-\label{sec:org5a7c9a4}
+\label{sec:org7026cc5}
 
 \begin{minted}[frame=lines,linenos=true,breaklines]{common-lisp}
 (use-package tramp
@@ -2359,7 +2536,7 @@ Spell check
   (with-eval-after-load 'tramp-cache
     (setq tramp-persistency-file-name "~/.emacs.d/tramp"))
   (setq tramp-default-method "ssh")
-  (setq tramp-use-ssh-controlmaster-options nil) 
+  (setq tramp-use-ssh-controlmaster-options nil)
   (message "tramp-loaded"))
 \end{minted}
 
@@ -2370,10 +2547,10 @@ Spell check
 \end{minted}
 
 \section{Autoinsert templates}
-\label{sec:org4f9309c}
+\label{sec:org3810678}
 
 \section{Eshell}
-\label{sec:orga30a97f}
+\label{sec:org4386622}
 
 Set up environment.
 \begin{minted}[frame=lines,linenos=true,breaklines]{common-lisp}
@@ -2387,25 +2564,51 @@ Set up environment.
 \end{minted}
 
 \begin{minted}[frame=lines,linenos=true,breaklines]{common-lisp}
+
+;; (defun my/setup-eshell ()
+;;   (interactive)
+;;   ;; turn off semantic-mode in eshell buffers
+;;   (semantic-mode -1)
+;;   ;; turn off hl-line-mode
+;;   (hl-line-mode -1)
+;;   (define-key eshell-mode-map (kbd "C-r")
+;;     'counsel-esh-history))
+
 (use-package eshell
+  :config
+  (defun ha/eshell-quit-or-delete-char (arg)
+    (interactive "p")
+    (if (and (eolp) (looking-back eshell-prompt-regexp))
+        (progn
+          (eshell-life-is-too-much) ; Why not? (eshell/exit)
+          (ignore-errors
+            (delete-window)))
+      (delete-forward-char arg)))
   :init
+  (setenv "PAGER" "cat")
   (setq ;; eshell-buffer-shorthand t ...  Can't see Bug#19391
    eshell-scroll-to-bottom-on-input 'all
    eshell-error-if-no-glob t
    eshell-hist-ignoredups t
+   eshell-cmpl-cycle-ignore-case t
+   eshell-cmpl-cycle-completions t
    eshell-save-history-on-exit t
    eshell-prefer-lisp-functions nil
-   eshell-destroy-buffer-when-process-dies t))
-\end{minted}
-
-\begin{minted}[frame=lines,linenos=true,breaklines]{common-lisp}
-(use-package eshell
-  :init
+   eshell-destroy-buffer-when-process-dies t)
   (add-hook 'eshell-mode-hook
             (lambda ()
               (add-to-list 'eshell-visual-commands "ssh")
               (add-to-list 'eshell-visual-commands "tail")
-              (add-to-list 'eshell-visual-commands "top"))))
+              (add-to-list 'eshell-visual-commands "top")
+              (bind-keys :map eshell-mode-map
+                         ("\C-d" . ha/eshell-quit-or-delete-char)
+                         ("\C-r" . counsel-esh-history)
+                         ))))
+
+
+;;    (add-hook 'eshell-mode-hook #'my/setup-eshell)
+
+
 \end{minted}
 
 Alias
@@ -2415,11 +2618,11 @@ Alias
                               (eshell/alias "ff" "find-file $1")
                               (eshell/alias "emacs" "find-file $1")
                               (eshell/alias "ee" "find-file-other-window $1")
-
                               (eshell/alias "gd" "magit-diff-unstaged")
                               (eshell/alias "gds" "magit-diff-staged")
                               (eshell/alias "d" "dired $1")
                               (eshell/alias "val" "valgrind --leak-check=yes --show-leak-kinds=all --exit-on-first-error=yes --error-exitcode=1 $*")
+                              (setq-local global-hl-line-mode nil)
 
                               ;; The 'ls' executable requires the Gnu version on the Mac
                               (let ((ls (if (file-exists-p "/usr/local/bin/gls")
@@ -2428,8 +2631,32 @@ Alias
                                 (eshell/alias "ll" (concat ls " -AlohG --color=always")))))
 \end{minted}
 
+Shells everywhere (from H
+
+\begin{minted}[frame=lines,linenos=true,breaklines]{common-lisp}
+(defun eshell-here ()
+  "Opens up a new shell in the directory associated with the
+current buffer's file. The eshell is renamed to match that
+directory to make multiple eshell windows easier."
+  (interactive)
+  (let* ((parent (if (buffer-file-name)
+                     (file-name-directory (buffer-file-name))
+                   default-directory))
+         (height (/ (window-total-height) 3))
+         (name   (car (last (split-string parent "/" t)))))
+    (split-window-vertically (- height))
+    (other-window 1)
+    (eshell "new")
+    (rename-buffer (concat "*eshell: " name "*"))
+
+    (insert (concat "ls"))
+    (eshell-send-input)))
+
+(bind-key "C-!" 'eshell-here)
+\end{minted}
+
 \section{PDF tools}
-\label{sec:org28c8d15}
+\label{sec:org4b1f7fb}
 
 \begin{minted}[frame=lines,linenos=true,breaklines]{common-lisp}
 (use-package pdf-tools
@@ -2454,57 +2681,100 @@ Alias
     (delete '("\\.pdf\\'" . default) org-file-apps)
     ;; https://lists.gnu.org/archive/html/emacs-orgmode/2016-11/msg00176.html
     (add-to-list 'org-file-apps
-     '("\\.pdf\\'" . (lambda (file link)
-           (org-pdftools-open link))))))
+                 '("\\.pdf\\'" . (lambda (file link)
+                                   (org-pdftools-open link))))))
 \end{minted}
 
+The end.
+
+\section{Mode-line}
+\label{sec:org0396420}
+
+\begin{minted}[frame=lines,linenos=true,breaklines]{common-lisp}
+(use-package emacs
+
+  :config
+  (setq mode-line-percent-position '(-3 "%p"))
+  (setq mode-line-defining-kbd-macro
+        (propertize " Macro" 'face 'mode-line-emphasis))
+  (setq-default mode-line-format
+                '("%e"
+                  mode-line-front-space
+                  mode-line-mule-info
+                  mode-line-client
+                  mode-line-modified
+                  mode-line-remote
+                  mode-line-frame-identification
+                  mode-line-buffer-identification
+                  "  "
+                  mode-line-position
+                  (vc-mode vc-mode)
+                  " "
+                  mode-line-modes
+                  " "
+                  mode-line-misc-info
+                  mode-line-end-spaces)))
+\end{minted}
+
+\section{Beacon}
+\label{sec:org9d754b5}
+Let's make the cursor more noticeable whenever the window scrolls
+(which seems to be the time when I need to visually look for it):
+
+\begin{minted}[frame=lines,linenos=true,breaklines]{common-lisp}
+(use-package beacon
+  :custom
+  (beacon-push-mark 10)
+  (beacon-blink-delay 0.3)
+  (beacon-blink-duration 0.3)
+  :config
+  (beacon-mode)
+  (global-hl-line-mode 1))
+
+\end{minted}
+
+\section{Rainbow}
+\label{sec:orgd7e2ff9}
+
+\begin{minted}[frame=lines,linenos=true,breaklines]{common-lisp}
+(use-package rainbow-mode
+  :ensure t
+  :init
+  (add-hook 'org-mode-hook 'rainbow-mode))
+\end{minted}
+The end.
+
+\section{Load my custom theme}
+\label{sec:org0bc3286}
+
+\begin{minted}[frame=lines,linenos=true,breaklines]{common-lisp}
+(add-to-list 'custom-theme-load-path (tl/emacs-subdirectory "elisp"))
+(load-theme 'simple t)
+\end{minted}
 
 \section{End}
-\label{sec:orgc6899b1}
-
-
-Run client
+\label{sec:org47faf77}
 
 \begin{minted}[frame=lines,linenos=true,breaklines]{common-lisp}
 
-
-(if (daemonp)
-    (add-hook 'after-make-frame-functions
-              '(lambda (f)
-                 (with-selected-frame f
-                   (when (window-system f) (require 'init-client) ))))
-  (require 'init-client) )
+(setq gc-cons-threshold (* 2 1000 1000))
+;; (if (daemonp)
+;;     (add-hook 'after-make-frame-functions
+;;               '(lambda (f)
+;;                  (with-selected-frame f
+;;                    (when (window-system f) (require 'init-client) ))))
+;;   (require 'init-client) )
 
 
 
 \end{minted}
 
+
 \begin{minted}[frame=lines,linenos=true,breaklines]{common-lisp}
-(require 'init-local nil t)
+;;(require 'init-local nil t)
 \end{minted}
 
 
 
-
-
-\subsection{Fill Mode}
-\label{sec:org219ec76}
-Automatically wrapping when you get to the end of a line (or the fill-region):
-
-
-\begin{verbatim}
-
-
-
-
-(use-package fill
-  :bind (("C-c T f" . auto-fill-mode)
-         ("C-c T t" . toggle-truncate-lines))
-  :init (add-hook 'org-mode-hook 'turn-on-auto-fill)
-  :diminish auto-fill-mode)
-
-\end{verbatim}
-
-
-End. 
+End.
 \end{document}

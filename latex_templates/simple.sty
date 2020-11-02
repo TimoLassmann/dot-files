@@ -13,6 +13,7 @@
 \usepackage{pgfplots}
 \usepgfplotslibrary{groupplots}
 
+
 %% \usepackage[thicklines]{cancel}
 \usepackage{tikz}
 \usepackage{tkz-euclide}
@@ -91,7 +92,7 @@
 \definecolor{codeBlue}{RGB}{16, 173, 238}
 
 \beamertemplatenavigationsymbolsempty
-
+\setbeamertemplate{navigation symbols}{}
 \setbeamercolor{normal text}{fg=foreground}
 \setbeamercolor{background canvas}{bg=background}
 \setbeamercolor{titlelike}{fg=red} %foreground}
@@ -106,6 +107,14 @@
 \setbeamercolor{frametitle}{fg=red}
 \setbeamertemplate{blocks}[rounded][shadow=false]
 \setbeamercolor{structure}{fg=foreground}
+
+\setbeamerfont{block title}{size=\LARGE}
+
+\setbeamerfont{block body}{size=\small}
+\setbeamerfont{block title example}{size=\LARGE}
+\setbeamerfont{block body alerted}{size=\small}
+\setbeamerfont{block body example}{size=\small}
+
 \setbeamercolor*{block title}{fg=red,bg= blue!25!background}
 \setbeamercolor*{block body}{fg= structure,bg= blue!25!background}
 
