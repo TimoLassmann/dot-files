@@ -1317,13 +1317,13 @@ Record the time that a todo was archived.
 Capture templates..
 #+BEGIN_SRC emacs-lisp
   (setq org-capture-templates
-        (quote (("t" "todo" entry (file+headline org-index-file "Inbox")
+        (quote (("t" "todo" entry (file+headline "~/work/work-todo.org" "Inbox")
                  "* TODO %?\nSCHEDULED: %(org-insert-time-stamp (org-read-date nil t \"+0d\"))\n%a\n")
-                ("n" "note" entry (file+headline org-index-file "Inbox")
+                ("n" "note" entry (file+headline "~/work/work-todo.org" "Inbox")
                  "* %?\n\n  %i\n\n  See: %a" :empty-lines 1)
-                ("r" "respond" entry (file+headline org-index-file "Inbox")
+                ("r" "respond" entry (file+headline "~/work/work-todo.org" "Inbox")
                  "* TODO Respond to %:from on %:subject\nSCHEDULED: %(org-insert-time-stamp (org-read-date nil t \"+0d\"))\n%a\n")
-                ("m" "Mail" entry (file+headline org-index-file "Inbox")
+                ("m" "Mail" entry (file+headline "~/work/work-todo.org" "Inbox")
                  "* TODO %?\n%a   %:from %:fromname %:fromaddress" :prepend t :jump-to-captured t)
                 ("p" "Daily Plan" plain (file+datetree "~/planning/daily-plan.org")
                  "+ [ ] The 3 most important tasks [/]
@@ -1502,7 +1502,7 @@ Quickly open index file
   (defun open-index-file ()
     "Open the master org TODO list."
     (interactive)
-    (find-file org-index-file)
+    (find-file "~/work/work-todo.org")
     (flycheck-mode -1)
     (end-of-buffer))
 

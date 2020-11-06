@@ -7,7 +7,7 @@
 #+OPTIONS: H:4
 #+LATEX_CMD: xelatex
 
-* Introduction 
+* Introduction
   Just so I don't forget.
 
   #+BEGIN_SRC shell :tangle setup_fedora.sh :shebang #!/bin/bash :exports code :results none
@@ -48,6 +48,7 @@
          R \
          R-devel \
          libreoffice \
+         gtypist\
          evolution \
          evolution-ews \
          evolution-devel \
@@ -115,14 +116,9 @@
   #+END_SRC
 
 
-  #+BEGIN_SRC emacs-lisp 
+  #+BEGIN_SRC emacs-lisp
     (setq shr-external-browser "browse-url-firefox")
   #+END_SRC
 
   #+RESULTS:
   : browse-url-firefox
-
- 
-
-
-
