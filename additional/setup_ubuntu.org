@@ -62,20 +62,20 @@
   Install GO 
 
   Visit the Go download page and pick a package archive to download. Copy the link address and download with wget. Then extract the archive to /usr/local (or use other instructions on go installation page).
+  
   #+BEGIN_SRC bash
     export VERSION=1.11 OS=linux ARCH=amd64 && \
         wget https://dl.google.com/go/go$VERSION.$OS-$ARCH.tar.gz && \
         sudo tar -C /usr/local -xzvf go$VERSION.$OS-$ARCH.tar.gz && \
         rm go$VERSION.$OS-$ARCH.tar.gz
-
   #+END_SRC
 
   Then, set up your environment for Go.
-  #+BEGIN_SRC bash
-    echo 'export GOPATH=${HOME}/go' >> ~/.bashrc && \
-        echo 'export PATH=/usr/local/go/bin:${PATH}:${GOPATH}/bin' >> ~/.bashrc && \
-        source ~/.bashrc
-  #+END_SRC
+#+BEGIN_SRC bash
+  echo 'export GOPATH=${HOME}/go' >> ~/.bashrc && \
+      echo 'export PATH=/usr/local/go/bin:${PATH}:${GOPATH}/bin' >> ~/.bashrc && \
+      source ~/.bashrc
+#+END_SRC
 
   If you are installing Singularity v3.0.0 you will also need to install dep for dependency resolution.
 
@@ -576,117 +576,109 @@ sudo service docker stop
 
 * example cromwell config file
 
-  #+BEGIN_SRC java
-    include required(classpath("application"))
+#+BEGIN_SRC java
+  include required(classpath("application"))
 
 
-        docker {
-        hash-lookup {
-            enable = false
-                }
-    }
+      docker {
+      hash-lookup {
+          enable = false
+              }
+  }
 
-    backend {
-        default = "slurm"
-            providers {
-            slurm {
-                actor-factory = "cromwell.backend.impl.sfs.config.ConfigBackendLifecycleActorFactory"
-                config {
-                    script-epilogue = "sleep 30"
-                    concurrent-job-limit = 10
-                    run-in-background = true
-                    runtime-attributes = """
-              Int cpu = 1
-              Int? gpu
-              Int? time
-              Int? memory_mb
-              String? slurm_partition
-              String? slurm_account
-              String? slurm_extra_param
-              String? docker        
-              """
-
-
-                    submit = """
-              sbatch \
-              --export=ALL \
-              --wait \        
-              -J ${job_name} \
-              -D ${cwd} \
-              -o ${out} \
-              -e ${err} \
-              ${"-t " + time*60} \
-              -n 1 \
-              --ntasks-per-node=1 \
-              ${true="--cpus-per-task=" false="" defined(cpu)}${cpu} \
-              ${true="--mem=" false="" defined(memory_mb)}${memory_mb}\
-              ${"-p " + slurm_partition} \
-              ${"--account " + slurm_account} \
-              ${"--gres gpu:" + gpu} \
-              ${slurm_extra_param} \
-              --wrap "/bin/bash ${script}"
-              """
-
-                    submit-docker = """
-              # Pull the image using the head node, in case our workers don't have network access
-              udocker pull ${docker}
-              sbatch \
-                 --export=ALL \
-                 --wait \
-                 -J ${job_name} \
-                 -D ${cwd} \
-                 -o ${out} \
-                 -e ${err} \
-                 ${"-t " + time*60} \
-                 -n 1 \
-                 --ntasks-per-node=1 \
-                 ${true="--cpus-per-task=" false="" defined(cpu)}${cpu} \
-                 ${true="--mem=" false="" defined(memory_mb)}${memory_mb}\
-                 ${"-p " + slurm_partition} \
-                 ${"--account " + slurm_account} \
-                 ${"--gres gpu:" + gpu} \
-                 ${slurm_extra_param} \
-                 --wrap "udocker run -v ${cwd}:${docker_cwd} ${docker} ${job_shell} ${docker_script}"
-              """
+  backend {
+      default = "slurm"
+          providers {
+          slurm {
+              actor-factory = "cromwell.backend.impl.sfs.config.ConfigBackendLifecycleActorFactory"
+              config {
+                  script-epilogue = "sleep 30"
+                  concurrent-job-limit = 10
+                  run-in-background = true
+                  runtime-attributes = """
+                  Int cpu = 1
+                  Int? gpu
+                  Int? time
+                  Int? memory_mb
+                  String? slurm_partition
+                  String? slurm_account
+                  String? slurm_extra_param
+                  String? docker        
+                  """
 
 
+                  submit = """
+                  sbatch \
+                  --export=ALL \
+                  --wait \        
+                  -J ${job_name} \
+                  -D ${cwd} \
+                  -o ${out} \
+                  -e ${err} \
+                  ${"-t " + time*60} \
+                  -n 1 \
+                  --ntasks-per-node=1 \
+                  ${true="--cpus-per-task=" false="" defined(cpu)}${cpu} \
+                  ${true="--mem=" false="" defined(memory_mb)}${memory_mb}\
+                  ${"-p " + slurm_partition} \
+                  ${"--account " + slurm_account} \
+                  ${"--gres gpu:" + gpu} \
+                  ${slurm_extra_param} \
+                  --wrap "/bin/bash ${script}"
+                  """
 
-                    kill = "scancel ${job_id}"
-                    check-alive = "squeue -j ${job_id}"
-                    job-id-regex = "Submitted batch job (\\d+).*"
-                }
-            }
+                  submit-docker = """
+                  # Pull the image using the head node, in case our workers don't have network access
+                  udocker pull ${docker}
+                  sbatch \
+                  --export=ALL \
+                  --wait \
+                  -J ${job_name} \
+                  -D ${cwd} \
+                  -o ${out} \
+                  -e ${err} \
+                  ${"-t " + time*60} \
+                  -n 1 \
+                  --ntasks-per-node=1 \
+                  ${true="--cpus-per-task=" false="" defined(cpu)}${cpu} \
+                  ${true="--mem=" false="" defined(memory_mb)}${memory_mb}\
+                  ${"-p " + slurm_partition} \
+                  ${"--account " + slurm_account} \
+                  ${"--gres gpu:" + gpu} \
+                  ${slurm_extra_param} \
+                  --wrap "udocker run -v ${cwd}:${docker_cwd} ${docker} ${job_shell} ${docker_script}"
+                  """
 
-        }
-    }
+                  kill = "scancel ${job_id}"
+                  check-alive = "squeue -j ${job_id}"
+                  job-id-regex = "Submitted batch job (\\d+).*"
+              }
+          }
+
+      }
+  }
+
+  services {
+      LoadController {
+          class = "cromwell.services.loadcontroller.impl.LoadControllerServiceActor"
+              config {
+              # disable it (for login nodes on Stanford SCG, Sherlock)
+              control-frequency = 21474834 seconds
+          }
+      }
+  }
+  system {
+      abort-jobs-on-terminate = true
+          graceful-server-shutdown = true
+          }
+
+  call-caching {
+      enabled = false
+          invalidate-bad-cache-results = true
+          }
 
 
-
-
-    services {
-        LoadController {
-            class = "cromwell.services.loadcontroller.impl.LoadControllerServiceActor"
-                config {
-                # disable it (for login nodes on Stanford SCG, Sherlock)
-                control-frequency = 21474834 seconds
-            }
-        }
-    }
-
-
-
-    system {
-        abort-jobs-on-terminate = true
-            graceful-server-shutdown = true
-            }
-
-    call-caching {
-        enabled = false
-            invalidate-bad-cache-results = true
-            }
-
-
-  #+END_SRC
+#+END_SRC
     
 
 

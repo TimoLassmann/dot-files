@@ -1,0 +1,213 @@
+#+TITLE:  Setting up cromwell / docker / slurm etc on a cluster 
+#+AUTHOR: Timo Lassmann
+#+EMAIL:  timo.lassmann@telethonkids.org.au
+#+DATE:   2018-05-24
+#+LATEX_CLASS: report
+#+OPTIONS:  toc:nil
+#+OPTIONS: H:4
+#+LATEX_CMD: xelatex
+
+
+
+* Introduction
+
+Recipe to set up cromwell on a linux cluster. 
+
+* Make environment
+
+#+begin_src bash :dir /ssh:pawsey://data/home/timo
+
+  mkdir -p bin
+  mkdir -p programs
+mkdir -p pipelines 
+#+end_src
+
+#+RESULTS:
+
+
+* Install cromwell, udocker etc... 
+
+
+#+begin_src bash :dir /ssh:pawsey://data/home/timo/bin
+  wget https://github.com/broadinstitute/cromwell/releases/download/54/cromwell-54.jar
+#+end_src
+
+#+begin_src bash :dir /ssh:pawsey://data/home/timo/programs
+  curl https://raw.githubusercontent.com/indigo-dc/udocker/master/udocker.py > udocker
+  chmod u+rx ./udocker
+  ./udocker install 
+#+end_src
+#+RESULTS:
+| Info: | setup        | repo:        | /home/ubuntu/.udocker |            |       |
+| Info: | udocker      | command      | line                  | interface  | 1.1.4 |
+| Info: | searching    | for          | udockertools          | 1.1.4      |       |
+| Info: | installing   | udockertools | 1.1.4                 |            |       |
+| Info: | installation | of           | udockertools          | successful |       |
+
+
+IMPORTANT: by default udocker will store images in the user's home directory =~/.udocker/=. To use a different location:
+
+#+begin_src bash :dir /ssh:pawsey://data/home/timo/programs
+cp udocker ../bin
+#+end_src
+
+
+#+RESULTS:
+
+* Basic config and test 
+
+** udocker 
+#+begin_src bash :dir /ssh:pawsey://data/home/timo/programs
+  export UDOCKER_DIR="/data/udocker"
+export PATH=/data/home/timo/bin/:$PATH 
+#+END_SRC
+
+Test configuration:
+
+#+begin_src bash :dir /ssh:pawsey://data/home/timo/
+  export UDOCKER_DIR="/data/udocker"
+  export PATH=/data/home/timo/bin/:$PATH
+  udocker pull debian
+  udocker create --name=debtest debian
+  udocker run debtest cat /etc/*-release
+#+end_src
+
+#+begin_src bash :dir /ssh:pawsey://data/home/timo/ :results both
+  export UDOCKER_DIR="/data/udocker"
+  export PATH=/data/home/timo/bin/:$PATH
+  udocker run debtest cat /etc/os-release
+#+end_src
+
+#+RESULTS:
+| PRETTY_NAME="Debian             | GNU/Linux  | 10 | (buster)" |
+| NAME="Debian                   | GNU/Linux" |    |           |
+| 10                             |            |    |           |
+| VERSION="10                    | (buster)"  |    |           |
+| VERSION_CODENAME=buster         |            |    |           |
+| ID=debian                      |            |    |           |
+| https://www.debian.org/        |            |    |           |
+| https://www.debian.org/support |            |    |           |
+| https://bugs.debian.org/       |            |    |           |
+
+Ok this seems to work.
+
+Need to set this up so all users use the same udocker config and have udocker look for containers in =/data/udocker/=.
+
+
+** cromwell
+Let's see if I can get the 5 min tutorial to work. 
+
+https://cromwell.readthedocs.io/en/stable/tutorials/FiveMinuteIntro/
+
+#+begin_src bash :tangle /ssh:pawsey://data/home/timo/tmp/helloworld.wdl
+workflow myWorkflow {
+    call myTask
+}
+
+task myTask {
+    command {
+        echo "hello world"
+    }
+    output {
+        String out = read_string(stdout())
+    }
+}
+#+end_src
+
+Let's run it without a config.
+#+begin_src bash :dir /ssh:pawsey://data/home/timo/tmp/  :results both 
+  java -jar ../bin/cromwell-54.jar run helloworld.wdl
+#+end_src
+
+#+RESULTS:
+
+This runs... 
+
+
+Let's do something more sophisticated
+
+#+begin_src bash :dir /ssh:pawsey://data/home/timo/pipelines
+  git clone https://github.com/ENCODE-DCC/pipeline-container.git
+#+end_src
+
+#+RESULTS:
+
+#+begin_src bash :tangle /ssh:pawsey://data/home/timo/tmp/EncodeMappingInput.json
+  {
+      "encode_mapping_workflow.fastqs": ["../pipelines/pipeline-container/local-workflows/input_data/"],      
+      "encode_mapping_workflow.trimming_parameter": "native",
+      "encode_mapping_workflow.reference": "../pipelines/pipeline-container/local-workflows/input_data/reference/GRCh38_chr21_bwa.tar.gz"
+  }
+#+end_src
+
+
+#+begin_src bash :dir /ssh:pawsey://data/home/timo/tmp/  :results both 
+  java -jar ../bin/cromwell-54.jar run ../pipelines/pipeline-container/local-workflows/encode_mapping_workflow.wdl -i EncodeMappingInput.json
+#+end_src
+
+
+#+begin_src java  :tangle /ssh:pawsey://data/home/timo/tmp/test_cromwell.conf
+      include required(classpath("application"))
+
+
+      docker {
+          hash-lookup {
+              enable = false
+          }
+      }
+
+      backend {
+          default = "slurm"
+              providers {
+    slurm {
+      actor-factory = "cromwell.backend.impl.sfs.config.ConfigBackendLifecycleActorFactory"
+      config {
+        runtime-attributes = """
+        Int runtime_minutes = 600
+        Int cpus = 2
+        Int requested_memory_mb_per_core = 8000
+        String queue = "debug"
+        """
+
+        submit = """
+            sbatch -J ${job_name} -D ${cwd} -o ${out} -e ${err} -t ${runtime_minutes} -p ${queue} \
+            ${"-c " + cpus} \
+            --mem-per-cpu ${requested_memory_mb_per_core} \
+            --wrap "/bin/bash ${script}"
+        """
+        kill = "scancel ${job_id}"
+        check-alive = "squeue -j ${job_id}"
+        job-id-regex = "Submitted batch job (\\d+).*"
+      }
+    }
+  }
+        }
+
+      services {
+          LoadController {
+              class = "cromwell.services.loadcontroller.impl.LoadControllerServiceActor"
+                  config {
+                  # disable it (for login nodes on Stanford SCG, Sherlock)
+                  control-frequency = 21474834 seconds
+              }
+          }
+      }
+      system {
+          abort-jobs-on-terminate = true
+          graceful-server-shutdown = true
+      }
+
+      call-caching {
+          enabled = false
+          invalidate-bad-cache-results = true
+      }
+
+
+#+end_src
+
+
+  #+BEGIN_SRC bash    :dir /ssh:pawsey://data/home/timo/tmp/  :results both 
+    java -jar -Dconfig.file=test_cromwell.conf  -Dbackend.default=slurm -Ddocker.hash-lookup.enabled=false ../bin/cromwell-54.jar run ../pipelines/pipeline-container/local-workflows/encode_mapping_workflow.wdl -i EncodeMappingInput.json
+  #+END_SRC
+
+

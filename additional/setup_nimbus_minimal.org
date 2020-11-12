@@ -44,26 +44,26 @@ sudo apt install emacs pdsh git autoconf automake clang llvm libtool cmake
     StrictHostKeyChecking no
     Host node-1 
     User ubuntu
-    Hostname 192.168.1.28
+    Hostname 192.168.1.166
     IdentityFile ~/.ssh/pawsey.key
     Host node-2
-    Hostname 192.168.1.18
+    Hostname 192.168.1.29
     User ubuntu
     IdentityFile ~/.ssh/pawsey.key
     Host node-3
-    Hostname 192.168.1.15
+    Hostname 192.168.1.10
     User ubuntu
     IdentityFile ~/.ssh/pawsey.key
     Host node-4
-    Hostname 192.168.1.9
+    Hostname 192.168.1.31
     User ubuntu
     IdentityFile ~/.ssh/pawsey.key
     Host node-5
-    Hostname 192.168.1.7
+    Hostname 192.168.1.99
     User ubuntu
     IdentityFile ~/.ssh/pawsey.key
     Host node-6
-    Hostname 192.168.1.5
+    Hostname 192.168.1.67
     User ubuntu
     IdentityFile ~/.ssh/pawsey.key
   #+END_SRC
@@ -438,24 +438,29 @@ pdsh -a sudo gpasswd -a $USER docker
 
 * Install R (3.5+) on all nodes 
 
-  #+BEGIN_SRC shell :exports code :results none 
+#+BEGIN_SRC shell :exports code :results none 
 
-    sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E298A3A825C0D65DFD57CBB651716619E084DAB9
-    sudo add-apt-repository 'deb https://cloud.r-project.org/bin/linux/ubuntu bionic-cran35/'
-    pdsh -a sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E298A3A825C0D65DFD57CBB651716619E084DAB9
-    pdsh -a "sudo add-apt-repository 'deb https://cloud.r-project.org/bin/linux/ubuntu bionic-cran35/'"
-    pdsh -a sudo apt update 
+  sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E298A3A825C0D65DFD57CBB651716619E084DAB9
+  sudo add-apt-repository 'deb https://cloud.r-project.org/bin/linux/ubuntu bionic-cran35/'
+  pdsh -a sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E298A3A825C0D65DFD57CBB651716619E084DAB9
+  pdsh -a "sudo add-apt-repository 'deb https://cloud.r-project.org/bin/linux/ubuntu bionic-cran35/'"
+  pdsh -a sudo apt update 
 
-    sudo apt install r-base -yq 
-    pdsh -a sudo apt install r-base -yq
+  sudo apt install r-base -yq 
+  pdsh -a sudo apt install r-base -yq
 
 
-    sudo apt install build-essential -yq
-    pdsh -a sudo apt install build-essential -yq
+  sudo apt install build-essential -yq
+  pdsh -a sudo apt install build-essential -yq
 
-    pdsh -a sudo apt install -yq default-jdk libxml2-dev libcurl4-openssl-dev openssl libssl-dev  libssh2-1-dev git 
-    pdsh -a "sudo apt-get install -yq libhdf5-dev"
-  #+END_SRC
+  pdsh -a sudo apt install -yq default-jdk libxml2-dev libcurl4-openssl-dev openssl libssl-dev
+
+
+
+
+  libssh2-1-dev libxml2-dev libcurl4-openssl-dev libssl-dev  
+  pdsh -a "sudo apt-get install -yq libhdf5-dev"
+#+END_SRC
 
 * Install R packages 
 
