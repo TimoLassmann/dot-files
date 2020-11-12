@@ -7,8 +7,6 @@
 #+OPTIONS: H:4
 #+LATEX_CMD: xelatex
 
-
-
 * Introduction
 
 Recipe to set up cromwell on a linux cluster. 
