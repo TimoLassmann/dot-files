@@ -587,6 +587,7 @@ This magnificent package takes care of this issue. It’s unnoticeable if you ha
   (use-package switch-window
     :defer t
     :config
+    (setq switch-window-multiple-frames t)
     (setq switch-window-input-style 'minibuffer)
     (setq switch-window-increase 4)
     (setq switch-window-threshold 2)
