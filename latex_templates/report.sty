@@ -1,24 +1,18 @@
 \ProvidesPackage{report}
 
-\usepackage{geometry}
- \geometry{
- a4paper,
- total={210mm,297mm},
- left=20mm,
- right=20mm,
- top=27mm,
- bottom=22mm,
- headheight=15mm
- %hmargin=14mm,
- %vmargin=20mm,
-% head=0ex,foot=05ex
- }
- 
+
+\renewcommand{\baselinestretch}{1.05}
+\usepackage{libertinus}
+\usepackage{libertinust1math}
+\usepackage[T1]{fontenc}
+
+\setcounter{secnumdepth}{0}
+\pagestyle{empty}
 %\usepackage{cmbright}
 %\setmainfont{Times New Roman}
 %\usepackage[utf8]{inputenc}
 \usepackage{bm}
- \usepackage{graphicx}
+\usepackage{graphicx}
 \usepackage{subfigure}
 \usepackage{caption}
 \usepackage{longtable}
@@ -33,7 +27,6 @@
 
 \usepackage{pgfplots}
 \usepackage{setspace}
-\usepackage{minted}
 \usepackage{hyperref}
 \usepackage{textcomp}
 \usepackage{verbatim}
@@ -50,12 +43,13 @@
 \usetikzlibrary{backgrounds}
 \usetikzlibrary{plotmarks}
 
+
 \usepackage{lipsum}
 \usepackage{wrapfig}
 \usepackage{etaremune}
 \usepackage[natbib=true,style=nature,maxnames=100, minnames=1,hyperref=auto,backref=true,sorting=none,backend=bibtex]{biblatex}
 
-\newcommand{\footref}[1]{\let\thefootnote\relax\footfullcite{ #1}} 
+\renewcommand{\footref}[1]{\let\thefootnote\relax\footfullcite{ #1}}
 
 
 \usepackage{xpatch}
@@ -70,7 +64,7 @@
   \def\bibnamedelimi{ }%
   \def\bibinitperiod{.}%
   \def\bibinitdelim{~}%
-  \def\bibinithyphendelim{.-}}    
+  \def\bibinithyphendelim{.-}}
 \newcommand*{\makename}[2]{\begingroup\makenamesetup\xdef#1{#2}\endgroup}
 
 \newcommand*{\boldname}[3]{%
@@ -96,7 +90,7 @@
 
 \hypersetup{
   colorlinks   = true,
-  linkcolor    = grantblue,   
+  linkcolor    = grantblue,
   citecolor    = grantblue,
   urlcolor     = grantblue
 }
@@ -141,16 +135,42 @@
 %\titleformat{\subsection}{\color{red}\normalsize\bfseries}{\thesubsection}{1em}{}
 %\titleformat{\subsubsection}{\normalsize\itshape}{\thesubsubsection}{1em}{}
 \setcounter{secnumdepth}{4}
-\renewcommand\thesubsection{\arabic{subsection}.}
-\renewcommand\thesubsubsection{\arabic{subsection}.\arabic{subsubsection}.} 
+%% \renewcommand\thesubsection{\arabic{subsection}.}
+%% \renewcommand\thesubsubsection{\arabic{subsection}.\arabic{subsubsection}.}
 %\renewcommand\thesubsubsubsection{\arabic{subsection}.\arabic{subsubsection}.\arabic{subsubsubsection}.}
 
 
-\titleformat{\section}{\color{grantblue}\normalfont\large\selectfont\bfseries}{}{0.0em}{}
-\titleformat{\subsection}{\color{grantblue}\selectfont\bfseries}{\Alph{subsection}. }{0.25em}{}
-\titleformat{\subsubsection}{\color{grantblue}\normalfont\normalsize\selectfont\itshape}{}{0.5em}{}
-%\titleformat{\subsubsubsection}{\normalfont\normalsize\selectfont\itshape}{\thesubsubsubsection}{0.5em}{}
-\titleformat{\paragraph}[runin]{\color{grantblue}\normalfont\normalsize\itshape}{}{0em}{\uline}[:\enspace] 
+%% \titleformat{\section}{\color{grantblue}\normalfont\large\selectfont\bfseries}{}{0.0em}{}
+%% \titleformat{\subsection}{\color{grantblue}\selectfont\bfseries}{\Alph{subsection}. }{0.25em}{}
+%% \titleformat{\subsubsection}{\color{grantblue}\normalfont\normalsize\selectfont\itshape}{}{0.5em}{}
+%% \titleformat{\subsubsubsection}{\normalfont\normalsize\selectfont\itshape}{\thesubsubsubsection}{0.5em}{}
+\titleformat{\paragraph}[runin]{\color{grantblue}\normalfont\normalsize\itshape}{}{0em}{\uline}[:\enspace]
+\definecolor{SchemeLight}   {HTML} {686868}
+\definecolor{SchemeSteel}   {HTML} {888888}
+\definecolor{SchemeDark}    {HTML} {262626}
+\definecolor{SchemeBlue}    {HTML} {4172A3}
+\definecolor{SchemeGreen}   {HTML} {487818}
+\definecolor{SchemeBrown}   {HTML} {A07040}
+\definecolor{SchemeRed}     {HTML} {AD4D3A}
+\definecolor{SchemeViolet}  {HTML} {7040A0}
+\definecolor{DropCapGray}   {HTML} {B8B8B8}
+\definecolor{ChapterGray}   {HTML} {C8C8C8}
+\definecolor{ChapterViolet} {HTML} {AEAECE}
+\definecolor{DropCapViolet} {HTML} {9090C0}
+
+
+\titleformat{\section}
+{\color{SchemeDark}\normalfont\Large\sffamily\bfseries}
+{\color{DropCapViolet}\thesection}{0.8em}{}
+
+\titleformat{\subsection}
+{\color{SchemeDark}\normalfont\large\sffamily\bfseries}
+{\color{DropCapViolet}\thesubsection}{0.8em}{}
+
+\titleformat{\subsubsection}
+{\color{black}\normalfont\normalsize\sffamily\bfseries}
+{\color{DropCapViolet}\thesubsubsection}{0.8em}{}
+
 
 
 
@@ -173,7 +193,7 @@
       inner ysep = 0pt,
       text width=\textwidth,
      % text centered
-    ]{\Large\bfseries\@title};
+    ]{\LARGE\scshape\sffamily\bfseries\@title};
 \end{tikzpicture}
 \end{center}
 }
@@ -193,7 +213,7 @@
 
 \lhead{}
 \chead{}
-\rhead{} 
+\rhead{}
 
 
 
@@ -214,14 +234,14 @@
 }
 
 
-\newenvironment{grayblock}{ \begin{tcolorbox}[width=\textwidth,colback={black!10!white}]}{\end{tcolorbox}} 
+\newenvironment{grayblock}{ \begin{tcolorbox}[width=\textwidth,colback={black!10!white}]}{\end{tcolorbox}}
 
 
-\newenvironment{notes}{ \begin{tcolorbox}[colback=red!5!white,colframe=red!75!black,title=Notes, width=\textwidth,colback={red!10!white},arc=2pt,boxrule=2pt]}{\end{tcolorbox}} 
+\newenvironment{notes}{ \begin{tcolorbox}[colback=red!5!white,colframe=red!75!black,title=Notes, width=\textwidth,colback={red!10!white},arc=2pt,boxrule=2pt]}{\end{tcolorbox}}
 
 
 
-\tikzstyle{fancyframe} = [draw=gray, 
+\tikzstyle{fancyframe} = [draw=gray,
     rectangle, rounded corners=2pt, inner sep=5pt, inner ysep=5pt]
 
 \newcommand{\rightimage}[4][Title of the box]{%
@@ -256,10 +276,10 @@
    \begin{minipage}[c]{\textwidth-#3}
     \caption{#1}
  \label{#4}
-     
+
    \end{minipage}
-   
-  
+
+
   \end{figure}
   \vspace{0.25cm}
 }
@@ -279,9 +299,9 @@
           %\fill [blue] (0,0) rectangle (6,4);
        \end{tikzpicture}
       \end{minipage}%
-  
 
-  
+
+
   \end{figure}
 \vspace{0.25cm}
 }

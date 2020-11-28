@@ -1,0 +1,11 @@
+# -*- mode: snippet -*-
+# name: test
+# key: <t
+# --
+<div align="${3:$$(yas-choose-value '("right" "center" "left"))}">
+  $0
+</div>
+
+
+Importance: ${1:$$(yas-choose-value '("high" "average" "below average"))}
+Difficulty: ${2:$$(yas-choose-value '("easy" "hard"))}

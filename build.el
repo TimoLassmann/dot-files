@@ -50,6 +50,7 @@
   (tl/mkdir "$HOME/bin")
   (tl/mkdir "$HOME/backup")
   (tl/tangle-files "${dot-files-src}/*.org")
+  (tl/tangle-files "${dot-files-src}/snippets/*.org")
 
   ;; Some Elisp files are just symlinked instead of tangled...
   (message "Make links to el files.")
@@ -67,8 +68,8 @@
 
 
   ;; Just link the entire directory instead of copying the snippets:
-  ;;(ha/mksymlink  "${dot-files-src}/snippets"
-  ;;              "${ha/emacs-directory}/snippets")
+  (tl/mksymlink "${dot-files-src}/snippets"
+                "${tl/emacs-directory}/snippets")
 
   ;; Just link the entire directory instead of copying the snippets:
   ;;(ha/mksymlink  "${dot-files-src}/templates"
