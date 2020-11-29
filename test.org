@@ -12,9 +12,6 @@
 
 
 
-
-
-
 * testung
 
   #+BEGIN_SRC emacs-lisp
