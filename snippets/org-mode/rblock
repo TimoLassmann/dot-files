@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: rblock
+# key: <rb
+# --
+#+BEGIN_SRC R :session one :exports both :results none
+$0
+#+END_SRC

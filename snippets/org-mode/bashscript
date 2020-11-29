@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: bashscript
+# key: <bs
+# --
+#+BEGIN_SRC bash :noweb yes :tangle ${1:dir} :shebang #!/usr/bin/env bash
+$0
+#+END_SRC

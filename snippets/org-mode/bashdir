@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: bashdir
+# key: <bd
+# --
+#+BEGIN_SRC bash :dir ${1:dir} :eval ${2:$$(yas-choose-value '("never" "query" "query-export"))}
+$0
+#+END_SRC
