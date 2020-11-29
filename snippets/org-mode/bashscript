@@ -3,5 +3,13 @@
 # key: <bs
 # --
 #+BEGIN_SRC bash :noweb yes :tangle ${1:dir} :shebang #!/usr/bin/env bash
+
+# ----------------------------------------------------------------------
+#  $1 (tangled from: `(upcase (file-name-nondirectory (buffer-file-name)))`)
+#  Descriptions: $2
+# ----------------------------------------------------------------------
+
 $0
+
+# ----------------------------------------------------------------------
 #+END_SRC
