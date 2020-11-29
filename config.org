@@ -2078,7 +2078,7 @@ end.
 
 * Calendar
 
-#+begin_src emacs-lisp
+#+begin_example emacs-lisp
     (use-package calfw
         :ensure t
     )
@@ -2086,7 +2086,7 @@ end.
       :ensure t
       :after calfw
     )
-#+end_src
+#+end_example
 
 * Programming
 
