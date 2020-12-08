@@ -1820,9 +1820,6 @@ xdg-mime default org-protocol.desktop x-scheme-handler/org-protocol
 ** Latex templates
 Latex templates
 #+BEGIN_SRC emacs-lisp
-
-
-
   ;;(setq org-latex-to-pdf-process '("xelatex %f && bibtex %f && xelatex %f && xelatex %f"))
   (defun sk-latexmk-cmd (backend)
     "When exporting from .org with latex, automatically run latex,
@@ -1995,6 +1992,7 @@ Special formatting for the ROPE sections.
 (add-to-list 'org-latex-classes
              '("report"
                "\\documentclass[12pt]{article}
+ \\usepackage{\\string~\"/.emacs.d/latex_templates/report\"}
 [NO-DEFAULT-PACKAGES]
 [NO-PACKAGES]"
                ("\\section{%s}" . "\\section*{%s}")

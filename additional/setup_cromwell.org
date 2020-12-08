@@ -996,6 +996,7 @@ default-runtime-attributes {
 #+end_src
 
 
+* Run jobs:
 
 #+BEGIN_SRC bash    :dir /ssh:pawsey://data/home/timo/tmp/  :results both
   java -jar -Dconfig.file=test_cromwell.conf  -Dbackend.default=slurm -Ddocker.hash-lookup.enabled=false ../bin/cromwell-54.jar run ../pipelines/pipeline-container/local-workflows/encode_mapping_workflow.wdl -i EncodeMappingInput.json

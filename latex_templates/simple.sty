@@ -75,7 +75,7 @@
 \setbeamerfont{author}{series=\mdseries}
 %% \setbeamerfont{footline}{size={\fontsize{5}{7pt}\selectfont}}% originally also: shape=\itshape
 %% \setbeamercolor{footline}{fg=black}
-\setbeamerfont{frametitle}{size=\Huge,series=\scshape}
+\setbeamerfont{frametitle}{size=\LARGE,series=\scshape}
 \setbeamerfont{framesubtitle}{parent=frametitle,size=\footnotesize}
 
 \setbeamertemplate{frametitle}{
@@ -144,6 +144,8 @@
 %% \setbeamertemplate{bibliography item}{\insertbiblabel}
 \setbeamercolor{bibliography item}{fg=foreground}
 \setbeamercolor{footnote}{fg=foreground}
+\setbeamerfont{footnote}{size=\tiny}
+\renewcommand\footnoterule{{\color{darkgrey}\hrule height 0.5pt}}
 
 
 \newcommand{\footref}[1]{\let\thefootnote\relax\footfullcite{#1}}
@@ -317,3 +319,12 @@
 %%    2061: (149.537,97.9805,104.288) #966268 srgb(58.6419%,38.4237%,40.8972%)
 %%    727: (173.93,121.553,137.21) #AE7A89 srgb(68.2078%,47.6677%,53.8079%)
 %%    1.87411e+06: (13,29,53.9961) #0D1D36 srgb(5.09804%,11.3725%,21.1749%)
+
+\def\signed  #1{{\leavevmode\unskip\nobreak\hfil\penalty50\hskip1em
+  \hbox{}\nobreak\hfill #1%
+  \parfillskip=0pt \finalhyphendemerits=0 \endgraf}}
+
+\newsavebox\mybox
+\newenvironment{aquote}[1]
+  {\savebox\mybox{#1}\begin{quote}\openautoquote\hspace*{-.7ex}}
+  {\unskip\closeautoquote\vspace*{1mm}\signed{\usebox\mybox}\end{quote}}
