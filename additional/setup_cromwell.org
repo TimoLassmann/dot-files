@@ -239,7 +239,7 @@ This replaces =/= with =_=.
 
 Secondly the default singularity command line is wrong. It mounts the working directory in one place and calls the runner script elsewhere. To fix this I set the working directory in the container using the =--pwd= option and call the =script= relative to this path.
 
-
+** cromwell config file
 #+begin_src java  :tangle /ssh:pawsey://data/home/timo/tmp/test_cromwell.conf
     # This is a "default" Cromwell example that is intended for you you to start with
         # and edit for your needs. Specifically, you will be interested to customize
