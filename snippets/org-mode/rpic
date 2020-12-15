@@ -2,10 +2,6 @@
 # name: rpic
 # key: <rp
 # --
-#+BEGIN_SRC R :session one :exports both :results graphics :file ${2:filename} :width ${1:size} :height $1 
+#+BEGIN_SRC R :session one :exports both :results graphics file :file ${2:filename} :width ${1:size} :height $1
 $0
 #+END_SRC
-
-
-
-

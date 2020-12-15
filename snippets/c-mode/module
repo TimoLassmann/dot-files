@@ -1,0 +1,14 @@
+# -*- mode: snippet -*-
+# name: module
+# key: <mod
+# --
+#ifdef `(upcase (file-name-sans-extension (file-name-nondirectory (buffer-file-name))))`_IMPORT
+#define EXTERN
+#else
+#define EXTERN extern
+#endif
+
+$0
+
+#undef `(upcase (file-name-sans-extension (file-name-nondirectory (buffer-file-name))))`_IMPORT
+#undef EXTERN

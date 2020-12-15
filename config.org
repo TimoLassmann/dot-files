@@ -1250,7 +1250,7 @@ load org mode
     (setq org-startup-with-inline-images t)
 
     (setq org-src-fontify-natively t)
-    
+
     (setq org-src-preserve-indentation t)
     (setq org-edit-src-content-indentation t)
 
@@ -1978,7 +1978,7 @@ Special formatting for the ROPE sections.
    [NO-DEFAULT-PACKAGES]
    [PACKAGES]
    [EXTRA]"
-                                  
+
                                     ("\\section{%s}" . "\\section*{%s}")
                                     ("\\subsection{%s}" . "\\subsection*{%s}")
                                     ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
