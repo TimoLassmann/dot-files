@@ -9,14 +9,14 @@ To move / sync my password repository across machines we need 2 pieces of inform
 
 Have a look what keys are there:
 
-#+BEGIN_SRC bash  :eval never 
+#+BEGIN_SRC bash  :eval never
 gpg2 --list-secret-keys
 #+END_SRC
 
 Select the correct key by ID then:
 
-#+BEGIN_SRC bash  :eval never 
-gpg2 --export-secret-keys  334FB84AB31D3FF7D291BE15FCE5C7EA1FB02101  > secret.gpg
+#+BEGIN_SRC bash  :eval never
+gpg2 --export-secret-keys  <ID>  > secret.gpg
 #+END_SRC
 
 and copy this file onto an encrypted disk.
@@ -25,19 +25,19 @@ and copy this file onto an encrypted disk.
 
 Create a bare repository on an encrypted disk:
 
-#+BEGIN_SRC bash  :eval never 
+#+BEGIN_SRC bash  :eval never
 git init --bare pass-repo
 #+END_SRC
 
 Add this repo as a remote to the  =pass= git repo:
 
-#+BEGIN_SRC bash  :eval never 
+#+BEGIN_SRC bash  :eval never
 pass git remote add <NAME_OF_REMOTE> <path to bare repo on encrypted disk>
 #+END_SRC
 
 Push all contents to the bare repo:
 
-#+BEGIN_SRC bash  :eval never 
+#+BEGIN_SRC bash  :eval never
 pass git push blueT5 master
 #+END_SRC
 
@@ -45,16 +45,14 @@ pass git push blueT5 master
 * On a new machine
 
 Step 1: import the secret key:
-#+BEGIN_SRC bash  :eval never 
+#+BEGIN_SRC bash  :eval never
 gpg2 --import secret.gpg
 #+END_SRC
 
 Step 2: clone git repo:
 
-#+BEGIN_SRC bash  :eval never 
+#+BEGIN_SRC bash  :eval never
 git clone <path to bare repo> .password-store
 #+END_SRC
 
-All good. 
-
-
+All good.
