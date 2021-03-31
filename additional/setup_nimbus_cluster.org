@@ -327,7 +327,7 @@ cellranger testrun --id=tiny
 2) detach in openstack console 
 3) resize 
 4) re-attach 
-5)  mount /dev/vdc /data
+5) mount /dev/vdc /data
 6) resize using: 
 btrfs filesystem resize max /data/
 

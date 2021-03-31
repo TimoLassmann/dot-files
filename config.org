@@ -2377,7 +2377,10 @@ Don't ask with make command to run...
 I prefer to have my own R installation locally (see Rinstallation.org). Let's let emacs know about this:
 
 #+BEGIN_SRC emacs-lisp
-  ;; (setq-default inferior-R-program-name "/home/user/bin/R")
+
+ (setq-default inferior-R-program-name "/home/user/R")
+
+
 #+END_SRC
 
 Default ESS config:

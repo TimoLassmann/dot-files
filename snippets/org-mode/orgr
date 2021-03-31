@@ -1,0 +1,47 @@
+# -*- mode: snippet -*-
+# name: orgr
+# key: <orgr
+# --
+#+TITLE:  $1
+#+AUTHOR: Timo Lassmann
+#+EMAIL:  timo.lassmann@telethonkids.org.au
+#+DATE: `(format-time-string "%Y-%m-%d")`
+#+LATEX_CLASS: report
+#+OPTIONS:  toc:nil
+#+OPTIONS: H:4
+#+LATEX_CMD: pdflatex
+
+
+* This is a test
+
+$0
+#+BEGIN_SRC R
+<<Rlibraries>>
+ls()
+#+END_SRC
+
+
+
+* Setup
+
+
+#+NAME: liblist
+#+BEGIN_SRC R :tangle no
+libraries <- c("tidyverse","${2:edgeR}")
+#+END_SRC
+
+
+#+NAME: Rlibraries
+#+BEGIN_SRC R :tangle no
+<<liblist>>
+lapply(libraries, FUN = function(X) {
+  do.call("library", list(X))
+})
+
+#+END_SRC
+
+
+
+
+#+PROPERTY:    header-args:R :tangle `(file-name-sans-extension (file-name-nondirectory (buffer-file-name)))`_rscript.R :session one  :noweb yes
+

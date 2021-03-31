@@ -137,7 +137,56 @@ pdsh -a 'ip a | grep 192.168'
 
   #+END_SRC
 
-* Setup MUNGE & SLURM 
+* Setup MUNGE & SLURM
+
+** Create users
+
+#+BEGIN_SRC bash :noweb yes :tangle create_munge_slurm_users.sh :shebang #!/usr/bin/env bash
+
+# ----------------------------------------------------------------------
+#  create_munge_slurm_users.sh (tangled from: SETUP_NIMBUS_MINIMAL.ORG)
+#  Descriptions: 
+# ----------------------------------------------------------------------
+sudo userdel munge
+sudo groupdel munge
+
+sudo userdel slurm
+sudo groupdel slurm 
+
+
+export MUNGEUSER=966
+sudo groupadd -g $MUNGEUSER munge
+sudo useradd  -m -c "MUNGE Uid 'N' Gid Emporium" -d /var/lib/munge -u $MUNGEUSER -g munge  -s /sbin/nologin munge
+export SLURMUSER=967
+sudo groupadd -g $SLURMUSER slurm
+sudo useradd  -m -c "SLURM workload manager" -d /var/lib/slurm -u $SLURMUSER -g slurm  -s /bin/bash slurm
+
+# ----------------------------------------------------------------------
+#+END_SRC
+
+#+BEGIN_SRC bash
+./create_munge_slurm_users.sh
+
+pdcp -a create_munge_slurm_users.sh .
+pdsh -a ./create_munge_slurm_users.sh
+#+END_SRC
+
+
+
+** requirements :
+#+BEGIN_SRC shell
+sudo apt install mariadb-server libmariadbclient-dev libmariadb-dev -y
+sudo apt install python3 gcc openssl numactl hwloc lua5.3 man2html make ruby ruby-dev libmunge-dev libpam0g-dev -y
+sudo /usr/bin/gem install fpm
+
+pdsh -a sudo apt install mariadb-server libmariadbclient-dev libmariadb-dev -y
+pdsh -a sudo apt install python3 gcc openssl numactl hwloc lua5.3 man2html make ruby ruby-dev libmunge-dev libpam0g-dev -y
+pdsh -a sudo /usr/bin/gem install fpm
+ #+END_SRC
+
+
+
+
 ** MUNGE
 
 *** Install 
@@ -145,14 +194,13 @@ pdsh -a 'ip a | grep 192.168'
 
       pdsh -a sudo apt-get -yq install libmunge-dev libmunge2 munge pdsh
       sudo apt-get -yq install libmunge-dev libmunge2 munge pdsh
-
+      
     #+END_SRC
 
 *** Synchronise munge keys.
 
     First set up a script to copy the munge key from the home directory into the
     right location on all node.
-
     #+BEGIN_SRC shell :tangle munge_per_node.sh :shebang #!/bin/bash :exports code :results none
       sudo systemctl stop munge
       cd ~
@@ -191,18 +239,346 @@ pdsh -a 'ip a | grep 192.168'
 Testing!!! 
 #+BEGIN_SRC shell 
 munge -n | unmunge
-munge -n | ssh rare-2 unmunge
-munge -n | ssh rare-3 unmunge
-munge -n | ssh rare-4 unmunge
-munge -n | ssh rare-5 unmunge
-munge -n | ssh rare-6 unmunge
+munge -n | ssh node-2 unmunge
+munge -n | ssh node-3 unmunge
+munge -n | ssh node-4 unmunge
+munge -n | ssh node-5 unmunge
+munge -n | ssh node-6 unmunge
 remunge
 #+END_SRC
+
+
+* Slurm from source:
+
+
+
+#+BEGIN_SRC bash :noweb yes :tangle makeslurm_from_source.sh :shebang #!/usr/bin/env bash
+
+# ----------------------------------------------------------------------
+#  makeslurm_from_source.sh (tangled from: SETUP_NIMBUS_MINIMAL.ORG)
+#  Descriptions: copied from: https://www.ni-sp.com/slurm-build-script-and-container-commercial-support/#h-automatic-slurm-build-script-for-ubuntu-18-04-and-20-04
+# ----------------------------------------------------------------------
+mkdir -p slurm-tmp
+cd slurm-tmp
+if [ "$VER" == "" ]; then
+    export VER=20.02.6    # latest 20.02.XX version
+    export VER=20.11.5
+fi
+# https://download.schedmd.com/slurm/slurm-20.02.3.tar.bz2
+wget https://download.schedmd.com/slurm/slurm-$VER.tar.bz2
+
+tar jxvf slurm-$VER.tar.bz2
+cd slurm-$VER
+# ./configure
+./configure --prefix=/usr --sysconfdir=/etc/slurm --enable-pam --with-pam_dir=/lib/x86_64-linux-gnu/security/ --without-shared-libslurm
+make
+make contrib
+sudo make install
+cd ..
+# fpm -s dir -t deb -v 1.0 -n slurm-$VER --prefix=/usr -C /tmp/slurm-build .
+# echo Creating deb package for SLURM $VER
+# fpm -s dir -t deb -v 1.0 -n slurm-$VER --prefix=/usr -C /usr .
+# ----------------------------------------------------------------------
+#+END_SRC
+
+#+RESULTS:
+Run and install: 
+#+BEGIN_SRC bash
+pdcp -a makeslurm_from_source.sh . 
+pdsh -a ./makeslurm_from_source.sh  
+pdsh -a slurmd --version
+slurmd --version
+
+sudo mkdir -p /etc/slurm /etc/slurm/prolog.d /etc/slurm/epilog.d /var/spool/slurm/ctld /var/spool/slurm/d /var/log/slurm
+sudo chown slurm /var/spool/slurm/ctld /var/spool/slurm/d /var/log/slurm
+
+pdsh -a sudo mkdir -p /etc/slurm /etc/slurm/prolog.d /etc/slurm/epilog.d /var/spool/slurm/ctld /var/spool/slurm/d /var/log/slurm
+pdsh -a sudo chown slurm /var/spool/slurm/ctld /var/spool/slurm/d /var/log/slurm
+#+END_SRC
+
+Create all auxillary directories:
+
+#+BEGIN_SRC bash :noweb yes :tangle create_slurm_directories.sh :shebang #!/usr/bin/env bash
+
+# ----------------------------------------------------------------------
+#  create_slurm_directories.sh (tangled from: SETUP_NIMBUS_MINIMAL.ORG)
+#  Descriptions: Creates / touches all files needed by the slurm daemon
+# ----------------------------------------------------------------------
+
+sudo mkdir -p /var/spool/slurm
+sudo chown slurm:slurm /var/spool/slurm
+sudo chmod 755 /var/spool/slurm
+sudo mkdir -p /var/spool/slurm/slurmctld
+sudo chown slurm:slurm /var/spool/slurm/slurmctld
+sudo chmod 755 /var/spool/slurm/slurmctld
+sudo mkdir -p /var/spool/slurm/cluster_state
+sudo chown slurm:slurm /var/spool/slurm/cluster_state
+sudo touch /var/log/slurmctld.log
+sudo chown slurm:slurm /var/log/slurmctld.log
+sudo touch /var/log/slurm_jobacct.log /var/log/slurm_jobcomp.log
+sudo chown slurm: /var/log/slurm_jobacct.log /var/log/slurm_jobcomp.log
+sudo touch /var/run/slurmctld.pid /var/run/slurmd.pid
+sudo chown slurm:slurm /var/run/slurmctld.pid /var/run/slurmd.pid
+sudo mkdir -p /etc/slurm/prolog.d /etc/slurm/epilog.d 
+
+# ----------------------------------------------------------------------
+#+END_SRC
+
+
+#+BEGIN_SRC bash
+
+./create_slurm_directories.sh
+pdcp -a create_slurm_directories.sh .
+pdsh -a ./create_slurm_directories.sh
+#+END_SRC
+
+#+BEGIN_SRC bash :noweb yes :tangle slurm.conf
+
+# slurm.conf file generated by configurator.html.
+# Put this file on all nodes of your cluster.
+# See the slurm.conf man page for more information.
+#
+SlurmctldHost=node-1
+MpiDefault=none
+ProctrackType=proctrack/cgroup
+ReturnToService=2
+#SallocDefaultCommand=
+SlurmctldPidFile=/var/run/slurmctld.pid
+SlurmctldPort=6817
+SlurmdPidFile=/var/run/slurmd.pid
+SlurmdPort=6818
+SlurmdSpoolDir=/var/spool/slurm/slurmd
+SlurmUser=slurm
+#SlurmdUser=slurm
+#SrunEpilog=
+#SrunProlog=
+StateSaveLocation=/var/spool/slurm/
+SwitchType=switch/none
+#TaskEpilog=
+TaskPlugin=task/affinity
+#
+# SCHEDULING
+#DefMemPerCPU=0
+#MaxMemPerCPU=0
+#SchedulerTimeSlice=30
+SchedulerType=sched/backfill
+SelectType=select/cons_res
+SelectTypeParameters=CR_Core_Memory
+
+# LOGGING AND ACCOUNTING
+#AccountingStorageEnforce=0
+#AccountingStorageHost=
+#AccountingStorageLoc=
+#AccountingStoragePass=
+#AccountingStoragePort=
+AccountingStorageType=accounting_storage/none
+#AccountingStorageUser=
+#AccountingStoreJobComment=YES
+ClusterName=cluster
+#DebugFlags=
+#JobCompHost=
+#JobCompLoc=
+#JobCompPass=
+#JobCompPort=
+JobCompType=jobcomp/none
+#JobCompUser=
+#JobContainerType=job_container/none
+#JobAcctGatherFrequency=30
+JobAcctGatherType=jobacct_gather/none
+#SlurmctldDebug=info
+SlurmctldLogFile=/var/log/slurmctld.log
+SlurmdDebug=info
+SlurmdLogFile=/var/log/slurmd.log
+#SlurmSchedLogFile=
+#SlurmSchedLogLevel=
+#
+#
+# POWER SAVE SUPPORT FOR IDLE NODES (optional)
+#SuspendProgram=
+#ResumeProgram=
+#SuspendTimeout=
+#ResumeTimeout=
+#ResumeRate=
+#SuspendExcNodes=
+#SuspendExcParts=
+#SuspendRate=
+#SuspendTime=
+#
+#
+# COMPUTE NODES
+NodeName=node-[2-6] CPUs=32 Boards=1 SocketsPerBoard=1 CoresPerSocket=16 ThreadsPerCore=2 RealMemory=128831
+PartitionName=debug Nodes=node-[2-6] Default=YES MaxTime=INFINITE State=UP
+
+#+END_SRC
+
+Copy slurm config file into correct location 
+#+BEGIN_SRC bash
+sudo cp slurm.conf  /etc/slurm/slurm.conf
+pdcp -a slurm.conf .
+pdsh -a sudo cp slurm.conf  /etc/slurm/slurm.conf
+#+END_SRC
+
+
+** cgroups
+
+#+BEGIN_SRC bash :noweb yes :tangle cgroup.conf
+
+# ----------------------------------------------------------------------
+#  cgroup.conf (tangled from: SETUP_NIMBUS_MINIMAL.ORG)
+#  Descriptions: cgroup file 
+# ----------------------------------------------------------------------
+
+###
+#
+# Slurm cgroup support configuration file
+#
+# See man slurm.conf and man cgroup.conf for further
+# information on cgroup configuration parameters
+#--
+CgroupAutomount=yes
+
+ConstrainCores=no
+ConstrainRAMSpace=no
+
+# ----------------------------------------------------------------------
+#+END_SRC
+
+#+BEGIN_SRC bash
+     sudo cp cgroup.conf /etc/slurm/cgroup.conf
+     pdcp -a  cgroup.conf  .
+     pdsh -a sudo cp cgroup.conf /etc/slurm/cgroup.conf
+#+END_SRC
+
+
+** service files
+
+#+BEGIN_SRC bash :noweb yes :tangle slurmctld.service
+
+# ----------------------------------------------------------------------
+#  slurmctld.service (tangled from: SETUP_NIMBUS_MINIMAL.ORG)
+#  Descriptions: 
+# ----------------------------------------------------------------------
+
+[Unit]
+Description=Slurm controller daemon
+After=network.target munge.service
+ConditionPathExists=/etc/slurm/slurm.conf
+
+[Service]
+Type=forking
+EnvironmentFile=-/etc/sysconfig/slurmctld
+ExecStart=/usr/sbin/slurmctld $SLURMCTLD_OPTIONS
+ExecReload=/bin/kill -HUP \$MAINPID
+PIDFile=/var/run/slurmctld.pid
+
+[Install]
+WantedBy=multi-user.target
+
+# ----------------------------------------------------------------------
+#+END_SRC
+
+#+BEGIN_SRC bash :noweb yes :tangle slurmdbd.service
+
+# ----------------------------------------------------------------------
+#  slurmdbd.service (tangled from: SETUP_NIMBUS_MINIMAL.ORG)
+#  Descriptions: 
+# ----------------------------------------------------------------------
+
+[Unit]
+Description=Slurm DBD accounting daemon
+After=network.target munge.service
+ConditionPathExists=/etc/slurm/slurmdbd.conf
+
+[Service]
+Type=forking
+EnvironmentFile=-/etc/sysconfig/slurmdbd
+ExecStart=/usr/sbin/slurmdbd $SLURMDBD_OPTIONS
+ExecReload=/bin/kill -HUP \$MAINPID
+PIDFile=/var/run/slurmdbd.pid
+
+[Install]
+WantedBy=multi-user.target
+
+
+# ----------------------------------------------------------------------
+#+END_SRC
+
+#+BEGIN_SRC bash
+sudo cp slurmctld.service /etc/systemd/system/slurmctld.service
+sudo cp slurmdbd.service  /etc/systemd/system/slurmdbd.service
+#+END_SRC
+
+
+
+** Start master node
+
+#+BEGIN_SRC bash
+sudo systemctl daemon-reload
+sudo systemctl enable slurmdbd
+sudo systemctl start slurmdbd
+sudo systemctl enable slurmctld
+sudo systemctl start slurmctld
+
+
+#+END_SRC
+
+** Compute nodes:
+
+#+BEGIN_SRC bash :noweb yes :tangle slurmd.service 
+
+# ----------------------------------------------------------------------
+#  slurmd.service  (tangled from: SETUP_NIMBUS_MINIMAL.ORG)
+#  Descriptions: 
+# ----------------------------------------------------------------------
+[Unit]
+Description=Slurm node daemon
+After=network.target munge.service
+ConditionPathExists=/etc/slurm/slurm.conf
+
+[Service]
+Type=forking
+EnvironmentFile=-/etc/sysconfig/slurmd
+ExecStart=/usr/sbin/slurmd -d /usr/sbin/slurmstepd $SLURMD_OPTIONS
+ExecReload=/bin/kill -HUP \$MAINPID
+PIDFile=/var/run/slurmd.pid
+KillMode=process
+LimitNOFILE=51200
+LimitMEMLOCK=infinity
+LimitSTACK=infinity
+
+[Install]
+WantedBy=multi-user.target
+
+# ----------------------------------------------------------------------
+#+END_SRC
+
+#+BEGIN_SRC bash 
+
+sudo cp slurmd.service  /etc/systemd/system/slurmd.service
+pdcp -a  slurmd.service .
+pdsh -a sudo  cp slurmd.service  /etc/systemd/system/slurmd.service
+pdsh -a sudo systemctl daemon-reload
+pdsh -a sudo systemctl enable slurmd.service
+pdsh -a sudo systemctl start slurmd.service
+#+END_SRC
+
+
+
+# on compute nodes 
+
+
+# ----------------------------------------------------------------------
+#+END_SRC
+
 
 * Slurm 
 
   Setup for a basic slurm scheduler. The setup below is minimal but works.  
   Install slurm
+
+  Let's try to install the deb slurm package from above... 
+  
+  
 #+BEGIN_SRC bash 
   pdsh -a sudo apt install slurmctld slurmd -yq
 #+END_SRC
@@ -247,6 +623,7 @@ remunge
      ConstrainDevices=yes
      ConstrainRAMSpace=yes
 
+
      EOF'
 
      sudo -- sh -c 'cat > /etc/hosts  << "EOF"
@@ -277,10 +654,44 @@ Set permission  (has to match spool entry in slurm.conf - otherwise
 daemon can't write...)
 
 #+BEGIN_SRC shell 
+sudo mkdir -p /var/spool/slurmd
+sudo mkdir -p /var/lib/slurm-llnl
+sudo mkdir -p /var/lib/slurm-llnl/slurmd
+sudo mkdir -p /var/lib/slurm-llnl/slurmctld
+sudo mkdir -p /var/run/slurm-llnl
+sudo mkdir -p /var/log/slurm-llnl
 
-mkdir /var/spool/slurmd
-chown slurm: /var/spool/slurmd
-chmod 755 /var/spool/slurmcd
+
+sudo chmod -R 755 /var/spool/slurmd
+sudo chmod -R 755 /var/lib/slurm-llnl/
+sudo chmod -R 755 /var/run/slurm-llnl/
+sudo chmod -R 755 /var/log/slurm-llnl/
+
+sudo chown -R slurm:slurm /var/spool/slurmd
+sudo chown -R slurm:slurm /var/lib/slurm-llnl/
+sudo chown -R slurm:slurm /var/run/slurm-llnl/
+sudo chown -R slurm:slurm /var/log/slurm-llnl/
+
+pdsh -a sudo mkdir -p /var/spool/slurmd
+pdsh -a sudo mkdir -p /var/lib/slurm-llnl
+pdsh -a sudo mkdir -p /var/lib/slurm-llnl/slurmd
+pdsh -a sudo mkdir -p /var/lib/slurm-llnl/slurmctld
+pdsh -a sudo mkdir -p /var/run/slurm-llnl
+pdsh -a sudo mkdir -p /var/log/slurm-llnl
+
+
+pdsh -a sudo chmod -R 755 /var/spool/slurmd
+pdsh -a sudo chmod -R 755 /var/lib/slurm-llnl/
+pdsh -a sudo chmod -R 755 /var/run/slurm-llnl/
+pdsh -a sudo chmod -R 755 /var/log/slurm-llnl/
+
+pdsh -a sudo chown -R slurm:slurm /var/spool/slurmd
+pdsh -a sudo chown -R slurm:slurm /var/lib/slurm-llnl/
+pdsh -a sudo chown -R slurm:slurm /var/run/slurm-llnl/
+pdsh -a sudo chown -R slurm:slurm /var/log/slurm-llnl/
+
+
+
 #+END_SRC
 
    The following script configures the head node, copies the above script to all

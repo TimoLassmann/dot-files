@@ -53,7 +53,20 @@
 
 
 \usepackage{xpatch}
-
+\usepackage{geometry}
+\geometry{twoside=true,
+  head=13pt,
+  paperwidth=8.5in,
+  paperheight=11in,
+  includeheadfoot,
+  columnsep=2pc,
+  top=57pt,
+  bottom=73pt,
+  inner=54pt,
+  outer=54pt,
+  marginparwidth=2pc,
+  heightrounded
+}%
 
 
 \def\makenamesetup{%
@@ -160,16 +173,17 @@
 
 
 \titleformat{\section}
-{\color{SchemeDark}\normalfont\Large\sffamily\bfseries}
+{\color{SchemeDark}\bfseries\Large\section@raggedright\MakeTextUppercase}
 {\color{DropCapViolet}\thesection}{0.8em}{}
 
 \titleformat{\subsection}
-{\color{SchemeDark}\normalfont\large\sffamily\bfseries}
+{\color{SchemeDark}\bfseries\Large\section@raggedright}
 {\color{DropCapViolet}\thesubsection}{0.8em}{}
 
 \titleformat{\subsubsection}
 {\color{black}\normalfont\normalsize\sffamily\bfseries}
 {\color{DropCapViolet}\thesubsubsection}{0.8em}{}
+
 
 
 
@@ -193,7 +207,7 @@
       inner ysep = 0pt,
       text width=\textwidth,
      % text centered
-    ]{\LARGE\scshape\sffamily\bfseries\@title};
+    ]{\Huge\sffamily\bfseries\@title};
 \end{tikzpicture}
 \end{center}
 }
