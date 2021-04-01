@@ -10,7 +10,7 @@
 #+OPTIONS:  toc:nil
 #+OPTIONS: H:4
 #+LATEX_CMD: pdflatex
-
+#+PROPERTY: header-args:R :tangle `(file-name-sans-extension (file-name-nondirectory (buffer-file-name)))`_rscript.R :session one  :noweb yes  :exports both
 
 * This is a test
 
@@ -43,5 +43,5 @@ lapply(libraries, FUN = function(X) {
 
 
 
-#+PROPERTY:    header-args:R :tangle `(file-name-sans-extension (file-name-nondirectory (buffer-file-name)))`_rscript.R :session one  :noweb yes
+
 

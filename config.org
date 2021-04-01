@@ -2378,8 +2378,8 @@ I prefer to have my own R installation locally (see Rinstallation.org). Let's le
 
 #+BEGIN_SRC emacs-lisp
 
- (setq-default inferior-R-program-name "/home/user/R")
-
+(setq-default inferior-R-program-name "/home/user/R")
+(setq-default inferior-ess-r-program  "/home/user/R")
 
 #+END_SRC
 
