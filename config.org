@@ -12,13 +12,12 @@
 # \Author{Timo La\ss mann}
 # \DocumentID{src_sh[:value verbatim]{shasum -a 256 config.org | awk '{print $1}' }}
 
+
 * To speed things up
 
 #+BEGIN_SRC emacs-lisp
   (setq gc-cons-threshold (* 50 1000 1000))
-
   (setq gc-cons-percentage 0.6)
-
   (setq message-log-max 16384)
 
 #+END_SRC
@@ -57,8 +56,6 @@ Load up a collection of enhancements to Emacs Lisp, including [[https://github.c
 [[https://github.com/magnars/s.el][s]] for string manipulation, and [[https://github.com/rejeep/f.el][f]] for file manipulation.
 
 #+BEGIN_SRC emacs-lisp
-
-
   (use-package s
     :defer t
     :ensure t
@@ -1430,13 +1427,21 @@ Htmlize required for reveal...
 
 Use minted package for code:
 
+# #+BEGIN_SRC emacs-lisp
+#   (setq org-latex-listings t)
+#    ;;   ;; (setq org-latex-listings 'minted)
+#    ;;   (setq org-latex-minted-options
+#    ;;         '(("frame" "lines") ("linenos=true")("breaklines")))
+# #+END_SRC
+
 #+BEGIN_SRC emacs-lisp
-  (setq org-latex-listings t)
-   ;;   ;; (setq org-latex-listings 'minted)
-   ;;   (setq org-latex-minted-options
-   ;;         '(("frame" "lines") ("linenos=true")("breaklines")))
+
+  (setq org-latex-listings 'minted)
+  (setq org-latex-minted-options
+        '(("frame" "lines") ("linenos=true")("breaklines")))
 #+END_SRC
 
+results graphics
 ** Flyspell
 Enable spell-checking in Org-mode.
 #+BEGIN_SRC emacs-lisp

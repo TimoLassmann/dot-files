@@ -64,9 +64,9 @@
 
 ** Renviron 
    Set the tmp + local lib directory:
-   #+BEGIN_SRC text :tangle ~/.Renviron
+   #+BEGIN_EXAMPLE text :tangle ~/.Renviron
      R_LIBS_USER='~/local/R_libs'
-   #+END_SRC
+   #+END_EXAMPLE
 
 Took this out: never works as expected. 
 
@@ -80,7 +80,7 @@ TMP='/home/user/tmp'
 
    Make sure R knows about the user and base libraries: 
 
-   #+BEGIN_SRC R :tangle ~/.Rprofile
+   #+BEGIN_EXAMPLE R :tangle ~/.Rprofile
      set_lib_paths <- function(lib_vec) {
        lib_vec <- normalizePath(lib_vec, mustWork = TRUE)
        shim_fun <- .libPaths
@@ -91,7 +91,7 @@ TMP='/home/user/tmp'
        shim_fun(lib_vec)
      }
      set_lib_paths(c("~/local/R_libs","~/lib64/R/library"))
-   #+END_SRC
+   #+END_EXAMPLE
 
 
 

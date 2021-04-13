@@ -39,6 +39,7 @@
          global-ctags \
          ctags-etags \
          valgrind \
+         valgrind-devel \
          mpich \
          hdf5 \
          hdf5-mpich \
@@ -110,8 +111,16 @@
          proj \
          proj-devel \
          geos \
-         geos-devel
-
+         geos-devel \
+         libtiff-devel \
+         libXpm-devel \
+         giflib \
+         giflib-devel \
+         jansson \
+         jansson-devel \
+         Xaw3d \
+         Xaw3d-devel \
+         python3-devel 
 
   #+END_SRC
 
