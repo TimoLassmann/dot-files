@@ -19,7 +19,7 @@
  %vmargin=20mm,
 % head=0ex,foot=05ex
  }
- 
+
 \usepackage{import}
 \usepackage{fontspec}
 \setmainfont{Times New Roman}
@@ -58,14 +58,24 @@
 \usepackage{lipsum}
 \usepackage{wrapfig}
 \usepackage{etaremune}
-\usepackage[natbib=true,style=nature,maxnames=10, minnames=1,hyperref=auto,backref=true,sorting=none,backend=bibtex]{biblatex}
+\usepackage[natbib=true,
+  style=nature,
+  maxnames=10,
+  minnames=1,
+  hyperref=auto,
+  backref=true,
+  sorting=none,
+   isbn=false,
+    url=false,
+    doi=false,
+  backend=bibtex]{biblatex}
 
 
 \definecolor{grantblue}{RGB}{5,99,193}
 
 \hypersetup{
   colorlinks   = true,
-  linkcolor    = grantblue,   
+  linkcolor    = grantblue,
   citecolor    = grantblue,
   urlcolor     = grantblue
 }
@@ -132,6 +142,7 @@ boycott-2019-diagn-all,
 anderson-2019-person-analy,
 denisenko-2020-system-asses,
 kouno-2019-c1-cage,
+lassmann-2020-flexib-comput,
 }
 
 
@@ -172,7 +183,7 @@ kouno-2019-c1-cage,
 %\titleformat{\subsubsection}{\normalsize\itshape}{\thesubsubsection}{1em}{}
 \setcounter{secnumdepth}{4}
 \renewcommand\thesubsection{\arabic{subsection}.}
-\renewcommand\thesubsubsection{\arabic{subsection}.\arabic{subsubsection}.} 
+\renewcommand\thesubsubsection{\arabic{subsection}.\arabic{subsubsection}.}
 %\renewcommand\thesubsubsubsection{\arabic{subsection}.\arabic{subsubsection}.\arabic{subsubsubsection}.}
 
 
@@ -180,7 +191,7 @@ kouno-2019-c1-cage,
 %{
 %\begin{tikzpicture}
 %  \node[inner xsep=0pt,text width=\textwidth,
-%    align=left, fill=black!20!white] 
+%    align=left, fill=black!20!white]
 %    {\Alph{section}. #1};
 %  \end{tikzpicture}%
 %};
@@ -189,7 +200,7 @@ kouno-2019-c1-cage,
 %{
 %\begin{tikzpicture}
 %  \node[inner xsep=0pt,text width=\textwidth,
-%    align=left, fill=black!20!white] 
+%    align=left, fill=black!20!white]
 %    {\arabic{subsection}. #1};
 %  \end{tikzpicture}%
 %};
@@ -198,7 +209,7 @@ kouno-2019-c1-cage,
 %{
 %\begin{tikzpicture}
 %  \node[inner xsep=0pt,text width=\textwidth,align=left, fill=black!10!white]{#1};
-%\end{tikzpicture}%   
+%\end{tikzpicture}%
 %}
 
 \titleformat{\section}[block] %command
@@ -209,7 +220,7 @@ kouno-2019-c1-cage,
               {0.5em} %sep
               {} %before
               [] %after
-             
+
 
 \titleformat{\subsection}[block] %command
               {\selectfont\bfseries
@@ -228,18 +239,18 @@ kouno-2019-c1-cage,
               [] %after
               %\titlespacing{\section}{0pt}{10pt}{5pt}
 
-              
+
 
 %\titleformat{\section}{\color{grantblue}\normalfont\large\selectfont\bfseries}{\Alph{section}.}{0.25em}{}
 %\titleformat{\subsection}{\color{grantblue}\selectfont\bfseries\uppercase}{\thesubsection}{0.25em}{}
 %\titleformat{\subsubsection}{\color{grantblue}\normalfont\normalsize\selectfont\itshape}{\thesubsubsection}{0.5em}{}
 %\titleformat{\subsubsubsection}{\normalfont\normalsize\selectfont\itshape}{\thesubsubsubsection}{0.5em}{}
-\titleformat{\paragraph}[runin]{\normalfont\normalsize\bfseries\itshape}{}{0em}{}[:\enspace] 
+\titleformat{\paragraph}[runin]{\normalfont\normalsize\bfseries\itshape}{}{0em}{}[:\enspace]
 
 %
 % Here is how spa
 %\titlespacing{command}{left spacing}{before spacing}{after spacing}[right]
-                          
+
 \titlespacing{\section}{0pt}{0.5cm}{0.5cm}
 %\titlespacing*{\section}{0pt}{0.25cm}{0.25cm}
 \titlespacing*{\subsection}{0pt}{0.5cm}{.1cm}
@@ -301,13 +312,13 @@ kouno-2019-c1-cage,
 
 
 
-\newenvironment{grayblock}{ \begin{tcolorbox}[width=\textwidth,colback={black!10!white}]}{\end{tcolorbox}} 
+\newenvironment{grayblock}{ \begin{tcolorbox}[width=\textwidth,colback={black!10!white}]}{\end{tcolorbox}}
 
-\newenvironment{redblock}{ \begin{tcolorbox}[width=\textwidth,colback={red!20!white}]}{\end{tcolorbox}} 
+\newenvironment{redblock}{ \begin{tcolorbox}[width=\textwidth,colback={red!20!white}]}{\end{tcolorbox}}
 
 
 
-\tikzstyle{fancyframe} = [draw=gray, 
+\tikzstyle{fancyframe} = [draw=gray,
     rectangle, rounded corners=2pt, inner sep=5pt, inner ysep=5pt]
 
 \newcommand{\rightimage}[4][Title of the box]{%
@@ -342,10 +353,10 @@ kouno-2019-c1-cage,
    \begin{minipage}[c]{\textwidth-#3}
     \caption{#1}
  \label{#4}
-     
+
    \end{minipage}
-   
-  
+
+
   \end{figure}
   \vspace{0.25cm}
 }
@@ -365,9 +376,9 @@ kouno-2019-c1-cage,
           %\fill [blue] (0,0) rectangle (6,4);
        \end{tikzpicture}
       \end{minipage}%
-  
 
-  
+
+
   \end{figure}
 \vspace{0.25cm}
 }
@@ -378,4 +389,3 @@ kouno-2019-c1-cage,
   %      \setcounter{figure}{0}
   %      \renewcommand{\thefigure}{S\arabic{figure}}%
   %   }
-

@@ -1,3 +1,6 @@
+;; Howto: look at current colous using M-x list-faces-display
+;; add corresponding entry below
+
 (deftheme simple
   "The basis for a my custom theme.")
 
@@ -121,6 +124,8 @@ Also bind `class' to ((class color) (min-colors 89))."
    `(compilation-mode-line-fail  ((t (:foreground ,alert-main))))
    `(compilation-mode-line-run ((t (:foreground ,alert-second))))
 
+   `(line-number ((t (:foreground "#3C3C3F"))))
+   `(line-number-current-line ((t (:foreground ,fg))))
 
    '(magit-branch-local ((t (:foreground "#10adee"))))
    '(magit-tag          ((t (:foreground "#2aa889"))))

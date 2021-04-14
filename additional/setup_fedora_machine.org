@@ -57,6 +57,7 @@
          ImageMagick \
          ImageMagick-devel \
          gnutls \
+         gnutls-devel \
          libjpeg-turbo-devel \
          libjpeg-turbo \
          libjpeg-turbo-utils \
@@ -120,8 +121,10 @@
          jansson-devel \
          Xaw3d \
          Xaw3d-devel \
-         python3-devel 
-
+         python3-devel \
+         cabextract \
+         xorg-x11-font-utils \
+         fontconfig
   #+END_SRC
 
 
