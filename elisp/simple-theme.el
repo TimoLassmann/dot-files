@@ -31,53 +31,6 @@ defining them in this alist."
     ("fg"               . "#DCDCCC")
     ("alert-main"       . "#A6341B")
     ("alert-second"     . "#2AA889")
-    ("zenburn-fg-1"     . "#656555")
-    ("zenburn-fg-05"    . "#989890")
-    ("zenburn-fg"       . "#DCDCCC")
-    ("zenburn-fg+1"     . "#FFFFEF")
-    ("zenburn-fg+2"     . "#FFFFFD")
-    ("zenburn-bg-2"     . "#000000")
-    ("zenburn-bg-1"     . "#2B2B2B")
-    ("zenburn-bg-08"    . "#303030")
-    ("zenburn-bg-05"    . "#383838")
-    ("zenburn-bg"       . "#3F3F3F")
-    ("zenburn-bg+05"    . "#494949")
-    ("zenburn-bg+1"     . "#4F4F4F")
-    ("zenburn-bg+2"     . "#5F5F5F")
-    ("zenburn-bg+3"     . "#6F6F6F")
-    ("zenburn-red-6"    . "#6C3333")
-    ("zenburn-red-5"    . "#7C4343")
-    ("zenburn-red-4"    . "#8C5353")
-    ("zenburn-red-3"    . "#9C6363")
-    ("zenburn-red-2"    . "#AC7373")
-    ("zenburn-red-1"    . "#BC8383")
-    ("zenburn-red"      . "#CC9393")
-    ("zenburn-red+1"    . "#DCA3A3")
-    ("zenburn-red+2"    . "#ECB3B3")
-    ("zenburn-orange"   . "#DFAF8F")
-    ("zenburn-yellow-2" . "#D0BF8F")
-    ("zenburn-yellow-1" . "#E0CF9F")
-    ("zenburn-yellow"   . "#F0DFAF")
-    ("zenburn-green-5"  . "#2F4F2F")
-    ("zenburn-green-4"  . "#3F5F3F")
-    ("zenburn-green-3"  . "#4F6F4F")
-    ("zenburn-green-2"  . "#5F7F5F")
-    ("zenburn-green-1"  . "#6F8F6F")
-    ("zenburn-green"    . "#7F9F7F")
-    ("zenburn-green+1"  . "#8FB28F")
-    ("zenburn-green+2"  . "#9FC59F")
-    ("zenburn-green+3"  . "#AFD8AF")
-    ("zenburn-green+4"  . "#BFEBBF")
-    ("zenburn-cyan"     . "#93E0E3")
-    ("zenburn-blue+3"   . "#BDE0F3")
-    ("zenburn-blue+2"   . "#ACE0E3")
-    ("zenburn-blue+1"   . "#94BFF3")
-    ("zenburn-blue"     . "#8CD0D3")
-    ("zenburn-blue-1"   . "#7CB8BB")
-    ("zenburn-blue-2"   . "#6CA0A3")
-    ("zenburn-blue-3"   . "#5C888B")
-    ("zenburn-blue-4"   . "#4C7073")
-    ("zenburn-blue-5"   . "#366060")
     ("zenburn-magenta"  . "#DC8CC3"))
   "List of Zenburn colors.
 Each element has the form (NAME . HEX).
@@ -124,6 +77,11 @@ Also bind `class' to ((class color) (min-colors 89))."
    `(compilation-mode-line-fail  ((t (:foreground ,alert-main))))
    `(compilation-mode-line-run ((t (:foreground ,alert-second))))
 
+   `(orderless-match-face-0 ((t (:background "#005a5f"))))
+   `(orderless-match-face-1 ((t (:background "#AC8CA3"))))
+   `(orderless-match-face-2 ((t (:background "#1f5e8a"))))
+   `(orderless-match-face-3 ((t (:foreground "#DCDCCC"))))
+   
    `(line-number ((t (:foreground "#3C3C3F"))))
    `(line-number-current-line ((t (:foreground ,fg))))
 
@@ -180,8 +138,9 @@ Also bind `class' to ((class color) (min-colors 89))."
    ;; '(eshell-ls-symlink ((t (:foreground blue :weight bold))))
    ;; '(eshell-ls-unreadable ((t (:foreground red))))
 
-
-   `(ivy-current-match ((t (:background "#002E41" :foreground ,alert-second))))
+   ;; `(ivy-current-match ((t (:background "#002E41" :foreground ,alert-second))))
+   `(ivy-current-match ((t (:background "#002E41"))))
+   
    `(ivy-minibuffer-match-face-1 ((t (:foreground ,alert-main ))))
    `(ivy-minibuffer-match-face-2 ((t (:foreground ,alert-main ))))
    `(ivy-minibuffer-match-face-3 ((t (:foreground ,alert-main ))))
@@ -222,20 +181,20 @@ Also bind `class' to ((class color) (min-colors 89))."
    `(org-todo ((t (:weight bold  :foreground ,alert-main))))
    `(org-done ((t (:weight bold  :foreground ,alert-second)))))
 
-   '(mode-line ((t (:foreground "#599cab" :background "#091f2e" :box nil))))
-   '(mode-line-inactive ((t (:foreground "#245361" :background  "#11151c" :box nil))))
-   '(mode-line-highlight ((t (:foreground  "#99d1ce"))))
-   '(mode-line-buffer-id ((t (:weight bold))))
+  '(mode-line ((t (:foreground "#599cab" :background "#091f2e" :box nil))))
+  '(mode-line-inactive ((t (:foreground "#245361" :background  "#11151c" :box nil))))
+  '(mode-line-highlight ((t (:foreground  "#99d1ce"))))
+  '(mode-line-buffer-id ((t (:weight bold))))
 
 
 
-   ;; '(powerline-active1 ((t (:foreground "#599cab" :background "#091f2e"))))
-   ;; '(powerline-active2 ((t (:foreground "#599cab" :background "#0a3749"))))
-   ;; '(powerline-inactive1 ((t (:foreground  "#245361" :background "#11151c"))))
-   ;; '(powerline-inactive2 ((t (:foreground  "#245361" :background "#091f2e"))))
+  ;; '(powerline-active1 ((t (:foreground "#599cab" :background "#091f2e"))))
+  ;; '(powerline-active2 ((t (:foreground "#599cab" :background "#0a3749"))))
+  ;; '(powerline-inactive1 ((t (:foreground  "#245361" :background "#11151c"))))
+  ;; '(powerline-inactive2 ((t (:foreground  "#245361" :background "#091f2e"))))
 
-   '(query-replace ((t (:inherit highlight))))
-   )
+  '(query-replace ((t (:inherit highlight))))
+  )
 
 
 
@@ -244,6 +203,6 @@ Also bind `class' to ((class color) (min-colors 89))."
 (provide 'simple-theme)
 
 
-  ;; (custom-theme-set-variables
-  ;;  'simple
-  ;;  '(beacon-color ((t ,alert-main ))
+;; (custom-theme-set-variables
+;;  'simple
+;;  '(beacon-color ((t ,alert-main ))
