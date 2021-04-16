@@ -14,6 +14,7 @@
 
     sudo dnf update
     sudo dnf install -y \
+         stow \
          zsh \
          pass \
          agrep \
@@ -40,6 +41,7 @@
          ctags-etags \
          valgrind \
          valgrind-devel \
+         gdb \
          mpich \
          hdf5 \
          hdf5-mpich \
@@ -126,6 +128,13 @@
          xorg-x11-font-utils \
          fontconfig
   #+END_SRC
+
+=gdb= seems to require these additional packages:
+#+BEGIN_SRC bash
+sudo dnf debuginfo-install libgcc-10.2.1-9.fc32.x86_64 libgomp-10.2.1-9.fc32.x86_64
+
+
+#+END_SRC
 
 
   #+BEGIN_SRC emacs-lisp

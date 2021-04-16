@@ -12,14 +12,6 @@
 # \Author{Timo La\ss mann}
 # \DocumentID{src_sh[:value verbatim]{shasum -a 256 config.org | awk '{print $1}' }}
 
-* To speed things up
-
-#+BEGIN_SRC emacs-lisp
-(setq gc-cons-threshold (* 50 1000 1000))
-(setq gc-cons-percentage 0.6)
-(setq message-log-max 16384)
-
-#+END_SRC
 
 * Package Manager
 To start we need the package "package"
@@ -49,6 +41,16 @@ Next let's make sure we have use-package
 #+END_SRC
 
 * General Settings
+** Bidirectional writing and so-long.el
+(from prot)
+#+BEGIN_SRC emacs-lisp
+
+(setq-default bidi-paragraph-direction 'left-to-right)
+(setq bidi-inhibit-bpa t)
+(require 'so-long)
+  (global-so-long-mode 1)
+#+END_SRC
+
 ** Init File Support
 
 Load up a collection of enhancements to Emacs Lisp, including [[https://github.com/magnars/dash.el][dash]],
@@ -592,6 +594,35 @@ This magnificent package takes care of this issue. It’s unnoticeable if you ha
   :bind
   ([remap other-window] . switch-window))
 #+END_SRC
+** Tabs
+#+BEGIN_SRC emacs-lisp
+;; (require 'tab-bar)
+
+;; (setq tab-bar-close-button-show nil)
+;; (setq tab-bar-close-last-tab-choice 'tab-bar-mode-disable)
+;; (setq tab-bar-close-tab-select 'recent)
+;; (setq tab-bar-new-tab-choice t)
+;; (setq tab-bar-new-tab-to 'right)
+;; (setq tab-bar-position nil)
+;; (setq tab-bar-show nil)
+;; (setq tab-bar-tab-hints nil)
+;; (setq tab-bar-tabn-name-function 'tab-bar-tab-name-current)
+;; (setq tab-bar-format                  ; Emacs 28
+;;       '(tab-bar-format-tabs
+;;         tab-bar-separator
+;;         tab-bar-format-align-right
+;;         tab-bar-format-global))
+;; (tab-bar-mode -1)
+;; (tab-bar-history-mode -1)
+;; (let ((map global-map))
+;;   (define-key map (kbd "<s-tab>") #'tab-next)
+;;   (define-key map (kbd "<f8>") #'prot-tab-tab-bar-toggle)
+;;   (define-key map (kbd "C-x t t") #'prot-tab-select-tab-dwim)
+;;   (define-key map (kbd "C-a t t") #'prot-tab-select-tab-dwim))
+
+
+;; (define-key map (kbd "<S-s-iso-lefttab>") #'tab-previous)))
+#+END_SRC
 
 ** Following window splits
 
@@ -853,28 +884,28 @@ Prescient
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
-;; (use-package ivy-posframe
-;;   :ensure t
-;;   :after ivy
-;;   :diminish ivy-posframe-mode
-;;   :delight
-;;   :custom
-;;   (ivy-posframe-parameters
-;;    '((left-fringe . 2)
-;;      (right-fringe . 2)
-;;      (internal-border-width . 2)
-;;      ))
-;;   (ivy-posframe-height-alist
-;;    '((swiper . 15)
-;;      (swiper-isearch . 15)
-;;      (t . 10)))
-;;   (ivy-posframe-display-functions-alist
-;;    '((complete-symbol . ivy-posframe-display-at-point)
-;;      (swiper . nil)
-;;      (swiper-isearch . nil)
-;;      (t . ivy-posframe-display-at-frame-center)))
-;;   :config
-;;   (ivy-posframe-mode 1))
+(use-package ivy-posframe
+  :ensure t
+  :after ivy
+  :diminish ivy-posframe-mode
+  :delight
+  :custom
+  (ivy-posframe-parameters
+   '((left-fringe . 2)
+     (right-fringe . 2)
+     (internal-border-width . 2)
+     ))
+  (ivy-posframe-height-alist
+   '((swiper . 15)
+     (swiper-isearch . 15)
+     (t . 10)))
+  (ivy-posframe-display-functions-alist
+   '((complete-symbol . ivy-posframe-display-at-point)
+     (swiper . nil)
+     (swiper-isearch . nil)
+     (t . ivy-posframe-display-at-frame-center)))
+  :config
+  (ivy-posframe-mode 1))
 #+END_SRC
 
 ** Swoop
@@ -1168,6 +1199,7 @@ There is more stuff in Howard Abram's config but I'll leave this for now..
 
 
 ** Writegood mode
+
 This does not work - there is a wring gpg signature in melpa...
 
 # #+BEGIN_SRC emacs-lisp
@@ -1710,7 +1742,7 @@ End.
   (after-init . org-roam-mode)
   :custom
   (org-roam-directory "~/work/roam/")
-
+  (setq org-roam-completion-everywhere t)
   :bind (:map org-roam-mode-map
               (("C-c m l" . org-roam)
                ("C-c m F" . org-roam-find-file)
@@ -1724,38 +1756,28 @@ End.
               (("C-c m i" . org-roam-insert)))
   )
 (setq org-roam-index-file "~/work/roam/Index.org")
-#+END_SRC
 
-Templates:
-
-#+BEGIN_SRC emacs-lisp
 (setq org-roam-capture-templates
-      (quote (("d" "default" plain
-               (function org-roam-capture--get-point)
-               "\n* %?"
+        '(("d" "default" plain (function org-roam-capture--get-point)
+           "\n* %?"
                :file-name "%<%Y%m%d%H%M%S>-${slug}"
                :head "#+title: ${title}\n#+created: %u\n#+last_modified: %U\n\n"
-               :unnarrowed t))
-             )
-      )
-(setq org-roam-capture-ref-templates
-      (quote (("r" "ref" plain
-               (function org-roam-capture--get-point)
-               ""
+               :unnarrowed t)
+          ("r" "ref" plain (function org-roam-capture--get-point)
+            ""
                :file-name "${slug}"
                :head "#+title: ${title}\n#+roam_key: ${ref}\n#+created: %u\n#+last_modified: %U\n\n"
-               :unnarrowed t))
-             )
-      )
-(setq org-roam-dailies-capture-templates
-      (quote (("d" "daily" plain (function org-roam-capture--get-point) "* %?\n"
-               ;;                   :immediate-finish t
-               :add-created t
-               :file-name "dailies/%<%Y-%m-%d>"
-               :head "#+TITLE: %<%Y-%m-%d>\n\n"))
-             )
-      )
+               :unnarrowed t)
+          ("d" "Daily" plain (function org-roam-capture--get-point)
+            "* %?\n"
+            :add-created t
+               :file-name "dailies/%<%Y-%m-%d>-${slug}"
+               :head "#+TITLE: %<%Y-%m-%d>\n\n"
+               :unnarrowed t)))
+
 #+END_SRC
+
+
 
 Org Roam protocol
 
@@ -1827,16 +1849,6 @@ xdg-mime default org-protocol.desktop x-scheme-handler/org-protocol
 
 #+END_SRC
 
-** company-org-roam
-#+BEGIN_SRC emacs-lisp
-
-(use-package company-org-roam
-  :ensure t
-  ;; You may want to pin in case the version from stable.melpa.org is not working
-                                        ; :pin melpa
-  :config
-  (push 'company-org-roam company-backends))
-#+END_SRC
 
 ** Org-Noter
 
@@ -2115,19 +2127,7 @@ Special formatting for the ROPE sections.
                 "\\end{frame}")))
 
 #+END_SRC
-end.
 
-* Calendar
-
-#+begin_example emacs-lisp
-    (use-package calfw
-        :ensure t
-    )
-  (use-package calfw-org
-      :ensure t
-      :after calfw
-    )
-#+end_example
 
 * Programming
 
@@ -2241,6 +2241,8 @@ magit end.
   (yas-reload-all))
 #+END_SRC
 
+
+
 ** Comments
 #+BEGIN_SRC emacs-lisp
 (use-package smart-comment
@@ -2271,7 +2273,6 @@ Follow compilation
 SET BSD indent style
 
 #+BEGIN_SRC emacs-lisp
-
 (add-hook 'c-mode-hook
           '(lambda()
              (c-set-style "bsd")
@@ -2292,7 +2293,7 @@ SET BSD indent style
                 (ggtags-mode 1))))
   :config
 
-                                        ; This must be set to the location of gtags (global)
+                                        ; THIS must be set to the location of gtags (global)
   ;;(setq ggtags-executable-directory "~/global-6.5.6/bin/")
                                         ; Allow very large database files
   (setq ggtags-oversize-limit 104857600)
@@ -2344,7 +2345,11 @@ SET BSD indent style
   :config
   (sp-pair "'" nil :actions :rem)
   (sp-pair "`" nil :actions :rem)
-  :init (add-hook 'c-mode-hook 'smartparens-mode))
+  :init
+  (add-hook 'c-mode-hook 'smartparens-mode)
+  (add-hook 'org-mode-hook 'smartparens-mode)
+  )
+
 #+END_SRC
 
 *** smart scan
@@ -2807,16 +2812,12 @@ The end.
 * End
 
 #+BEGIN_SRC emacs-lisp
-
-(setq gc-cons-threshold (* 2 1000 1000))
 ;; (if (daemonp)
 ;;     (add-hook 'after-make-frame-functions
 ;;               '(lambda (f)
 ;;                  (with-selected-frame f
 ;;                    (when (window-system f) (require 'init-client) ))))
 ;;   (require 'init-client) )
-
-
 
 #+END_SRC
 
