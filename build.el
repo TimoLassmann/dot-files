@@ -10,7 +10,7 @@
 (message "The name of this buffer is: %s." dot-files-src)
 
 
-(defvar script-funcs-src (concat dot-files-src "elisp/shell-script-funcs.el"))
+(defvar script-funcs-src (concat dot-files-src "tl-elisp/shell-script-funcs.el"))
 
 
 (require 'shell-script-funcs script-funcs-src)
@@ -52,10 +52,28 @@
   (tl/tangle-files "${dot-files-src}/*.org")
   (tl/tangle-files "${dot-files-src}/snippets/*.org")
 
+
+  (message "Copy init files.")
+  (tl/mksymlink "${dot-files-src}/early-init.el"
+                "${tl/emacs-directory}/early-init.el")
+  (tl/mksymlink "${dot-files-src}/init.el"
+                "${tl/emacs-directory}/init.el")
+  (tl/mksymlink "${dot-files-src}/basic-init.el"
+                "${tl/emacs-directory}/basic-init.el")
+  (tl/mksymlink "${dot-files-src}/emacs-config.org"
+                "${tl/emacs-directory}/emacs-config.org")
+  
   ;; Some Elisp files are just symlinked instead of tangled...
   (message "Make links to el files.")
+  (tl/mksymlinks "${dot-files-src}/tl-elisp"
+                 "${tl/emacs-directory}/tl-elisp")
+  
   (tl/mksymlinks "${dot-files-src}/elisp"
                  "${tl/emacs-directory}/elisp")
+
+  (tl/mksymlinks "${dot-files-src}/contrib-lisp"
+                 "${tl/emacs-directory}/contrib-lisp")
+  
   (message "done Make links to el files.")
 
   ;; copy my latex templates

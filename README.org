@@ -1,12 +1,61 @@
-#+TITLE:  My Dot Files 
+#+TITLE:  My GNU Emacs setup
 #+AUTHOR: Timo Lassmann
 #+PROPERTY:    header-args:sh  :tangle no
+#+LATEX_CLASS: report
+#+OPTIONS:  toc:nil
+#+OPTIONS: H:4
+#+LATEX_CMD: pdflatex
 
 
+
+* Introduction
+
+This readme file describes, mostly for myself, my current emacs setup. I pieced this together from other people's config files, notably:
+
+- Howard Abrams
+- Harry R. Schwartz
+- Protesilaos Stavrou
+- Mathieu Marques
   
+and many others. 
+
+Therefore, if it is your intention to emulate my setup, I highly recommend you to study the config files from the aforementioned emacs users.
+
+* Basic Setup and installation
+
+There are a number of small script to complete the installation.
+
+** =install.sh=
+This =bash= script simply instructs emacs to start without an =init.el= file and load the =build.el= script below.
+
+
+#+include: install.sh src bash :tangle no
+
+** =build.el=
+
+This =emacs-lisp= file will tangle org files containing snippets etc. and place them in the correct relative location within this folder. The symbolic links are creates into the =.emacs.d= directory in the user's home directory. A similar behaviour can be achieved by using GNU =stow=.
+
+This code relies on defining a couple of emacs functions for copying files, creating directories and symlinks which were taken from =Howard Abrams=.
+
+#+include: build.el src emacs-lisp :tangle no
+
+* Startup functions
+
+This section is largely copied from =Protesilaos Stavrou=. The two main reasons why I like this setup is:
+
+1) it is optimised for quick startup times
+2) packages are not updated / downloaded by default  
+
+When I downloaded this setup there were a couple of settings in =init.el= that I moved to main org-mode config file... 
+
+
+#+include: init.el src emacs-lisp :tangle no
+
+* Packages
+
+  Some packages I like need to be doneloaded manually:
   
-  Pieced together from  [Howard Abrams][0] and [Harry R. Schwartz][1].
-  
+  https://gitlab.com/tsc25/undo-tree.git 
 
 * Packages 
   
