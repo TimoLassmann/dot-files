@@ -255,7 +255,7 @@ of it."
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
-   '(magit ggtags smartscan smartparens smart-comment yasnippet icomplete-vertical marginalia orderless consult company-statistics company-c-headers company switch-window which-key undo-tree))
+   '(rainbow-mode org-pdftools org-noter ivy-bibtex org-roam-bibtex org-roam-server org-roam biblio org-ref deft org-superstar magit ggtags smartscan smartparens smart-comment yasnippet icomplete-vertical marginalia orderless consult company-statistics company-c-headers company switch-window which-key undo-tree))
  '(safe-local-variable-values
    '((flycheck-clang-include-path "-I." "-I../tldevel-1.2.8/" "-I./libpush/" "-I./libpushgp/" "-I./tools/")
      (company-c-headers-path-user "." "../tldevel-1.2.8/" "./libpush/" "./libpushgp/" "./tools/")

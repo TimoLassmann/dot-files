@@ -122,6 +122,8 @@
        )
    #+END_SRC
 
+
+
 ** Fonts
 
    #+BEGIN_SRC emacs-lisp
@@ -146,9 +148,12 @@
        (setq which-key-dont-use-unicode t)
        (setq which-key-add-column-padding 2)
        (setq which-key-show-early-on-C-h nil)
-       (setq which-key-idle-delay most-positive-fixnum) ; set this to something like 0.8
+       (setq which-key-idle-delay 0.8) ; set this to something like 0.8
        (setq which-key-idle-secondary-delay 0.05)
-       (setq which-key-popup-type 'side-window)
+       ;; (setq which-key-setup-side-window-bottom)
+       (which-key-setup-minibuffer)
+       ;; (setq which-key-popup-type 'side-window)
+       ;; (which-key-setup-side-window-bottom)
        (setq which-key-show-prefix 'echo)
        (setq which-key-max-display-columns 3)
        (setq which-key-separator "  ")
@@ -201,7 +206,6 @@
   (beginend-global-mode 1))
 
    #+END_SRC
-
 
 ** Goto last Change
 
@@ -414,6 +418,27 @@
 
    #+END_SRC
 
+** Autoinsert templates
+
+#+begin_src emacs-lisp
+(defun ha/autoinsert-yas-expand()
+  "Replace text in yasnippet template."
+  (yas-expand-snippet (buffer-string) (point-min) (point-max)))
+(prot-emacs-builtin-package 'autoinsert
+
+  (setq auto-insert-directory (tl/emacs-subdirectory "templates/"))
+  ;; Don't want to be prompted before insertion:
+  (setq auto-insert-query nil)
+
+  (add-hook 'find-file-hook 'auto-insert)
+  (auto-insert-mode 1)
+
+  (define-auto-insert ".+work\/Project.+org$" ["default-orgmode.org"  ha/autoinsert-yas-expand])
+  (define-auto-insert ".+work\/docs.+org$" ["default-orgmode.org"  ha/autoinsert-yas-expand])
+  (define-auto-insert ".+code.+org$" ["default-orgmode.org"  ha/autoinsert-yas-expand])
+  (auto-insert-mode 1)
+  )
+#+end_src
 
 * Programming
 
@@ -536,6 +561,748 @@ I played with this before..
       ad-do-it
       (delete-other-windows))
     (define-key global-map (kbd "C-x g") #'magit-status))
+#+END_SRC
 
 
+* Org-mode
+** General setup
+
+load org mode
+
+#+BEGIN_SRC emacs-lisp
+
+(prot-emacs-builtin-package 'org
+  (setq org-startup-indented t)
+  (setq org-hide-leading-stars t)
+  (setq org-odd-level-only t)
+  (setq org-indent-mode t)
+  (setq org-startup-with-inline-images t)
+
+  (setq org-src-fontify-natively t)
+  (setq org-src-preserve-indentation t)
+  (setq org-edit-src-content-indentation t)
+  (setq org-src-tab-acts-natively t)
+  (setq org-confirm-babel-evaluate nil)
+  (setq org-export-with-smart-quotes t)
+  (setq org-src-window-setup 'current-window)
+
+  (setq org-refile-use-outline-path 'file)
+
+  (setq org-outline-path-complete-in-steps nil)
+  (setq org-refile-allow-creating-parent-nodes (quote confirm))
+  (setq org-pretty-entities t)
+  (setq org-directory "~/work")
+  (setq org-log-into-drawer t)
+  (setq org-log-done 'time)
+
+  (setq org-todo-keywords '((sequence
+                             "TODO(t@/!)"
+                             "WAITING(w@/!)"
+                             "SOMEDAY(s/!)"
+                             "PROG(p)"
+                             "|"
+                             "DONE(d@)"
+                             "CANCEL(c@)"
+                             "DELEGATED(@)"
+                             )
+                            (sequence
+                             "IDEA"
+                             "GOAL"
+                             "|"
+                             "DUD(@)")
+                            ))
+  ;; Add the REPORT drawer
+  (setq org-drawers '("PROPERTIES" "CLOCK" "LOGBOOK" "REPORT"))
+  (setq org-agenda-files '("~/work"
+                           "~/work/roam"
+                           "~/work/roam/dailies"
+                           "~/life"))
+  (setq org-capture-templates
+        (quote (("t" "todo" entry (file+headline "~/work/work-todo.org" "Inbox")
+                 "* TODO %?\nSCHEDULED: %(org-insert-time-stamp (org-read-date nil t \"+0d\"))\n%a\n")
+                ("n" "note" entry (file+headline "~/work/work-todo.org" "Inbox")
+                 "* %?\n\n  %i\n\n  See: %a" :empty-lines 1)
+                ("r" "respond" entry (file+headline "~/work/work-todo.org" "Inbox")
+                 "* TODO Respond to %:from on %:subject\nSCHEDULED: %(org-insert-time-stamp (org-read-date nil t \"+0d\"))\n%a\n")
+                ("m" "Mail" entry (file+headline "~/work/work-todo.org" "Inbox")
+                 "* TODO %?\n%a   %:from %:fromname %:fromaddress" :prepend t :jump-to-captured t)
+                ("p" "Daily Plan" plain (file+datetree "~/planning/daily-plan.org")
+                 "+ [ ] The 3 most important tasks [/]
+                  - [ ]
+                  - [ ]
+                  - [ ]
+                + [ ] Other tasks that are in the system [/]
+                  - [ ]
+                + [ ] ToDos which are not tracked by my system [/]
+                  - [ ] " :immediate-finish t)
+                )))
+  ;; Do not dim blocked tasks
+  (setq org-agenda-dim-blocked-tasks nil)
+  (setq org-agenda-include-deadlines t)
+  ;; Compact the block agenda view
+  (setq org-agenda-compact-blocks t)
+  (setq org-habit-show-habits-only-for-today t)
+  ;; Org Agenda Files
+  ;; org agenda
+  (setq org-agenda-time-grid
+        (quote
+         ((daily today remove-match)
+          (700 800 900 1000 1100 1200 1300 1400 1500 1600 1700 1800 1900 2000 2100 2200 2300)
+          "......" "----------------")))
+  (setq org-agenda-custom-commands
+        '(("c" "Simple agenda view"
+           ((agenda "")
+            (alltodo "")))))
+  (setq org-refile-targets '(("~/work/work-todo.org" :maxlevel . 2)
+                             ("~/work/work-todo-archive.org" :maxlevel . 2)
+                             ("~/life/life-todo.org" :maxlevel . 2)
+                             ))
+  (setq org-use-speed-commands t
+        org-return-follows-link t
+        org-outline-path-complete-in-steps nil)
+  (setq org-latex-listings 'minted)
+  (setq org-latex-minted-options
+        '(("frame" "lines") ("linenos=true")("breaklines")))
+  (define-key global-map (kbd "C-c l") #'org-store-link)
+  (define-key global-map (kbd "C-c a") #'org-agenda)
+  (define-key global-map (kbd "C-c c") #'org-capture)
+
+  (add-hook 'org-mode-hook 'visual-line-mode)
+  (add-hook 'org-mode-hook 'flyspell-mode)
+  )
+#+END_SRC
+
+
+Record the time that a todo was archived.
+
+
+** Coding
+
+Allow babel to evaluate C ...
+
+#+BEGIN_SRC emacs-lisp
+(org-babel-do-load-languages
+ 'org-babel-load-languages
+ '((C . t)
+   (R . t)
+   (dot . t)
+   (emacs-lisp . t)
+   (shell . t)
+   (awk . t)
+   (makefile . t)
+   (latex . t)
+   (java . t)
+   (clojure . t)
+   ))
+
+#+END_SRC
+
+Done.
+** Export
+
+Export packages...
+
+#+BEGIN_SRC emacs-lisp
+(require 'ox-latex)
+(require 'ox-beamer)
+#+END_SRC
+
+
+
+** Bullets
+
+#+BEGIN_SRC emacs-lisp
+  (prot-emacs-elpa-package 'org-superstar
+  (add-hook 'org-mode-hook (lambda () (org-superstar-mode 1)))
+  )
+
+#+END_SRC
+
+** Image preview
+
+Inline images support:
+
+# #+BEGIN_SRC emacs-lisp
+# (setq org-latex-create-formula-image-program 'imagemagick)
+
+# (add-to-list 'org-latex-packages-alist
+#              '("" "tikz" t))
+
+# (eval-after-load "preview"
+#   '(add-to-list 'preview-default-preamble "\\PreviewEnvironment{tikzpicture}" t))
+# (setq org-latex-create-formula-image-program 'imagemagick)
+
+
+# (setq org-confirm-babel-evaluate nil)
+# (add-hook 'org-babel-after-execute-hook 'org-display-inline-images)
+# (add-hook 'org-mode-hook 'org-display-inline-images)
+# #+END_SRC
+
+** Keybindings
+
+Quickly open index file
+#+BEGIN_SRC emacs-lisp
+(defun open-index-file ()
+  "Open the master org TODO list."
+  (interactive)
+  (find-file "~/work/work-todo.org")
+  (flycheck-mode -1)
+  (end-of-buffer))
+
+(global-set-key (kbd "C-c i") 'open-index-file)
+#+END_SRC
+
+undef a key
+
+#+BEGIN_SRC emacs-lisp
+(add-hook 'org-mode-hook
+          '(lambda ()
+             ;; Undefine C-c [ and C-c ] since this breaks my
+             ;; org-agenda files when directories are include It
+             ;; expands the files in the directories individually
+             (org-defkey org-mode-map "\C-c[" 'undefined))
+          'append)
+
+#+END_SRC
+
+** Deft
+
+   #+BEGIN_SRC emacs-lisp
+(prot-emacs-elpa-package 'deft
+
+  (setq deft-default-extension "org")
+  ;; de-couples filename and note title:
+  (setq deft-use-filename-as-title nil)
+  (setq deft-use-filter-string-for-filename t)
+  ;; disable auto-save
+  (setq deft-auto-save-interval -1.0)
+  ;; converts the filter string into a readable file-name using kebab-case:
+  (setq deft-file-naming-rules
+        '((noslash . "-")
+          (nospace . "-")
+          (case-fn . downcase)))
+  (setq    deft-directory (concat (getenv "HOME") "/work/roam/"))
+  (add-to-list 'deft-extensions "tex"))
+
+   #+END_SRC
+
+NOTE: in Emacs 27.1 the cl package has been deprecated. Therefore deft throws an error when called. To fix this find all =(require 'cl)= statements and replace with =(require 'cl-lib)=. E.g. by running =rg -F "(require 'cl)" -l=.
+
+** Helm-bibtex
+
+Define format for bibtex entries
+
+#+BEGIN_SRC emacs-lisp
+
+;; variables that control bibtex key format for auto-generation
+;; I want firstauthor-year-title-words
+;; this usually makes a legitimate filename to store pdfs under.
+(setq bibtex-autokey-year-length 4
+      bibtex-autokey-name-year-separator "-"
+      bibtex-autokey-year-title-separator "-"
+      bibtex-autokey-titleword-separator "-"
+      bibtex-autokey-titlewords 2
+      bibtex-autokey-titlewords-stretch 1
+      bibtex-autokey-titleword-length 5)
+
+(setq bibtex-completion-bibliography "~/work/bibliography/references.bib"
+      bibtex-completion-library-path "~/work/bibliography/bibtex-pdfs"
+      bibtex-completion-notes-path "~/work/bibliography/helm-bibtex-notes"
+      bibtex-completion-pdf-field "file")
+
+#+END_SRC
+
+** Org-ref
+
+#+BEGIN_SRC emacs-lisp
+(prot-emacs-elpa-package 'biblio)
+(prot-emacs-elpa-package 'biblio-core)
+(prot-emacs-elpa-package 'org-ref
+
+
+  (setq org-ref-completion-library 'org-ref-ivy-cite)
+  (setq org-ref-get-pdf-filename-function 'org-ref-get-pdf-filename-helm-bibtex)
+  (setq org-ref-default-bibliography '("~/work/bibliography/references.bib"))
+  (setq org-ref-bibliography-notes "~/work/roam/notes.org")
+  (setq org-ref-pdf-directory "~/work/bibliography/bibtex-pdfs/")
+  (setq  notes-directory (concat (getenv "HOME") "/work/roam/"))
+  (setq org-ref-notes-directory "~/work/roam/")
+  (setq org-ref-notes-function 'orb-edit-notes)
+  (setq org-ref-default-citation-link "supercite")
+
+  (setq reftex-default-bibliography '("~/work/bibliography/references.bib")))
+
+
+
+;; ;;Hack ....
+;; (defun org-ref-add-labels (start end)
+;;   "Add labels in the region from START to END.
+;;        This is run by font-lock. START tends to be the beginning of the
+;;        line, and END tends to be where the point is, so this function
+;;        seems to work fine at recognizing labels by the regexps in
+;;        `org-ref-label-regexps'."
+;;   (interactive "r")
+;;   (save-excursion
+;;     (save-match-data
+;;       (cl-loop for rx in org-ref-label-regexps
+;;                do
+;;                (goto-char start)
+;;                (while (re-search-forward rx end t)
+;;                  (let ((label (match-string-no-properties 1)))
+;;                    ;; I don't know why this gets found, but some labels are
+;;                    ;; empty strings. we don't store these.
+;;                    (unless (string= "" label)
+;;                      ;; if the last end is the new end -1 we are adding to a
+;;                      ;; label, and should pop the old one off before adding the
+;;                      ;; new one.
+;;                      (when (eq  org-ref-last-label-end (- end 1))
+;;                        (pop org-ref-labels))
+;;                      (with-silent-modifications
+;;                        (put-text-property (match-beginning 1)
+;;                                           (match-end 1)
+;;                                           'org-ref-label t)
+;;                        (put-text-property (match-beginning 1)
+;;                                           (match-end 1)
+;;                                           'rear-nonsticky '(org-ref-label)))
+;;                      (when org-ref-label-debug
+;;                        (message "oral: adding %s" label))
+
+;;                      (cl-pushnew label
+;;                                  org-ref-labels :test 'string=)
+;;                      ;; now store the last end so we can tell for the next run
+;;                      ;; if we are adding to a label.
+;;                      (setq org-ref-last-label-end end))))))))
+
+#+END_SRC
+
+Make =supercite= the default citation type:
+
+Where are the refs?
+
+End.
+
+** Org roam
+
+   #+BEGIN_SRC emacs-lisp
+(prot-emacs-elpa-package 'org-roam
+
+  (setq org-roam-directory "~/work/roam/")
+  (setq org-roam-completion-everywhere t)
+  (let ((map org-roam-mode-map))
+    (define-key map (kbd "C-c m l") #'org-roam)
+    (define-key map (kbd "C-c m F") #'org-roam-find-file)
+    (define-key map (kbd "C-c m r") #'org-roam-find-ref)
+    (define-key map (kbd "C-c m .") #'org-roam-find-directory)
+    (define-key map (kbd "C-c m d") #'org-roam-dailies-today)
+    (define-key map (kbd "C-c m j") #'org-roam-jump-to-index)
+    (define-key map (kbd "C-c m b") #'org-roam-switch-to-buffer)
+    (define-key map (kbd "C-c m g") #'org-roam-graph)
+    (define-key map (kbd "C-c m G") #'org-roam-server-mode))
+
+  (let ((map org-mode-map))
+    (define-key map (kbd "C-c m i") #'org-roam-insert)
+    (define-key map (kbd "C-c n a") #'orb-note-actions))
+
+  (setq org-roam-index-file "~/work/roam/Index.org")
+
+  (setq org-roam-capture-templates
+        '(("d" "default" plain (function org-roam-capture--get-point)
+           "\n* %?"
+           :file-name "%<%Y%m%d%H%M%S>-${slug}"
+           :head "#+title: ${title}\n#+created: %u\n#+last_modified: %U\n\n"
+           :unnarrowed t)
+          ("r" "ref" plain (function org-roam-capture--get-point)
+           ""
+           :file-name "${slug}"
+           :head "#+title: ${title}\n#+roam_key: ${ref}\n#+created: %u\n#+last_modified: %U\n\n"
+           :unnarrowed t)
+          ("d" "Daily" plain (function org-roam-capture--get-point)
+           "* %?\n"
+           :add-created t
+           :file-name "dailies/%<%Y-%m-%d>-${slug}"
+           :head "#+TITLE: %<%Y-%m-%d>\n\n"
+           :unnarrowed t))))
+
+   #+END_SRC
+
+
+
+Org Roam protocol
+
+#+BEGIN_SRC emacs-lisp
+
+(require 'org-roam-protocol)
+(prot-emacs-elpa-package 'org-roam-server
+
+  (setq org-roam-server-host "127.0.0.1")
+  (setq org-roam-server-port 8080)
+  (setq org-roam-server-export-inline-images t)
+  (setq org-roam-server-authenticate nil)
+  (setq org-roam-server-network-poll t)
+  (setq org-roam-server-network-arrows nil)
+  (setq org-roam-server-network-label-truncate t)
+  (setq org-roam-server-network-label-truncate-length 60)
+  (setq org-roam-server-network-label-wrap-length 20))
+#+END_SRC
+
+Additional setup:
+
+We need to create a file in =~/.local/share/applications/org-protocol.desktop=
+#+begin_example
+[Desktop Entry]
+Name=Org-Protocol
+Exec=emacsclient %u
+Icon=emacs-icon
+Type=Application
+Terminal=false
+MimeType=x-scheme-handler/org-protocol
+#+end_example
+
+and run :
+#+begin_example bash
+xdg-mime default org-protocol.desktop x-scheme-handler/org-protocol
+#+end_example
+
+** Org-roam-bibtex
+#+BEGIN_SRC emacs-lisp
+(prot-emacs-elpa-package 'ivy-bibtex)
+
+(prot-emacs-elpa-package 'org-roam-bibtex
+(setq orb-preformat-keywords
+      '(("citekey" . "=key=") "title" "url" "file" "author-or-editor" "keywords"))
+(setq orb-templates
+      '(("r" "ref" plain (function org-roam-capture--get-point)
+         ""
+         :file-name "${citekey}"
+         :head "#+TITLE: ${citekey}: ${title}\n#+ROAM_KEY: ${ref}
+
+  - tags ::
+  - keywords :: ${keywords}
+  \n* ${title}
+  :PROPERTIES:
+  :Custom_ID: ${citekey}
+  :URL: ${url}
+  :AUTHOR: ${author-or-editor}
+  :NOTER_DOCUMENT: %(orb-process-file-field \"${citekey}\")
+  :NOTER_PAGE:
+  :END:\n%?")))
+     (add-hook 'org-roam-mode 'org-roam-bibtex-mode))
+#+END_SRC
+
+
+** Org-Noter
+
+#+BEGIN_SRC  emacs-lisp
+(setq
+ org_notes (concat (getenv "HOME") "/work/roam/")
+ deft-directory org_notes
+ org-roam-directory org_notes
+ )
+(prot-emacs-elpa-package 'org-noter
+
+  (setq org-noter-hide-other t)
+  (setq org-noter-auto-save-last-location t)
+  (setq org-noter-doc-split-fraction '(0.67 0.33))
+  (setq org-noter-notes-search-path  (list org_notes)))
+
+
+#+END_SRC
+
+** Latex templates
+Latex templates
+#+BEGIN_SRC emacs-lisp
+;;(setq org-latex-to-pdf-process '("xelatex %f && bibtex %f && xelatex %f && xelatex %f"))
+(defun sk-latexmk-cmd (backend)
+  "When exporting from .org with latex, automatically run latex,
+       pdflatex, or xelatex as appropriate, using latexmk."
+  (when (org-export-derived-backend-p backend 'latex)
+    (let ((texcmd)))
+    ;; default command: xelatex
+    (setq texcmd "jobname=$(basename %f | sed 's/\.tex//');latexmk -xelatex -shell-escape -quiet %f && mkdir -p latex.d && mv ${jobname}.* latex.d/. && mv latex.d/${jobname}.{org,pdf,fdb_latexmk,aux} .")
+    ;; pdflatex -> .pdf
+    (if (string-match "LATEX_CMD: pdflatex" (buffer-string))
+        (setq texcmd "latexmk -pdflatex='pdflatex -shell-escape -interaction nonstopmode' -pdf -bibtex -f %f"))
+
+    (if (string-match "LATEX_CMD: singularity" (buffer-string))
+        (setq texcmd "singularity run --containall --bind $HOME/work/bibliography:$HOME/work/bibliography  --bind $PWD:/mnt --pwd /mnt   latex.sif   latexmk -pdflatex='pdflatex -shell-escape -interaction nonstopmode' -pdf -bibtex -f %f"))
+    ;; xelatex -> .pdf
+    (if (string-match "LATEX_CMD: xelatex" (buffer-string))
+        (setq texcmd "latexmk -pdflatex='xelatex -shell-escape -interaction nonstopmode' -pdf -bibtex -f  %f"))
+    ;; LaTeX compilation command
+    (setq org-latex-pdf-process (list texcmd))))
+
+(org-add-hook 'org-export-before-processing-hook 'sk-latexmk-cmd)
+
+(unless (boundp 'org-latex-classes)
+  (setq org-latex-classes nil))
+#+END_SRC
+
+** CV
+
+#+BEGIN_SRC emacs-lisp
+(add-to-list 'org-latex-classes
+             '("CV"
+               "\\documentclass[11pt]{article}
+       \\usepackage{\\string~\"/.emacs.d/latex_templates/cv\"}
+       [NO-DEFAULT-PACKAGES]
+       [NO-PACKAGES]"
+               ("\\section{%s}" . "\\section*{%s}")
+               ("\\subsection{%s}" . "\\subsection*{%s}")
+               ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+               ("\\paragraph{%s}" . "\\paragraph*{%s}")
+               ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
+#+END_SRC
+
+** NHMRC project grant
+
+#+BEGIN_SRC emacs-lisp
+(add-to-list 'org-latex-classes
+             '("NHMRC_project_grant"
+               "\\documentclass[12pt,table,names]{article}
+  \\usepackage{\\string~\"/.emacs.d/latex_templates/NHMRC_grant\"}
+  [NO-DEFAULT-PACKAGES]
+  [NO-PACKAGES]"
+               ("\\section{%s}" . "\\section*{%s}")
+               ("\\subsection{%s}" . "\\subsection*{%s}")
+               ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+               ("\\paragraph{%s}" . "\\paragraph*{%s}")
+               ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
+#+END_SRC
+Rebuttal...
+#+BEGIN_SRC emacs-lisp
+(add-to-list 'org-latex-classes
+             '("NHMRC_project_grant_rebuttal"
+               "\\documentclass[12pt,table,names]{article}
+    \\usepackage{\\string~\"/.emacs.d/latex_templates/NHMRC_grant\"}
+    [NO-DEFAULT-PACKAGES]
+    [NO-PACKAGES]"
+               ("\\subsection{%s}" . "\\section*{%s}")
+               ("\\subsubsection{%s}" . "\\subsection*{%s}")q
+               ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+               ("\\paragraph{%s}" . "\\paragraph*{%s}")
+               ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
+
+#+END_SRC
+
+** NHMRC Investigator
+
+#+BEGIN_SRC emacs-lisp
+(add-to-list 'org-latex-classes
+             '("NHMRC_investigator_grant"
+               "\\documentclass[12pt,table,names]{article}
+  \\usepackage{\\string~\"/.emacs.d/latex_templates/NHMRC_investigator\"}
+  [NO-DEFAULT-PACKAGES]
+  [NO-PACKAGES]"
+               ("\\section{%s}" . "\\section*{%s}")
+               ("\\subsection{%s}" . "\\subsection*{%s}")
+               ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+               ("\\paragraph{%s}" . "\\paragraph*{%s}")
+               ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
+#+END_SRC
+
+** ARC Discovery Grant
+
+Main grant
+#+BEGIN_SRC emacs-lisp
+(add-to-list 'org-latex-classes
+             '("ARC_discovery_grant"
+               "\\documentclass[12pt]{article}
+  \\usepackage{\\string~\"/.emacs.d/latex_templates/ARC_discovery\"}
+  [NO-DEFAULT-PACKAGES]
+  [NO-PACKAGES]"
+               ("\\section{%s}" . "\\section*{%s}")
+               ("\\subsection{%s}" . "\\subsection*{%s}")
+               ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+               ("\\paragraph{%s}" . "\\paragraph*{%s}")))
+#+END_SRC
+
+Special formatting for the ROPE sections.
+
+#+BEGIN_SRC emacs-lisp
+(add-to-list 'org-latex-classes
+             '("ARC_ROPE"
+               "\\documentclass[12pt]{article}
+  \\usepackage{\\string~\"/.emacs.d/latex_templates/ARC_discovery_ROPE\"}
+  [NO-DEFAULT-PACKAGES]
+  [NO-PACKAGES]"
+               ("\\section{%s}" . "\\section*{%s}")
+               ("\\subsection{%s}" . "\\subsection*{%s}")
+               ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+               ("\\paragraph{%s}" . "\\paragraph*{%s}")))
+#+END_SRC
+
+
+** Nature style paper
+
+#+BEGIN_SRC emacs-lisp
+(add-to-list 'org-latex-classes '("naturedef"
+                                  "\\documentclass[fleqn,10pt]{wlscirep}
+   [NO-DEFAULT-PACKAGES]
+   [PACKAGES]
+   [EXTRA]"
+                                  ("\\section{%s}" . "\\section*{%s}")
+                                  ("\\subsection{%s}" . "\\subsection*{%s}")
+                                  ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+                                  ("\\paragraph{%s}" . "\\paragraph*{%s}")
+                                  ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(add-to-list 'org-latex-classes
+             '("nature"
+               "\\documentclass[12pt]{article}
+       \\usepackage{\\string~\"/.emacs.d/latex_templates/nature\"}
+       [NO-DEFAULT-PACKAGES]
+       [NO-PACKAGES]"
+               ("\\section*{%s}" . "\\section*{%s}")
+               ("\\subsection{%s}" . "\\subsection*{%s}")
+               ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+               ("\\paragraph{%s}" . "\\paragraph*{%s}")
+               ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
+#+END_SRC
+
+** Bioinformatics paper
+
+#+BEGIN_SRC emacs-lisp
+(add-to-list 'org-latex-classes '("bioinfo"
+                                  "\\documentclass{bioinfo}
+   [NO-DEFAULT-PACKAGES]
+   [PACKAGES]
+   [EXTRA]"
+
+                                  ("\\section{%s}" . "\\section*{%s}")
+                                  ("\\subsection{%s}" . "\\subsection*{%s}")
+                                  ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+                                  ("\\paragraph{%s}" . "\\paragraph*{%s}")
+                                  ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
+#+END_SRC
+
+** Internal report
+
+#+BEGIN_SRC emacs-lisp
+(add-to-list 'org-latex-classes
+             '("report"
+               "\\documentclass[12pt]{article}
+ \\usepackage{\\string~\"/.emacs.d/latex_templates/report\"}
+[NO-DEFAULT-PACKAGES]
+[NO-PACKAGES]"
+               ("\\section{%s}" . "\\section*{%s}")
+               ("\\subsection{%s}" . "\\subsection*{%s}")
+               ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+               ("\\paragraph{%s}" . "\\paragraph*{%s}")
+               ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
+#+END_SRC
+
+** RoamCard
+#+BEGIN_SRC emacs-lisp
+(add-to-list 'org-latex-classes
+             '("roamcard"
+               "\\documentclass[12pt,notitlepage]{article}
+  \\usepackage{\\string~\"/.emacs.d/latex_templates/roamcard\"}
+  [NO-DEFAULT-PACKAGES]
+  [NO-PACKAGES]"
+               ("\\section{%s}" . "\\section*{%s}")
+               ("\\subsection{%s}" . "\\subsection*{%s}")
+               ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+               ("\\paragraph{%s}" . "\\paragraph*{%s}")
+               ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
+#+END_SRC
+
+** Simple presentation
+
+#+BEGIN_SRC emacs-lisp
+(add-to-list 'org-latex-classes
+             `("simplepresentation"
+               ,(concat "\\documentclass[presentation]{beamer}\n"
+                        "\\usepackage{\\string~\"/.emacs.d/latex_templates/simple\"}"
+                        "[DEFAULT-PACKAGES]"
+                        "[PACKAGES]"
+                        "[EXTRA]\n")
+               ("\\section{%s}" . "\\section*{%s}")
+               ("\\subsection{%s}" . "\\subsection*{%s}")
+               ("\\subsubsection{%s}" . "\\subsubsection*{%s}")))
+
+;;              '("simplepresentation"
+;;                "\\documentclass[aspectratio=169,18pt,t]{beamer}
+;; \\usepackage{\\string~\"/.emacs.d/latex_templates/simple\"}
+;; [NO-DEFAULT-PACKAGES]
+;; [NO-PACKAGES]"
+;;                ("\\section{%s}" . "\\section*{%s}")
+;;                ("\\begin{frame}[fragile]\\frametitle{%s}"
+;;                 "\\end{frame}"
+;;                 "\\begin{frame}[fragile]\\frametitle{%s}"
+;;                 "\\end{frame}")))
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(add-to-list 'org-latex-classes
+             '("smallscreen"
+               "\\documentclass[aspectratio=169,18pt,t]{beamer}
+  \\usepackage{\\string~\"/.emacs.d/latex_templates/smallscreen\"}
+  [NO-DEFAULT-PACKAGES]
+  [NO-PACKAGES]"
+               ("\\section{%s}" . "\\section*{%s}")
+               ("\\begin{frame}[fragile]\\frametitle{%s}"
+                "\\end{frame}"
+                "\\begin{frame}[fragile]\\frametitle{%s}"
+                "\\end{frame}")))
+#+END_SRC
+
+** Fancier presentation
+
+#+BEGIN_SRC emacs-lisp
+
+(add-to-list 'org-latex-classes
+             '("modernpresentation"
+               "\\documentclass[14pt]{beamer}
+      \\usepackage{\\string~\"/.emacs.d/latex_templates/modern\"}
+      [NO-DEFAULT-PACKAGES]
+      [NO-PACKAGES]"
+               ("\\section{%s}" . "\\section*{%s}")
+               ("\\begin{frame}[fragile]\\frametitle{%s}"
+                "\\end{frame}")))
+
+#+END_SRC
+
+
+
+* PDF tools
+
+#+BEGIN_SRC emacs-lisp
+
+(prot-emacs-elpa-package 'pdf-tools
+  ;; open pdfs scaled to fit page
+  (setq-default pdf-view-display-size 'fit-page)
+  ;; automatically annotate highlights
+  (setq pdf-annot-activate-created-annotations t)
+  ;; use normal isearch
+    (let ((map pdf-view-mode-map))
+    (define-key map (kbd "C-s") #'isearch-forward)))
+
+#+END_SRC
+
+Run this afterwards :
+  (pdf-tools-install)
+
+#+BEGIN_SRC emacs-lisp
+
+  (prot-emacs-elpa-package 'org-pdftools
+    :config
+    ;; https://lists.gnu.org/archive/html/emacs-orgmode/2016-11/msg00169.html
+    ;; Before adding, remove it (to avoid clogging)
+    (delete '("\\.pdf\\'" . default) org-file-apps)
+    ;; https://lists.gnu.org/archive/html/emacs-orgmode/2016-11/msg00176.html
+    (add-to-list 'org-file-apps
+                 '("\\.pdf\\'" . (lambda (file link)
+                                   (org-pdftools-open link)))))
+#+END_SRC
+
+The end.
+
+
+* Rainbow
+
+#+BEGIN_SRC emacs-lisp
+(prot-emacs-elpa-package 'rainbow-mode
+)
 #+END_SRC

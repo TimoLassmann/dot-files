@@ -29,7 +29,7 @@ defining them in this alist."
 (defvar zenburn-default-colors-alist
   '(("bg"               . "#000F14")
     ("fg"               . "#DCDCCC")
-    ("alert-main"       . "#A6341B")
+    ("alert-main"       . "#f17478")
     ("alert-second"     . "#2AA889")
     ("zenburn-magenta"  . "#DC8CC3"))
   "List of Zenburn colors.
@@ -153,7 +153,8 @@ Also bind `class' to ((class color) (min-colors 89))."
    `(avy-lead-face-1 ((t (:weight bold :background "#999999" :foreground ,alert-main))))
    `(avy-lead-face-2 ((t (:weight bold :background "#999999" :foreground ,alert-main))))
 
-
+   '(icomplete-first-match ((t (:foreground "#2aa889"))))
+   
    '(company-preview ((t (:background "#002E41" :foreground "#008ED1" :underline t))))
    '(company-preview-common ((t (:inherit company-preview))))
    '(company-preview-search ((t (:inherit company-preview))))
