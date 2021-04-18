@@ -147,10 +147,11 @@
        ;; of producing more user-friendly video demonstrations.
        (setq which-key-dont-use-unicode t)
        (setq which-key-add-column-padding 2)
-       (setq which-key-show-early-on-C-h nil)
-       (setq which-key-idle-delay 0.8) ; set this to something like 0.8
-       (setq which-key-idle-secondary-delay 0.05)
+
        ;; (setq which-key-setup-side-window-bottom)
+       (setq which-key-show-early-on-C-h t)
+       (setq which-key-idle-delay 10000)
+       (setq which-key-idle-secondary-delay 0.05)
        (which-key-setup-minibuffer)
        ;; (setq which-key-popup-type 'side-window)
        ;; (which-key-setup-side-window-bottom)
@@ -311,7 +312,6 @@
      )
    #+END_SRC
 
-
 ** Orderless
    #+BEGIN_SRC emacs-lisp
      (prot-emacs-builtin-package 'tl-orderless
@@ -342,7 +342,6 @@
           ;;   (setq orderless-component-separator 'orderless-escapable-split-on-space))
    #+END_SRC
 
-
 ** Marginalia
    #+BEGIN_SRC emacs-lisp
      (prot-emacs-elpa-package 'marginalia
@@ -353,7 +352,6 @@
          (define-key map (kbd "M-Y") #'marginalia-cycle))
        (marginalia-mode))
    #+END_SRC
-
 
 ** Minibuffer settings
 
@@ -393,7 +391,6 @@
        (define-key map (kbd "<backspace>") #'prot-minibuffer-backward-updir))
 
    #+END_SRC
-
 
 
 ** Icomplete vertical
@@ -562,7 +559,6 @@ I played with this before..
       (delete-other-windows))
     (define-key global-map (kbd "C-x g") #'magit-status))
 #+END_SRC
-
 
 * Org-mode
 ** General setup
@@ -1265,7 +1261,6 @@ Special formatting for the ROPE sections.
 #+END_SRC
 
 
-
 * PDF tools
 
 #+BEGIN_SRC emacs-lisp
@@ -1298,7 +1293,6 @@ Run this afterwards :
 #+END_SRC
 
 The end.
-
 
 * Rainbow
 
