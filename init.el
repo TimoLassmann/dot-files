@@ -149,7 +149,7 @@ expressions."
        (eval-and-compile
          (add-to-list 'load-path ,path))
        (if (require ,package nil 'noerror)
-	       (progn ,@body)
+         (progn ,@body)
          (display-warning 'prot-emacs (format "Loading `%s' failed" ,package) :warning)
          (display-warning 'prot-emacs (format "This must be available at %s" ,path) :warning)))))
 
@@ -249,21 +249,17 @@ of it."
 
 (add-hook 'kill-emacs-hook #'prot-emacs-build-config)
 
-;;; init.el ends here
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
-   '(minibuffer saveplace unto-tree yasnippet-snippets which-key use-package undo-tree switch-window ssh snakemake-mode smartscan smartparens smart-comment rainbow-mode org-superstar org-roam-server org-roam-bibtex org-pdftools orderless olivetti marginalia magit ivy-rich ivy-prescient ivy-posframe ivy-bibtex ido-vertical-mode ido-completing-read+ icomplete-vertical ggtags flycheck-clang-tidy flycheck-clang-analyzer flx-ido ess dtrt-indent diminish deft counsel-tramp counsel-projectile counsel-gtags company-statistics company-prescient company-c-headers clean-aindent-mode beacon avy))
+   '(magit ggtags smartscan smartparens smart-comment yasnippet icomplete-vertical marginalia orderless consult company-statistics company-c-headers company switch-window which-key undo-tree))
  '(safe-local-variable-values
-   '((flycheck-clang-include-path "-I." "-I../../tldevel-1.2.9/" "-I../libpush/")
-     (company-c-headers-path-user "." "../../tldevel-1.2.9/" "../libpush/")
-     (company-clang-arguments "-I." "-I../../tldevel-1.2.9/" "-I../libpush/")
-     (flycheck-clang-include-path "-I." "-I../tldevel-1.2.9/" "-I./libpush/" "-I./libpushgp/" "-I./tools/")
-     (company-c-headers-path-user "." "../tldevel-1.2.9/" "./libpush/" "./libpushgp/" "./tools/")
-     (company-clang-arguments "-I." "-I../tldevel-1.2.9/" "-I./libpush/" "-I./libpushgp/" "-I./tools/"))))
+   '((flycheck-clang-include-path "-I." "-I../tldevel-1.2.8/" "-I./libpush/" "-I./libpushgp/" "-I./tools/")
+     (company-c-headers-path-user "." "../tldevel-1.2.8/" "./libpush/" "./libpushgp/" "./tools/")
+     (company-clang-arguments "-I." "-I../tldevel-1.2.8/" "-I./libpush/" "-I./libpushgp/" "-I./tools/"))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.

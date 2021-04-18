@@ -5,8 +5,8 @@
 #+OPTIONS:  toc:nil
 #+OPTIONS: H:4
 #+LATEX_CMD: pdflatex
-#+PROPERTY: header-args:emacs-lisp :exports code :results none 
-* Introduction 
+#+PROPERTY: header-args:emacs-lisp :exports code :results none
+* Introduction
 
   All my emacs config.
 * Basic settings
@@ -21,11 +21,11 @@
 
    #+BEGIN_SRC emacs-lisp
      (setq user-full-name "Timo Lassmann"
-	   user-mail-address "timo.lassmann@telethonkids.org.au")
+     user-mail-address "timo.lassmann@telethonkids.org.au")
    #+END_SRC
 
 
-** Settings 
+** Settings
    #+BEGIN_SRC emacs-lisp
 
      (defalias 'yes-or-no-p 'y-or-n-p)
@@ -41,7 +41,7 @@
      (blink-cursor-mode -1)
 
    #+END_SRC
-  
+
 ** Bidirectional writing and so-long.el
    (from prot)
    #+BEGIN_SRC emacs-lisp
@@ -54,7 +54,7 @@
 
 
 ** No easy keys
-   
+
 
    #+BEGIN_SRC emacs-lisp
      (prot-emacs-builtin-package 'no-easy-keys
@@ -91,7 +91,7 @@
 
 
 ** Tabs vs spaces
-    
+
    Never use tabs. Tabs are the devil’s whitespace.
 
    #+BEGIN_SRC emacs-lisp
@@ -115,7 +115,7 @@
 * Main looks
 
 ** My simple theme
-  
+
    #+BEGIN_SRC emacs-lisp
      (prot-emacs-builtin-package 'simple-theme
        (simple-theme-load-theme)
@@ -135,10 +135,10 @@
    #+BEGIN_SRC emacs-lisp
      (prot-emacs-elpa-package 'undo-tree
        (global-undo-tree-mode 1))
-       
+
    #+END_SRC
 
-** which-key 
+** which-key
    #+BEGIN_SRC emacs-lisp
      (prot-emacs-elpa-package 'which-key
        ;; NOTE: I only use this for `embark' and `consult' and for the sake
@@ -150,11 +150,11 @@
        (setq which-key-idle-secondary-delay 0.05)
        (setq which-key-popup-type 'side-window)
        (setq which-key-show-prefix 'echo)
-       (setq which-key-max-display-columns 3)  
+       (setq which-key-max-display-columns 3)
        (setq which-key-separator "  ")
        (setq which-key-special-keys nil)
        (setq which-key-paging-key "<next>")
-       (which-key-mode))	   ; and turn this on, if you want to use this
+       (which-key-mode))     ; and turn this on, if you want to use this
    #+END_SRC
 
 
@@ -177,7 +177,7 @@
        (recentf-mode 1)
        )
    #+END_SRC
-   
+
 * Moving
 ** Switch windows
 
@@ -189,16 +189,31 @@
        (setq switch-window-threshold 2)
        (setq switch-window-shortcut-style 'qwerty)
        (setq switch-window-qwerty-shortcuts
-	     '("a" "s" "d" "f" "j" "k" "l" "i" "o"))
+       '("a" "s" "d" "f" "j" "k" "l" "i" "o"))
        (global-set-key [remap other-window]  'switch-window))
 
    #+END_SRC
 
+** Beginend
+
+   #+BEGIN_SRC emacs-lisp
+     (prot-emacs-elpa-package 'beginend
+  (beginend-global-mode 1))
+
+   #+END_SRC
+
+
+** Goto last Change
+
+   #+BEGIN_SRC emacs-lisp
+     (prot-emacs-elpa-package 'goto-last-change
+(define-key global-map (kbd "C-z") #'goto-last-change))
+
+   #+END_SRC
 
 * Completion
-
 ** Company
-   
+
    #+BEGIN_SRC emacs-lisp
      (prot-emacs-elpa-package 'company
        (setq company-auto-complete nil)
@@ -230,7 +245,7 @@
          (define-key map (kbd "<C-tab>") #'company-complete-common-or-cycle)
          (define-key map (kbd "C-n") #'company-select-next)
          (define-key map (kbd "C-p") #'company-select-previous))
-  
+
        (setq company-global-modes '(
                                     org-mode
                                     c-mode
@@ -244,20 +259,20 @@
        (global-company-mode 1)
        )
    #+END_SRC
-   
+
    Company C headers
 
    #+BEGIN_SRC emacs-lisp
      (prot-emacs-elpa-package 'company-c-headers
        )
    #+END_SRC
-   Company Statistics 
+   Company Statistics
    #+BEGIN_SRC emacs-lisp
      (prot-emacs-elpa-package 'company-statistics
        (company-statistics-mode)
        )
    #+END_SRC
-   
+
    I had to add the hook and local variable to stop company from selecting capf before clang.
    To make this work properly, I need to manually specify the include paths by
    putting a =.dir-locals.el= into the source directory of my C code. I.e. most
@@ -279,22 +294,48 @@
 ** Consult
 
    #+BEGIN_SRC emacs-lisp
-        (prot-emacs-elpa-package 'consult
+     (prot-emacs-elpa-package 'consult
+       (setq consult-line-numbers-widen t)
+
 
      (setq consult-ripgrep-command "rg -SHn --no-heading --color never --no-follow --hidden %s")
-          (define-key global-map (kbd "M-s r") #'consult-git-grep)
-          (define-key global-map (kbd "C-x b") #'consult-buffer)
-          (define-key global-map (kbd "C-x C-r") #'consult-recent-file)
-          (define-key global-map (kbd "M-g M-g") #'consult-goto-line)
-          )
+     (define-key global-map (kbd "M-s r") #'consult-git-grep)
+     (define-key global-map (kbd "C-x b") #'consult-buffer)
+     (define-key global-map (kbd "C-s") #'consult-line)
+     (define-key global-map (kbd "C-x C-r") #'consult-recent-file)
+     (define-key global-map (kbd "M-g M-g") #'consult-goto-line)
+     )
    #+END_SRC
-   
-   
+
+
 ** Orderless
    #+BEGIN_SRC emacs-lisp
+     (prot-emacs-builtin-package 'tl-orderless
+       (setq prot-orderless-default-styles
+             '(orderless-prefixes
+               orderless-strict-leading-initialism
+               orderless-regexp))
+       (setq prot-orderless-alternative-styles
+             '(orderless-literal
+               orderless-prefixes
+               orderless-strict-leading-initialism
+               orderless-regexp)))
+
      (prot-emacs-elpa-package 'orderless
-       (setq completion-styles '(orderless))
-       (setq orderless-component-separator 'orderless-escapable-split-on-space))     
+       (setq orderless-component-separator " +")
+       (setq orderless-matching-styles prot-orderless-default-styles)
+       (setq orderless-style-dispatchers
+             '(prot-orderless-literal-dispatcher
+               prot-orderless-initialism-dispatcher
+               prot-orderless-flex-dispatcher))
+       ;; SPC should never complete: use it for `orderless' groups.
+       (let ((map minibuffer-local-completion-map))
+         (define-key map (kbd "SPC") nil)
+         (define-key map (kbd "?") nil)))
+
+          ;; (prot-emacs-elpa-package 'orderless
+          ;;   (setq completion-styles '(orderless))
+          ;;   (setq orderless-component-separator 'orderless-escapable-split-on-space))
    #+END_SRC
 
 
@@ -306,32 +347,56 @@
                marginalia-annotators-light))
        (let ((map minibuffer-local-map))
          (define-key map (kbd "M-Y") #'marginalia-cycle))
-       (marginalia-mode))      
+       (marginalia-mode))
    #+END_SRC
 
 
-** Icomplete vertical 
+** Minibuffer settings
 
    #+BEGIN_SRC emacs-lisp
-          ;; (prot-emacs-elpa-package 'icomplete
 
-          ;;   (let ((map icomplete-minibuffer-map))
+     (setq completion-styles '(orderless partial-completion))
 
-          ;;     (define-key map (kbd "<down>") #'icomplete-forward-completions)
-          ;;     (define-key map (kbd "C-n") #'icomplete-forward-completions)
-          ;;     (define-key map (kbd "<up>") #'icomplete-backward-completions)
-          ;;     (define-key map (kbd "C-p") #'icomplete-backward-completions)
-          ;;     (define-key map (kbd "C-v") #'icomplete-vertical-toggle)
-          ;;     (define-key map (kbd "C-M-i") #'minibuffer-complete))
-          ;;   (setq icomplete-show-matches-on-no-input t)
-          ;;   (setq icomplete-prospects-height 1)
-          ;;   (setq icomplete-separator " ⋮ ")
-          ;;   (setq icomplete-hide-common-prefix nil))
+     (setq completion-category-overrides
+           '((buffer (styles . (substring flex orderless)))
+             '(file (styles . (partial-completion orderless)))))
+     (file-name-shadow-mode 1)
+
+     (defun prot-minibuffer--field-beg ()
+       "Determine beginning of completion."
+       (if (window-minibuffer-p)
+           (minibuffer-prompt-end)
+         (nth 0 completion-in-region--data)))
+     (defun prot-minibuffer--completion-category ()
+       "Return completion category."
+       (let* ((beg (prot-minibuffer--field-beg))
+              (md (completion--field-metadata beg)))
+         (alist-get 'category (cdr md))))
+
+     (defun prot-minibuffer-backward-updir ()
+       "Delete char before point or go up a directory.
+                    Must be bound to `minibuffer-local-filename-completion-map'."
+       (interactive)
+       (if (and (eq (char-before) ?/)
+                (eq (prot-minibuffer--completion-category) 'file))
+           (save-excursion
+             (goto-char (1- (point)))
+             (when (search-backward "/" (point-min) t)
+               (delete-region (1+ (point)) (point-max))))
+         (call-interactively 'backward-delete-char)))
+
+     (let ((map minibuffer-local-filename-completion-map))
+       (define-key map (kbd "<backspace>") #'prot-minibuffer-backward-updir))
+
+   #+END_SRC
+
+
+
+** Icomplete vertical
+
+   #+BEGIN_SRC emacs-lisp
 
           (prot-emacs-elpa-package 'icomplete-vertical
-
-            (setq completion-styles '(orderless)) 
-            (setq completion-category-overrides '((file (styles basic substring))))
             (setq read-file-name-completion-ignore-case t)
             (setq read-buffer-completion-ignore-case t)
             (setq completion-ignore-case t)
@@ -348,12 +413,12 @@
             )
 
    #+END_SRC
-            
+
 
 * Programming
 
   Some defaul Settings
-  
+
   #+BEGIN_SRC emacs-lisp
     (setq-default tab-width 2)
     (global-subword-mode 1)
@@ -385,7 +450,7 @@
        (yas-global-mode 1))
    #+END_SRC
 
-** Smart comments 
+** Smart comments
 
 
    #+BEGIN_SRC emacs-lisp
@@ -404,7 +469,7 @@
      )
    #+END_SRC
 
-** Smart scan 
+** Smart scan
 
    #+BEGIN_SRC emacs-lisp
      (prot-emacs-elpa-package 'smartscan
@@ -412,7 +477,7 @@
        (define-key global-map (kbd "M-p") #'smartscan-symbol-go-backward))
    #+END_SRC
 
-     
+
 ** GGtags
 
    #+BEGIN_SRC emacs-lisp
@@ -438,10 +503,10 @@
        (define-key global-map (kbd "M-;") #'smart-comment))
 
    #+END_SRC
-   
 
 
-** Whitespace  
+
+** Whitespace
 
    #+BEGIN_SRC emacs-lisp
      (prot-emacs-builtin-package 'whitespace
@@ -451,4 +516,26 @@
        )
    #+END_SRC
 
-  
+* Magit
+
+I played with this before..
+
+#+BEGIN_SRC emacs-lisp
+  (prot-emacs-elpa-package 'magit
+    (setq magit-branch-arguments nil)
+
+    ;; use ido to look for branches
+    (setq magit-completing-read-function 'magit-builtin-completing-read)
+    ;; don't put "origin-" in front of new branch names by default
+    (setq magit-default-tracking-name-function 'magit-default-tracking-name-branch-only)
+    (setq magit-push-always-verify nil)
+    ;; Get rid of the previous advice to go into fullscreen
+    (setq magit-restnore-window-configuration t)
+    (defadvice magit-status (around magit-fullscreen activate)
+      (window-configuration-to-register :magit-fullscreen)
+      ad-do-it
+      (delete-other-windows))
+    (define-key global-map (kbd "C-x g") #'magit-status))
+
+
+#+END_SRC
