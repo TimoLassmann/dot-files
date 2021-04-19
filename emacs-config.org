@@ -5,7 +5,7 @@
 #+OPTIONS:  toc:nil
 #+OPTIONS: H:4
 #+LATEX_CMD: pdflatex
-#+PROPERTY: header-args:emacs-lisp :exports code :results none
+#+PROPERTY: header-args:emacs-lisp :exports code
 * Introduction
 
   All my emacs config.
@@ -121,6 +121,9 @@
        (simple-theme-load-theme)
        )
    #+END_SRC
+
+   #+RESULTS:
+   : t
 
 
 
@@ -312,6 +315,9 @@
      )
    #+END_SRC
 
+   #+RESULTS:
+   : consult-goto-line
+
 ** Orderless
    #+BEGIN_SRC emacs-lisp
      (prot-emacs-builtin-package 'tl-orderless
@@ -342,6 +348,8 @@
           ;;   (setq orderless-component-separator 'orderless-escapable-split-on-space))
    #+END_SRC
 
+   #+RESULTS:
+
 ** Marginalia
    #+BEGIN_SRC emacs-lisp
      (prot-emacs-elpa-package 'marginalia
@@ -352,6 +360,9 @@
          (define-key map (kbd "M-Y") #'marginalia-cycle))
        (marginalia-mode))
    #+END_SRC
+
+   #+RESULTS:
+   : t
 
 ** Minibuffer settings
 
@@ -392,6 +403,9 @@
 
    #+END_SRC
 
+   #+RESULTS:
+   : prot-minibuffer-backward-updir
+
 
 ** Icomplete vertical
 
@@ -415,6 +429,9 @@
 
    #+END_SRC
 
+   #+RESULTS:
+   : t
+
 ** Autoinsert templates
 
 #+begin_src emacs-lisp
@@ -437,6 +454,9 @@
   )
 #+end_src
 
+#+RESULTS:
+: t
+
 * Programming
 
   Some defaul Settings
@@ -457,11 +477,14 @@
                                    (setq-local compilation-read-command nil)
                                    (call-interactively 'compile)))
 
-    (add-hook 'c-mode-hook
-              '(lambda()
-                 (c-set-style "bsd")
-                 ))
+(defun my-c-mode-hook ()
+(setq c-default-style "bsd"))
+(add-hook 'c-mode-common-hook 'my-c-mode-hook)
+
   #+END_SRC
+
+  #+RESULTS:
+  | my-c-mode-hook | (lambda nil (if (derived-mode-p 'c-mode) (progn (ggtags-mode 1)))) |
 
 ** Yasnippet
 
@@ -662,11 +685,14 @@ load org mode
   (define-key global-map (kbd "C-c l") #'org-store-link)
   (define-key global-map (kbd "C-c a") #'org-agenda)
   (define-key global-map (kbd "C-c c") #'org-capture)
+  (let ((map org-mode-map))
+         (define-key map (kbd "C-c [") #'undefined))
 
   (add-hook 'org-mode-hook 'visual-line-mode)
   (add-hook 'org-mode-hook 'flyspell-mode)
   )
 #+END_SRC
+
 
 
 Record the time that a todo was archived.
@@ -748,18 +774,6 @@ Quickly open index file
 (global-set-key (kbd "C-c i") 'open-index-file)
 #+END_SRC
 
-undef a key
-
-#+BEGIN_SRC emacs-lisp
-(add-hook 'org-mode-hook
-          '(lambda ()
-             ;; Undefine C-c [ and C-c ] since this breaks my
-             ;; org-agenda files when directories are include It
-             ;; expands the files in the directories individually
-             (org-defkey org-mode-map "\C-c[" 'undefined))
-          'append)
-
-#+END_SRC
 
 ** Deft
 
@@ -1260,6 +1274,33 @@ Special formatting for the ROPE sections.
 
 #+END_SRC
 
+* Server mode
+
+#+BEGIN_SRC emacs-lisp
+(prot-emacs-builtin-package 'server
+  (add-hook 'after-init-hook #'server-start))
+#+END_SRC
+
+
+#+BEGIN_SRC emacs-lisp
+
+(prot-emacs-builtin-package 'desktop
+  (setq desktop-auto-save-timeout 300)
+  (setq desktop-path `(,user-emacs-directory))
+  (setq desktop-base-file-name "desktop")
+  (setq desktop-files-not-to-save nil)
+  (setq desktop-globals-to-clear nil)
+  (setq desktop-load-locked-desktop t)
+  (setq desktop-missing-file-warning nil)
+  (setq desktop-restore-eager 0)
+  (setq desktop-restore-frames nil)
+  (setq desktop-save 'ask-if-new)
+  (dolist (symbol '(kill-ring log-edit-comment-ring))
+    (add-to-list 'desktop-globals-to-save symbol))
+
+  (desktop-save-mode 1))
+
+#+END_SRC
 
 * PDF tools
 

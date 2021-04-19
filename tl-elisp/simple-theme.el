@@ -81,7 +81,7 @@ Also bind `class' to ((class color) (min-colors 89))."
    `(orderless-match-face-1 ((t (:background "#AC8CA3"))))
    `(orderless-match-face-2 ((t (:background "#1f5e8a"))))
    `(orderless-match-face-3 ((t (:foreground "#DCDCCC"))))
-   
+
    `(line-number ((t (:foreground "#3C3C3F"))))
    `(line-number-current-line ((t (:foreground ,fg))))
 
@@ -140,7 +140,7 @@ Also bind `class' to ((class color) (min-colors 89))."
 
    ;; `(ivy-current-match ((t (:background "#002E41" :foreground ,alert-second))))
    `(ivy-current-match ((t (:background "#002E41"))))
-   
+
    `(ivy-minibuffer-match-face-1 ((t (:foreground ,alert-main ))))
    `(ivy-minibuffer-match-face-2 ((t (:foreground ,alert-main ))))
    `(ivy-minibuffer-match-face-3 ((t (:foreground ,alert-main ))))
@@ -153,8 +153,8 @@ Also bind `class' to ((class color) (min-colors 89))."
    `(avy-lead-face-1 ((t (:weight bold :background "#999999" :foreground ,alert-main))))
    `(avy-lead-face-2 ((t (:weight bold :background "#999999" :foreground ,alert-main))))
 
-   '(icomplete-first-match ((t (:foreground "#2aa889"))))
-   
+   '(icomplete-first-match ((t (:foreground "#f17478"))))
+
    '(company-preview ((t (:background "#002E41" :foreground "#008ED1" :underline t))))
    '(company-preview-common ((t (:inherit company-preview))))
    '(company-preview-search ((t (:inherit company-preview))))

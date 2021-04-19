@@ -12,23 +12,12 @@
 * Introduction
   Should contain functions I often tend to use
 
-  #+BEGIN_SRC sh
-    OLDPATH=$PATH
-    PATH=$HOME/bin
-
-    for DIR in /opt/local/bin /opt/local/sbin /usr/local/bin /usr/local/sbin $HOME/miniconda3/bin
-    do
-      if [ -d $DIR ]
-      then
-          PATH=$PATH:$DIR
-      fi
-    done
-
-    PATH=$PATH:$OLDPATH
-  #+END_SRC
+#+BEGIN_SRC sh
+PATH=$HOME/bin:$HOME/miniconda3/bin:$PATH
+#+END_SRC
 
 
-  Colorful ls...
+Colorful ls...
 
   #+BEGIN_SRC sh
     if which gls >/dev/null 2>&1
@@ -55,21 +44,23 @@
 
 
 
-  #+BEGIN_SRC sh
-    export ALTERNATE_EDITOR=
-    export EDITOR=emacsclient
+#+BEGIN_SRC sh
+export ALTERNATE_EDITOR=
 
-  #+END_SRC
+export VISUAL="emacsclient -c"
+export EDITOR="emacsclient -t"
+#+END_SRC
 
-  alias emacs
+alias emacs
+export VISUAL="emacsclient -c"
+export EDITOR="emacsclient -t"
+#+BEGIN_SRC sh
+alias e='emacsclient -c '
+alias es='emacsclient -e "(kill-emacs)"'
+#+END_SRC
 
-  #+BEGIN_SRC sh
-    alias e='emacsclient -q -c --alternate-editor='
-    alias es='emacsclient -e "(kill-emacs)"'
-  #+END_SRC
-
-  python alias
+python alias
 
 #+BEGIN_SRC sh
-  # alias python='/usr/bin/python3'
+# alias python='/usr/bin/python3'
 #+END_SRC
