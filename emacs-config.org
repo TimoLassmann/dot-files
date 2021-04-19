@@ -127,7 +127,7 @@
    #+BEGIN_SRC emacs-lisp
      (prot-emacs-builtin-package 'simple-theme
        (simple-theme-load-theme)
-       
+
        )
    #+END_SRC
 
@@ -321,7 +321,7 @@
    #+BEGIN_SRC emacs-lisp
      (prot-emacs-elpa-package 'consult
        (setq consult-line-numbers-widen t)
-       
+
 
      (setq consult-ripgrep-command "rg -SHn --no-heading --color never --no-follow --hidden %s")
      (define-key global-map (kbd "M-s r") #'consult-git-grep)
@@ -330,11 +330,13 @@
      (define-key global-map (kbd "C-x i") #'consult-imenu)
      (define-key global-map (kbd "C-x C-r") #'consult-recent-file)
      (define-key global-map (kbd "M-g M-g") #'consult-goto-line)
+    ;; (setq consult-widen-key t)
+      (setq consult-config #'((consult-buffer :title nil)))
      )
    #+END_SRC
 
    #+RESULTS:
-   : consult-goto-line
+   | consult-buffer | :preview | nil |
 
 ** Orderless
    #+BEGIN_SRC emacs-lisp
@@ -379,57 +381,80 @@
        (marginalia-mode))
    #+END_SRC
 
-   #+RESULTS:
-   : t
 
 ** Minibuffer settings
 
-   #+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp
 
-     (setq completion-styles '(orderless partial-completion))
+(setq completion-styles '(orderless partial-completion))
 
-     (setq completion-category-overrides
-           '((buffer (styles . (substring flex orderless)))
-             '(file (styles . (partial-completion orderless)))))
-     (file-name-shadow-mode 1)
+(setq completion-category-overrides
+      '((buffer (styles . (substring flex orderless)))
+        '(file (styles . (partial-completion orderless)))))
 
-     (defun prot-minibuffer--field-beg ()
-       "Determine beginning of completion."
-       (if (window-minibuffer-p)
-           (minibuffer-prompt-end)
-         (nth 0 completion-in-region--data)))
-     (defun prot-minibuffer--completion-category ()
-       "Return completion category."
-       (let* ((beg (prot-minibuffer--field-beg))
-              (md (completion--field-metadata beg)))
-         (alist-get 'category (cdr md))))
+(file-name-shadow-mode 1)
+(minibuffer-depth-indicate-mode 1)
+(minibuffer-electric-default-mode 1)
 
-     (defun prot-minibuffer-backward-updir ()
-       "Delete char before point or go up a directory.
+(defun prot-minibuffer--field-beg ()
+  "Determine beginning of completion."
+  (if (window-minibuffer-p)
+      (minibuffer-prompt-end)
+    (nth 0 completion-in-region--data)))
+(defun prot-minibuffer--completion-category ()
+  "Return completion category."
+  (let* ((beg (prot-minibuffer--field-beg))
+         (md (completion--field-metadata beg)))
+    (alist-get 'category (cdr md))))
+
+(defun prot-minibuffer-backward-updir ()
+  "Delete char before point or go up a directory.
                     Must be bound to `minibuffer-local-filename-completion-map'."
-       (interactive)
-       (if (and (eq (char-before) ?/)
-                (eq (prot-minibuffer--completion-category) 'file))
-           (save-excursion
-             (goto-char (1- (point)))
-             (when (search-backward "/" (point-min) t)
-               (delete-region (1+ (point)) (point-max))))
-         (call-interactively 'backward-delete-char)))
+  (interactive)
+  (if (and (eq (char-before) ?/)
+           (eq (prot-minibuffer--completion-category) 'file))
+      (save-excursion
+        (goto-char (1- (point)))
+        (when (search-backward "/" (point-min) t)
+          (delete-region (1+ (point)) (point-max))))
+    (call-interactively 'backward-delete-char)))
 
-     (let ((map minibuffer-local-filename-completion-map))
-       (define-key map (kbd "<backspace>") #'prot-minibuffer-backward-updir))
+(let ((map minibuffer-local-filename-completion-map))
+  (define-key map (kbd "<backspace>") #'prot-minibuffer-backward-updir))
 
-   #+END_SRC
+#+END_SRC
 
-   #+RESULTS:
-   : prot-minibuffer-backward-updir
+** Selectrum
+#+BEGIN_SRC emacs-lisp
+;; (prot-emacs-elpa-package 'selectrum
+
+;;   (defvar me/selectrum-candidates-map (make-sparse-keymap))
+;;   ;; :bind
+;;   ;; (("C-x C-z" . selectrum-repeat)
+;;   ;;  :map me/selectrum-candidates-map
+;;   ;;  ("q" . abort-recursive-edit)
+;;   ;;  ([remap keyboard-quit] . abort-recursive-edit))
 
 
-** Icomplete vertical
+;;   (add-hook 'selectrum-display-action #'(lambda () (use-local-map me/selectrum-candidates-map)))
 
-   #+BEGIN_SRC emacs-lisp
+;;   (setq selectrum-display-action #'(display-buffer-at-bottom
+;;                               (window-parameters (mode-line-format . none))))
+;;   (setq selectrum-extend-current-candidate-highlight t)
+;;   (setq selectrum-fix-vertical-window-height t)
+;;   (setq selectrum-max-window-height .15)
+;;   (selectrum-mode +1)
+;;   )
 
-          (prot-emacs-elpa-package 'icomplete-vertical
+
+#+END_SRC
+
+#+RESULTS:
+: t
+
+** Icomplete
+#+BEGIN_SRC emacs-lisp
+(prot-emacs-builtin-package 'icomplete
             (setq read-file-name-completion-ignore-case t)
             (setq read-buffer-completion-ignore-case t)
             (setq completion-ignore-case t)
@@ -441,14 +466,38 @@
               (define-key map (kbd "C-p") #'icomplete-backward-completions)
               (define-key map (kbd "C-v") #'icomplete-vertical-toggle)
               (define-key map (kbd "C-M-i") #'minibuffer-complete))
-            (icomplete-mode)
-            (icomplete-vertical-mode)
-            )
+            (icomplete-mode))
+#+END_SRC
 
-   #+END_SRC
+#+RESULTS:
+: t
 
-   #+RESULTS:
-   : t
+#+BEGIN_SRC emacs-lisp
+;; (prot-emacs-elpa-package 'embark
+;;    (let ((map minibuffer-local-map))
+;;          (define-key map (kbd "C-;") #'embark-act)))
+
+  ;; :bind (:map minibuffer-local-map
+  ;;        ("C-o" . embark-act)
+  ;;        ("C-S-o" . embark-act-noexit)
+  ;;        :map embark-file-map
+  ;;        ("j" . dired-jump)))
+
+#+END_SRC
+
+#+RESULTS:
+: embark-act
+
+** Icomplete vertical
+
+#+BEGIN_SRC emacs-lisp
+
+(prot-emacs-elpa-package 'icomplete-vertical
+  (icomplete-vertical-mode)
+  )
+
+#+END_SRC
+
 
 ** Autoinsert templates
 
@@ -477,7 +526,7 @@
 
 * Programming
 
-  Mostly C .... 
+  Mostly C ....
   Some default settings.
 
   #+BEGIN_SRC emacs-lisp
@@ -591,7 +640,6 @@
    #+RESULTS:
    : /home/user/R
 
-
 * Eshell
 
 
@@ -617,6 +665,7 @@
     (let ((map eshell-mode-map))
       (define-key map (kbd "C-r") #'consult-history))
     )
+
   ;; (use-package eshell-extras
   ;;   :commands
   ;;   eshell/in-term
@@ -1448,8 +1497,3 @@ The end.
 (prot-emacs-elpa-package 'rainbow-mode
 )
 #+END_SRC
-
-eshell-alias
-set-eshell-alias
-scroll-preserve-screen-position
-make-backup-files
