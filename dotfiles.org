@@ -35,7 +35,6 @@ alias e='emacsclient -c '
 alias es='emacsclient -e "(kill-emacs)"'
 #+END_SRC
 
-
 * zsh
 
 #+BEGIN_SRC bash :exports both :results none :noweb yes  :tangle ~/.zshrc
@@ -72,4 +71,15 @@ fi
     alias emacs find-file $1
     alias ff find-file $1
     alias e find-file $1
+  #+END_SRC
+
+* Screen RC
+
+#+BEGIN_SRC bash :exports both :results none :noweb yes :tangle ~/.screenrc
+   hardstatus on
+    hardstatus alwayslastline
+    hardstatus string "%{.bW}%-w%{.rW}%n %t%{-}%+w %=%{..G} %H %{..Y} %m/%d %C%a "
+    defscrollback 10000
+    termcapinfo xterm* ti@:te@
+    shell "/usr/bin/zsh"
   #+END_SRC

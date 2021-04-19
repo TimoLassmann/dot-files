@@ -67,21 +67,21 @@
   (message "Tangling dotfiles.org")
   (tl/tangle-file "${dot-files-src}/zshrc.org")
 
-  (message "Tangling zshrc.org")
-  (tl/tangle-file "${dot-files-src}/zshrc.org")
+  ;; (message "Tangling zshrc.org")
+  ;; (tl/tangle-file "${dot-files-src}/zshrc.org")
 
-  (message "Tangling profile.org")
-  (tl/tangle-file "${dot-files-src}/profile.org")
+  ;; (message "Tangling profile.org")
+  ;; (tl/tangle-file "${dot-files-src}/profile.org")
 
-  (message "Tangling screenrc.org")
-  (tl/tangle-file "${dot-files-src}/screenrc.org")
-  
+  ;; (message "Tangling screenrc.org")
+  ;; (tl/tangle-file "${dot-files-src}/screenrc.org")
+
   (message "Tangling backup.org")
   (tl/tangle-file "${dot-files-src}/backup.org")
-  
+
   ;; (tl/tangle-files "${dot-files-src}/*.org")
   ;; (tl/tangle-files "${dot-files-src}/snippets/*.org")
-  
+
 
   (message "Copy init files.")
   (tl/mksymlink "${dot-files-src}/early-init.el"
@@ -92,18 +92,18 @@
                 "${tl/emacs-directory}/basic-init.el")
   (tl/mksymlink "${dot-files-src}/emacs-config.org"
                 "${tl/emacs-directory}/emacs-config.org")
-  
+
   ;; Some Elisp files are just symlinked instead of tangled...
   (message "Make links to el files.")
   (tl/mksymlinks "${dot-files-src}/tl-elisp"
                  "${tl/emacs-directory}/tl-elisp")
-  
+
   (tl/mksymlinks "${dot-files-src}/elisp"
                  "${tl/emacs-directory}/elisp")
 
   (tl/mksymlinks "${dot-files-src}/contrib-lisp"
                  "${tl/emacs-directory}/contrib-lisp")
-  
+
   (message "done Make links to el files.")
 
   ;; copy my latex templates
