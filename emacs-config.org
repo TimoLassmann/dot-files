@@ -705,6 +705,11 @@ load org mode
   (setq org-export-with-smart-quotes t)
   (setq org-src-window-setup 'current-window)
   (setq org-display-inline-images t)
+
+  (setq org-display-inline-images t)
+  (setq org-redisplay-inline-images t)
+  (setq org-startup-with-inline-images "inlineimages")
+
   (setq org-refile-use-outline-path 'file)
 
   (setq org-outline-path-complete-in-steps nil)
@@ -790,6 +795,8 @@ load org mode
 
   (add-hook 'org-mode-hook 'visual-line-mode)
   (add-hook 'org-mode-hook 'flyspell-mode)
+  (add-hook 'org-babel-after-execute-hook 'org-redisplay-inline-images)
+
   )
 #+END_SRC
 
