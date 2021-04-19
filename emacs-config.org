@@ -682,60 +682,61 @@ Highlight line mode
 * Eshell
 
 
-#+BEGIN_SRC emacs-lisp
-(prot-emacs-builtin-package 'eshell
-  (require 'esh-mode)
-  (require 'esh-module)
-  (setq eshell-modules-list             ; It works but may need review
-        '(eshell-alias
-          eshell-basic
-          eshell-cmpl
-          eshell-dirs
-          eshell-glob
-          eshell-hist
-          eshell-ls
-          eshell-pred
-          eshell-prompt
-          eshell-script
-          eshell-term
-          eshell-tramp
-          eshell-unix))
-  (setenv "PAGER" "cat")
-  (let ((map eshell-mode-map))
-    (define-key map (kbd "C-r") #'consult-history))
-  )
+  #+BEGIN_SRC emacs-lisp
+    (prot-emacs-builtin-package 'eshell
+      (require 'esh-mode)
+      (require 'esh-module)
+      (setq eshell-modules-list             ; It works but may need review
+            '(eshell-alias
+              eshell-basic
+              eshell-cmpl
+              eshell-dirs
+              eshell-glob
+              eshell-hist
+              eshell-ls
+              eshell-pred
+              eshell-prompt
+              eshell-script
+              eshell-term
+              eshell-tramp
+              eshell-unix))
 
-;; (use-package eshell-extras
-;;   :commands
-;;   eshell/in-term
-;;   eshell/for-each
-;;   interactive-cd)
+      (setenv "PAGER" "cat")
+      (let ((map eshell-mode-map))
+        (define-key map (kbd "C-r") #'consult-history))
+      )
 
-;; (use-package eshell
-;;   :bind
-;;   ("C-!" . eshell)
-;;   :config (setenv "PAGER" "cat"))
+    ;; (use-package eshell-extras
+    ;;   :commands
+    ;;   eshell/in-term
+    ;;   eshell/for-each
+    ;;   interactive-cd)
 
-;; (use-package esh-mode
-;;   :bind
-;;   (:map eshell-mode-map
-;;         ("<home>" . eshell-bol)
-;;         ("C-c d" . interactive-cd)
-;;         ("M-q" . quit-window)))
+    ;; (use-package eshell
+    ;;   :bind
+    ;;   ("C-!" . eshell)
+    ;;   :config (setenv "PAGER" "cat"))
 
-;; (defun eshell-add-aliases ()
-;; "Doc-string."
-;;   (dolist (var '(("ff" "find-file $1")
-;;                  ("wget" "/Users/HOME/.0.data/.0.emacs/.0.macports/bin/wget $*")
-;;                  ("cvs" "/Users/HOME/.0.data/.0.emacs/.0.macports/bin/cvs $*")
-;;                  ("curl" "/Users/HOME/.0.data/.0.emacs/.0.macports/bin/curl $*")
-;;                  ("git" "/Users/HOME/.0.data/.0.emacs/.0.macports/bin/git $*")))
-;;     (add-to-list 'eshell-command-aliases-list var)))
+    ;; (use-package esh-mode
+    ;;   :bind
+    ;;   (:map eshell-mode-map
+    ;;         ("<home>" . eshell-bol)
+    ;;         ("C-c d" . interactive-cd)
+    ;;         ("M-q" . quit-window)))
 
-#+END_SRC
+    ;; (defun eshell-add-aliases ()
+    ;; "Doc-string."
+    ;;   (dolist (var '(("ff" "find-file $1")
+    ;;                  ("wget" "/Users/HOME/.0.data/.0.emacs/.0.macports/bin/wget $*")
+    ;;                  ("cvs" "/Users/HOME/.0.data/.0.emacs/.0.macports/bin/cvs $*")
+    ;;                  ("curl" "/Users/HOME/.0.data/.0.emacs/.0.macports/bin/curl $*")
+    ;;                  ("git" "/Users/HOME/.0.data/.0.emacs/.0.macports/bin/git $*")))
+    ;;     (add-to-list 'eshell-command-aliases-list var)))
 
-#+RESULTS:
-: consult-history
+  #+END_SRC
+
+  #+RESULTS:
+  : consult-history
 
 * Tramp
 
