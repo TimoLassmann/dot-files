@@ -10,6 +10,18 @@
 
   All my emacs config.
 * Basic settings
+** Get rid of custom-set stuff
+
+#+BEGIN_SRC emacs-lisp
+(prot-emacs-builtin-package 'cus-edit
+  ;; Disable the damn thing
+  (setq custom-file (make-temp-file "emacs-custom-")))
+
+#+END_SRC
+
+#+RESULTS:
+: /tmp/emacs-custom-hNWidf
+
 ** Directory paths
 
    #+BEGIN_SRC emacs-lisp
@@ -23,7 +35,6 @@
      (setq user-full-name "Timo Lassmann"
      user-mail-address "timo.lassmann@telethonkids.org.au")
    #+END_SRC
-
 
 ** Settings
    #+BEGIN_SRC emacs-lisp
@@ -52,7 +63,6 @@
      (global-so-long-mode 1)
    #+END_SRC
 
-
 ** No easy keys
 
 
@@ -72,7 +82,6 @@
      (global-set-key (kbd "C-x k") 'tl/kill-current-buffer)
    #+END_SRC
 
-
 ** Turn off some default key-bindings
    I keep hitting this by accidental
    #+BEGIN_SRC emacs-lisp
@@ -88,7 +97,6 @@
        (save-buffers-kill-terminal))
 
    #+END_SRC
-
 
 ** Tabs vs spaces
 
@@ -1415,7 +1423,6 @@ The end.
 (prot-emacs-elpa-package 'rainbow-mode
 )
 #+END_SRC
-
 
 eshell-alias
 set-eshell-alias
