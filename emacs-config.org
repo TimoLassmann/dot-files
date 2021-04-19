@@ -704,7 +704,7 @@ load org mode
   (setq org-confirm-babel-evaluate nil)
   (setq org-export-with-smart-quotes t)
   (setq org-src-window-setup 'current-window)
-
+  (setq org-display-inline-images t)
   (setq org-refile-use-outline-path 'file)
 
   (setq org-outline-path-complete-in-steps nil)
