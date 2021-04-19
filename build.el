@@ -38,6 +38,20 @@
   (message "done mcopying files across.")
   )
 
+(defun tl/tangle-file (file)
+  "Given an 'org-mode' FILE, tangle the source code."
+  (interactive "fOrg File: ")
+  (find-file file)   ;;  (expand-file-name file \"$DIR\")
+  (org-babel-tangle)
+  (kill-buffer))
+
+
+(defun tl/tangle-files (path)
+  "Given a directory, PATH, of 'org-mode' files, tangle source code out of all literate programming files."
+  (interactive "D")
+  (message "The name of this buffer is: %s." (tl/get-files path))
+  (mapc 'tl/tangle-file (tl/get-files path)))
+
 
 (defun tl/build-dot-files ()
   "Compile and deploy 'init files' in this directory."
@@ -49,9 +63,25 @@
   ;;(tl/mkdir "${tl/emacs-directory}/latex_templates")
   (tl/mkdir "$HOME/bin")
   (tl/mkdir "$HOME/backup")
-  (tl/tangle-files "${dot-files-src}/*.org")
-  (tl/tangle-files "${dot-files-src}/snippets/*.org")
 
+  (message "Tangling dotfiles.org")
+  (tl/tangle-file "${dot-files-src}/zshrc.org")
+
+  (message "Tangling zshrc.org")
+  (tl/tangle-file "${dot-files-src}/zshrc.org")
+
+  (message "Tangling profile.org")
+  (tl/tangle-file "${dot-files-src}/profile.org")
+
+  (message "Tangling screenrc.org")
+  (tl/tangle-file "${dot-files-src}/screenrc.org")
+  
+  (message "Tangling backup.org")
+  (tl/tangle-file "${dot-files-src}/backup.org")
+  
+  ;; (tl/tangle-files "${dot-files-src}/*.org")
+  ;; (tl/tangle-files "${dot-files-src}/snippets/*.org")
+  
 
   (message "Copy init files.")
   (tl/mksymlink "${dot-files-src}/early-init.el"
@@ -110,19 +140,6 @@
 
 
 
-(defun tl/tangle-file (file)
-  "Given an 'org-mode' FILE, tangle the source code."
-  (interactive "fOrg File: ")
-  (find-file file)   ;;  (expand-file-name file \"$DIR\")
-  (org-babel-tangle)
-  (kill-buffer))
-
-
-(defun tl/tangle-files (path)
-  "Given a directory, PATH, of 'org-mode' files, tangle source code out of all literate programming files."
-  (interactive "D")
-  (message "The name of this buffer is: %s." (tl/get-files path))
-  (mapc 'tl/tangle-file (tl/get-files path)))
 
 
 ;;(defun ha/get-dot-files ()

@@ -1,0 +1,27 @@
+#+TITLE:  Various configuration files 
+#+AUTHOR: Timo Lassmann
+#+EMAIL:  timo.lassmann@telethonkids.org.au
+#+DATE:   2021-04-19
+#+LATEX_CLASS: report
+#+OPTIONS:  toc:nil
+#+OPTIONS: H:4
+#+LATEX_CMD: pdflatex
+* Introduction 
+* Eshell
+
+  #+BEGIN_SRC text :exports both :results none :noweb yes :tangle ~/.emacs.d/eshell/alias
+    alias ll /bin/ls -AlohG --color=always
+    alias val valgrind --leak-check=yes --show-leak-kinds=all --exit-on-first-error=yes --error-exitcode=1 $*
+    alias d dired $1
+    alias gds magit-diff-staged
+    alias gd magit-diff-unstaged
+    alias ee find-file-other-window $1
+    alias emacs find-file $1
+    alias ff find-file $1
+    alias e find-file $1
+  #+END_SRC
+
+
+
+
+

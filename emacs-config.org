@@ -477,27 +477,28 @@
 
 * Programming
 
-  Some defaul Settings
+  Mostly C .... 
+  Some default settings.
 
   #+BEGIN_SRC emacs-lisp
-    (setq-default tab-width 2)
-    (global-subword-mode 1)
-    (setq compile-command "make -j 6")
-    (setq compilation-scroll-output 'first-error)
-    (setq compilation-always-kill t)
-    (setq compilation-disable-input t)
-    (setq compilation-scroll-output t)
-    (setq compilation-read-command nil)
-    (add-hook 'compilation-mode-hook 'visual-line-mode)
+        (setq-default tab-width 2)
+        (global-subword-mode 1)
+        (setq compile-command "make -j 6")
+        (setq compilation-scroll-output 'first-error)
+        (setq compilation-always-kill t)
+        (setq compilation-disable-input t)
+        (setq compilation-scroll-output t)
+        (setq compilation-read-command nil)
+        (add-hook 'compilation-mode-hook 'visual-line-mode)
 
-    (global-set-key (kbd "<f5>") (lambda ()
-                                   (interactive)
-                                   (setq-local compilation-read-command nil)
-                                   (call-interactively 'compile)))
+        (global-set-key (kbd "<f5>") (lambda ()
+                                       (interactive)
+                                       (setq-local compilation-read-command nil)
+                                       (call-interactively 'compile)))
 
-(defun my-c-mode-hook ()
-(setq c-default-style "bsd"))
-(add-hook 'c-mode-common-hook 'my-c-mode-hook)
+    (defun my-c-mode-hook ()
+    (setq c-default-style "bsd"))
+    (add-hook 'c-mode-common-hook 'my-c-mode-hook)
 
   #+END_SRC
 
@@ -522,7 +523,6 @@
 
    #+END_SRC
 
-
 ** Smart parens
 
  #+BEGIN_SRC emacs-lisp
@@ -539,7 +539,6 @@
        (define-key global-map (kbd "M-n") #'smartscan-symbol-go-forward)
        (define-key global-map (kbd "M-p") #'smartscan-symbol-go-backward))
    #+END_SRC
-
 
 ** GGtags
 
@@ -568,7 +567,6 @@
    #+END_SRC
 
 
-
 ** Whitespace
 
    #+BEGIN_SRC emacs-lisp
@@ -579,57 +577,61 @@
        )
    #+END_SRC
 
+** Lesser languages : R
+
+   #+BEGIN_SRC emacs-lisp
+     (prot-emacs-elpa-package 'ess
+       ;; (setq-default inferior-R-program-name "/home/user/R")
+       ;; (s
+       (setq-default inferior-ess-r-program  "/home/user/R")
+
+       )
+   #+END_SRC
+
+   #+RESULTS:
+   : /home/user/R
+
+
 * Eshell
 
 
 #+BEGIN_SRC emacs-lisp
-(prot-emacs-builtin-package 'eshell
-  (setenv "PAGER" "cat")
-  (let ((map eshell-mode-map))
-    (define-key map (kbd "C-r") #'consult-history))
-  (defun eshell-add-aliases ()
-    "Doc-string."
-    (dolist (var '(("e" "find-file $1")
-                   ("ff" "find-file $1")
-                   ("emacs" "find-file $1")
-                   ("ee" "find-file-other-window $1")
-                   ("gd" "magit-diff-unstaged")
-                   ("gds" "magit-diff-staged")
-                   ("d" "dired $1")
-                   ("val" "valgrind --leak-check=yes --show-leak-kinds=all --exit-on-first-error=yes --error-exitcode=1 $*")))
-      (add-to-list 'eshell-command-aliases-list var)))  
-  (eshell-add-aliases)
-  )
-;; (use-package eshell-extras
-;;   :commands
-;;   eshell/in-term
-;;   eshell/for-each
-;;   interactive-cd)
+  (prot-emacs-builtin-package 'eshell
+    (setenv "PAGER" "cat")
+      (let ((map eshell-mode-map))
+      (define-key map (kbd "C-r") #'consult-history))
+    )
+  ;; (use-package eshell-extras
+  ;;   :commands
+  ;;   eshell/in-term
+  ;;   eshell/for-each
+  ;;   interactive-cd)
 
-;; (use-package eshell
-;;   :bind
-;;   ("C-!" . eshell)
-;;   :config (setenv "PAGER" "cat"))
+  ;; (use-package eshell
+  ;;   :bind
+  ;;   ("C-!" . eshell)
+  ;;   :config (setenv "PAGER" "cat"))
 
-;; (use-package esh-mode
-;;   :bind
-;;   (:map eshell-mode-map
-;;         ("<home>" . eshell-bol)
-;;         ("C-c d" . interactive-cd)
-;;         ("M-q" . quit-window)))
+  ;; (use-package esh-mode
+  ;;   :bind
+  ;;   (:map eshell-mode-map
+  ;;         ("<home>" . eshell-bol)
+  ;;         ("C-c d" . interactive-cd)
+  ;;         ("M-q" . quit-window)))
 
-;; (defun eshell-add-aliases ()
-;; "Doc-string."
-;;   (dolist (var '(("ff" "find-file $1")
-;;                  ("wget" "/Users/HOME/.0.data/.0.emacs/.0.macports/bin/wget $*")
-;;                  ("cvs" "/Users/HOME/.0.data/.0.emacs/.0.macports/bin/cvs $*")
-;;                  ("curl" "/Users/HOME/.0.data/.0.emacs/.0.macports/bin/curl $*")
-;;                  ("git" "/Users/HOME/.0.data/.0.emacs/.0.macports/bin/git $*")))
-;;     (add-to-list 'eshell-command-aliases-list var)))
+  ;; (defun eshell-add-aliases ()
+  ;; "Doc-string."
+  ;;   (dolist (var '(("ff" "find-file $1")
+  ;;                  ("wget" "/Users/HOME/.0.data/.0.emacs/.0.macports/bin/wget $*")
+  ;;                  ("cvs" "/Users/HOME/.0.data/.0.emacs/.0.macports/bin/cvs $*")
+  ;;                  ("curl" "/Users/HOME/.0.data/.0.emacs/.0.macports/bin/curl $*")
+  ;;                  ("git" "/Users/HOME/.0.data/.0.emacs/.0.macports/bin/git $*")))
+  ;;     (add-to-list 'eshell-command-aliases-list var)))
 
 #+END_SRC
 
 #+RESULTS:
+: consult-history
 
 * Tramp
 
