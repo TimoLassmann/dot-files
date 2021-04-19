@@ -119,6 +119,7 @@
    #+BEGIN_SRC emacs-lisp
      (prot-emacs-builtin-package 'simple-theme
        (simple-theme-load-theme)
+       
        )
    #+END_SRC
 
@@ -166,7 +167,6 @@
        (which-key-mode))     ; and turn this on, if you want to use this
    #+END_SRC
 
-
 ** saveplace
 
    #+BEGIN_SRC emacs-lisp
@@ -186,6 +186,15 @@
        (recentf-mode 1)
        )
    #+END_SRC
+
+** Async
+
+#+BEGIN_SRC emacs-lisp
+(prot-emacs-builtin-package 'async)
+
+#+END_SRC
+
+#+RESULTS:
 
 * Moving
 ** Switch windows
@@ -304,12 +313,13 @@
    #+BEGIN_SRC emacs-lisp
      (prot-emacs-elpa-package 'consult
        (setq consult-line-numbers-widen t)
-
+       
 
      (setq consult-ripgrep-command "rg -SHn --no-heading --color never --no-follow --hidden %s")
      (define-key global-map (kbd "M-s r") #'consult-git-grep)
      (define-key global-map (kbd "C-x b") #'consult-buffer)
      (define-key global-map (kbd "C-s") #'consult-line)
+     (define-key global-map (kbd "C-x i") #'consult-imenu)
      (define-key global-map (kbd "C-x C-r") #'consult-recent-file)
      (define-key global-map (kbd "M-g M-g") #'consult-goto-line)
      )
@@ -560,6 +570,70 @@
                  (lambda () (add-hook 'before-save-hook 'whitespace-cleanup)))
        )
    #+END_SRC
+
+* Eshell
+
+
+#+BEGIN_SRC emacs-lisp
+(prot-emacs-builtin-package 'eshell
+  (setenv "PAGER" "cat")
+  (let ((map eshell-mode-map))
+    (define-key map (kbd "C-r") #'consult-history))
+  (defun eshell-add-aliases ()
+    "Doc-string."
+    (dolist (var '(("e" "find-file $1")
+                   ("ff" "find-file $1")
+                   ("emacs" "find-file $1")
+                   ("ee" "find-file-other-window $1")
+                   ("gd" "magit-diff-unstaged")
+                   ("gds" "magit-diff-staged")
+                   ("d" "dired $1")
+                   ("val" "valgrind --leak-check=yes --show-leak-kinds=all --exit-on-first-error=yes --error-exitcode=1 $*")))
+      (add-to-list 'eshell-command-aliases-list var)))  
+  (eshell-add-aliases)
+  )
+;; (use-package eshell-extras
+;;   :commands
+;;   eshell/in-term
+;;   eshell/for-each
+;;   interactive-cd)
+
+;; (use-package eshell
+;;   :bind
+;;   ("C-!" . eshell)
+;;   :config (setenv "PAGER" "cat"))
+
+;; (use-package esh-mode
+;;   :bind
+;;   (:map eshell-mode-map
+;;         ("<home>" . eshell-bol)
+;;         ("C-c d" . interactive-cd)
+;;         ("M-q" . quit-window)))
+
+;; (defun eshell-add-aliases ()
+;; "Doc-string."
+;;   (dolist (var '(("ff" "find-file $1")
+;;                  ("wget" "/Users/HOME/.0.data/.0.emacs/.0.macports/bin/wget $*")
+;;                  ("cvs" "/Users/HOME/.0.data/.0.emacs/.0.macports/bin/cvs $*")
+;;                  ("curl" "/Users/HOME/.0.data/.0.emacs/.0.macports/bin/curl $*")
+;;                  ("git" "/Users/HOME/.0.data/.0.emacs/.0.macports/bin/git $*")))
+;;     (add-to-list 'eshell-command-aliases-list var)))
+
+#+END_SRC
+
+#+RESULTS:
+
+* Tramp
+
+#+BEGIN_SRC emacs-lisp
+(prot-emacs-builtin-package 'tramp
+  (with-eval-after-load 'tramp-cache
+    (setq tramp-persistency-file-name "~/.emacs.d/tramp"))
+  (setq tramp-default-method "ssh")
+  (setq tramp-use-ssh-controlmaster-options nil)
+  (message "tramp-loaded"))
+
+#+END_SRC
 
 * Magit
 
@@ -1341,3 +1415,9 @@ The end.
 (prot-emacs-elpa-package 'rainbow-mode
 )
 #+END_SRC
+
+
+eshell-alias
+set-eshell-alias
+scroll-preserve-screen-position
+make-backup-files

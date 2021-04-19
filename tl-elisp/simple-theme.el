@@ -121,6 +121,8 @@ Also bind `class' to ((class color) (min-colors 89))."
    '(link ((t (:foreground "#1e8eb8" :underline t))))
    '(link-visited ((t (:foreground "#105f89"))))
 
+   
+   `(flyspell-incorrect  ((t (:underline (:style wave :color ,alert-main)))))
    `(flycheck-error   ((t (:underline (:style wave :color ,alert-main)))))
    `(flycheck-warning ((t (:underline (:style wave :color ,alert-second)))))
 
