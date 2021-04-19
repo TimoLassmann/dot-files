@@ -597,8 +597,10 @@
 
 #+BEGIN_SRC emacs-lisp
   (prot-emacs-builtin-package 'eshell
+    (require 'esh-mode)
+    (require 'esh-module)
     (setenv "PAGER" "cat")
-      (let ((map eshell-mode-map))
+    (let ((map eshell-mode-map))
       (define-key map (kbd "C-r") #'consult-history))
     )
   ;; (use-package eshell-extras
