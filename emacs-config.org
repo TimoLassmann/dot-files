@@ -1,14 +1,15 @@
 #+TITLE:  My emacs config
 #+AUTHOR: Timo Lassmann
 #+DATE:   2021-04-17
+#+STARTUP: overview
 #+LATEX_CLASS: report
 #+OPTIONS:  toc:nil
 #+OPTIONS: H:4
 #+LATEX_CMD: pdflatex
-#+PROPERTY: header-args:emacs-lisp :exports code
+#+PROPERTY: header-args:emacs-lisp :exports code :results none
 * Introduction
 
-  All my emacs config.
+All my emacs config.
 * Basic settings
 ** Get rid of custom-set stuff
 
@@ -24,176 +25,176 @@
 
 ** Directory paths
 
-   #+BEGIN_SRC emacs-lisp
-     (defconst tl/emacs-directory (concat (getenv "HOME") "/.emacs.d/"))
-     (defun tl/emacs-subdirectory (d) (expand-file-name d tl/emacs-directory))
-   #+END_SRC
+#+BEGIN_SRC emacs-lisp
+(defconst tl/emacs-directory (concat (getenv "HOME") "/.emacs.d/"))
+(defun tl/emacs-subdirectory (d) (expand-file-name d tl/emacs-directory))
+#+END_SRC
 
 ** Whoami
 
-   #+BEGIN_SRC emacs-lisp
-     (setq user-full-name "Timo Lassmann"
-     user-mail-address "timo.lassmann@telethonkids.org.au")
-   #+END_SRC
+#+BEGIN_SRC emacs-lisp
+(setq user-full-name "Timo Lassmann"
+      user-mail-address "timo.lassmann@telethonkids.org.au")
+#+END_SRC
 
 ** Settings
-   #+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp
 
-     (defalias 'yes-or-no-p 'y-or-n-p)
+(defalias 'yes-or-no-p 'y-or-n-p)
 
-     (setq ring-bell-function 'ignore)
+(setq ring-bell-function 'ignore)
 
-     (setq-default cursor-type 'box)
-     (setq-default cursor-in-non-selected-windows '(bar . 2))
-     (setq-default blink-cursor-blinks 50)
-     (setq-default blink-cursor-interval nil) ; 0.75 would be my choice
-     (setq-default blink-cursor-delay 0.2)
+(setq-default cursor-type 'box)
+(setq-default cursor-in-non-selected-windows '(bar . 2))
+(setq-default blink-cursor-blinks 50)
+(setq-default blink-cursor-interval nil) ; 0.75 would be my choice
+(setq-default blink-cursor-delay 0.2)
 
-     (blink-cursor-mode -1)
+(blink-cursor-mode -1)
 
-   #+END_SRC
+#+END_SRC
 
 ** Bidirectional writing and so-long.el
-   (from prot)
-   #+BEGIN_SRC emacs-lisp
+(from prot)
+#+BEGIN_SRC emacs-lisp
 
-     (setq-default bidi-paragraph-direction 'left-to-right)
-     (setq bidi-inhibit-bpa t)
-     (require 'so-long)
-     (global-so-long-mode 1)
-   #+END_SRC
+(setq-default bidi-paragraph-direction 'left-to-right)
+(setq bidi-inhibit-bpa t)
+(require 'so-long)
+(global-so-long-mode 1)
+#+END_SRC
 
 ** No easy keys
 
 
-   #+BEGIN_SRC emacs-lisp
-     (prot-emacs-builtin-package 'no-easy-keys
-       (no-easy-keys 1)
-       )
-   #+END_SRC
+#+BEGIN_SRC emacs-lisp
+(prot-emacs-builtin-package 'no-easy-keys
+  (no-easy-keys 1)
+  )
+#+END_SRC
 
 ** Kill buffer
-   Assume that I always want to kill the current buffer when hitting C-x k.
-   #+BEGIN_SRC emacs-lisp
-     (defun tl/kill-current-buffer ()
-       "Kill the current buffer without prompting."
-       (interactive)
-       (kill-buffer (current-buffer)))
-     (global-set-key (kbd "C-x k") 'tl/kill-current-buffer)
-   #+END_SRC
+Assume that I always want to kill the current buffer when hitting C-x k.
+#+BEGIN_SRC emacs-lisp
+(defun tl/kill-current-buffer ()
+  "Kill the current buffer without prompting."
+  (interactive)
+  (kill-buffer (current-buffer)))
+(global-set-key (kbd "C-x k") 'tl/kill-current-buffer)
+#+END_SRC
 
 ** Turn off some default key-bindings
-   I keep hitting this by accidental
-   #+BEGIN_SRC emacs-lisp
-     (global-unset-key (kbd "C-z"))
-     (global-unset-key (kbd "C-x C-z"))
-     (global-unset-key (kbd "C-h h"))
-     (global-unset-key (kbd "C-x C-c"))
+I keep hitting this by accidental
+#+BEGIN_SRC emacs-lisp
+(global-unset-key (kbd "C-z"))
+(global-unset-key (kbd "C-x C-z"))
+(global-unset-key (kbd "C-h h"))
+(global-unset-key (kbd "C-x C-c"))
 
 
-     (defun tl/quit-emacs ()
-       "Kill the current buffer without prompting."
-       (interactive)
-       (save-buffers-kill-terminal))
+(defun tl/quit-emacs ()
+  "Kill the current buffer without prompting."
+  (interactive)
+  (save-buffers-kill-terminal))
 
-   #+END_SRC
+#+END_SRC
 
 ** Tabs vs spaces
 
-   Never use tabs. Tabs are the devil’s whitespace.
+Never use tabs. Tabs are the devil’s whitespace.
 
-   #+BEGIN_SRC emacs-lisp
-     (setq-default indent-tabs-mode nil)
-     (setq tab-width 4)
-     ;; (setq-default tab-always-indent 'complete)
-   #+END_SRC
+#+BEGIN_SRC emacs-lisp
+(setq-default indent-tabs-mode nil)
+(setq tab-width 4)
+;; (setq-default tab-always-indent 'complete)
+#+END_SRC
 ** Common functions
 
-   #+BEGIN_SRC emacs-lisp
-     (prot-emacs-builtin-package 'tl-common
-       (global-set-key [remap move-beginning-of-line] 'smarter-move-beginning-of-line)
-       (global-set-key [remap org-beginning-of-line]  'smarter-move-beginning-of-line)
+#+BEGIN_SRC emacs-lisp
+(prot-emacs-builtin-package 'tl-common
+  (global-set-key [remap move-beginning-of-line] 'smarter-move-beginning-of-line)
+  (global-set-key [remap org-beginning-of-line]  'smarter-move-beginning-of-line)
 
 
-       (define-key global-map (kbd "C-x 3") #'split-and-follow-vertically)
-       (define-key global-map (kbd "C-x 2") #'split-and-follow-horizontally)
-       )
-   #+END_SRC
+  (define-key global-map (kbd "C-x 3") #'split-and-follow-vertically)
+  (define-key global-map (kbd "C-x 2") #'split-and-follow-horizontally)
+  )
+#+END_SRC
 
 * Main looks
 
 ** My simple theme
 
-   #+BEGIN_SRC emacs-lisp
-     (prot-emacs-builtin-package 'simple-theme
-       (simple-theme-load-theme)
+#+BEGIN_SRC emacs-lisp
+(prot-emacs-builtin-package 'simple-theme
+  (simple-theme-load-theme)
 
-       )
-   #+END_SRC
+  )
+#+END_SRC
 
-   #+RESULTS:
-   : t
+#+RESULTS:
+: t
 
 
 
 ** Fonts
 
-   #+BEGIN_SRC emacs-lisp
-     (prot-emacs-builtin-package 'tl-fonts
-       (tl/setup-fonts)
-       )
-   #+END_SRC
+#+BEGIN_SRC emacs-lisp
+(prot-emacs-builtin-package 'tl-fonts
+  (tl/setup-fonts)
+  )
+#+END_SRC
 
 * Convenience
 ** Undo Tree
-   #+BEGIN_SRC emacs-lisp
-     (prot-emacs-elpa-package 'undo-tree
-       (global-undo-tree-mode 1))
+#+BEGIN_SRC emacs-lisp
+(prot-emacs-elpa-package 'undo-tree
+  (global-undo-tree-mode 1))
 
-   #+END_SRC
+#+END_SRC
 
 ** which-key
-   #+BEGIN_SRC emacs-lisp
-     (prot-emacs-elpa-package 'which-key
-       ;; NOTE: I only use this for `embark' and `consult' and for the sake
-       ;; of producing more user-friendly video demonstrations.
-       (setq which-key-dont-use-unicode t)
-       (setq which-key-add-column-padding 2)
+#+BEGIN_SRC emacs-lisp
+(prot-emacs-elpa-package 'which-key
+  ;; NOTE: I only use this for `embark' and `consult' and for the sake
+  ;; of producing more user-friendly video demonstrations.
+  (setq which-key-dont-use-unicode t)
+  (setq which-key-add-column-padding 2)
 
-       ;; (setq which-key-setup-side-window-bottom)
-       (setq which-key-show-early-on-C-h t)
-       (setq which-key-idle-delay 10000)
-       (setq which-key-idle-secondary-delay 0.05)
-       (which-key-setup-minibuffer)
-       ;; (setq which-key-popup-type 'side-window)
-       ;; (which-key-setup-side-window-bottom)
-       (setq which-key-show-prefix 'echo)
-       (setq which-key-max-display-columns 3)
-       (setq which-key-separator "  ")
-       (setq which-key-special-keys nil)
-       (setq which-key-paging-key "<next>")
-       (which-key-mode))     ; and turn this on, if you want to use this
-   #+END_SRC
+  ;; (setq which-key-setup-side-window-bottom)
+  (setq which-key-show-early-on-C-h t)
+  (setq which-key-idle-delay 10000)
+  (setq which-key-idle-secondary-delay 0.05)
+  (which-key-setup-minibuffer)
+  ;; (setq which-key-popup-type 'side-window)
+  ;; (which-key-setup-side-window-bottom)
+  (setq which-key-show-prefix 'echo)
+  (setq which-key-max-display-columns 3)
+  (setq which-key-separator "  ")
+  (setq which-key-special-keys nil)
+  (setq which-key-paging-key "<next>")
+  (which-key-mode))     ; and turn this on, if you want to use this
+#+END_SRC
 
 ** saveplace
 
-   #+BEGIN_SRC emacs-lisp
-     (prot-emacs-elpa-package 'saveplace
-       (save-place-mode))
-   #+END_SRC
+#+BEGIN_SRC emacs-lisp
+(prot-emacs-elpa-package 'saveplace
+  (save-place-mode))
+#+END_SRC
 
 ** recentf
-   #+BEGIN_SRC emacs-lisp
-     (prot-emacs-elpa-package 'recentf
-       (setq recentf-save-file "~/.emacs.d/recentf")
-       (setq recentf-max-menu-items 10)
-       (setq recentf-max-saved-items 200)
-       (setq recentf-show-file-shortcuts-flag nil)
-       (add-to-list 'recentf-exclude
-                    (expand-file-name "~/.emacs.d/company-statistics-cache.el"))
-       (recentf-mode 1)
-       )
-   #+END_SRC
+#+BEGIN_SRC emacs-lisp
+(prot-emacs-elpa-package 'recentf
+  (setq recentf-save-file "~/.emacs.d/recentf")
+  (setq recentf-max-menu-items 10)
+  (setq recentf-max-saved-items 200)
+  (setq recentf-show-file-shortcuts-flag nil)
+  (add-to-list 'recentf-exclude
+               (expand-file-name "~/.emacs.d/company-statistics-cache.el"))
+  (recentf-mode 1)
+  )
+#+END_SRC
 
 ** Async
 
@@ -204,109 +205,144 @@
 
 #+RESULTS:
 
+** Rainbow
+
+#+BEGIN_SRC emacs-lisp
+(prot-emacs-elpa-package 'rainbow-mode
+  )
+#+END_SRC
+
 * Moving
 ** Switch windows
 
 
-   #+BEGIN_SRC emacs-lisp
-     (prot-emacs-elpa-package 'switch-window
-       (setq switch-window-input-style 'minibuffer)
-       (setq switch-window-increase 4)
-       (setq switch-window-threshold 2)
-       (setq switch-window-shortcut-style 'qwerty)
-       (setq switch-window-qwerty-shortcuts
-       '("a" "s" "d" "f" "j" "k" "l" "i" "o"))
-       (global-set-key [remap other-window]  'switch-window))
+#+BEGIN_SRC emacs-lisp
+(prot-emacs-elpa-package 'switch-window
+  (setq switch-window-input-style 'minibuffer)
+  (setq switch-window-increase 4)
+  (setq switch-window-threshold 2)
+  (setq switch-window-shortcut-style 'qwerty)
+  (setq switch-window-qwerty-shortcuts
+        '("a" "s" "d" "f" "j" "k" "l" "i" "o"))
+  (global-set-key [remap other-window]  'switch-window))
 
-   #+END_SRC
+#+END_SRC
 
 ** Beginend
 
-   #+BEGIN_SRC emacs-lisp
-     (prot-emacs-elpa-package 'beginend
+#+BEGIN_SRC emacs-lisp
+(prot-emacs-elpa-package 'beginend
   (beginend-global-mode 1))
 
-   #+END_SRC
+#+END_SRC
 
 ** Goto last Change
 
-   #+BEGIN_SRC emacs-lisp
-     (prot-emacs-elpa-package 'goto-last-change
-(define-key global-map (kbd "C-z") #'goto-last-change))
+#+BEGIN_SRC emacs-lisp
+(prot-emacs-elpa-package 'goto-last-change
+  (define-key global-map (kbd "C-z") #'goto-last-change))
+#+END_SRC
 
-   #+END_SRC
+** Avy
+
+#+BEGIN_SRC emacs-lisp
+
+(prot-emacs-elpa-package 'avy
+  (global-set-key (kbd "M-SPC") 'avy-goto-char-timer)
+  (global-set-key (kbd "C-:") 'avy-goto-char)
+  (global-set-key (kbd "C-'") 'avy-goto-char-2)
+  (global-set-key (kbd "M-g f") 'avy-goto-line)
+  (global-set-key (kbd "M-g w") 'avy-goto-word-1)
+  (global-set-key (kbd "M-g e") 'avy-goto-word-0))
+
+
+#+END_SRC
+
+** Beacon
+#+BEGIN_SRC emacs-lisp
+
+(prot-emacs-elpa-package 'beacon
+  (setq beacon-push-mark 10)
+  (setq beacon-blink-delay 0.3)
+  (setq beacon-blink-duration 0.3)
+  (beacon-mode)
+  (global-hl-line-mode 1))
+#+END_SRC
+
+#+RESULTS:
+: t
 
 * Completion
 ** Company
 
-   #+BEGIN_SRC emacs-lisp
-     (prot-emacs-elpa-package 'company
-       (setq company-auto-complete nil)
-       (setq company-dabbrev-code-everywhere t)
-       (setq company-dabbrev-code-modes t)
-       (setq company-dabbrev-code-other-buffers 'all)
-       (setq company-dabbrev-downcase nil)
-       (setq company-dabbrev-ignore-case t)
-       (setq company-dabbrev-other-buffers 'all)
-       (setq company-idle-delay 0.3)
-       (setq company-minimum-prefix-length 3)
-       (setq company-require-match nil)
-       (setq company-selection-wrap-around t)
-       (setq company-show-numbers t)
-       (setq company-tooltip-align-annotations t)
-       (setq company-tooltip-limit 10)
-       (setq company-tooltip-margin 1)
-       (setq company-tooltip-offset-display 'scrollbar)
-       (add-to-list 'company-backends '(company-clang
-                                        company-capf
-                                        company-dabbrev
-                                        company-c-headers
-                                        company-gtags))
-       (let ((map company-mode-map))
-         (define-key map (kbd "M-/") #'company-manual-begin))
-       (let ((map company-active-map))
-         (define-key map (kbd "M-/") #'company-other-backend)
-         (define-key map (kbd "<tab>") #'company-complete-selection)
-         (define-key map (kbd "<C-tab>") #'company-complete-common-or-cycle)
-         (define-key map (kbd "C-n") #'company-select-next)
-         (define-key map (kbd "C-p") #'company-select-previous))
+#+BEGIN_SRC emacs-lisp
+(prot-emacs-elpa-package 'company
+  (setq company-auto-complete nil)
+  (setq company-dabbrev-code-everywhere t)
+  (setq company-dabbrev-code-modes t)
+  (setq company-dabbrev-code-other-buffers 'all)
+  (setq company-dabbrev-downcase nil)
+  (setq company-dabbrev-ignore-case t)
+  (setq company-dabbrev-other-buffers 'all)
+  (setq company-idle-delay 0.3)
+  (setq company-minimum-prefix-length 3)
+  (setq company-require-match nil)
+  (setq company-selection-wrap-around t)
+  (setq company-show-numbers t)
+  (setq company-tooltip-align-annotations t)
+  (setq company-tooltip-limit 10)
+  (setq company-tooltip-margin 1)
+  (setq company-tooltip-offset-display 'scrollbar)
+  (add-to-list 'company-backends '(company-clang
+                                   company-capf
+                                   company-dabbrev
+                                   company-c-headers
+                                   company-gtags))
+  (let ((map company-mode-map))
+    (define-key map (kbd "M-/") #'company-manual-begin))
+  (let ((map company-active-map))
+    (define-key map (kbd "M-/") #'company-other-backend)
+    (define-key map (kbd "<tab>") #'company-complete-selection)
+    (define-key map (kbd "<C-tab>") #'company-complete-common-or-cycle)
+    (define-key map (kbd "C-n") #'company-select-next)
+    (define-key map (kbd "C-p") #'company-select-previous))
 
-       (setq company-global-modes '(
-                                    org-mode
-                                    c-mode
-                                    c++-mode
-                                    ))
+  (setq company-global-modes '(
+                               org-mode
+                               c-mode
+                               c++-mode
+                               ))
 
-       (add-hook 'c-mode-hook
-                 (lambda ()
-                   (set (make-local-variable 'company-backends) '(company-clang  company-gtags  company-c-headers company-dabbrev ))))
+  (add-hook 'c-mode-hook
+            (lambda ()
+              (set (make-local-variable 'company-backends) '(company-clang  company-gtags  company-c-headers company-dabbrev ))))
 
-       (global-company-mode 1)
-       )
-   #+END_SRC
+  (global-company-mode 1)
+  )
+#+END_SRC
 
-   Company C headers
+Company C headers
 
-   #+BEGIN_SRC emacs-lisp
-     (prot-emacs-elpa-package 'company-c-headers
-       )
-   #+END_SRC
-   Company Statistics
-   #+BEGIN_SRC emacs-lisp
-     (prot-emacs-elpa-package 'company-statistics
-       (company-statistics-mode)
-       )
-   #+END_SRC
+#+BEGIN_SRC emacs-lisp
+(prot-emacs-elpa-package 'company-c-headers
+  )
+#+END_SRC
+Company Statistics
+#+BEGIN_SRC emacs-lisp
+(prot-emacs-elpa-package 'company-statistics
+  (company-statistics-mode)
+  )
+#+END_SRC
 
-   I had to add the hook and local variable to stop company from selecting capf before clang.
-   To make this work properly, I need to manually specify the include paths by
-   putting a =.dir-locals.el= into the source directory of my C code. I.e. most
-   of the time this will be =src= and I need to point to
-   =../tldevel=.
+I had to add the hook and local variable to stop company from selecting capf before clang.
+To make this work properly, I need to manually specify the include paths by
+putting a =.dir-locals.el= into the source directory of my C code. I.e. most
+of the time this will be =src= and I need to point to
+=../tldevel=.
 
-   In addition add the include path to flycheck-clang!
+In addition add the include path to flycheck-clang!
 
-   #+BEGIN_EXAMPLE emacs-lisp
+#+BEGIN_EXAMPLE emacs-lisp
    (
    (c-mode . ((company-clang-arguments . ("-I."  "-I../tldevel-1.2.8/"))))
    (c-mode . ((company-c-headers-path-user . ("." "../tldevel-1.2.8/"))))
@@ -314,72 +350,72 @@
    )
 
 
-   #+END_EXAMPLE
+#+END_EXAMPLE
 
 ** Consult
 
-   #+BEGIN_SRC emacs-lisp
-     (prot-emacs-elpa-package 'consult
-       (setq consult-line-numbers-widen t)
+#+BEGIN_SRC emacs-lisp
+(prot-emacs-elpa-package 'consult
+  (setq consult-line-numbers-widen t)
 
 
-     (setq consult-ripgrep-command "rg -SHn --no-heading --color never --no-follow --hidden %s")
-     (define-key global-map (kbd "M-s r") #'consult-git-grep)
-     (define-key global-map (kbd "C-x b") #'consult-buffer)
-     (define-key global-map (kbd "C-s") #'consult-line)
-     (define-key global-map (kbd "C-x i") #'consult-imenu)
-     (define-key global-map (kbd "C-x C-r") #'consult-recent-file)
-     (define-key global-map (kbd "M-g M-g") #'consult-goto-line)
-    ;; (setq consult-widen-key t)
-      (setq consult-config #'((consult-buffer :title nil)))
-     )
-   #+END_SRC
+  (setq consult-ripgrep-command "rg -SHn --no-heading --color never --no-follow --hidden %s")
+  (define-key global-map (kbd "M-s r") #'consult-git-grep)
+  (define-key global-map (kbd "C-x b") #'consult-buffer)
+  (define-key global-map (kbd "C-s") #'consult-line)
+  (define-key global-map (kbd "C-x i") #'consult-imenu)
+  (define-key global-map (kbd "C-x C-r") #'consult-recent-file)
+  (define-key global-map (kbd "M-g M-g") #'consult-goto-line)
+  ;; (setq consult-widen-key t)
+  (setq consult-config #'((consult-buffer :title nil)))
+  )
+#+END_SRC
 
-   #+RESULTS:
-   | consult-buffer | :preview | nil |
+#+RESULTS:
+| consult-buffer | :preview | nil |
 
 ** Orderless
-   #+BEGIN_SRC emacs-lisp
-     (prot-emacs-builtin-package 'tl-orderless
-       (setq prot-orderless-default-styles
-             '(orderless-prefixes
-               orderless-strict-leading-initialism
-               orderless-regexp))
-       (setq prot-orderless-alternative-styles
-             '(orderless-literal
-               orderless-prefixes
-               orderless-strict-leading-initialism
-               orderless-regexp)))
+#+BEGIN_SRC emacs-lisp
+(prot-emacs-builtin-package 'tl-orderless
+  (setq prot-orderless-default-styles
+        '(orderless-prefixes
+          orderless-strict-leading-initialism
+          orderless-regexp))
+  (setq prot-orderless-alternative-styles
+        '(orderless-literal
+          orderless-prefixes
+          orderless-strict-leading-initialism
+          orderless-regexp)))
 
-     (prot-emacs-elpa-package 'orderless
-       (setq orderless-component-separator " +")
-       (setq orderless-matching-styles prot-orderless-default-styles)
-       (setq orderless-style-dispatchers
-             '(prot-orderless-literal-dispatcher
-               prot-orderless-initialism-dispatcher
-               prot-orderless-flex-dispatcher))
-       ;; SPC should never complete: use it for `orderless' groups.
-       (let ((map minibuffer-local-completion-map))
-         (define-key map (kbd "SPC") nil)
-         (define-key map (kbd "?") nil)))
+(prot-emacs-elpa-package 'orderless
+  (setq orderless-component-separator " +")
+  (setq orderless-matching-styles prot-orderless-default-styles)
+  (setq orderless-style-dispatchers
+        '(prot-orderless-literal-dispatcher
+          prot-orderless-initialism-dispatcher
+          prot-orderless-flex-dispatcher))
+  ;; SPC should never complete: use it for `orderless' groups.
+  (let ((map minibuffer-local-completion-map))
+    (define-key map (kbd "SPC") nil)
+    (define-key map (kbd "?") nil)))
 
-          ;; (prot-emacs-elpa-package 'orderless
-          ;;   (setq completion-styles '(orderless))
-          ;;   (setq orderless-component-separator 'orderless-escapable-split-on-space))
-   #+END_SRC
+;; (prot-emacs-elpa-package 'orderless
+;;   (setq completion-styles '(orderless))
+;;   (setq orderless-component-separator 'orderless-escapable-split-on-space))
+#+END_SRC
 
-   #+RESULTS:
+#+RESULTS:
 
 ** Marginalia
-   #+BEGIN_SRC emacs-lisp
-     (prot-emacs-elpa-package 'marginalia
-       (setq marginalia-annotators
-             '(marginalia-annotators-heavy
-               marginalia-annotators-light))
-       (let ((map minibuffer-local-map))
-         (define-key map (kbd "M-Y") #'marginalia-cycle))
-       (marginalia-mode))
-   #+END_SRC
+#+BEGIN_SRC emacs-lisp
+(prot-emacs-elpa-package 'marginalia
+  (setq marginalia-annotators
+        '(marginalia-annotators-heavy
+          marginalia-annotators-light))
+  (let ((map minibuffer-local-map))
+    (define-key map (kbd "M-Y") #'marginalia-cycle))
+  (marginalia-mode))
+#+END_SRC
 
 
 ** Minibuffer settings
@@ -455,18 +491,18 @@
 ** Icomplete
 #+BEGIN_SRC emacs-lisp
 (prot-emacs-builtin-package 'icomplete
-            (setq read-file-name-completion-ignore-case t)
-            (setq read-buffer-completion-ignore-case t)
-            (setq completion-ignore-case t)
-            (let ((map icomplete-minibuffer-map))
-              (define-key map (kbd "<return>") #'icomplete-force-complete-and-exit)
-              (define-key map (kbd "<down>") #'icomplete-forward-completions)
-              (define-key map (kbd "C-n") #'icomplete-forward-completions)
-              (define-key map (kbd "<up>") #'icomplete-backward-completions)
-              (define-key map (kbd "C-p") #'icomplete-backward-completions)
-              (define-key map (kbd "C-v") #'icomplete-vertical-toggle)
-              (define-key map (kbd "C-M-i") #'minibuffer-complete))
-            (icomplete-mode))
+  (setq read-file-name-completion-ignore-case t)
+  (setq read-buffer-completion-ignore-case t)
+  (setq completion-ignore-case t)
+  (let ((map icomplete-minibuffer-map))
+    (define-key map (kbd "<return>") #'icomplete-force-complete-and-exit)
+    (define-key map (kbd "<down>") #'icomplete-forward-completions)
+    (define-key map (kbd "C-n") #'icomplete-forward-completions)
+    (define-key map (kbd "<up>") #'icomplete-backward-completions)
+    (define-key map (kbd "C-p") #'icomplete-backward-completions)
+    (define-key map (kbd "C-v") #'icomplete-vertical-toggle)
+    (define-key map (kbd "C-M-i") #'minibuffer-complete))
+  (icomplete-mode))
 #+END_SRC
 
 #+RESULTS:
@@ -477,11 +513,11 @@
 ;;    (let ((map minibuffer-local-map))
 ;;          (define-key map (kbd "C-;") #'embark-act)))
 
-  ;; :bind (:map minibuffer-local-map
-  ;;        ("C-o" . embark-act)
-  ;;        ("C-S-o" . embark-act-noexit)
-  ;;        :map embark-file-map
-  ;;        ("j" . dired-jump)))
+;; :bind (:map minibuffer-local-map
+;;        ("C-o" . embark-act)
+;;        ("C-S-o" . embark-act-noexit)
+;;        :map embark-file-map
+;;        ("j" . dired-jump)))
 
 #+END_SRC
 
@@ -526,172 +562,175 @@
 
 * Programming
 
-  Mostly C ....
-  Some default settings.
+Mostly C ....
+Some default settings.
 
-  #+BEGIN_SRC emacs-lisp
-        (setq-default tab-width 2)
-        (global-subword-mode 1)
-        (setq compile-command "make -j 6")
-        (setq compilation-scroll-output 'first-error)
-        (setq compilation-always-kill t)
-        (setq compilation-disable-input t)
-        (setq compilation-scroll-output t)
-        (setq compilation-read-command nil)
-        (add-hook 'compilation-mode-hook 'visual-line-mode)
+#+BEGIN_SRC emacs-lisp
+(setq-default tab-width 2)
+(global-subword-mode 1)
+(setq compile-command "make -j 6")
+(setq compilation-scroll-output 'first-error)
+(setq compilation-always-kill t)
+(setq compilation-disable-input t)
+(setq compilation-scroll-output t)
+(setq compilation-read-command nil)
+(add-hook 'compilation-mode-hook 'visual-line-mode)
 
-        (global-set-key (kbd "<f5>") (lambda ()
-                                       (interactive)
-                                       (setq-local compilation-read-command nil)
-                                       (call-interactively 'compile)))
+(global-set-key (kbd "<f5>") (lambda ()
+                               (interactive)
+                               (setq-local compilation-read-command nil)
+                               (call-interactively 'compile)))
 
-    (defun my-c-mode-hook ()
-    (setq c-default-style "bsd"))
-    (add-hook 'c-mode-common-hook 'my-c-mode-hook)
+(defun my-c-mode-hook ()
+  (setq c-default-style "bsd"))
+(add-hook 'c-mode-common-hook 'my-c-mode-hook)
 
-  #+END_SRC
+#+END_SRC
 
-  #+RESULTS:
-  | my-c-mode-hook | (lambda nil (if (derived-mode-p 'c-mode) (progn (ggtags-mode 1)))) |
+Highlight line mode
+
+#+BEGIN_SRC emacs-lisp
+(when window-system (add-hook 'prog-mode-hook 'hl-line-mode))
+#+END_SRC
 
 ** Yasnippet
 
-   #+BEGIN_SRC emacs-lisp
-     (prot-emacs-elpa-package 'yasnippet
-       (add-to-list 'yas-snippet-dirs (tl/emacs-subdirectory "snippets"))
-       (yas-reload-all)
-       (yas-global-mode 1))
-   #+END_SRC
+#+BEGIN_SRC emacs-lisp
+(prot-emacs-elpa-package 'yasnippet
+  (add-to-list 'yas-snippet-dirs (tl/emacs-subdirectory "snippets"))
+  (yas-reload-all)
+  (yas-global-mode 1))
+#+END_SRC
 
 ** Smart comments
 
 
-   #+BEGIN_SRC emacs-lisp
-     (prot-emacs-elpa-package 'smart-comment
-       (define-key global-map (kbd "M-;") #'smart-comment))
+#+BEGIN_SRC emacs-lisp
+(prot-emacs-elpa-package 'smart-comment
+  (define-key global-map (kbd "M-;") #'smart-comment))
 
-   #+END_SRC
+#+END_SRC
 
 ** Smart parens
 
- #+BEGIN_SRC emacs-lisp
-   (prot-emacs-elpa-package 'smartparens
-     (add-hook 'c-mode-hook 'smartparens-mode)
-     (add-hook 'org-mode-hook 'smartparens-mode)
-     )
-   #+END_SRC
+#+BEGIN_SRC emacs-lisp
+(prot-emacs-elpa-package 'smartparens
+  (add-hook 'c-mode-hook 'smartparens-mode)
+  (add-hook 'org-mode-hook 'smartparens-mode)
+  )
+#+END_SRC
 
 ** Smart scan
 
-   #+BEGIN_SRC emacs-lisp
-     (prot-emacs-elpa-package 'smartscan
-       (define-key global-map (kbd "M-n") #'smartscan-symbol-go-forward)
-       (define-key global-map (kbd "M-p") #'smartscan-symbol-go-backward))
-   #+END_SRC
+#+BEGIN_SRC emacs-lisp
+(prot-emacs-elpa-package 'smartscan
+  (define-key global-map (kbd "M-n") #'smartscan-symbol-go-forward)
+  (define-key global-map (kbd "M-p") #'smartscan-symbol-go-backward))
+#+END_SRC
 
 ** GGtags
 
-   #+BEGIN_SRC emacs-lisp
-     (prot-emacs-elpa-package 'ggtags
+#+BEGIN_SRC emacs-lisp
+(prot-emacs-elpa-package 'ggtags
 
-       (setq ggtags-oversize-limit 104857600)
-       (setq ggtags-sort-by-nearness t)
-       (setq ggtags-use-idutils t)
-       (setq ggtags-use-project-gtagsconf nil)
-       (add-hook 'c-mode-common-hook
-                 (lambda ()
-                   (when (derived-mode-p 'c-mode)
-                     (ggtags-mode 1))))
+  (setq ggtags-oversize-limit 104857600)
+  (setq ggtags-sort-by-nearness t)
+  (setq ggtags-use-idutils t)
+  (setq ggtags-use-project-gtagsconf nil)
+  (add-hook 'c-mode-common-hook
+            (lambda ()
+              (when (derived-mode-p 'c-mode)
+                (ggtags-mode 1))))
 
-       (let ((map ggtags-navigation-map))
-         (define-key map (kbd "M-u") #'ggtags-navigation-previous-file)
-         (define-key map (kbd "M-o") #'ggtags-navigation-next-file)
-         (define-key map (kbd "M-l") #'ggtags-navigation-visible-mode)
-         (define-key map (kbd "M-j") #'ggtags-navigation-visible-mode)
-         (define-key map (kbd "M-k") #'next-error)
-         (define-key map (kbd "M-i") #'previous-error))
+  (let ((map ggtags-navigation-map))
+    (define-key map (kbd "M-u") #'ggtags-navigation-previous-file)
+    (define-key map (kbd "M-o") #'ggtags-navigation-next-file)
+    (define-key map (kbd "M-l") #'ggtags-navigation-visible-mode)
+    (define-key map (kbd "M-j") #'ggtags-navigation-visible-mode)
+    (define-key map (kbd "M-k") #'next-error)
+    (define-key map (kbd "M-i") #'previous-error))
 
-       (define-key global-map (kbd "M-;") #'smart-comment))
+  (define-key global-map (kbd "M-;") #'smart-comment))
 
-   #+END_SRC
+#+END_SRC
 
 
 ** Whitespace
 
-   #+BEGIN_SRC emacs-lisp
-     (prot-emacs-builtin-package 'whitespace
-       (define-key global-map (kbd "C-c w") #'whitespace-mode)
-       (add-hook 'c-mode-hook
-                 (lambda () (add-hook 'before-save-hook 'whitespace-cleanup)))
-       )
-   #+END_SRC
+#+BEGIN_SRC emacs-lisp
+(prot-emacs-builtin-package 'whitespace
+  (define-key global-map (kbd "C-c w") #'whitespace-mode)
+  (add-hook 'c-mode-hook
+            (lambda () (add-hook 'before-save-hook 'whitespace-cleanup)))
+  )
+#+END_SRC
 
 ** Lesser languages : R
 
-   #+BEGIN_SRC emacs-lisp
-     (prot-emacs-elpa-package 'ess
-       ;; (setq-default inferior-R-program-name "/home/user/R")
-       ;; (s
-       (setq-default inferior-ess-r-program  "/home/user/R")
+#+BEGIN_SRC emacs-lisp
+(prot-emacs-elpa-package 'ess
+  ;; (setq-default inferior-R-program-name "/home/user/R")
+  ;; (s
+  (setq-default inferior-ess-r-program  "/home/user/R")
 
-       )
-   #+END_SRC
+  )
+#+END_SRC
 
-   #+RESULTS:
-   : /home/user/R
+#+RESULTS:
+: /home/user/R
 
 * Eshell
 
 
 #+BEGIN_SRC emacs-lisp
-  (prot-emacs-builtin-package 'eshell
-    (require 'esh-mode)
-    (require 'esh-module)
-    (setq eshell-modules-list             ; It works but may need review
-          '(eshell-alias
-            eshell-basic
-            eshell-cmpl
-            eshell-dirs
-            eshell-glob
-            eshell-hist
-            eshell-ls
-            eshell-pred
-            eshell-prompt
-            eshell-script
-            eshell-term
-            eshell-tramp
-            eshell-unix))
-    (setenv "PAGER" "cat")
-    (let ((map eshell-mode-map))
-      (define-key map (kbd "C-r") #'consult-history))
-    )
+(prot-emacs-builtin-package 'eshell
+  (require 'esh-mode)
+  (require 'esh-module)
+  (setq eshell-modules-list             ; It works but may need review
+        '(eshell-alias
+          eshell-basic
+          eshell-cmpl
+          eshell-dirs
+          eshell-glob
+          eshell-hist
+          eshell-ls
+          eshell-pred
+          eshell-prompt
+          eshell-script
+          eshell-term
+          eshell-tramp
+          eshell-unix))
+  (setenv "PAGER" "cat")
+  (let ((map eshell-mode-map))
+    (define-key map (kbd "C-r") #'consult-history))
+  )
 
-  ;; (use-package eshell-extras
-  ;;   :commands
-  ;;   eshell/in-term
-  ;;   eshell/for-each
-  ;;   interactive-cd)
+;; (use-package eshell-extras
+;;   :commands
+;;   eshell/in-term
+;;   eshell/for-each
+;;   interactive-cd)
 
-  ;; (use-package eshell
-  ;;   :bind
-  ;;   ("C-!" . eshell)
-  ;;   :config (setenv "PAGER" "cat"))
+;; (use-package eshell
+;;   :bind
+;;   ("C-!" . eshell)
+;;   :config (setenv "PAGER" "cat"))
 
-  ;; (use-package esh-mode
-  ;;   :bind
-  ;;   (:map eshell-mode-map
-  ;;         ("<home>" . eshell-bol)
-  ;;         ("C-c d" . interactive-cd)
-  ;;         ("M-q" . quit-window)))
+;; (use-package esh-mode
+;;   :bind
+;;   (:map eshell-mode-map
+;;         ("<home>" . eshell-bol)
+;;         ("C-c d" . interactive-cd)
+;;         ("M-q" . quit-window)))
 
-  ;; (defun eshell-add-aliases ()
-  ;; "Doc-string."
-  ;;   (dolist (var '(("ff" "find-file $1")
-  ;;                  ("wget" "/Users/HOME/.0.data/.0.emacs/.0.macports/bin/wget $*")
-  ;;                  ("cvs" "/Users/HOME/.0.data/.0.emacs/.0.macports/bin/cvs $*")
-  ;;                  ("curl" "/Users/HOME/.0.data/.0.emacs/.0.macports/bin/curl $*")
-  ;;                  ("git" "/Users/HOME/.0.data/.0.emacs/.0.macports/bin/git $*")))
-  ;;     (add-to-list 'eshell-command-aliases-list var)))
+;; (defun eshell-add-aliases ()
+;; "Doc-string."
+;;   (dolist (var '(("ff" "find-file $1")
+;;                  ("wget" "/Users/HOME/.0.data/.0.emacs/.0.macports/bin/wget $*")
+;;                  ("cvs" "/Users/HOME/.0.data/.0.emacs/.0.macports/bin/cvs $*")
+;;                  ("curl" "/Users/HOME/.0.data/.0.emacs/.0.macports/bin/curl $*")
+;;                  ("git" "/Users/HOME/.0.data/.0.emacs/.0.macports/bin/git $*")))
+;;     (add-to-list 'eshell-command-aliases-list var)))
 
 #+END_SRC
 
@@ -715,21 +754,21 @@
 I played with this before..
 
 #+BEGIN_SRC emacs-lisp
-  (prot-emacs-elpa-package 'magit
-    (setq magit-branch-arguments nil)
+(prot-emacs-elpa-package 'magit
+  (setq magit-branch-arguments nil)
 
-    ;; use ido to look for branches
-    (setq magit-completing-read-function 'magit-builtin-completing-read)
-    ;; don't put "origin-" in front of new branch names by default
-    (setq magit-default-tracking-name-function 'magit-default-tracking-name-branch-only)
-    (setq magit-push-always-verify nil)
-    ;; Get rid of the previous advice to go into fullscreen
-    (setq magit-restnore-window-configuration t)
-    (defadvice magit-status (around magit-fullscreen activate)
-      (window-configuration-to-register :magit-fullscreen)
-      ad-do-it
-      (delete-other-windows))
-    (define-key global-map (kbd "C-x g") #'magit-status))
+  ;; use ido to look for branches
+  (setq magit-completing-read-function 'magit-builtin-completing-read)
+  ;; don't put "origin-" in front of new branch names by default
+  (setq magit-default-tracking-name-function 'magit-default-tracking-name-branch-only)
+  (setq magit-push-always-verify nil)
+  ;; Get rid of the previous advice to go into fullscreen
+  (setq magit-restnore-window-configuration t)
+  (defadvice magit-status (around magit-fullscreen activate)
+    (window-configuration-to-register :magit-fullscreen)
+    ad-do-it
+    (delete-other-windows))
+  (define-key global-map (kbd "C-x g") #'magit-status))
 #+END_SRC
 
 * Org-mode
@@ -835,12 +874,17 @@ load org mode
         org-outline-path-complete-in-steps nil)
   (setq org-latex-listings 'minted)
   (setq org-latex-minted-options
-        '(("frame" "lines") ("linenos=true")("breaklines")))
+        '(("frame" "lines")
+          ("linenos=true")
+          ("breaklines=true")
+          ("framesep=2mm")
+          ("fontsize" "\\footnotesize")
+          ))
   (define-key global-map (kbd "C-c l") #'org-store-link)
   (define-key global-map (kbd "C-c a") #'org-agenda)
   (define-key global-map (kbd "C-c c") #'org-capture)
   (let ((map org-mode-map))
-         (define-key map (kbd "C-c [") #'undefined))
+    (define-key map (kbd "C-c [") #'undefined))
 
   (add-hook 'org-mode-hook 'visual-line-mode)
   (add-hook 'org-mode-hook 'flyspell-mode)
@@ -849,8 +893,15 @@ load org mode
   )
 #+END_SRC
 
+#+RESULTS:
+| org-redisplay-inline-images |
 
 
+framesep=2mm,
+baselinestretch=1.2,
+bgcolor=LightGray,
+fontsize=\footnotesize,
+linenos
 Record the time that a todo was archived.
 
 
@@ -890,7 +941,7 @@ Export packages...
 ** Bullets
 
 #+BEGIN_SRC emacs-lisp
-  (prot-emacs-elpa-package 'org-superstar
+(prot-emacs-elpa-package 'org-superstar
   (add-hook 'org-mode-hook (lambda () (org-superstar-mode 1)))
   )
 
@@ -933,7 +984,7 @@ Quickly open index file
 
 ** Deft
 
-   #+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp
 (prot-emacs-elpa-package 'deft
 
   (setq deft-default-extension "org")
@@ -950,7 +1001,7 @@ Quickly open index file
   (setq    deft-directory (concat (getenv "HOME") "/work/roam/"))
   (add-to-list 'deft-extensions "tex"))
 
-   #+END_SRC
+#+END_SRC
 
 NOTE: in Emacs 27.1 the cl package has been deprecated. Therefore deft throws an error when called. To fix this find all =(require 'cl)= statements and replace with =(require 'cl-lib)=. E.g. by running =rg -F "(require 'cl)" -l=.
 
@@ -1049,7 +1100,7 @@ End.
 
 ** Org roam
 
-   #+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp
 (prot-emacs-elpa-package 'org-roam
 
   (setq org-roam-directory "~/work/roam/")
@@ -1089,7 +1140,7 @@ End.
            :head "#+TITLE: %<%Y-%m-%d>\n\n"
            :unnarrowed t))))
 
-   #+END_SRC
+#+END_SRC
 
 
 
@@ -1134,13 +1185,13 @@ xdg-mime default org-protocol.desktop x-scheme-handler/org-protocol
 (prot-emacs-elpa-package 'ivy-bibtex)
 
 (prot-emacs-elpa-package 'org-roam-bibtex
-(setq orb-preformat-keywords
-      '(("citekey" . "=key=") "title" "url" "file" "author-or-editor" "keywords"))
-(setq orb-templates
-      '(("r" "ref" plain (function org-roam-capture--get-point)
-         ""
-         :file-name "${citekey}"
-         :head "#+TITLE: ${citekey}: ${title}\n#+ROAM_KEY: ${ref}
+  (setq orb-preformat-keywords
+        '(("citekey" . "=key=") "title" "url" "file" "author-or-editor" "keywords"))
+  (setq orb-templates
+        '(("r" "ref" plain (function org-roam-capture--get-point)
+           ""
+           :file-name "${citekey}"
+           :head "#+TITLE: ${citekey}: ${title}\n#+ROAM_KEY: ${ref}
 
   - tags ::
   - keywords :: ${keywords}
@@ -1152,7 +1203,7 @@ xdg-mime default org-protocol.desktop x-scheme-handler/org-protocol
   :NOTER_DOCUMENT: %(orb-process-file-field \"${citekey}\")
   :NOTER_PAGE:
   :END:\n%?")))
-     (add-hook 'org-roam-mode 'org-roam-bibtex-mode))
+  (add-hook 'org-roam-mode 'org-roam-bibtex-mode))
 #+END_SRC
 
 
@@ -1296,7 +1347,6 @@ Special formatting for the ROPE sections.
                ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
                ("\\paragraph{%s}" . "\\paragraph*{%s}")))
 #+END_SRC
-
 
 ** Nature style paper
 
@@ -1468,32 +1518,27 @@ Special formatting for the ROPE sections.
   ;; automatically annotate highlights
   (setq pdf-annot-activate-created-annotations t)
   ;; use normal isearch
-    (let ((map pdf-view-mode-map))
+  (let ((map pdf-view-mode-map))
     (define-key map (kbd "C-s") #'isearch-forward)))
 
 #+END_SRC
 
-Run this afterwards :
-  (pdf-tools-install)
-
 #+BEGIN_SRC emacs-lisp
 
-  (prot-emacs-elpa-package 'org-pdftools
-    :config
-    ;; https://lists.gnu.org/archive/html/emacs-orgmode/2016-11/msg00169.html
-    ;; Before adding, remove it (to avoid clogging)
-    (delete '("\\.pdf\\'" . default) org-file-apps)
-    ;; https://lists.gnu.org/archive/html/emacs-orgmode/2016-11/msg00176.html
-    (add-to-list 'org-file-apps
-                 '("\\.pdf\\'" . (lambda (file link)
-                                   (org-pdftools-open link)))))
+(prot-emacs-elpa-package 'org-pdftools
+  :config
+  ;; https://lists.gnu.org/archive/html/emacs-orgmode/2016-11/msg00169.html
+  ;; Before adding, remove it (to avoid clogging)
+  (delete '("\\.pdf\\'" . default) org-file-apps)
+  ;; https://lists.gnu.org/archive/html/emacs-orgmode/2016-11/msg00176.html
+  (add-to-list 'org-file-apps
+               '("\\.pdf\\'" . (lambda (file link)
+                                 (org-pdftools-open link)))))
 #+END_SRC
+
+
+Run this afterwards :
+(pdf-tools-install)
+p
 
 The end.
-
-* Rainbow
-
-#+BEGIN_SRC emacs-lisp
-(prot-emacs-elpa-package 'rainbow-mode
-)
-#+END_SRC

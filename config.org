@@ -184,7 +184,7 @@ Taken from Protesilaos Stavrou's emacs config (https://protesilaos.com/).
       (set-face-attribute 'fixed-pitch nil :family "Iosevka Fixed" :height 1.0)
 
       (dolist (face '(mode-line mode-line-inactive minibuffer-prompt))
-	(set-face-attribute face nil :family "Iosevka term" :height 160))
+  (set-face-attribute face nil :family "Iosevka term" :height 160))
 
       )
 
@@ -202,9 +202,9 @@ Taken from Protesilaos Stavrou's emacs config (https://protesilaos.com/).
       :init-value nil
       :global nil
       (if prot/variable-pitch-mode
-	  (unless (derived-mode-p 'prog-mode)
-	    (variable-pitch-mode 1))
-	(variable-pitch-mode -1))))
+    (unless (derived-mode-p 'prog-mode)
+      (variable-pitch-mode 1))
+  (variable-pitch-mode -1))))
 
 #+END_SRC
 
@@ -250,7 +250,7 @@ According to this article, I get better functionality than the redo+ plugin (whi
     :config
     (defalias 'redo 'undo-tree-redo)
     :bind (("C-z" . undo)     ; Zap to character isn't helpful
-	   ("C-S-z" . redo)))
+     ("C-S-z" . redo)))
 
 #+END_SRC
 
@@ -2609,7 +2609,7 @@ Spell check
   (define-auto-insert ".+code.+org$" ["default-orgmode.org"  ha/autoinsert-yas-expand])
   )
 #+end_src
- 
+
 
 * Eshell
 
