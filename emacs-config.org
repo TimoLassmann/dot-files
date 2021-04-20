@@ -69,12 +69,12 @@ All my emacs config.
 
 #+BEGIN_SRC emacs-lisp
 (prot-emacs-builtin-package 'no-easy-keys
-  (setq no-easy-keys 1)
+  (no-easy-keys 1)
   )
 #+END_SRC
 
 #+RESULTS:
-: 1
+: t
 
 ** Kill buffer
 Assume that I always want to kill the current buffer when hitting C-x k.
@@ -431,7 +431,6 @@ Let's also look at consult-flycheck
   (marginalia-mode))
 #+END_SRC
 
-
 ** Minibuffer settings
 
 #+BEGIN_SRC emacs-lisp
@@ -726,7 +725,7 @@ Therefore I decided to put all of my c-mode settings in one file.
 #+END_SRC
 
 #+RESULTS:
-| tl/setup-c-mode | smartparens-mode | (lambda nil (if (derived-mode-p 'c-mode) (progn (ggtags-mode 1)))) |
+| tl/setup-c-mode |
 
 
 
@@ -1595,3 +1594,4 @@ Run this afterwards :
 p
 
 The end.
+icomplete-forward-completions
