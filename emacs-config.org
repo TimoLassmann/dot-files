@@ -220,7 +220,6 @@ Never use tabs. Tabs are the devil’s whitespace.
 #+RESULTS:
 : t
 
-
 * Convenience
 ** Undo Tree
 #+BEGIN_SRC emacs-lisp
@@ -821,7 +820,6 @@ Therefore I decided to put all of my c-mode settings in one file.
 
 #+RESULTS:
 | (lambda nil (add-hook 'before-save-hook 'whitespace-cleanup)) | (lambda nil (set (make-local-variable 'company-backends) '(company-clang company-gtags company-c-headers company-dabbrev))) | tl/setup-c-mode |
-
 
 ** Lesser languages : R
 
