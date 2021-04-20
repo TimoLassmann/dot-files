@@ -618,8 +618,8 @@ Highlight line mode
   )
 
 (prot-emacs-elpa-package 'flycheck-clang-tidy
-    (setq-default flycheck-clang-tidy-extra-options "--checks=-*,bugprone-*,cert-*,clang-analyzer-*,darwin-*,linuxkernel-*,misc-*,performance-*,portability-*,readability-*,-readability-magic-numbers")
-    (flycheck-clang-tidy-setup)
+  (setq-default flycheck-clang-tidy-extra-options "--checks=-*,bugprone-*,cert-*,clang-analyzer-*,darwin-*,linuxkernel-*,misc-*,performance-*,portability-*,readability-*,-readability-magic-numbers")
+  (flycheck-clang-tidy-setup)
   )
 #+END_SRC
 
@@ -787,7 +787,7 @@ Therefore I decided to put all of my c-mode settings in one file.
   (let ((map eshell-hist-mode-map))
     (define-key map (kbd "C-c C-d") #'prot-eshell-complete-recent-dir)
     (define-key map (kbd "C-c C-s") #'prot-eshell-find-subdirectory-recursive)))
-  )
+
 #+END_SRC
 
 * Tramp
