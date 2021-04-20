@@ -6,7 +6,7 @@
 #+OPTIONS:  toc:nil
 #+OPTIONS: H:4
 #+LATEX_CMD: pdflatex
-#+PROPERTY: header-args:emacs-lisp :exports code :results none
+#+PROPERTY: header-args:emacs-lisp :exports code
 * Introduction
 
 All my emacs config.
@@ -69,9 +69,12 @@ All my emacs config.
 
 #+BEGIN_SRC emacs-lisp
 (prot-emacs-builtin-package 'no-easy-keys
-  (no-easy-keys 1)
+  (setq no-easy-keys 1)
   )
 #+END_SRC
+
+#+RESULTS:
+: 1
 
 ** Kill buffer
 Assume that I always want to kill the current buffer when hitting C-x k.
@@ -104,10 +107,15 @@ I keep hitting this by accidental
 Never use tabs. Tabs are the devil’s whitespace.
 
 #+BEGIN_SRC emacs-lisp
+(setq-default tab-width 4)
 (setq-default indent-tabs-mode nil)
-(setq tab-width 4)
+
 ;; (setq-default tab-always-indent 'complete)
 #+END_SRC
+
+#+RESULTS:
+
+
 ** Common functions
 
 #+BEGIN_SRC emacs-lisp
@@ -313,9 +321,10 @@ Never use tabs. Tabs are the devil’s whitespace.
                                c++-mode
                                ))
 
-  (add-hook 'c-mode-hook
-            (lambda ()
-              (set (make-local-variable 'company-backends) '(company-clang  company-gtags  company-c-headers company-dabbrev ))))
+  ;; (add-hook 'c-mode-hook
+  ;;           (lambda ()
+  ;;             (set (make-local-variable 'company-backends)
+  ;;                  '(company-clang  company-gtags  company-c-headers company-dabbrev ))))
 
   (global-company-mode 1)
   )
@@ -343,13 +352,11 @@ of the time this will be =src= and I need to point to
 In addition add the include path to flycheck-clang!
 
 #+BEGIN_EXAMPLE emacs-lisp
-   (
-   (c-mode . ((company-clang-arguments . ("-I."  "-I../tldevel-1.2.8/"))))
-   (c-mode . ((company-c-headers-path-user . ("." "../tldevel-1.2.8/"))))
-   (c-mode . ((flycheck-clang-include-path . ("-I." "-I../tldevel-1.2.8/"))))
-   )
-
-
+(
+(c-mode . ((company-clang-arguments . ("-I."  "-I../tldevel-1.2.8/"))))
+(c-mode . ((company-c-headers-path-user . ("." "../tldevel-1.2.8/"))))
+(c-mode . ((flycheck-clang-include-path . ("-I." "-I../tldevel-1.2.8/"))))
+)
 #+END_EXAMPLE
 
 ** Consult
@@ -373,6 +380,13 @@ In addition add the include path to flycheck-clang!
 
 #+RESULTS:
 | consult-buffer | :preview | nil |
+
+Let's also look at consult-flycheck 
+
+#+BEGIN_SRC emacs-lisp
+(prot-emacs-elpa-package 'consult-flycheck
+  )
+#+END_SRC
 
 ** Orderless
 #+BEGIN_SRC emacs-lisp
@@ -444,8 +458,7 @@ In addition add the include path to flycheck-clang!
     (alist-get 'category (cdr md))))
 
 (defun prot-minibuffer-backward-updir ()
-  "Delete char before point or go up a directory.
-                    Must be bound to `minibuffer-local-filename-completion-map'."
+  "Delete char before point or go up a directory. Must be bound to `minibuffer-local-filename-completion-map'."
   (interactive)
   (if (and (eq (char-before) ?/)
            (eq (prot-minibuffer--completion-category) 'file))
@@ -561,12 +574,13 @@ In addition add the include path to flycheck-clang!
 : t
 
 * Programming
-
 Mostly C ....
+
+** Compilation
 Some default settings.
 
 #+BEGIN_SRC emacs-lisp
-(setq-default tab-width 2)
+;; (setq-default tab-width 4)
 (global-subword-mode 1)
 (setq compile-command "make -j 6")
 (setq compilation-scroll-output 'first-error)
@@ -581,16 +595,51 @@ Some default settings.
                                (setq-local compilation-read-command nil)
                                (call-interactively 'compile)))
 
-(defun my-c-mode-hook ()
-  (setq c-default-style "bsd"))
-(add-hook 'c-mode-common-hook 'my-c-mode-hook)
-
 #+END_SRC
+
+#+RESULTS:
+| (lambda nil (add-hook 'before-save-hook 'whitespace-cleanup)) | smartparens-mode | my-c-mode-hook | (lambda nil (set (make-local-variable 'company-backends) '(company-clang company-gtags company-c-headers company-dabbrev))) |
 
 Highlight line mode
 
 #+BEGIN_SRC emacs-lisp
 (when window-system (add-hook 'prog-mode-hook 'hl-line-mode))
+#+END_SRC
+
+** Flycheck
+
+#+BEGIN_SRC emacs-lisp
+(prot-emacs-elpa-package 'flycheck
+  (setq-default flycheck-disabled-checkers '(emacs-lisp-checkdoc))
+  (global-flycheck-mode 1) 
+  )
+(prot-emacs-elpa-package 'flycheck-clang-analyzer
+  (flycheck-clang-analyzer-setup)
+  )
+
+(prot-emacs-elpa-package 'flycheck-clang-tidy
+    (setq-default flycheck-clang-tidy-extra-options "--checks=-*,bugprone-*,cert-*,clang-analyzer-*,darwin-*,linuxkernel-*,misc-*,performance-*,portability-*,readability-*,-readability-magic-numbers")
+    (flycheck-clang-tidy-setup)
+  )
+#+END_SRC
+
+#+RESULTS:
+
+** Indent
+
+*** aindent mode
+#+BEGIN_SRC emacs-lisp
+(prot-emacs-elpa-package 'clean-aindent-mode
+  (add-hook 'prog-mode-hook 'clean-aindent-mode))
+#+END_SRC
+
+*** DTRT indent
+
+#+BEGIN_SRC emacs-lisp
+(prot-emacs-elpa-package 'dtrt-indent
+  (dtrt-indent-mode 1)
+  (setq dtrt-indent-verbosity 0)
+  )
 #+END_SRC
 
 ** Yasnippet
@@ -615,7 +664,7 @@ Highlight line mode
 
 #+BEGIN_SRC emacs-lisp
 (prot-emacs-elpa-package 'smartparens
-  (add-hook 'c-mode-hook 'smartparens-mode)
+  ;; (add-hook 'c-mode-hook 'smartparens-mode)
   (add-hook 'org-mode-hook 'smartparens-mode)
   )
 #+END_SRC
@@ -637,10 +686,10 @@ Highlight line mode
   (setq ggtags-sort-by-nearness t)
   (setq ggtags-use-idutils t)
   (setq ggtags-use-project-gtagsconf nil)
-  (add-hook 'c-mode-common-hook
-            (lambda ()
-              (when (derived-mode-p 'c-mode)
-                (ggtags-mode 1))))
+  ;; (add-hook 'c-mode-common-hook
+  ;;           (lambda ()
+  ;;             (when (derived-mode-p 'c-mode)
+  ;;               (ggtags-mode 1))))
 
   (let ((map ggtags-navigation-map))
     (define-key map (kbd "M-u") #'ggtags-navigation-previous-file)
@@ -654,16 +703,32 @@ Highlight line mode
 
 #+END_SRC
 
-
 ** Whitespace
 
 #+BEGIN_SRC emacs-lisp
 (prot-emacs-builtin-package 'whitespace
   (define-key global-map (kbd "C-c w") #'whitespace-mode)
-  (add-hook 'c-mode-hook
-            (lambda () (add-hook 'before-save-hook 'whitespace-cleanup)))
+  ;; (add-hook 'c-mode-hook
+  ;;           (lambda () (add-hook 'before-save-hook 'whitespace-cleanup)))
   )
 #+END_SRC
+
+** My c config
+
+When switching to emacs my indent etc.. setup broke for some reason.
+Therefore I decided to put all of my c-mode settings in one file.
+
+#+BEGIN_SRC emacs-lisp
+
+(prot-emacs-builtin-package 'tl-cmode
+  (add-hook 'c-mode-common-hook 'tl/setup-c-mode)
+  )
+#+END_SRC
+
+#+RESULTS:
+| tl/setup-c-mode | smartparens-mode | (lambda nil (if (derived-mode-p 'c-mode) (progn (ggtags-mode 1)))) |
+
+
 
 ** Lesser languages : R
 
@@ -680,63 +745,50 @@ Highlight line mode
 : /home/user/R
 
 * Eshell
+#+BEGIN_SRC emacs-lisp
+(prot-emacs-builtin-package 'eshell
+  (require 'esh-mode)
+  (require 'esh-module)
+  (setq eshell-modules-list             ; It works but may need review
+        '(eshell-alias
+          eshell-basic
+          eshell-cmpl
+          eshell-dirs
+          eshell-glob
+          eshell-hist
+          eshell-ls
+          eshell-pred
+          eshell-prompt
+          eshell-script
+          eshell-term
+          eshell-tramp
+          eshell-unix))
 
+  (setenv "PAGER" "cat")
+  (let ((map eshell-mode-map))
+    (define-key map (kbd "C-r") #'consult-history))
+  )
 
-  #+BEGIN_SRC emacs-lisp
-    (prot-emacs-builtin-package 'eshell
-      (require 'esh-mode)
-      (require 'esh-module)
-      (setq eshell-modules-list             ; It works but may need review
-            '(eshell-alias
-              eshell-basic
-              eshell-cmpl
-              eshell-dirs
-              eshell-glob
-              eshell-hist
-              eshell-ls
-              eshell-pred
-              eshell-prompt
-              eshell-script
-              eshell-term
-              eshell-tramp
-              eshell-unix))
+(prot-emacs-builtin-package 'em-alias
+  (eshell/alias "ll" "/bin/ls -AlohG --color=always")
+  (eshell/alias "val" "valgrind --leak-check=yes --show-leak-kinds=all --exit-on-first-error=yes --error-exitcode=1 $*")
+  (eshell/alias "d" "dired $1")
+  (eshell/alias "gds" "magit-diff-staged")
+  (eshell/alias "gd" "magit-diff-unstaged")
+  (eshell/alias "ee" "find-file-other-window $1")
+  (eshell/alias "emacs" "find-file $1")
+  (eshell/alias "ff" "find-file $1")
+  (eshell/alias "e" "find-file $1")
+  )
 
-      (setenv "PAGER" "cat")
-      (let ((map eshell-mode-map))
-        (define-key map (kbd "C-r") #'consult-history))
-      )
-
-    ;; (use-package eshell-extras
-    ;;   :commands
-    ;;   eshell/in-term
-    ;;   eshell/for-each
-    ;;   interactive-cd)
-
-    ;; (use-package eshell
-    ;;   :bind
-    ;;   ("C-!" . eshell)
-    ;;   :config (setenv "PAGER" "cat"))
-
-    ;; (use-package esh-mode
-    ;;   :bind
-    ;;   (:map eshell-mode-map
-    ;;         ("<home>" . eshell-bol)
-    ;;         ("C-c d" . interactive-cd)
-    ;;         ("M-q" . quit-window)))
-
-    ;; (defun eshell-add-aliases ()
-    ;; "Doc-string."
-    ;;   (dolist (var '(("ff" "find-file $1")
-    ;;                  ("wget" "/Users/HOME/.0.data/.0.emacs/.0.macports/bin/wget $*")
-    ;;                  ("cvs" "/Users/HOME/.0.data/.0.emacs/.0.macports/bin/cvs $*")
-    ;;                  ("curl" "/Users/HOME/.0.data/.0.emacs/.0.macports/bin/curl $*")
-    ;;                  ("git" "/Users/HOME/.0.data/.0.emacs/.0.macports/bin/git $*")))
-    ;;     (add-to-list 'eshell-command-aliases-list var)))
-
-  #+END_SRC
-
-  #+RESULTS:
-  : consult-history
+(prot-emacs-builtin-package 'tl-eshell
+  (let ((map eshell-mode-map))
+    (define-key map (kbd "C-c C-r") #'prot-eshell-root-dir))
+  (let ((map eshell-hist-mode-map))
+    (define-key map (kbd "C-c C-d") #'prot-eshell-complete-recent-dir)
+    (define-key map (kbd "C-c C-s") #'prot-eshell-find-subdirectory-recursive)))
+  )
+#+END_SRC
 
 * Tramp
 
@@ -841,13 +893,13 @@ load org mode
                  "* TODO %?\n%a   %:from %:fromname %:fromaddress" :prepend t :jump-to-captured t)
                 ("p" "Daily Plan" plain (file+datetree "~/planning/daily-plan.org")
                  "+ [ ] The 3 most important tasks [/]
-                  - [ ]
-                  - [ ]
-                  - [ ]
-                + [ ] Other tasks that are in the system [/]
-                  - [ ]
-                + [ ] ToDos which are not tracked by my system [/]
-                  - [ ] " :immediate-finish t)
+                                                                                                                                                - [ ]
+                                                                                                                                                - [ ]
+                                                                                                                                                - [ ]
+                                                                                                                                + [ ] Other tasks that are in the system [/]
+                                                                                                                                                - [ ]
+                                                                                                                                + [ ] ToDos which are not tracked by my system [/]
+                                                                                                                                                - [ ] " :immediate-finish t)
                 )))
   ;; Do not dim blocked tasks
   (setq org-agenda-dim-blocked-tasks nil)
@@ -1194,16 +1246,16 @@ xdg-mime default org-protocol.desktop x-scheme-handler/org-protocol
            :file-name "${citekey}"
            :head "#+TITLE: ${citekey}: ${title}\n#+ROAM_KEY: ${ref}
 
-  - tags ::
-  - keywords :: ${keywords}
-  \n* ${title}
-  :PROPERTIES:
-  :Custom_ID: ${citekey}
-  :URL: ${url}
-  :AUTHOR: ${author-or-editor}
-  :NOTER_DOCUMENT: %(orb-process-file-field \"${citekey}\")
-  :NOTER_PAGE:
-  :END:\n%?")))
+                - tags ::
+                - keywords :: ${keywords}
+                \n* ${title}
+                :PROPERTIES:
+                :Custom_ID: ${citekey}
+                :URL: ${url}
+                :AUTHOR: ${author-or-editor}
+                :NOTER_DOCUMENT: %(orb-process-file-field \"${citekey}\")
+                :NOTER_PAGE:
+                :END:\n%?")))
   (add-hook 'org-roam-mode 'org-roam-bibtex-mode))
 #+END_SRC
 
@@ -1232,7 +1284,7 @@ Latex templates
 ;;(setq org-latex-to-pdf-process '("xelatex %f && bibtex %f && xelatex %f && xelatex %f"))
 (defun sk-latexmk-cmd (backend)
   "When exporting from .org with latex, automatically run latex,
-       pdflatex, or xelatex as appropriate, using latexmk."
+                                                        pdflatex, or xelatex as appropriate, using latexmk."
   (when (org-export-derived-backend-p backend 'latex)
     (let ((texcmd)))
     ;; default command: xelatex
@@ -1261,9 +1313,9 @@ Latex templates
 (add-to-list 'org-latex-classes
              '("CV"
                "\\documentclass[11pt]{article}
-       \\usepackage{\\string~\"/.emacs.d/latex_templates/cv\"}
-       [NO-DEFAULT-PACKAGES]
-       [NO-PACKAGES]"
+                                                        \\usepackage{\\string~\"/.emacs.d/latex_templates/cv\"}
+                                                        [NO-DEFAULT-PACKAGES]
+                                                        [NO-PACKAGES]"
                ("\\section{%s}" . "\\section*{%s}")
                ("\\subsection{%s}" . "\\subsection*{%s}")
                ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
@@ -1277,9 +1329,9 @@ Latex templates
 (add-to-list 'org-latex-classes
              '("NHMRC_project_grant"
                "\\documentclass[12pt,table,names]{article}
-  \\usepackage{\\string~\"/.emacs.d/latex_templates/NHMRC_grant\"}
-  [NO-DEFAULT-PACKAGES]
-  [NO-PACKAGES]"
+                \\usepackage{\\string~\"/.emacs.d/latex_templates/NHMRC_grant\"}
+                [NO-DEFAULT-PACKAGES]
+                [NO-PACKAGES]"
                ("\\section{%s}" . "\\section*{%s}")
                ("\\subsection{%s}" . "\\subsection*{%s}")
                ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
@@ -1291,9 +1343,9 @@ Rebuttal...
 (add-to-list 'org-latex-classes
              '("NHMRC_project_grant_rebuttal"
                "\\documentclass[12pt,table,names]{article}
-    \\usepackage{\\string~\"/.emacs.d/latex_templates/NHMRC_grant\"}
-    [NO-DEFAULT-PACKAGES]
-    [NO-PACKAGES]"
+                                \\usepackage{\\string~\"/.emacs.d/latex_templates/NHMRC_grant\"}
+                                [NO-DEFAULT-PACKAGES]
+                                [NO-PACKAGES]"
                ("\\subsection{%s}" . "\\section*{%s}")
                ("\\subsubsection{%s}" . "\\subsection*{%s}")q
                ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
@@ -1308,9 +1360,9 @@ Rebuttal...
 (add-to-list 'org-latex-classes
              '("NHMRC_investigator_grant"
                "\\documentclass[12pt,table,names]{article}
-  \\usepackage{\\string~\"/.emacs.d/latex_templates/NHMRC_investigator\"}
-  [NO-DEFAULT-PACKAGES]
-  [NO-PACKAGES]"
+                \\usepackage{\\string~\"/.emacs.d/latex_templates/NHMRC_investigator\"}
+                [NO-DEFAULT-PACKAGES]
+                [NO-PACKAGES]"
                ("\\section{%s}" . "\\section*{%s}")
                ("\\subsection{%s}" . "\\subsection*{%s}")
                ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
@@ -1325,9 +1377,9 @@ Main grant
 (add-to-list 'org-latex-classes
              '("ARC_discovery_grant"
                "\\documentclass[12pt]{article}
-  \\usepackage{\\string~\"/.emacs.d/latex_templates/ARC_discovery\"}
-  [NO-DEFAULT-PACKAGES]
-  [NO-PACKAGES]"
+                \\usepackage{\\string~\"/.emacs.d/latex_templates/ARC_discovery\"}
+                [NO-DEFAULT-PACKAGES]
+                [NO-PACKAGES]"
                ("\\section{%s}" . "\\section*{%s}")
                ("\\subsection{%s}" . "\\subsection*{%s}")
                ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
@@ -1340,9 +1392,9 @@ Special formatting for the ROPE sections.
 (add-to-list 'org-latex-classes
              '("ARC_ROPE"
                "\\documentclass[12pt]{article}
-  \\usepackage{\\string~\"/.emacs.d/latex_templates/ARC_discovery_ROPE\"}
-  [NO-DEFAULT-PACKAGES]
-  [NO-PACKAGES]"
+                \\usepackage{\\string~\"/.emacs.d/latex_templates/ARC_discovery_ROPE\"}
+                [NO-DEFAULT-PACKAGES]
+                [NO-PACKAGES]"
                ("\\section{%s}" . "\\section*{%s}")
                ("\\subsection{%s}" . "\\subsection*{%s}")
                ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
@@ -1354,9 +1406,9 @@ Special formatting for the ROPE sections.
 #+BEGIN_SRC emacs-lisp
 (add-to-list 'org-latex-classes '("naturedef"
                                   "\\documentclass[fleqn,10pt]{wlscirep}
-   [NO-DEFAULT-PACKAGES]
-   [PACKAGES]
-   [EXTRA]"
+                        [NO-DEFAULT-PACKAGES]
+                        [PACKAGES]
+                        [EXTRA]"
                                   ("\\section{%s}" . "\\section*{%s}")
                                   ("\\subsection{%s}" . "\\subsection*{%s}")
                                   ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
@@ -1368,9 +1420,9 @@ Special formatting for the ROPE sections.
 (add-to-list 'org-latex-classes
              '("nature"
                "\\documentclass[12pt]{article}
-       \\usepackage{\\string~\"/.emacs.d/latex_templates/nature\"}
-       [NO-DEFAULT-PACKAGES]
-       [NO-PACKAGES]"
+                                                        \\usepackage{\\string~\"/.emacs.d/latex_templates/nature\"}
+                                                        [NO-DEFAULT-PACKAGES]
+                                                        [NO-PACKAGES]"
                ("\\section*{%s}" . "\\section*{%s}")
                ("\\subsection{%s}" . "\\subsection*{%s}")
                ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
@@ -1383,9 +1435,9 @@ Special formatting for the ROPE sections.
 #+BEGIN_SRC emacs-lisp
 (add-to-list 'org-latex-classes '("bioinfo"
                                   "\\documentclass{bioinfo}
-   [NO-DEFAULT-PACKAGES]
-   [PACKAGES]
-   [EXTRA]"
+                        [NO-DEFAULT-PACKAGES]
+                        [PACKAGES]
+                        [EXTRA]"
 
                                   ("\\section{%s}" . "\\section*{%s}")
                                   ("\\subsection{%s}" . "\\subsection*{%s}")
@@ -1400,7 +1452,7 @@ Special formatting for the ROPE sections.
 (add-to-list 'org-latex-classes
              '("report"
                "\\documentclass[12pt]{article}
- \\usepackage{\\string~\"/.emacs.d/latex_templates/report\"}
+        \\usepackage{\\string~\"/.emacs.d/latex_templates/report\"}
 [NO-DEFAULT-PACKAGES]
 [NO-PACKAGES]"
                ("\\section{%s}" . "\\section*{%s}")
@@ -1415,9 +1467,9 @@ Special formatting for the ROPE sections.
 (add-to-list 'org-latex-classes
              '("roamcard"
                "\\documentclass[12pt,notitlepage]{article}
-  \\usepackage{\\string~\"/.emacs.d/latex_templates/roamcard\"}
-  [NO-DEFAULT-PACKAGES]
-  [NO-PACKAGES]"
+                \\usepackage{\\string~\"/.emacs.d/latex_templates/roamcard\"}
+                [NO-DEFAULT-PACKAGES]
+                [NO-PACKAGES]"
                ("\\section{%s}" . "\\section*{%s}")
                ("\\subsection{%s}" . "\\subsection*{%s}")
                ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
@@ -1455,9 +1507,9 @@ Special formatting for the ROPE sections.
 (add-to-list 'org-latex-classes
              '("smallscreen"
                "\\documentclass[aspectratio=169,18pt,t]{beamer}
-  \\usepackage{\\string~\"/.emacs.d/latex_templates/smallscreen\"}
-  [NO-DEFAULT-PACKAGES]
-  [NO-PACKAGES]"
+                \\usepackage{\\string~\"/.emacs.d/latex_templates/smallscreen\"}
+                [NO-DEFAULT-PACKAGES]
+                [NO-PACKAGES]"
                ("\\section{%s}" . "\\section*{%s}")
                ("\\begin{frame}[fragile]\\frametitle{%s}"
                 "\\end{frame}"
@@ -1472,9 +1524,9 @@ Special formatting for the ROPE sections.
 (add-to-list 'org-latex-classes
              '("modernpresentation"
                "\\documentclass[14pt]{beamer}
-      \\usepackage{\\string~\"/.emacs.d/latex_templates/modern\"}
-      [NO-DEFAULT-PACKAGES]
-      [NO-PACKAGES]"
+                                                \\usepackage{\\string~\"/.emacs.d/latex_templates/modern\"}
+                                                [NO-DEFAULT-PACKAGES]
+                                                [NO-PACKAGES]"
                ("\\section{%s}" . "\\section*{%s}")
                ("\\begin{frame}[fragile]\\frametitle{%s}"
                 "\\end{frame}")))
@@ -1491,21 +1543,21 @@ Special formatting for the ROPE sections.
 
 #+BEGIN_SRC emacs-lisp
 
-(prot-emacs-builtin-package 'desktop
-  (setq desktop-auto-save-timeout 300)
-  (setq desktop-path `(,user-emacs-directory))
-  (setq desktop-base-file-name "desktop")
-  (setq desktop-files-not-to-save nil)
-  (setq desktop-globals-to-clear nil)
-  (setq desktop-load-locked-desktop t)
-  (setq desktop-missing-file-warning nil)
-  (setq desktop-restore-eager 0)
-  (setq desktop-restore-frames nil)
-  (setq desktop-save 'ask-if-new)
-  (dolist (symbol '(kill-ring log-edit-comment-ring))
-    (add-to-list 'desktop-globals-to-save symbol))
+;; (prot-emacs-builtin-package 'desktop
+;;   (setq desktop-auto-save-timeout 300)
+;;   (setq desktop-path `(,user-emacs-directory))
+;;   (setq desktop-base-file-name "desktop")
+;;   (setq desktop-files-not-to-save nil)
+;;   (setq desktop-globals-to-clear nil)
+;;   (setq desktop-load-locked-desktop t)
+;;   (setq desktop-missing-file-warning nil)
+;;   (setq desktop-restore-eager 0)
+;;   (setq desktop-restore-frames nil)
+;;   (setq desktop-save 'ask-if-new)
+;;   (dolist (symbol '(kill-ring log-edit-comment-ring))
+;;     (add-to-list 'desktop-globals-to-save symbol))
 
-  (desktop-save-mode 1))
+;;   (desktop-save-mode 1))
 
 #+END_SRC
 

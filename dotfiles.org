@@ -62,6 +62,8 @@ fi
 * Eshell
 
   #+BEGIN_SRC text :exports both :results none :noweb yes :tangle ~/.emacs.d/eshell/alias
+
+  #+END_SRC
     alias ll '/bin/ls -AlohG --color=always'
     alias val 'valgrind --leak-check=yes --show-leak-kinds=all --exit-on-first-error=yes --error-exitcode=1 $*'
     alias d 'dired $1'
@@ -71,8 +73,8 @@ fi
     alias emacs 'find-file $1'
     alias ff 'find-file $1'
     alias e 'find-file $1'
-  #+END_SRC
 
+    
 * Screen RC
 
 #+BEGIN_SRC bash :exports both :results none :noweb yes :tangle ~/.screenrc
