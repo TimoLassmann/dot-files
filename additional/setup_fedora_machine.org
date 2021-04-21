@@ -126,7 +126,8 @@
          python3-devel \
          cabextract \
          xorg-x11-font-utils \
-         fontconfig
+         fontconfig \
+         proselint
   #+END_SRC
 
 =gdb= seems to require these additional packages:
@@ -143,3 +144,8 @@ sudo dnf debuginfo-install libgcc-10.2.1-9.fc32.x86_64 libgomp-10.2.1-9.fc32.x86
 
   #+RESULTS:
   : browse-url-firefox
+
+  #+BEGIN_SRC bash
+sudo dnf install curl cabextract xorg-x11-font-utils fontconfig
+sudo rpm -i  https://sourceforge.net/projects/mscorefonts2/files/rpms/msttcore-fonts-installer-2.6-1.noarch.rpm
+  #+END_SRC

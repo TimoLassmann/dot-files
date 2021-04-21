@@ -121,7 +121,7 @@ Also bind `class' to ((class color) (min-colors 89))."
    '(link ((t (:foreground "#1e8eb8" :underline t))))
    '(link-visited ((t (:foreground "#105f89"))))
 
-   
+
    `(flyspell-incorrect  ((t (:underline (:style wave :color ,alert-main)))))
    `(flycheck-error   ((t (:underline (:style wave :color ,alert-main)))))
    `(flycheck-warning ((t (:underline (:style wave :color ,alert-second)))))
@@ -150,10 +150,10 @@ Also bind `class' to ((class color) (min-colors 89))."
    `(ivy-remote ((t (:foreground ,alert-main))))
    '(ivy-grep-info ((t (:foreground "#008ED1"))))
    '(ivy-posframe ((t (:background "#151F23"))))
-   `(avy-lead-face   ((t (:weight bold :background "#999999" :foreground ,alert-main))))
-   `(avy-lead-face-0 ((t (:weight bold :background "#999999" :foreground ,alert-main))))
-   `(avy-lead-face-1 ((t (:weight bold :background "#999999" :foreground ,alert-main))))
-   `(avy-lead-face-2 ((t (:weight bold :background "#999999" :foreground ,alert-main))))
+   '(avy-lead-face   ((t (:weight bold :background "#f17478" :foreground "#002E41"))))
+   '(avy-lead-face-0   ((t (:weight bold :background "#f17478" :foreground "#002E41"))))
+   '(avy-lead-face-1   ((t (:weight bold :background "#f17478" :foreground "#002E41"))))
+   '(avy-lead-face-2   ((t (:weight bold :background "#f17478" :foreground "#002E41"))))
 
    '(icomplete-first-match ((t (:foreground "#f17478"))))
 

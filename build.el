@@ -64,8 +64,8 @@
   (tl/mkdir "$HOME/bin")
   (tl/mkdir "$HOME/backup")
 
-  (message "Tangling dotfiles.org")
-  (tl/tangle-file "${dot-files-src}/zshrc.org")
+  (message  (concat "Tangling: " dot-files-src "dotfiles.org"))
+  (tl/tangle-file (concat dot-files-src "dotfiles.org"))
 
   ;; (message "Tangling zshrc.org")
   ;; (tl/tangle-file "${dot-files-src}/zshrc.org")
@@ -76,8 +76,9 @@
   ;; (message "Tangling screenrc.org")
   ;; (tl/tangle-file "${dot-files-src}/screenrc.org")
 
-  (message "Tangling backup.org")
-  (tl/tangle-file "${dot-files-src}/backup.org")
+
+  (message  (concat "Tangling: " dot-files-src "backup.org"))
+  (tl/tangle-file (concat dot-files-src "backup.org"))
 
   ;; (tl/tangle-files "${dot-files-src}/*.org")
   ;; (tl/tangle-files "${dot-files-src}/snippets/*.org")
