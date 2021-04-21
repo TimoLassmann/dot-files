@@ -1,5 +1,5 @@
-
-
+;;; package --- My font setting
+;;; Comentary: Just
 
 (defun tl/setup-fonts ()
   "Setup my fonts."
@@ -13,8 +13,8 @@
 
   (dolist (face '(mode-line mode-line-inactive minibuffer-prompt))
     (set-face-attribute face nil :family "Iosevka term" :height 160))
-
   )
+
 
 (provide 'tl-fonts)
 ;;; prot-diff.el ends here

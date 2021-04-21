@@ -63,6 +63,8 @@ All my emacs config.
 
 #+END_SRC
 
+#+RESULTS:
+
 ** Bidirectional writing and so-long.el
 (from prot)
 #+BEGIN_SRC emacs-lisp
@@ -112,14 +114,7 @@ I keep hitting this by accidental
 #+END_SRC
 
 ** Global key bindings
-
-#+BEGIN_SRC emacs-lisp
-(global-set-key "\C-w" 'backward-kill-word)
-
-#+END_SRC
-
-#+RESULTS:
-: backward-kill-word
+Nothing .
 
 ** Tabs vs spaces
 
@@ -153,13 +148,8 @@ Never use tabs. Tabs are the devil’s whitespace.
 #+BEGIN_SRC emacs-lisp
 (prot-emacs-builtin-package 'simple-theme
   (simple-theme-load-theme)
-
   )
 #+END_SRC
-
-#+RESULTS:
-: t
-
 
 ** Fonts
 
@@ -168,6 +158,8 @@ Never use tabs. Tabs are the devil’s whitespace.
   (tl/setup-fonts)
   )
 #+END_SRC
+
+#+RESULTS:
 
 ** Modeline
 
@@ -367,7 +359,8 @@ Never use tabs. Tabs are the devil’s whitespace.
   (setq company-dabbrev-code-modes t)
   (setq company-dabbrev-code-other-buffers 'all)
   (setq company-dabbrev-downcase nil)
-  (setq company-dabbrev-ignore-case t)
+
+  (setq company-dabbrev-ignore-case nil)
   (setq company-dabbrev-other-buffers 'all)
   (setq company-idle-delay 0.3)
   (setq company-minimum-prefix-length 3)
@@ -657,7 +650,7 @@ Must be bound to `minibuffer-local-filename-completion-map'."
 : t
 
 * Programming
-Mostly C ....
+Mostly C ...
 
 ** Compilation
 Some default settings.
@@ -894,7 +887,6 @@ Therefore I decided to put all of my c-mode settings in one file.
   (let ((map eshell-hist-mode-map))
     (define-key map (kbd "C-c C-d") #'prot-eshell-complete-recent-dir)
     (define-key map (kbd "C-c C-s") #'prot-eshell-find-subdirectory-recursive)))
-
 #+END_SRC
 
 * Tramp
@@ -1000,13 +992,13 @@ load org mode
                  "* TODO %?\n%a   %:from %:fromname %:fromaddress" :prepend t :jump-to-captured t)
                 ("p" "Daily Plan" plain (file+datetree "~/planning/daily-plan.org")
                  "+ [ ] The 3 most important tasks [/]
-                                                                                                                                                - [ ]
-                                                                                                                                                - [ ]
-                                                                                                                                                - [ ]
-                                                                                                                                + [ ] Other tasks that are in the system [/]
-                                                                                                                                                - [ ]
-                                                                                                                                + [ ] ToDos which are not tracked by my system [/]
-                                                                                                                                                - [ ] " :immediate-finish t)
+                                  - [ ]
+                                  - [ ]
+                                  - [ ]
+                  + [ ] Other tasks that are in the system [/]
+                                  - [ ]
+                  + [ ] ToDos which are not tracked by my system [/]
+                                  - [ ] " :immediate-finish t)
                 )))
   ;; Do not dim blocked tasks
   (setq org-agenda-dim-blocked-tasks nil)
@@ -1052,17 +1044,6 @@ load org mode
 
   )
 #+END_SRC
-
-#+RESULTS:
-| org-redisplay-inline-images |
-
-
-framesep=2mm,
-baselinestretch=1.2,
-bgcolor=LightGray,
-fontsize=\footnotesize,
-linenos
-Record the time that a todo was archived.
 
 
 ** Coding
@@ -1641,7 +1622,6 @@ Special formatting for the ROPE sections.
 #+END_SRC
 
 * Writing tools
-
 ** Proselint
 
 Important commands:
@@ -1681,7 +1661,6 @@ flymake-show-diagnostic-buffer
   (add-hook 'text-mode-hook #'flymake-proselint-setup))
 #+END_SRC
 
-
 ** Langtool
 
 #+BEGIN_SRC emacs-lisp
@@ -1692,6 +1671,97 @@ flymake-show-diagnostic-buffer
 
 #+RESULTS:
 : /home/user/programs/langtool/LanguageTool-4.0/languagetool-commandline.jar
+
+* Reading
+
+** Olivetti
+#+BEGIN_SRC emacs-lisp
+
+(prot-emacs-elpa-package 'olivetti
+
+  (setq olivetti-body-width 0.9)
+  (setq olivetti-minimum-body-width 80)
+  (setq olivetti-recall-visual-line-mode-entry-state t)
+  (define-minor-mode prot/mode-line-hidden-mode
+  "Toggle modeline visibility in the current buffer."
+  :init-value nil
+  :global nil
+  (if prot/mode-line-hidden-mode
+      (setq-local mode-line-format nil)
+    (kill-local-variable 'mode-line-format)
+    (force-mode-line-update)))
+
+(define-minor-mode tl/mode-hlline-hidden-mode
+  "Toggle modeline visibility in the current buffer."
+  :init-value nil
+  :global nil
+  (if tl/mode-hlline-hidden-mode
+      (setq-local global-hl-line-mode nil)
+    (setq-local global-hl-line-mode 1)))
+
+(define-minor-mode prot/cursor-type-mode
+  "Toggle between static block and pulsing bar cursor."
+  :init-value nil
+  :global t
+  (if prot/cursor-type-mode
+      (progn
+        (setq-local blink-cursor-interval 0.75
+                    cursor-type '(bar . 2)
+                    cursor-in-non-selected-windows 'hollow)
+        (blink-cursor-mode 1))
+    (dolist (local '(blink-cursor-interval
+                     cursor-type
+                     cursor-in-non-selected-windows))
+      (kill-local-variable `,local))
+    (blink-cursor-mode -1)))
+
+(define-minor-mode prot/variable-pitch-mode
+  "Toggle `variable-pitch-mode', except for `prog-mode'."
+  :init-value nil
+  :global nil
+  (if prot/variable-pitch-mode
+      (unless (derived-mode-p 'prog-mode)
+        (variable-pitch-mode 1))
+    (variable-pitch-mode -1)))
+
+  (define-minor-mode prot/olivetti-mode
+    "Toggle buffer-local `olivetti-mode' with additional parameters.
+
+      Fringes are disabled.  The modeline is hidden, except for
+      `prog-mode' buffers (see `prot/mode-line-hidden-mode').  The
+      default typeface is set to a proportionately spaced family,
+      except for programming modes (see `prot/variable-pitch-mode').
+      The cursor becomes a blinking bar, per `prot/cursor-type-mode'."
+    :init-value nil
+    :global nil
+    (if prot/olivetti-mode
+        (progn
+          (olivetti-mode 1)
+          (tl/mode-hlline-hidden-mode 1)
+          (set-window-fringes (selected-window) 0 0)
+          (prot/variable-pitch-mode 1)
+          (prot/cursor-type-mode 1)
+          (unless (derived-mode-p 'prog-mode)
+            (prot/mode-line-hidden-mode 1)))
+      (olivetti-mode -1)
+      (tl/mode-hlline-hidden-mode -1)
+      (set-window-fringes (selected-window) nil) ; Use default width
+      (prot/variable-pitch-mode -1)
+      (prot/cursor-type-mode -1)
+      (unless (derived-mode-p 'prog-mode)
+        (prot/mode-line-hidden-mode -1))))
+
+    (define-key global-map (kbd "C-c o") #'prot/olivetti-mode)
+  )
+
+
+
+
+
+#+END_SRC
+
+#+RESULTS:
+: prot/olivetti-mode
 
 * Server mode
 
@@ -1761,4 +1831,3 @@ Run this afterwards :
 p
 
 The end.
-icomplete-forward-completions
