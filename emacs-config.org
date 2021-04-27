@@ -389,9 +389,6 @@ Never use tabs. Tabs are the devil’s whitespace.
                                org-mode
                                c-mode
                                ))
-
-
-
   (global-company-mode 1)
   )
 #+END_SRC
@@ -405,12 +402,18 @@ Company C headers
 (prot-emacs-elpa-package 'company-c-headers
   )
 #+END_SRC
+
+#+RESULTS:
+
 Company Statistics
 #+BEGIN_SRC emacs-lisp
 (prot-emacs-elpa-package 'company-statistics
   (company-statistics-mode)
   )
 #+END_SRC
+
+#+RESULTS:
+: t
 
 I had to add the hook and local variable to stop company from selecting capf before clang.
 To make this work properly, I need to manually specify the include paths by
@@ -448,7 +451,7 @@ In addition add the include path to flycheck-clang!
 #+END_SRC
 
 #+RESULTS:
-| consult-buffer | :preview | nil |
+| consult-buffer | :title | nil |
 
 Let's also look at consult-flycheck
 
@@ -456,6 +459,8 @@ Let's also look at consult-flycheck
 (prot-emacs-elpa-package 'consult-flycheck
   )
 #+END_SRC
+
+#+RESULTS:
 
 ** Orderless
 #+BEGIN_SRC emacs-lisp
@@ -1042,9 +1047,18 @@ load org mode
   (add-hook 'org-mode-hook 'flyspell-mode)
   (add-hook 'org-babel-after-execute-hook 'org-redisplay-inline-images)
 
+  (setq org-link-frame-setup
+        (quote
+         ((vm . vm-visit-folder-other-frame)
+          (vm-imap . vm-visit-imap-folder-other-frame)
+          (gnus . org-gnus-no-new-news)
+          (file . find-file)
+          (wl . wl-other-frame))))
   )
-#+END_SRC
+  #+END_SRC
 
+  #+RESULTS:
+  : ((vm . vm-visit-folder-other-frame) (vm-imap . vm-visit-imap-folder-other-frame) (gnus . org-gnus-no-new-news) (file . find-file) (wl . wl-other-frame))
 
 ** Coding
 
@@ -1076,8 +1090,6 @@ Export packages...
 (require 'ox-latex)
 (require 'ox-beamer)
 #+END_SRC
-
-
 
 ** Bullets
 
@@ -1122,7 +1134,6 @@ Quickly open index file
 (global-set-key (kbd "C-c i") 'open-index-file)
 #+END_SRC
 
-
 ** Deft
 
 #+BEGIN_SRC emacs-lisp
@@ -1139,7 +1150,7 @@ Quickly open index file
         '((noslash . "-")
           (nospace . "-")
           (case-fn . downcase)))
-  (setq    deft-directory (concat (getenv "HOME") "/work/roam/"))
+  (setq deft-directory (concat (getenv "HOME") "/work/roam/"))
   (add-to-list 'deft-extensions "tex"))
 
 #+END_SRC
@@ -1178,60 +1189,22 @@ Define format for bibtex entries
 (prot-emacs-elpa-package 'org-ref
 
 
-  (setq org-ref-completion-library 'org-ref-ivy-cite)
+  ;; (setq org-ref-completion-library 'org-ref-ivy-cite)
   (setq org-ref-get-pdf-filename-function 'org-ref-get-pdf-filename-helm-bibtex)
   (setq org-ref-default-bibliography '("~/work/bibliography/references.bib"))
   (setq org-ref-bibliography-notes "~/work/roam/notes.org")
   (setq org-ref-pdf-directory "~/work/bibliography/bibtex-pdfs/")
-  (setq  notes-directory (concat (getenv "HOME") "/work/roam/"))
+  ;; (setq  notes-directory (concat (getenv "HOME") "/work/roam/"))
   (setq org-ref-notes-directory "~/work/roam/")
   (setq org-ref-notes-function 'orb-edit-notes)
   (setq org-ref-default-citation-link "supercite")
 
   (setq reftex-default-bibliography '("~/work/bibliography/references.bib")))
 
-
-
-;; ;;Hack ....
-;; (defun org-ref-add-labels (start end)
-;;   "Add labels in the region from START to END.
-;;        This is run by font-lock. START tends to be the beginning of the
-;;        line, and END tends to be where the point is, so this function
-;;        seems to work fine at recognizing labels by the regexps in
-;;        `org-ref-label-regexps'."
-;;   (interactive "r")
-;;   (save-excursion
-;;     (save-match-data
-;;       (cl-loop for rx in org-ref-label-regexps
-;;                do
-;;                (goto-char start)
-;;                (while (re-search-forward rx end t)
-;;                  (let ((label (match-string-no-properties 1)))
-;;                    ;; I don't know why this gets found, but some labels are
-;;                    ;; empty strings. we don't store these.
-;;                    (unless (string= "" label)
-;;                      ;; if the last end is the new end -1 we are adding to a
-;;                      ;; label, and should pop the old one off before adding the
-;;                      ;; new one.
-;;                      (when (eq  org-ref-last-label-end (- end 1))
-;;                        (pop org-ref-labels))
-;;                      (with-silent-modifications
-;;                        (put-text-property (match-beginning 1)
-;;                                           (match-end 1)
-;;                                           'org-ref-label t)
-;;                        (put-text-property (match-beginning 1)
-;;                                           (match-end 1)
-;;                                           'rear-nonsticky '(org-ref-label)))
-;;                      (when org-ref-label-debug
-;;                        (message "oral: adding %s" label))
-
-;;                      (cl-pushnew label
-;;                                  org-ref-labels :test 'string=)
-;;                      ;; now store the last end so we can tell for the next run
-;;                      ;; if we are adding to a label.
-;;                      (setq org-ref-last-label-end end))))))))
-
 #+END_SRC
+
+#+RESULTS:
+| ~/work/bibliography/references.bib |
 
 Make =supercite= the default citation type:
 
@@ -1244,12 +1217,17 @@ End.
 #+BEGIN_SRC emacs-lisp
 (prot-emacs-elpa-package 'org-roam
 
-  (setq org-roam-directory "~/work/roam/")
+  ;; (setq org-roam-directory "~/work/roam/")
+  (setq org-roam-directory (concat (getenv "HOME") "/work/roam/"))
+  (setq org-roam-index-file "~/work/roam/Index.org")
+  (setq org-roam-db-location "~/work/roam/org-roam.db")
   (setq org-roam-completion-everywhere t)
+  (add-hook 'after-init-hook 'org-roam-mode)
   (let ((map org-roam-mode-map))
     (define-key map (kbd "C-c m l") #'org-roam)
     (define-key map (kbd "C-c m F") #'org-roam-find-file)
     (define-key map (kbd "C-c m r") #'org-roam-find-ref)
+    (define-key map (kbd "C-c m t") #'org-roam-tag-add)
     (define-key map (kbd "C-c m .") #'org-roam-find-directory)
     (define-key map (kbd "C-c m d") #'org-roam-dailies-today)
     (define-key map (kbd "C-c m j") #'org-roam-jump-to-index)
@@ -1261,7 +1239,7 @@ End.
     (define-key map (kbd "C-c m i") #'org-roam-insert)
     (define-key map (kbd "C-c n a") #'orb-note-actions))
 
-  (setq org-roam-index-file "~/work/roam/Index.org")
+  
 
   (setq org-roam-capture-templates
         '(("d" "default" plain (function org-roam-capture--get-point)
@@ -1283,7 +1261,8 @@ End.
 
 #+END_SRC
 
-
+#+RESULTS:
+| d | default | plain | #'org-roam-capture--get-point |
 
 Org Roam protocol
 
@@ -1331,31 +1310,28 @@ xdg-mime default org-protocol.desktop x-scheme-handler/org-protocol
   (setq orb-templates
         '(("r" "ref" plain (function org-roam-capture--get-point)
            ""
-           :file-name "${citekey}"
-           :head "#+TITLE: ${citekey}: ${title}\n#+ROAM_KEY: ${ref}
-
-                - tags ::
-                - keywords :: ${keywords}
-                \n* ${title}
-                :PROPERTIES:
-                :Custom_ID: ${citekey}
-                :URL: ${url}
-                :AUTHOR: ${author-or-editor}
-                :NOTER_DOCUMENT: %(orb-process-file-field \"${citekey}\")
-                :NOTER_PAGE:
-                :END:\n%?")))
+           :file-name "%<%Y%m%d%H%M%S>-${citekey}"
+           :head "#+TITLE: ${citekey}: ${title}
+#+ROAM_KEY: ${ref}
+#+roam_tags:
+\n* ${title}
+:PROPERTIES:
+:Custom_ID: ${citekey}
+:URL: ${url}
+:AUTHOR: ${author-or-editor}
+:NOTER_DOCUMENT: %(orb-process-file-field \"${citekey}\")
+:NOTER_PAGE:
+:END:\n%?")))
   (add-hook 'org-roam-mode 'org-roam-bibtex-mode))
 #+END_SRC
 
+#+RESULTS:
+| org-roam-bibtex-mode | t |
 
 ** Org-Noter
-
+supercite:ma-2018-pan-cancer
 #+BEGIN_SRC  emacs-lisp
-(setq
- org_notes (concat (getenv "HOME") "/work/roam/")
- deft-directory org_notes
- org-roam-directory org_notes
- )
+
 (prot-emacs-elpa-package 'org-noter
 
   (setq org-noter-hide-other t)
@@ -1365,6 +1341,18 @@ xdg-mime default org-protocol.desktop x-scheme-handler/org-protocol
 
 
 #+END_SRC
+
+** Calendar
+
+#+BEGIN_SRC emacs-lisp
+(prot-emacs-elpa-package 'calfw )
+(prot-emacs-elpa-package 'calfw-org)
+
+(defalias 'ca 'cfw:open-org-calendar)
+#+END_SRC
+
+#+RESULTS:
+: ca
 
 ** Latex templates
 Latex templates
@@ -1831,3 +1819,5 @@ Run this afterwards :
 p
 
 The end.
+
+
