@@ -219,6 +219,61 @@ Never use tabs. Tabs are the devil’s whitespace.
 #+RESULTS:
 : t
 
+** Window placement
+#+BEGIN_SRC emacs-lisp
+(prot-emacs-builtin-package 'window
+  (setq display-buffer-alist
+        '(
+          ("\\*\\(Backtrace\\|Warnings\\|Compile-Log\\)\\*"
+           (display-buffer-in-side-window)
+           (window-height . 0.16)
+           (side . top)
+           (slot . 2)
+           (window-parameters . ((no-other-window . t))))
+          ;; bottom side window
+          ("\\*\\(Embark\\)?.*Completions.*"
+           (display-buffer-in-side-window)
+           (side . bottom)
+           (slot . 0)
+           (window-parameters . ((no-other-window . t)
+                                 (mode-line-format . none))))
+          ;; left side window
+          ("\\*Help.*"
+           (display-buffer-in-side-window)
+           (window-width . 0.20)       ; See the :hook
+           (side . left)
+           (slot . 0))
+          ("\\*Embark\\ Collect.*"
+           (display-buffer-in-side-window)
+           (window-width . 0.15)       ; See the :hook
+           (side . left)
+           (slot . 0))
+          ;; right side window
+          ("\\*compilation.*"
+           (display-buffer-in-side-window)
+           (window-width . 0.40)       ; See the :hook
+           (side . right)
+           (slot . 0))
+
+          ("\\*eshell.*"
+           (display-buffer-in-side-window)
+           (window-width . 0.40)       ; See the :hook
+           (side . right)
+           (slot . 2))
+          ))
+  )
+
+#+END_SRC
+
+** Help mode hooks
+
+#+BEGIN_SRC emacs-lisp
+(add-hook 'help-mode-hook #'visual-line-mode))
+#+END_SRC
+
+#+RESULTS:
+| visual-line-mode |
+
 * Convenience
 ** Undo Tree
 #+BEGIN_SRC emacs-lisp
@@ -371,7 +426,8 @@ Never use tabs. Tabs are the devil’s whitespace.
   (setq company-tooltip-limit 10)
   (setq company-tooltip-margin 1)
   (setq company-tooltip-offset-display 'scrollbar)
-  (add-to-list 'company-backends '(company-clang
+  (add-to-list 'company-backends '(company-files
+                                   company-clang
                                    company-capf
                                    company-dabbrev
                                    company-c-headers
@@ -602,7 +658,7 @@ Must be bound to `minibuffer-local-filename-completion-map'."
   (let ((map minibuffer-local-completion-map))
     (define-key map (kbd "C-,") #'embark-act)
     (define-key map (kbd "C->") #'embark-become))
-  
+
   (setq embark-action-indicator
         (lambda (map &optional _target)
           (which-key--show-keymap "Embark" map nil nil 'no-paging)
@@ -673,6 +729,29 @@ Must be bound to `minibuffer-local-filename-completion-map'."
 ;;   )
 
 #+END_SRC
+
+** Dabbrev
+
+#+BEGIN_SRC emacs-lisp
+(prot-emacs-builtin-package 'dabbrev
+  (setq dabbrev-abbrev-char-regexp "\\sw\\|\\s_")
+  (setq dabbrev-abbrev-skip-leading-regexp "[$*/=~']")
+  (setq dabbrev-backward-only nil)
+  (setq dabbrev-case-distinction 'case-replace)
+  (setq dabbrev-case-fold-search nil)
+  (setq dabbrev-case-replace 'case-replace)
+  (setq dabbrev-check-other-buffers t)
+  (setq dabbrev-eliminate-newlines t)
+  (setq dabbrev-upcase-means-case-search t)
+  (let ((map global-map))
+    (define-key map (kbd "M-/") #'dabbrev-expand)
+    (define-key map (kbd "s-/") #'dabbrev-completion)))
+
+
+#+END_SRC
+
+#+RESULTS:
+: dabbrev-completion
 
 ** Autoinsert templates
 
@@ -915,11 +994,30 @@ Therefore I decided to put all of my c-mode settings in one file.
           eshell-unix))
 
   (setenv "PAGER" "cat")
-  (let ((map eshell-mode-map))
-    (define-key map (kbd "C-r") #'consult-history))
+  (setq eshell-scroll-to-bottom-on-input 'all)
+   (setq eshell-error-if-no-glob t)
+   (setq eshell-hist-ignoredups t)
+   (setq eshell-cmpl-cycle-ignore-case t)
+   (setq eshell-cmpl-cycle-completions t)
+   (setq eshell-save-history-on-exit t)
+   (setq eshell-prefer-lisp-functions nil)
+   (setq eshell-destroy-buffer-when-process-dies t)
+
+   (add-hook 'eshell-mode
+            (lambda ()
+              (set (make-local-variable 'company-backends)
+                   '(company-files company-capf company-dabbrev ))))
+   (defun tl/eshell-quit ()
+    (interactive "p")
+        (progn
+          (eshell-life-is-too-much) ; Why not? (eshell/exit)
+          (ignore-errors
+            (delete-window))))
+
   )
 
 (prot-emacs-builtin-package 'em-alias
+  (eshell/alias "exit" "tl/eshell-quit")
   (eshell/alias "ll" "/bin/ls -AlohG --color=always")
   (eshell/alias "val" "valgrind --leak-check=yes --show-leak-kinds=all --exit-on-first-error=yes --error-exitcode=1 $*")
   (eshell/alias "d" "dired $1")
@@ -932,12 +1030,17 @@ Therefore I decided to put all of my c-mode settings in one file.
   )
 
 (prot-emacs-builtin-package 'tl-eshell
+
+
   (let ((map eshell-mode-map))
     (define-key map (kbd "C-c C-r") #'prot-eshell-root-dir))
   (let ((map eshell-hist-mode-map))
     (define-key map (kbd "C-c C-d") #'prot-eshell-complete-recent-dir)
     (define-key map (kbd "C-c C-s") #'prot-eshell-find-subdirectory-recursive)))
 #+END_SRC
+
+#+RESULTS:
+: prot-eshell-find-subdirectory-recursive
 
 * Tramp
 
@@ -1879,3 +1982,4 @@ Run this afterwards :
 
 
 The end.
+Wrong type argument: integer-or-marker-p, nil
