@@ -268,7 +268,7 @@ Never use tabs. Tabs are the devil’s whitespace.
 ** Help mode hooks
 
 #+BEGIN_SRC emacs-lisp
-(add-hook 'help-mode-hook #'visual-line-mode))
+(add-hook 'help-mode-hook #'visual-line-mode)
 #+END_SRC
 
 #+RESULTS:
@@ -444,6 +444,7 @@ Never use tabs. Tabs are the devil’s whitespace.
   (setq company-global-modes '(
                                org-mode
                                c-mode
+                               eshell-mode
                                ))
   (global-company-mode 1)
   )
@@ -1004,6 +1005,7 @@ Therefore I decided to put all of my c-mode settings in one file.
    (setq eshell-destroy-buffer-when-process-dies t)
 
    (add-hook 'eshell-mode
+
             (lambda ()
               (set (make-local-variable 'company-backends)
                    '(company-files company-capf company-dabbrev ))))
@@ -1982,4 +1984,5 @@ Run this afterwards :
 
 
 The end.
+Wrong type argument: integer-or-marker-p, nil
 Wrong type argument: integer-or-marker-p, nil
