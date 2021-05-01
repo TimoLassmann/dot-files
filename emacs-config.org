@@ -928,21 +928,28 @@ Therefore I decided to put all of my c-mode settings in one file.
 #+BEGIN_SRC emacs-lisp
 
 (prot-emacs-builtin-package 'tl-cmode
-  (defun my-c-initialization-hook ()
-    (smartparens-mode 1)
-    (hl-line-mode 1)
-    (clean-aindent-mode 1)
-    (dtrt-indent-mode 1)
+  ;; (defun my-c-initialization-hook ()
+  ;;   (smartparens-mode 1)
+  ;;   (hl-line-mode 1)
+  ;;   (clean-aindent-mode 1)
+  ;;   (dtrt-indent-mode 1)
 
-    (org-indent-mode -1)
-    (org-roam-mode -1))
+  ;;   (org-indent-mode -1)
+  ;;   (org-roam-mode -1))
 
-  (add-hook 'c-initialization-hook 'my-c-initialization-hook)
+  ;; (add-hook 'c-initialization-hook 'my-c-initialization-hook)
 
   (add-hook 'c-mode-common-hook 'tl/setup-c-mode)
   (add-hook 'c-mode-common-hook
             (lambda ()
-              (when (derived-mode-p 'c-mode 'c++-mode 'java-mode)
+              (when (derived-mode-p 'c-mode 'c++-mode )
+                (smartparens-mode 1)
+                (hl-line-mode 1)
+                (clean-aindent-mode 1)
+                (dtrt-indent-mode 1)
+
+                (org-indent-mode -1)
+                (org-roam-mode -1)
                 (ggtags-mode 1))))
   (add-hook 'c-mode-hook
             (lambda ()
@@ -958,7 +965,8 @@ Therefore I decided to put all of my c-mode settings in one file.
 #+END_SRC
 
 #+RESULTS:
-| (lambda nil (add-hook 'before-save-hook 'whitespace-cleanup)) | (lambda nil (set (make-local-variable 'company-backends) '(company-clang company-gtags company-c-headers company-dabbrev))) | tl/setup-c-mode |
+| lambda | nil | (add-hook 'before-save-hook 'whitespace-cleanup)                                                               |
+| lambda | nil | (set (make-local-variable 'company-backends) '(company-clang company-gtags company-c-headers company-dabbrev)) |
 
 ** Lesser languages : R
 
