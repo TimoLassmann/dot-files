@@ -14,8 +14,9 @@
   (setq flycheck-clang-language-standard "c11")
   ;; Modes I want
   ;;(ggtags-mode 1)
-  (setq-local company-backends
-              (append '((company-clang  company-gtags  company-c-headers company-dabbrev))))
+  ;; (setq-local company-backends
+  ;;             (append '((company-clang  company-gtags  company-c-headers company-dabbrev))))
+
 
 
   ;; (smartparens-mode 1)

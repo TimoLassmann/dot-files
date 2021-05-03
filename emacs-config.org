@@ -444,11 +444,11 @@ Never use tabs. Tabs are the devil’s whitespace.
     (define-key map (kbd "C-n") #'company-select-next)
     (define-key map (kbd "C-p") #'company-select-previous))
 
-  (setq company-global-modes '(
-                               org-mode
-                               c-mode
-                               eshell-mode
-                               ))
+  ;; (setq company-global-modes '(
+  ;;                              org-mode
+  ;;                              c-mode
+  ;;                              eshell-mode
+  ;;                              ))
   (global-company-mode 1)
   )
 #+END_SRC
@@ -485,7 +485,8 @@ In addition add the include path to flycheck-clang!
 
 #+BEGIN_EXAMPLE emacs-lisp
 (
-(c-mode . ((company-clang-arguments . ("-I."  "-I../tldevel-1.2.8/"))))
+(c-mode . ((company
+-clang-arguments . ("-I."  "-I../tldevel-1.2.8/"))))
 (c-mode . ((company-c-headers-path-user . ("." "../tldevel-1.2.8/"))))
 (c-mode . ((flycheck-clang-include-path . ("-I." "-I../tldevel-1.2.8/"))))
 )
@@ -966,10 +967,10 @@ Therefore I decided to put all of my c-mode settings in one file.
   ;;               (org-indent-mode -1)
   ;;               (org-roam-mode -1)
   ;;               (ggtags-mode 1))))
-  ;; (add-hook 'c-mode-hook
-  ;;           (lambda ()
-  ;;             (set (make-local-variable 'company-backends)
-  ;;                  '(company-clang  company-gtags  company-c-headers company-dabbrev ))))
+  (add-hook 'c-mode-hook
+            (lambda ()
+              (set (make-local-variable 'company-backends)
+                   '(company-clang  company-gtags  company-c-headers company-dabbrev ))))
   (add-hook 'c-mode-hook
             (lambda ()
               (add-hook 'before-save-hook 'whitespace-cleanup)))
@@ -980,21 +981,39 @@ Therefore I decided to put all of my c-mode settings in one file.
 #+END_SRC
 
 #+RESULTS:
-| tl/setup-c-mode | (lambda nil (add-hook 'before-save-hook 'whitespace-cleanup)) | (lambda nil (set (make-local-variable 'company-backends) '(company-clang company-gtags company-c-headers company-dabbrev))) |
+| (lambda nil (set (make-local-variable 'company-backends) '(company-clang company-gtags company-c-headers company-dabbrev))) | (lambda nil (add-hook 'before-save-hook 'whitespace-cleanup)) | tl/setup-c-mode | smartparens-mode |
 
 ** Lesser languages : R
 
 #+BEGIN_SRC emacs-lisp
 (prot-emacs-elpa-package 'ess
   ;; (setq-default inferior-R-program-name "/home/user/R")
-  ;; (s
-  (setq-default inferior-ess-r-program  "/home/user/R")
 
-  )
+  (setq-default inferior-ess-r-program  "/home/user/R")
+  (setq ess-style 'RStudio)
+  (setq ess-use-auto-complete nil)
+  (setq ess-use-company t)
+  (setq ess-indent-with-fancy-comments nil)
+  (setq ess-pdf-viewer-pref 'emacsclient)
+  (setq inferior-R-args "--no-restore-history --no-save")
+  (setq ess-ask-for-ess-directory nil)
+  (setq ess-R-font-lock-keywords
+        (quote
+         ((ess-R-fl-keyword:modifiers)
+          (ess-R-fl-keyword:fun-defs . t)
+          (ess-R-fl-keyword:keywords . t)
+          (ess-R-fl-keyword:assign-ops . t)
+          (ess-R-fl-keyword:constants . t)
+          (ess-R-fl-keyword:fun-cals . t)
+          (ess-R-fl-keyword:numbers)
+          (ess-R-fl-keyword:operators . t)
+          (ess-R-fl-keyword:delimiters)
+          (ess-R-fl-keyword:=)
+          (ess-R-fl-keyword:F&T)))))
 #+END_SRC
 
 #+RESULTS:
-: /home/user/R
+: ((ess-R-fl-keyword:modifiers) (ess-R-fl-keyword:fun-defs . t) (ess-R-fl-keyword:keywords . t) (ess-R-fl-keyword:assign-ops . t) (ess-R-fl-keyword:constants . t) (ess-R-fl-keyword:fun-cals . t) (ess-R-fl-keyword:numbers) (ess-R-fl-keyword:operators . t) (ess-R-fl-keyword:delimiters) (ess-R-fl-keyword:=) (ess-R-fl-keyword:F&T))
 
 * Eshell
 #+BEGIN_SRC emacs-lisp
@@ -1032,12 +1051,10 @@ Therefore I decided to put all of my c-mode settings in one file.
               (set (make-local-variable 'company-backends)
                    '(company-files company-capf company-dabbrev ))))
    (defun tl/eshell-quit ()
-    (interactive "p")
-        (progn
+       (progn
           (eshell-life-is-too-much) ; Why not? (eshell/exit)
           (ignore-errors
             (delete-window))))
-
   )
 
 (prot-emacs-builtin-package 'em-alias
