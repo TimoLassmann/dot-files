@@ -151,6 +151,9 @@ Never use tabs. Tabs are the devil’s whitespace.
   )
 #+END_SRC
 
+#+RESULTS:
+: t
+
 ** Fonts
 
 #+BEGIN_SRC emacs-lisp
@@ -844,10 +847,14 @@ Highlight line mode
 
 #+BEGIN_SRC emacs-lisp
 (prot-emacs-elpa-package 'dtrt-indent
+  (add-hook 'prog-mode-hook 'dtrt-indent-mode)
   (dtrt-indent-mode 1)
   (setq dtrt-indent-verbosity 0)
   )
 #+END_SRC
+
+#+RESULTS:
+: 0
 
 ** Yasnippet
 
@@ -871,10 +878,14 @@ Highlight line mode
 
 #+BEGIN_SRC emacs-lisp
 (prot-emacs-elpa-package 'smartparens
-  ;; (add-hook 'c-mode-hook 'smartparens-mode)
+
+  (add-hook 'c-mode-hook 'smartparens-mode)
   (add-hook 'org-mode-hook 'smartparens-mode)
   )
 #+END_SRC
+
+#+RESULTS:
+| flymake-proselint-setup | org-ref-org-menu | (lambda nil (org-superstar-mode 1)) | flyspell-mode | visual-line-mode | #[0 \301\211\207 [imenu-create-index-function org-imenu-get-tree] 2] | smartparens-mode | beginend-org-mode | #[0 \300\301\302\303\304$\207 [add-hook change-major-mode-hook org-show-all append local] 5] | #[0 \300\301\302\303\304$\207 [add-hook change-major-mode-hook org-babel-show-result-all append local] 5] | org-babel-result-hide-spec | org-babel-hide-all-hashes | org-ref-setup-label-finders |
 
 ** Smart scan
 
@@ -889,26 +900,30 @@ Highlight line mode
 #+BEGIN_SRC emacs-lisp
 (prot-emacs-elpa-package 'ggtags
 
-  (setq ggtags-oversize-limit 104857600)
-  (setq ggtags-sort-by-nearness t)
-  (setq ggtags-use-idutils t)
-  (setq ggtags-use-project-gtagsconf nil)
-  ;; (add-hook 'c-mode-common-hook
-  ;;           (lambda ()
-  ;;             (when (derived-mode-p 'c-mode)
-  ;;               (ggtags-mode 1))))
-
+  ;; (setq ggtags-oversize-limit 104857600)
+  ;; (setq ggtags-sort-by-nearness t)
+  ;; ;; ;; (setq ggtags-use-idutils t)
+  ;; (setq ggtags-use-project-gtagsconf nil)
+  ;; (setq  ggtags-global-use-color nil)
+  ;; (setq ggtags-highlight-tag 10)
+  (add-hook 'c-mode-common-hook
+          (lambda ()
+            (when (derived-mode-p 'c-mode 'c++-mode)
+              (ggtags-mode 1))))
   (let ((map ggtags-navigation-map))
     (define-key map (kbd "M-u") #'ggtags-navigation-previous-file)
     (define-key map (kbd "M-o") #'ggtags-navigation-next-file)
     (define-key map (kbd "M-l") #'ggtags-navigation-visible-mode)
     (define-key map (kbd "M-j") #'ggtags-navigation-visible-mode)
     (define-key map (kbd "M-k") #'next-error)
-    (define-key map (kbd "M-i") #'previous-error))
+    (define-key map (kbd "M-i") #'previous-error)))
 
-  (define-key global-map (kbd "M-;") #'smart-comment))
+  ;; (define-key global-map (kbd "M-;") #'smart-comment))
 
 #+END_SRC
+
+#+RESULTS:
+: previous-error
 
 ** Whitespace
 
@@ -939,22 +954,22 @@ Therefore I decided to put all of my c-mode settings in one file.
 
   ;; (add-hook 'c-initialization-hook 'my-c-initialization-hook)
 
-  (add-hook 'c-mode-common-hook 'tl/setup-c-mode)
-  (add-hook 'c-mode-common-hook
-            (lambda ()
-              (when (derived-mode-p 'c-mode 'c++-mode )
-                (smartparens-mode 1)
-                (hl-line-mode 1)
-                (clean-aindent-mode 1)
-                (dtrt-indent-mode 1)
+  (add-hook 'c-mode-hook 'tl/setup-c-mode)
+  ;; (add-hook 'c-mode-common-hook
+  ;;           (lambda ()
+  ;;             (when (derived-mode-p 'c-mode 'c++-mode )
+  ;;               (smartparens-mode 1)
+  ;;               (hl-line-mode 1)
+  ;;               (clean-aindent-mode 1)
+  ;;               (dtrt-indent-mode 1)
 
-                (org-indent-mode -1)
-                (org-roam-mode -1)
-                (ggtags-mode 1))))
-  (add-hook 'c-mode-hook
-            (lambda ()
-              (set (make-local-variable 'company-backends)
-                   '(company-clang  company-gtags  company-c-headers company-dabbrev ))))
+  ;;               (org-indent-mode -1)
+  ;;               (org-roam-mode -1)
+  ;;               (ggtags-mode 1))))
+  ;; (add-hook 'c-mode-hook
+  ;;           (lambda ()
+  ;;             (set (make-local-variable 'company-backends)
+  ;;                  '(company-clang  company-gtags  company-c-headers company-dabbrev ))))
   (add-hook 'c-mode-hook
             (lambda ()
               (add-hook 'before-save-hook 'whitespace-cleanup)))
@@ -965,8 +980,7 @@ Therefore I decided to put all of my c-mode settings in one file.
 #+END_SRC
 
 #+RESULTS:
-| lambda | nil | (add-hook 'before-save-hook 'whitespace-cleanup)                                                               |
-| lambda | nil | (set (make-local-variable 'company-backends) '(company-clang company-gtags company-c-headers company-dabbrev)) |
+| tl/setup-c-mode | (lambda nil (add-hook 'before-save-hook 'whitespace-cleanup)) | (lambda nil (set (make-local-variable 'company-backends) '(company-clang company-gtags company-c-headers company-dabbrev))) |
 
 ** Lesser languages : R
 
@@ -1097,7 +1111,7 @@ load org mode
   (setq org-startup-indented t)
   (setq org-hide-leading-stars t)
   (setq org-odd-level-only t)
-  (setq org-indent-mode t)
+  ;; (setq org-indent-mode t)
   (setq org-startup-with-inline-images t)
 
   (setq org-src-fontify-natively t)
@@ -1205,6 +1219,10 @@ load org mode
     (define-key map (kbd "C-'") #'undefined))
   (add-hook 'org-mode-hook 'visual-line-mode)
   (add-hook 'org-mode-hook 'flyspell-mode)
+  (add-hook 'org-mode-hook
+          (lambda ()
+            (org-indent-mode t)))
+
   (add-hook 'org-babel-after-execute-hook 'org-redisplay-inline-images)
 
   (setq org-link-frame-setup
@@ -1730,17 +1748,6 @@ Special formatting for the ROPE sections.
                ("\\section{%s}" . "\\section*{%s}")
                ("\\subsection{%s}" . "\\subsection*{%s}")
                ("\\subsubsection{%s}" . "\\subsubsection*{%s}")))
-
-;;              '("simplepresentation"
-;;                "\\documentclass[aspectratio=169,18pt,t]{beamer}
-;; \\usepackage{\\string~\"/.emacs.d/latex_templates/simple\"}
-;; [NO-DEFAULT-PACKAGES]
-;; [NO-PACKAGES]"
-;;                ("\\section{%s}" . "\\section*{%s}")
-;;                ("\\begin{frame}[fragile]\\frametitle{%s}"
-;;                 "\\end{frame}"
-;;                 "\\begin{frame}[fragile]\\frametitle{%s}"
-;;                 "\\end{frame}")))
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
@@ -1839,7 +1846,6 @@ flymake-show-diagnostic-buffer
 : /home/user/programs/langtool/LanguageTool-4.0/languagetool-commandline.jar
 
 * Reading
-
 ** Olivetti
 #+BEGIN_SRC emacs-lisp
 
