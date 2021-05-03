@@ -47,6 +47,7 @@
 (require 'em-dirs)
 (require 'em-hist)
 
+
 ;;;###autoload
 (defun prot-eshell-complete-recent-dir (&optional arg)
   "Switch to a recent Eshell directory using completion.
@@ -177,7 +178,7 @@ more-helpful local prompt."
          (for-bars                 `(:weight bold))
          (for-parent               `(:foreground "#105f89"))
          (for-dir                  `(:foreground "#1083be" :weight bold))
-                       
+
          (for-git                  `(:foreground "#2aa889" :slant italic ))
          (for-ruby                 `(:foreground "red"))
          (for-python               `(:foreground "#5555FF")))
@@ -189,14 +190,14 @@ more-helpful local prompt."
      (propertize ""    'face for-bars)
      (propertize parent   'face for-parent)
      (propertize name     'face for-dir)
-     
+
      (when ruby
        (concat (propertize " ── " 'face for-bars)
                (propertize ruby   'face for-ruby)))
      (when python
        (concat (propertize " ── " 'face for-bars)
                (propertize python 'face for-python)))
-     (propertize ""     'face for-bars) ;add "\n" here to have prompt on new line 
+     (propertize ""     'face for-bars) ;add "\n" here to have prompt on new line
      (propertize (if (= (user-uid) 0) " #" " $") 'face `(:foreground "#1a99e7" :weight ultra-bold))
      ;; (propertize " └→" 'face (if (= (user-uid) 0) `(:weight ultra-bold :foreground "red") `(:weight ultra-bold)))
      (propertize " "    'face `(:weight bold)))))

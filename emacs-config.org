@@ -498,7 +498,6 @@ In addition add the include path to flycheck-clang!
 (prot-emacs-elpa-package 'consult
   (setq consult-line-numbers-widen t)
 
-
   (setq consult-ripgrep-command "rg -SHn --no-heading --color never --no-follow --hidden %s")
   (define-key global-map (kbd "M-s r") #'consult-git-grep)
   (define-key global-map (kbd "C-x b") #'consult-buffer)
@@ -506,13 +505,11 @@ In addition add the include path to flycheck-clang!
   (define-key global-map (kbd "C-x i") #'consult-imenu)
   (define-key global-map (kbd "C-x C-r") #'consult-recent-file)
   (define-key global-map (kbd "M-g M-g") #'consult-goto-line)
+  (define-key global-map (kbd "C-y") #'consult-yank)
   ;; (setq consult-widen-key t)
   (setq consult-config #'((consult-buffer :title nil)))
   )
 #+END_SRC
-
-#+RESULTS:
-| consult-buffer | :title | nil |
 
 Let's also look at consult-flycheck
 
@@ -601,7 +598,7 @@ Must be bound to `minibuffer-local-filename-completion-map'."
           (delete-region (1+ (point)) (point-max))))
     (call-interactively 'backward-delete-char)))
 (let ((map minibuffer-local-filename-completion-map))
-    (define-key map (kbd "<M-backspace>") #'prot-minibuffer-backward-updir))
+  (define-key map (kbd "<M-backspace>") #'prot-minibuffer-backward-updir))
 #+END_SRC
 
 #+RESULTS:
@@ -698,7 +695,7 @@ Must be bound to `minibuffer-local-filename-completion-map'."
 | \`\*Embark Collect \(Live\ | Completions\)\* | nil | (window-parameters (mode-line-format . none)) |
 
 #+BEGIN_SRC emacs-lisp
-  (define-key global-map (kbd "C-,") #'embark-act)
+(define-key global-map (kbd "C-,") #'embark-act)
 #+END_SRC
 
 #+RESULTS:
@@ -820,8 +817,8 @@ Highlight line mode
 
 #+BEGIN_SRC emacs-lisp
 (prot-emacs-elpa-package 'flycheck
-    (add-hook 'after-init-hook 'global-flycheck-mode)
-    ;; (add-hook 'c-mode-hook (lambda () (setq flycheck-clang-language-standard "c11")))
+  (add-hook 'after-init-hook 'global-flycheck-mode)
+  ;; (add-hook 'c-mode-hook (lambda () (setq flycheck-clang-language-standard "c11")))
   )
 (prot-emacs-elpa-package 'flycheck-clang-analyzer
   (flycheck-clang-analyzer-setup)
@@ -908,9 +905,9 @@ Highlight line mode
   ;; (setq  ggtags-global-use-color nil)
   ;; (setq ggtags-highlight-tag 10)
   (add-hook 'c-mode-common-hook
-          (lambda ()
-            (when (derived-mode-p 'c-mode 'c++-mode)
-              (ggtags-mode 1))))
+            (lambda ()
+              (when (derived-mode-p 'c-mode 'c++-mode)
+                (ggtags-mode 1))))
   (let ((map ggtags-navigation-map))
     (define-key map (kbd "M-u") #'ggtags-navigation-previous-file)
     (define-key map (kbd "M-o") #'ggtags-navigation-next-file)
@@ -919,7 +916,7 @@ Highlight line mode
     (define-key map (kbd "M-k") #'next-error)
     (define-key map (kbd "M-i") #'previous-error)))
 
-  ;; (define-key global-map (kbd "M-;") #'smart-comment))
+;; (define-key global-map (kbd "M-;") #'smart-comment))
 
 #+END_SRC
 
@@ -1016,6 +1013,7 @@ Therefore I decided to put all of my c-mode settings in one file.
 : ((ess-R-fl-keyword:modifiers) (ess-R-fl-keyword:fun-defs . t) (ess-R-fl-keyword:keywords . t) (ess-R-fl-keyword:assign-ops . t) (ess-R-fl-keyword:constants . t) (ess-R-fl-keyword:fun-cals . t) (ess-R-fl-keyword:numbers) (ess-R-fl-keyword:operators . t) (ess-R-fl-keyword:delimiters) (ess-R-fl-keyword:=) (ess-R-fl-keyword:F&T))
 
 * Eshell
+
 #+BEGIN_SRC emacs-lisp
 (prot-emacs-builtin-package 'eshell
   (require 'esh-mode)
@@ -1037,24 +1035,24 @@ Therefore I decided to put all of my c-mode settings in one file.
 
   (setenv "PAGER" "cat")
   (setq eshell-scroll-to-bottom-on-input 'all)
-   (setq eshell-error-if-no-glob t)
-   (setq eshell-hist-ignoredups t)
-   (setq eshell-cmpl-cycle-ignore-case t)
-   (setq eshell-cmpl-cycle-completions t)
-   (setq eshell-save-history-on-exit t)
-   (setq eshell-prefer-lisp-functions nil)
-   (setq eshell-destroy-buffer-when-process-dies t)
+  (setq eshell-error-if-no-glob t)
+  (setq eshell-hist-ignoredups t)
+  (setq eshell-cmpl-cycle-ignore-case t)
+  (setq eshell-cmpl-cycle-completions t)
+  (setq eshell-save-history-on-exit t)
+  (setq eshell-prefer-lisp-functions nil)
+  (setq eshell-destroy-buffer-when-process-dies t)
 
-   (add-hook 'eshell-mode
+  (add-hook 'eshell-mode
 
             (lambda ()
               (set (make-local-variable 'company-backends)
                    '(company-files company-capf company-dabbrev ))))
-   (defun tl/eshell-quit ()
-       (progn
-          (eshell-life-is-too-much) ; Why not? (eshell/exit)
-          (ignore-errors
-            (delete-window))))
+  (defun tl/eshell-quit ()
+    (progn
+      (eshell-life-is-too-much) ; Why not? (eshell/exit)
+      (ignore-errors
+        (delete-window))))
   )
 
 (prot-emacs-builtin-package 'em-alias
@@ -1237,8 +1235,8 @@ load org mode
   (add-hook 'org-mode-hook 'visual-line-mode)
   (add-hook 'org-mode-hook 'flyspell-mode)
   (add-hook 'org-mode-hook
-          (lambda ()
-            (org-indent-mode t)))
+            (lambda ()
+              (org-indent-mode t)))
 
   (add-hook 'org-babel-after-execute-hook 'org-redisplay-inline-images)
 
@@ -1250,10 +1248,10 @@ load org mode
           (file . find-file)
           (wl . wl-other-frame))))
   )
-  #+END_SRC
+#+END_SRC
 
-  #+RESULTS:
-  : ((vm . vm-visit-folder-other-frame) (vm-imap . vm-visit-imap-folder-other-frame) (gnus . org-gnus-no-new-news) (file . find-file) (wl . wl-other-frame))
+#+RESULTS:
+: ((vm . vm-visit-folder-other-frame) (vm-imap . vm-visit-imap-folder-other-frame) (gnus . org-gnus-no-new-news) (file . find-file) (wl . wl-other-frame))
 
 ** Coding
 
@@ -1507,8 +1505,8 @@ xdg-mime default org-protocol.desktop x-scheme-handler/org-protocol
            ""
            :file-name "%<%Y%m%d%H%M%S>-${citekey}"
            :head "#+TITLE: ${citekey}: ${title}
-#+ROAM_KEY: ${ref}
-#+roam_tags:
+,#+ROAM_KEY: ${ref}
+,#+roam_tags:
 \n* ${title}
 :PROPERTIES:
 :Custom_ID: ${citekey}
@@ -1856,7 +1854,7 @@ flymake-show-diagnostic-buffer
 #+BEGIN_SRC emacs-lisp
 (prot-emacs-elpa-package 'langtool
   (setq langtool-language-tool-jar "/home/user/programs/langtool/LanguageTool-4.0/languagetool-commandline.jar")
-)
+  )
 #+END_SRC
 
 #+RESULTS:
@@ -2015,5 +2013,3 @@ Run this afterwards :
 
 
 The end.
-Wrong type argument: integer-or-marker-p, nil
-Wrong type argument: integer-or-marker-p, nil
