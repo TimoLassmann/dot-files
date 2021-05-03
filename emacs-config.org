@@ -505,7 +505,7 @@ In addition add the include path to flycheck-clang!
   (define-key global-map (kbd "C-x i") #'consult-imenu)
   (define-key global-map (kbd "C-x C-r") #'consult-recent-file)
   (define-key global-map (kbd "M-g M-g") #'consult-goto-line)
-  (define-key global-map (kbd "C-y") #'consult-yank)
+  ;; (define-key global-map (kbd "C-y") #'consult-yank)
   ;; (setq consult-widen-key t)
   (setq consult-config #'((consult-buffer :title nil)))
   )
@@ -971,14 +971,13 @@ Therefore I decided to put all of my c-mode settings in one file.
   (add-hook 'c-mode-hook
             (lambda ()
               (add-hook 'before-save-hook 'whitespace-cleanup)))
-
   )
 
 
 #+END_SRC
 
 #+RESULTS:
-| (lambda nil (set (make-local-variable 'company-backends) '(company-clang company-gtags company-c-headers company-dabbrev))) | (lambda nil (add-hook 'before-save-hook 'whitespace-cleanup)) | tl/setup-c-mode | smartparens-mode |
+: consult-yank
 
 ** Lesser languages : R
 
@@ -1231,7 +1230,8 @@ load org mode
     (define-key map (kbd "C-c [") #'undefined)
     (define-key map (kbd "C-,") #'undefined)
     (define-key map (kbd "C-,") #'embark-act)
-    (define-key map (kbd "C-'") #'undefined))
+    (define-key map (kbd "C-'") #'undefined)
+    (define-key map (kbd "C-y") #'consult-yank))
   (add-hook 'org-mode-hook 'visual-line-mode)
   (add-hook 'org-mode-hook 'flyspell-mode)
   (add-hook 'org-mode-hook
