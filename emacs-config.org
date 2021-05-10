@@ -356,12 +356,16 @@ Never use tabs. Tabs are the devil’s whitespace.
   (setq switch-window-input-style 'minibuffer)
   (setq switch-window-increase 4)
   (setq switch-window-threshold 2)
+  (setq switch-window-multiple-frames t)
   (setq switch-window-shortcut-style 'qwerty)
   (setq switch-window-qwerty-shortcuts
         '("a" "s" "d" "f" "j" "k" "l" "i" "o"))
   (global-set-key [remap other-window]  'switch-window))
 
 #+END_SRC
+
+#+RESULTS:
+: switch-window
 
 ** Beginend
 
@@ -383,6 +387,7 @@ Never use tabs. Tabs are the devil’s whitespace.
 #+BEGIN_SRC emacs-lisp
 
 (prot-emacs-elpa-package 'avy
+  (setq avy-all-windows 'all-frames)
   (global-set-key (kbd "M-SPC") 'avy-goto-char-timer)
   (global-set-key (kbd "C-:") 'avy-goto-char)
   (global-set-key (kbd "C-'") 'avy-goto-char-2)
@@ -392,6 +397,9 @@ Never use tabs. Tabs are the devil’s whitespace.
 
 
 #+END_SRC
+
+#+RESULTS:
+: avy-goto-word-0
 
 ** Beacon
 #+BEGIN_SRC emacs-lisp
@@ -477,7 +485,8 @@ Company Statistics
 
 I had to add the hook and local variable to stop company from selecting capf before clang.
 To make this work properly, I need to manually specify the include paths by
-putting a =.dir-locals.el= into the source directory of my C code. I.e. most
+putting a =.dir-locals.el= into the sourc
+e directory of my C code. I.e. most
 of the time this will be =src= and I need to point to
 =../tldevel=.
 

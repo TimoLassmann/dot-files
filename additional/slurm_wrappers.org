@@ -6,10 +6,10 @@
 #+OPTIONS:  toc:nil
 #+OPTIONS: H:4
 #+LATEX_CMD: pdflatex
-* Introduction 
-  
+* Introduction
 
-** Basic skeleton script  
+
+** Basic skeleton script
 #+BEGIN_SRC bash -n :tangle test_wrapper.sh :shebang #!/usr/bin/env bash :noweb yes :exports code :results none
 
 CPU=
@@ -27,7 +27,7 @@ do
         t) CPU=${OPTARG};;
         m) MEM=${OPTARG};;
         i) INPUT=${OPTARG};;
-        o) OUTPUT=${OPTARG};;            
+        o) OUTPUT=${OPTARG};;
         *) usage;;
     esac
 done
@@ -50,8 +50,8 @@ exit 0
 EOT
 #+END_SRC
 
-** testing R 
-   Here is an example R script that prints it's inputs and the session information 
+** testing R
+   Here is an example R script that prints it's inputs and the session information
 
 
    #+BEGIN_SRC R -n :tangle test_R_script.R :shebang #!/usr/bin/env Rscript :noweb yes :exports code :results none
@@ -120,7 +120,7 @@ do
         t) CPU=${OPTARG};;
         m) MEM=${OPTARG};;
         i) INPUT=${OPTARG};;
-        o) OUTPUT=${OPTARG};;            
+        o) OUTPUT=${OPTARG};;
         *) usage;;
     esac
 done
@@ -146,14 +146,14 @@ EOT
 
 
 
-** cellranger 
+** cellranger
 
 #+BEGIN_SRC bash -n :tangle slurm_cellranger_count.sh :shebang #!/usr/bin/env bash :noweb yes :exports code :results none
 export PATH=/home/timo/program/cellranger-3.1.0:$PATH
 CPU=16
 MEM=128
 REF=
-FASTQ= 
+FASTQ=
 EXPECTED=6000
 SAMPLE=
 NAME=
@@ -200,4 +200,3 @@ cellranger count --id=$NAME --transcriptome=$REF --fastqs=$FASTQ --sample=$SAMPL
 exit 0
 EOT
 #+END_SRC
-
