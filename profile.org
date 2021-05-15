@@ -14,6 +14,7 @@
 
 #+BEGIN_SRC sh
 PATH=$HOME/bin:$HOME/miniconda3/bin:$PATH
+PATH=$PATH:/usr/local/go/bin
 #+END_SRC
 
 

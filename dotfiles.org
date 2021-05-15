@@ -61,9 +61,6 @@ fi
 
 * Eshell
 
-  #+BEGIN_SRC text :exports both :results none :noweb yes :tangle ~/.emacs.d/eshell/alias
-
-  #+END_SRC
     alias ll '/bin/ls -AlohG --color=always'
     alias val 'valgrind --leak-check=yes --show-leak-kinds=all --exit-on-first-error=yes --error-exitcode=1 $*'
     alias d 'dired $1'

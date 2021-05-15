@@ -63,7 +63,7 @@
   ;;(tl/mkdir "${tl/emacs-directory}/latex_templates")
   (tl/mkdir "$HOME/bin")
   (tl/mkdir "$HOME/backup")
-
+    (tl/mkdir "$HOME/.emacs.d/eshell")
   (message  (concat "Tangling: " dot-files-src "dotfiles.org"))
   (tl/tangle-file (concat dot-files-src "dotfiles.org"))
 
