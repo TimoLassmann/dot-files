@@ -1531,7 +1531,6 @@ xdg-mime default org-protocol.desktop x-scheme-handler/org-protocol
 | org-roam-bibtex-mode | t |
 
 ** Org-Noter
-supercite:ma-2018-pan-cancer
 
 #+BEGIN_SRC  emacs-lisp
 
@@ -1541,7 +1540,6 @@ supercite:ma-2018-pan-cancer
   (setq org-noter-auto-save-last-location t)
   (setq org-noter-doc-split-fraction '(0.67 0.33))
   (setq org-noter-notes-search-path  (list (concat (getenv "HOME") "/work/roam/"))))
-
 
 #+END_SRC
 
